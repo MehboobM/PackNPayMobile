@@ -29,12 +29,22 @@ class TextStyles {
     color: const Color(0xff98A2B3),
   );
 
+
+
   /// Hint text
   static final TextStyle hintText = GoogleFonts.inter(
     fontSize: 16,
     fontWeight: FontWeight.w400,
     color: const Color(0xff98A2B3),
   );
+  static final TextStyle f16w600mBlack8 = GoogleFonts.inter(
+    fontSize: 16,
+    fontWeight: FontWeight.w600,
+    color: AppColors.mBlack8,
+    height: 0.24,
+  );
+
+
 
   static final TextStyle f32w400White = GoogleFonts.interTight(
     fontSize: 32,
@@ -107,6 +117,18 @@ class TextStyles {
     fontWeight: FontWeight.w400,
     color: AppColors.mGray6,
     height: 1.0,
+  );
+
+  static final TextStyle f10w500Primary = GoogleFonts.inter(
+    fontSize: 10,
+    fontWeight: FontWeight.w500,
+    color: AppColors.primary,
+  );
+
+  static final TextStyle f12w500White = GoogleFonts.inter(
+    fontSize: 12,
+    fontWeight: FontWeight.w500,
+    color: AppColors.mWhite,
   );
 
 

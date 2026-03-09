@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:pack_n_pay/routes/route_names_const.dart';
 import 'package:pack_n_pay/onboard_screen.dart';
+import 'package:pack_n_pay/screens/new_survey/new_survey_screen.dart';
 import 'package:pack_n_pay/screens/otp/otp_screen.dart';
 
 import '../screens/basic_detail/basic_detail_screen.dart';
@@ -32,6 +33,9 @@ class NavigationRouter {
 
      case homeScreenRoute:
         return MaterialPageRoute(builder: (_) => const HomeScreen());
+
+     case newSurveyRoute:
+        return MaterialPageRoute(builder: (_) => const NewSurveyScreen());
 
 
 
