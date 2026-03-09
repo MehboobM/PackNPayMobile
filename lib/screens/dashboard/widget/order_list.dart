@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../../../models/order_item.dart';
+import '../../../utils/app_colors.dart';
+import '../../../utils/m_font_styles.dart';
 
 
 class OrdersListSection extends StatelessWidget {
@@ -30,20 +32,15 @@ class OrdersListSection extends StatelessWidget {
             children: [
               Text(
                 title,
-                style: GoogleFonts.inter(
-                  fontSize: 14,
-                  fontWeight: FontWeight.w600,
-
-                ),
+                style: TextStyles.f14w600Primary.copyWith(
+                  color: AppColors.mGray9,
+                )
               ),
                Text(
                 "See all",
-                style: GoogleFonts.inter(
-                    fontSize: 11,
-                    fontWeight: FontWeight.w400,
-                    color: const Color(0xFF2A3582)
-
-                ),
+                   style: TextStyles.f11w400Gray6.copyWith(
+                     color: AppColors.primary,
+                   )
               ),
             ],
           ),
@@ -52,7 +49,7 @@ class OrdersListSection extends StatelessWidget {
 
           /// TABLE HEADER
           Container(
-            padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 12),
+            padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
             decoration: BoxDecoration(
               color: const Color(0xffE9ECF6),
               borderRadius: BorderRadius.circular(6),
@@ -95,12 +92,7 @@ class HeaderText extends StatelessWidget {
   Widget build(BuildContext context) {
     return Text(
       text,
-      style: GoogleFonts.inter(
-          fontSize: 10,
-          fontWeight: FontWeight.w500,
-          color: const Color(0xFF2A3582)
-
-      ),
+      style: TextStyles.f10w500primary
     );
   }
 }
@@ -151,19 +143,16 @@ class OrderTile extends StatelessWidget {
                 const SizedBox(height: 4),
                 Text(
                   model.orderNo,
-                  style: GoogleFonts.inter(
-                      fontSize: 10,
-                      fontWeight: FontWeight.w700,
+                  style: TextStyles.f10w500primary.copyWith(
+                    fontWeight: FontWeight.w700,
+                    color: AppColors.mGray9,
 
                   ),
                 ),
                 const SizedBox(height: 2),
                 Text(
                   model.date,
-                  style: GoogleFonts.inter(
-                      fontSize: 10,
-                      fontWeight: FontWeight.w400,
-                  ),
+                  style: TextStyles.f10w400Gray9
                 ),
               ],
             ),
@@ -177,18 +166,14 @@ class OrderTile extends StatelessWidget {
               children: [
                 Text(
                   model.name,
-                  style: GoogleFonts.inter(
-                      fontSize: 10,
-                      fontWeight: FontWeight.w700,
+                  style: TextStyles.f10w400Gray9.copyWith(
+                    fontWeight: FontWeight.w700,
                   ),
                 ),
-                const SizedBox(height: 2),
+                const SizedBox(height: 8),
                 Text(
                   model.phone,
-                  style: GoogleFonts.inter(
-                      fontSize: 10,
-                      fontWeight: FontWeight.w400,
-                  ),
+                    style: TextStyles.f10w400Gray6
                 ),
               ],
             ),
@@ -202,11 +187,7 @@ class OrderTile extends StatelessWidget {
               children: [
                 Text(
                   model.from,
-                  style: GoogleFonts.inter(
-                      fontSize: 10,
-                      fontWeight: FontWeight.w400,
-
-                  ),
+                    style: TextStyles.f10w400Gray6
                 ),
                 const SizedBox(height: 4),
                 Row(
@@ -216,10 +197,7 @@ class OrderTile extends StatelessWidget {
                     const SizedBox(width: 4),
                     Text(
                       model.to,
-                      style: GoogleFonts.inter(
-                          fontSize: 10,
-                          fontWeight: FontWeight.w400,
-                      ),
+                        style: TextStyles.f10w400Gray6
                     ),
                   ],
                 ),

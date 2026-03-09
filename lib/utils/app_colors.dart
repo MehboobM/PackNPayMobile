@@ -16,6 +16,7 @@ class AppColors{
   static const mWhite = Color(0xFFFFFFFF);
   static const mWhite54 = Color(0x8AFFFFFF);
   static const cyanBlue = Color(0xffDCEFFF);
-
+  static const mGray9 =  Color(0xFF181D27);
+  static const mGray7 =  Color(0xFF414651);
 
 }

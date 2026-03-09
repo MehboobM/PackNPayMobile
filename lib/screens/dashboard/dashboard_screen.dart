@@ -1,5 +1,4 @@
 
-
 import 'package:flutter/material.dart';
 import 'package:pack_n_pay/screens/dashboard/widget/RedCard.dart';
 import 'package:pack_n_pay/screens/dashboard/widget/calender_widget.dart';
@@ -11,7 +10,8 @@ import 'package:pack_n_pay/screens/dashboard/widget/subscription_card.dart';
 import 'package:pack_n_pay/screens/dashboard/widget/top_section.dart';
 
 import '../../models/order_item.dart';
-import 'Menu_screen.dart';
+import '../survey/survey_list_screen.dart';
+import 'Menu_screen.dart'; // 👈 ADD THIS
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -21,35 +21,60 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+
   int selectedIndex = 0;
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: const Color(0xffF7F7F7),
+  /// SCREEN SWITCHER
+  Widget _getScreen() {
 
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
+    switch (selectedIndex) {
 
-            /// THIS GOES INTO STATUS BAR AREA
-            const TopSection(),
+      case 0:
+        return _homeDashboard();
 
-            const SizedBox(height: 10),
+      case 1:
+        return const SurveyListScreen();
 
-            const AutoScrollBanner(),
 
-            const SizedBox(height: 16),
+      case 2:
+        return const MenuScreen();
 
-            const Padding(
-              padding: EdgeInsets.symmetric(horizontal: 16),
-              child: SubscriptionCard(),
-            ),
-            const SizedBox(height: 16),
-            const CalendarWidget(),
-            const SizedBox(height: 16),
-            Column(
+      default:
+        return _homeDashboard();
+    }
+  }
+
+  /// HOME DASHBOARD UI
+  Widget _homeDashboard() {
+
+    return Column(
+      children: [
+
+        /// FIXED TOP SECTION
+        const TopSection(),
+
+        /// SCROLLABLE CONTENT
+        Expanded(
+          child: SingleChildScrollView(
+            child: Column(
               children: [
+
+                const SizedBox(height: 10),
+
+                const AutoScrollBanner(),
+
+                const SizedBox(height: 16),
+
+                const Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 16),
+                  child: SubscriptionCard(),
+                ),
+
+                const SizedBox(height: 16),
+
+                const CalendarWidget(),
+
+                const SizedBox(height: 16),
 
                 /// ORDERS
                 StatsSection(
@@ -60,19 +85,19 @@ class _HomeScreenState extends State<HomeScreen> {
                     StatItem("Shifting Started", "20"),
                     StatItem("Pickup Completed", "20"),
                     StatItem("Shifting Completed", "20"),
-                     StatItem("Settled", "20"),
-                     StatItem("Cancelled", "20"),
+                    StatItem("Settled", "20"),
+                    StatItem("Cancelled", "20"),
                   ],
                 ),
 
-                /// SURVEY LIST
+                /// SURVEY
                 StatsSection(
                   title: "Survey List",
                   total: "2,420",
                   crossAxisCount: 2,
                   items: [
                     StatItem("Pending", "₹2000", color: Colors.red),
-                     StatItem("Converted Quotations", "20"),
+                    StatItem("Converted Quotations", "20"),
                   ],
                 ),
 
@@ -86,18 +111,22 @@ class _HomeScreenState extends State<HomeScreen> {
                     StatItem("Cancelled", "20"),
                   ],
                 ),
+
+                /// PROFIT
                 StatsSection(
                   title: "Profit/Loss",
                   total: "2,420",
                   crossAxisCount: 2,
                   items: [
                     StatItem("Revenue", "₹2000"),
-                    StatItem("Expenses", "-₹2000",color: Colors.red),
+                    StatItem("Expenses", "-₹2000", color: Colors.red),
                   ],
                 ),
 
                 const StaffProfitSection(),
                 const SizedBox(height: 16),
+
+                /// UPCOMING ORDERS
                 OrdersListSection(
                   title: "Upcoming Orders",
                   items: [
@@ -119,18 +148,12 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                   ],
                 ),
+
+                /// ACTION LIST
                 OrdersListSection(
-                    title: "Action lists",
-                    isUpcoming: false,
+                  title: "Action lists",
+                  isUpcoming: false,
                   items: [
-                  OrderItemModel(
-                  orderNo: "Quotation",
-                  date: "JAN 9, 2026",
-                  name: "RAKESH SINGH",
-                  phone: "+91 0000000000",
-                  from: "BENGALURU",
-                  to: "DELHI",
-                ),
                     OrderItemModel(
                       orderNo: "Quotation",
                       date: "JAN 9, 2026",
@@ -147,27 +170,40 @@ class _HomeScreenState extends State<HomeScreen> {
                       from: "BENGALURU",
                       to: "DELHI",
                     ),
-                    ],
+                    OrderItemModel(
+                      orderNo: "Quotation",
+                      date: "JAN 9, 2026",
+                      name: "RAKESH SINGH",
+                      phone: "+91 0000000000",
+                      from: "BENGALURU",
+                      to: "DELHI",
+                    ),
+                  ],
                 ),
               ],
             ),
-          ],
+          ),
         ),
-      ),
+      ],
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+
+    return Scaffold(
+
+      backgroundColor: const Color(0xffF7F7F7),
+
+      body: _getScreen(), // 👈 SWITCH SCREENS HERE
+
       bottomNavigationBar: CustomBottomNav(
         selectedIndex: selectedIndex,
-          onTap: (index) {
-            if (index == 2) {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (_) => const MenuScreen()),
-              );
-            } else {
-              setState(() {
-                selectedIndex = index;
-              });
-            }
-          }
+        onTap: (index) {
+          setState(() {
+            selectedIndex = index;
+          });
+        },
       ),
     );
   }

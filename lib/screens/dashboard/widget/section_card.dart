@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import '../../../utils/app_colors.dart';
+import '../../../utils/m_font_styles.dart';
+
 class StatsSection extends StatelessWidget {
   final String title;
   final String total;
@@ -37,20 +40,14 @@ class StatsSection extends StatelessWidget {
               children: [
                 Text(
                   title,
-                  style: GoogleFonts.inter(
-                    fontSize: 12,
-                    fontWeight: FontWeight.w600,
-
-                  ),
+                  style: TextStyles.f12w600Gray9
                 ),
                 Text(
                   total,
-                  style: GoogleFonts.inter(
-                    fontSize: 12,
-                    fontWeight: FontWeight.w700,
-                    color: Color(0xff4F5BD5),
-
-                  ),
+                  style: TextStyles.f12w600Gray9.copyWith(
+                    color: AppColors.primary,
+                    fontWeight: FontWeight.w700
+                  )
                 ),
               ],
             ),
@@ -73,7 +70,7 @@ class StatsSection extends StatelessWidget {
                 final item = items[index];
 
                 return Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                  padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(8),
                     border: Border.all(color: const Color(0xffE5E7EB)),
@@ -87,17 +84,15 @@ class StatsSection extends StatelessWidget {
                         item.title,
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
-                        style: GoogleFonts.inter(
-                          fontSize: 9,
-                          fontWeight: FontWeight.w500,
-
-                        ),
+                        style: TextStyles.f10w400Gray6.copyWith(
+                          color: AppColors.mGray9,
+                          fontWeight: FontWeight.w500
+                        )
                       ),
-                      const SizedBox(height: 2),
+                      const SizedBox(height: 8),
                       Text(
                         item.value,
-                        style: GoogleFonts.inter(
-                          fontSize: 12,
+                        style: TextStyles.f12w600Gray9.copyWith(
                           fontWeight: FontWeight.w700,
                           color: item.color ?? Colors.black,
                         ),
