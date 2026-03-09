@@ -1,5 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:pack_n_pay/utils/app_colors.dart';
+import 'package:pack_n_pay/utils/m_font_styles.dart';
 
 class MenuDropdown extends StatefulWidget {
   final String title;
@@ -27,16 +31,19 @@ class _MenuDropdownState extends State<MenuDropdown> {
 
         /// HEADER
         ListTile(
-          leading: Image.asset(widget.icon, height: 22),
+          leading: SvgPicture.asset(
+            widget.icon,
+            width: 22,
+            height: 22,
+          ),
           title: Text(
             widget.title,
-            style: const TextStyle(
-              fontWeight: FontWeight.w600,
-              fontSize: 14,
-            ),
+            style: TextStyles.f14w500mGray7
           ),
           trailing: Icon(
-            expanded ? Icons.keyboard_arrow_up : Icons.keyboard_arrow_down,
+            expanded
+                ? Icons.keyboard_arrow_up
+                : Icons.keyboard_arrow_down,
           ),
           onTap: () {
             setState(() {
@@ -57,6 +64,7 @@ class _MenuDropdownState extends State<MenuDropdown> {
     );
   }
 }
+
 class MenuItem extends StatelessWidget {
   final String title;
   final String icon;
@@ -70,12 +78,49 @@ class MenuItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListTile(
-      leading: Image.asset(icon, height: 18),
+      leading: SvgPicture.asset(
+        icon,
+        width: 18,
+        height: 18,
+      ),
       title: Text(
         title,
-        style: const TextStyle(fontSize: 13),
+          style: TextStyles.f14w500mGray7.copyWith(
+            color: AppColors.mGray9
+          )
       ),
       onTap: () {},
+    );
+  }
+}
+
+class MenuSectionHeader extends StatelessWidget {
+  final String title;
+
+  const MenuSectionHeader({
+    super.key,
+    required this.title,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+      child: Row(
+        children: [
+          Text(
+            title.toUpperCase(),
+            style: TextStyles.f14w600Primary
+          ),
+          const SizedBox(width: 10),
+          const Expanded(
+            child: Divider(
+              thickness: 1,
+              color: AppColors.primary,
+            ),
+          )
+        ],
+      ),
     );
   }
 }

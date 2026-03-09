@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:pack_n_pay/utils/m_font_styles.dart';
 
 class HeaderSection extends StatelessWidget {
   const HeaderSection({super.key});
@@ -33,25 +34,16 @@ class HeaderSection extends StatelessWidget {
                     Text(
                       "Default Business",
                       textAlign: TextAlign.center,
-                      style: GoogleFonts.inter(
-                        fontSize: 11,
-                        fontWeight: FontWeight.w400,
-                        height: 1.0,
-                        letterSpacing: 0,
-                        color: Colors.grey,
-                      ),
+                      style: TextStyles.f11w400Gray6
                     ),
                     SizedBox(width: 6,),
                     SizedBox(height: 10,width: 10,child: SvgPicture.asset("assets/images/arrow_down.svg")),
                   ]
               ),
+              const SizedBox(height: 2),
               Text(
                 "Acme Corporation pvt.Ltd",
-                style: GoogleFonts.inter(
-                  fontSize: 12,
-                  fontWeight: FontWeight.w600,
-
-                ),
+                style: TextStyles.f12w600Gray9
               ),
 
             ],

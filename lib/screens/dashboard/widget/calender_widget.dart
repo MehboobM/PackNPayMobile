@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 
+import '../../../utils/app_colors.dart';
+import '../../../utils/m_font_styles.dart';
+
 class CalendarWidget extends StatefulWidget {
   const CalendarWidget({super.key});
 
@@ -14,7 +17,7 @@ class _CalendarWidgetState extends State<CalendarWidget> {
   DateTime visibleMonth = DateTime.now();
   DateTimeRange? selectedRange;
 
-  final int baseYear = 2000;
+  List<DateTime> monthsToShow = [];
 
   late PageController controller;
 
@@ -22,14 +25,19 @@ class _CalendarWidgetState extends State<CalendarWidget> {
   void initState() {
     super.initState();
 
-    int initialPage =
-        (DateTime.now().year - baseYear) * 12 + DateTime.now().month;
+    DateTime now = DateTime.now();
 
-    controller = PageController(initialPage: initialPage);
+    /// SHOW CURRENT MONTH BY DEFAULT
+    visibleMonth = DateTime(now.year, now.month);
+
+    monthsToShow = [
+      DateTime(now.year, now.month)
+    ];
+
+    controller = PageController(initialPage: 0);
   }
 
   List<DateTime> getMonthDays(DateTime month) {
-
     int days = DateTime(month.year, month.month + 1, 0).day;
 
     return List.generate(
@@ -76,13 +84,13 @@ class _CalendarWidgetState extends State<CalendarWidget> {
                 left: 6,
                 child: Text(
                   DateFormat("MMMM d").format(date),
-                  style: const TextStyle(fontSize: 11,color: Colors.black54),
+                  style: const TextStyle(fontSize: 11, color: Colors.black54),
                 ),
               ),
               const Center(
                 child: Text(
                   "10/10",
-                  style: TextStyle(fontWeight: FontWeight.bold,fontSize: 13),
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 13),
                 ),
               )
             ],
@@ -100,13 +108,13 @@ class _CalendarWidgetState extends State<CalendarWidget> {
                 left: 6,
                 child: Text(
                   DateFormat("MMMM d").format(date),
-                  style: const TextStyle(fontSize: 11,color: Colors.black54),
+                  style: const TextStyle(fontSize: 11, color: Colors.black54),
                 ),
               ),
               const Center(
                 child: Text(
                   "10/10",
-                  style: TextStyle(fontWeight: FontWeight.bold,fontSize: 13),
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 13),
                 ),
               )
             ],
@@ -116,7 +124,7 @@ class _CalendarWidgetState extends State<CalendarWidget> {
       else {
         cell = Container(
           height: 60,
-          padding: const EdgeInsets.only(top: 6,left: 6),
+          padding: const EdgeInsets.only(top: 6, left: 6),
           decoration: isToday
               ? BoxDecoration(
             border: Border.all(
@@ -128,11 +136,9 @@ class _CalendarWidgetState extends State<CalendarWidget> {
               : null,
           child: Text(
             "${date.day}",
-            style: GoogleFonts.inter(
-              fontSize: 8,
-              fontWeight: FontWeight.w600,
-              color: isToday ? const Color(0xff2F2D7E) : Colors.grey,
-            ),
+            style: TextStyles.f8w500mWhite.copyWith(
+              color:AppColors.mGray5
+            )
           ),
         );
       }
@@ -155,6 +161,22 @@ class _CalendarWidgetState extends State<CalendarWidget> {
     return rows;
   }
 
+  /// GENERATE MONTH LIST FROM RANGE
+  List<DateTime> generateMonths(DateTime start, DateTime end) {
+
+    List<DateTime> months = [];
+
+    DateTime current = DateTime(start.year, start.month);
+    DateTime last = DateTime(end.year, end.month);
+
+    while (current.isBefore(last) || current.isAtSameMomentAs(last)) {
+      months.add(current);
+      current = DateTime(current.year, current.month + 1);
+    }
+
+    return months;
+  }
+
   @override
   Widget build(BuildContext context) {
 
@@ -170,10 +192,9 @@ class _CalendarWidgetState extends State<CalendarWidget> {
 
               Text(
                 DateFormat('MMMM, yyyy').format(visibleMonth),
-                style: GoogleFonts.inter(
-                  fontSize: 14,
-                  fontWeight: FontWeight.w600,
-                ),
+                style: TextStyles.f14w600Primary.copyWith(
+                  color: AppColors.mGray9,
+                )
               ),
 
               GestureDetector(
@@ -188,25 +209,21 @@ class _CalendarWidgetState extends State<CalendarWidget> {
 
                   if (picked != null) {
 
-                    selectedRange = picked;
-
-                    int page =
-                        (picked.start.year - baseYear) * 12 + picked.start.month;
-
-                    controller.animateToPage(
-                      page,
-                      duration: const Duration(milliseconds: 400),
-                      curve: Curves.easeInOut,
-                    );
+                    List<DateTime> months =
+                    generateMonths(picked.start, picked.end);
 
                     setState(() {
-                      visibleMonth =
-                          DateTime(picked.start.year, picked.start.month);
+
+                      selectedRange = picked;
+                      monthsToShow = months;
+                      visibleMonth = months.first;
+
+                      controller = PageController(initialPage: 0);
                     });
                   }
                 },
                 child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 12,vertical: 8),
+                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                   decoration: BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.circular(8),
@@ -214,21 +231,20 @@ class _CalendarWidgetState extends State<CalendarWidget> {
                   ),
                   child: Row(
                     children: [
-                      const Icon(Icons.calendar_today,size: 16),
+                      const Icon(Icons.calendar_today, size: 16),
                       const SizedBox(width: 6),
 
                       Text(
                         selectedRange == null
                             ? "Select Range"
                             : "${DateFormat('MMM dd, yyyy').format(selectedRange!.start)} - ${DateFormat('MMM dd, yyyy').format(selectedRange!.end)}",
-                        style: GoogleFonts.inter(
-                          fontSize: 11,
-                          fontWeight: FontWeight.w600,
-                        ),
+                        style: TextStyles.f11w600mWhite.copyWith(
+                          color:AppColors.mGray9
+                        )
                       ),
 
                       const SizedBox(width: 4),
-                      const Icon(Icons.keyboard_arrow_down,size: 18)
+                      const Icon(Icons.keyboard_arrow_down, size: 18)
                     ],
                   ),
                 ),
@@ -275,37 +291,31 @@ class _CalendarWidgetState extends State<CalendarWidget> {
                   ),
                 ),
 
-                /// MONTH SCROLL
+                /// MONTH VIEW
                 SizedBox(
-                  height: 290,
-                  child: PageView.builder(
-                    scrollDirection: Axis.vertical,
-                    controller: controller,
-                    onPageChanged: (index){
+                    height: 290,
+                    child: PageView.builder(
+                      scrollDirection: Axis.vertical,
+                      controller: controller,
+                      itemCount: monthsToShow.length,
+                      onPageChanged: (index) {
+                        setState(() {
+                          visibleMonth = monthsToShow[index];
+                        });
+                      },
+                      itemBuilder: (context, index) {
 
-                      int year = baseYear + (index ~/ 12);
-                      int month = (index % 12) + 1;
+                        DateTime monthDate = monthsToShow[index];
 
-                      setState(() {
-                        visibleMonth = DateTime(year, month);
-                      });
-                    },
-                    itemBuilder: (context,index){
-
-                      int year = baseYear + (index ~/ 12);
-                      int month = (index % 12) + 1;
-
-                      DateTime monthDate = DateTime(year, month);
-
-                      return Table(
-                        border: const TableBorder(
-                          horizontalInside: BorderSide(color: Color(0xffECECEC)),
-                          verticalInside: BorderSide(color: Color(0xffECECEC)),
-                        ),
-                        children: buildCalendar(monthDate),
-                      );
-                    },
-                  ),
+                        return Table(
+                          border: const TableBorder(
+                            horizontalInside: BorderSide(color: Color(0xffECECEC)),
+                            verticalInside: BorderSide(color: Color(0xffECECEC)),
+                          ),
+                          children: buildCalendar(monthDate),
+                        );
+                      },
+                    )
                 )
               ],
             ),
@@ -326,11 +336,7 @@ class _WeekText extends StatelessWidget {
   Widget build(BuildContext context) {
     return Text(
       text,
-      style: GoogleFonts.inter(
-        fontSize: 8,
-        fontWeight: FontWeight.w500,
-        color: Colors.white,
-      ),
+      style: TextStyles.f8w500mWhite,
     );
   }
 }

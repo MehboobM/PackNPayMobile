@@ -3,6 +3,7 @@ import 'dart:ui';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:pack_n_pay/utils/m_font_styles.dart';
 
 class SubscriptionCard extends StatelessWidget {
   const SubscriptionCard({super.key});
@@ -31,22 +32,12 @@ class SubscriptionCard extends StatelessWidget {
                 children: [
                   Text(
                     "45",
-                    style: GoogleFonts.inter(
-                      fontSize: 24,
-                      fontWeight: FontWeight.w600,
-                      color: Colors.white
-
-                    ),
+                    style: TextStyles.f24w600White
                   ),
                   SizedBox(height: 4),
                   Text(
                     "Days left to renew",
-                    style: GoogleFonts.inter(
-                      fontSize: 12,
-                      fontWeight: FontWeight.w400,
-                      color: Colors.white70
-
-                    ),
+                    style: TextStyles.f12w400mWhiteO8
                   ),
                 ],
               ),
@@ -92,22 +83,13 @@ class InfoColumn extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(title,
-      style: GoogleFonts.inter(
-        fontSize: 11,
-        fontWeight: FontWeight.w400,
-        color: Colors.white70
-      )
+      style: TextStyles.f11w400WhiteO9
 
       ),
         const SizedBox(height: 4),
         Text(
           value,
-          style: GoogleFonts.inter(
-            fontSize: 11,
-            fontWeight: FontWeight.w600,
-            color: Colors.white
-
-          ),
+          style: TextStyles.f11w600mWhite
         ),
       ],
     );

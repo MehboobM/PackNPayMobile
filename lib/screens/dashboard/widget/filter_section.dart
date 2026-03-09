@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
+
+import '../../../utils/m_font_styles.dart';
 
 class FilterSearchSection extends StatelessWidget {
   const FilterSearchSection({super.key});
@@ -34,14 +37,10 @@ class FilterSearchSection extends StatelessWidget {
                 children: [
                   Text(
                     "User",
-                      style: GoogleFonts.inter(
-                        fontSize: 12,
-                        fontWeight: FontWeight.w600,
-
-                      ),
+                      style: TextStyles.f12w600Gray9
                   ),
-                  const SizedBox(width: 4),
-                  const Icon(Icons.keyboard_arrow_down, size: 20),
+                  const SizedBox(width: 14),
+                  SizedBox(height: 10,width: 10,child: SvgPicture.asset("assets/images/arrow_down.svg")),
                 ],
               ),
             ),
@@ -56,15 +55,10 @@ class FilterSearchSection extends StatelessWidget {
                 child: Row(
                   children: [
                     const Icon(Icons.search, color: Colors.grey,size: 16,),
-                    const SizedBox(width: 2),
+                    const SizedBox(width: 4),
                     Text(
                       "Search",
-                      style: GoogleFonts.inter(
-                        fontSize: 12,
-                        fontWeight: FontWeight.w400,
-                        color:Colors.grey.shade600
-
-                      ),
+                      style: TextStyles.f12w400Gray5,
                     ),
                   ],
                 ),

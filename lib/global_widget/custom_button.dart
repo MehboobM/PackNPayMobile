@@ -14,6 +14,10 @@ class CustomButton extends StatelessWidget {
   final EdgeInsets? padding;
   final double? elevation;
 
+  /// NEW
+  final IconData? icon;
+  final double? iconSize;
+
   const CustomButton({
     super.key,
     required this.onPressed,
@@ -26,6 +30,8 @@ class CustomButton extends StatelessWidget {
     this.textStyle,
     this.padding,
     this.elevation = 0,
+    this.icon,
+    this.iconSize = 18,
   });
 
   @override
@@ -38,18 +44,30 @@ class CustomButton extends StatelessWidget {
         style: ElevatedButton.styleFrom(
           backgroundColor: backgroundColor,
           foregroundColor: foregroundColor,
+          elevation: elevation,
+          padding: padding ?? const EdgeInsets.symmetric(horizontal: 14),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(borderRadius ?? 12),
           ),
-          elevation: elevation,
-          padding: padding ?? const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
         ),
-        child: Text(
-          text,
-          style: textStyle ?? const TextStyle(
-            fontSize: 18,
-            fontWeight: FontWeight.w600,
-          ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+
+            if (icon != null) ...[
+              Icon(icon, size: iconSize),
+              const SizedBox(width: 6),
+            ],
+
+            Text(
+              text,
+              style: textStyle ??
+                  const TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w600,
+                  ),
+            ),
+          ],
         ),
       ),
     );

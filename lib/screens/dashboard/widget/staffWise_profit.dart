@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import '../../../utils/app_colors.dart';
+import '../../../utils/m_font_styles.dart';
+
 class StaffProfitSection extends StatelessWidget {
   const StaffProfitSection({super.key});
 
@@ -25,20 +28,13 @@ class StaffProfitSection extends StatelessWidget {
               children: [
                  Text(
                   "Staff wise Profit/loss",
-                   style: GoogleFonts.inter(
-                     fontSize: 12,
-                     fontWeight: FontWeight.w600,
-
-                   ),
+                   style: TextStyles.f12w600Gray9
                 ),
                 Text(
                   "See all",
-                  style: GoogleFonts.inter(
-                    fontSize: 11,
-                    fontWeight: FontWeight.w400,
-                    color: const Color(0xFF2A3582)
-
-                  ),
+                  style: TextStyles.f11w400Gray6.copyWith(
+                    color: AppColors.primary,
+                  )
                 ),
               ],
             ),
@@ -110,21 +106,28 @@ class StaffProfitTile extends StatelessWidget {
             children: [
               Text(
                 name,
-                style: GoogleFonts.inter(
-                  fontSize: 12,
-                  fontWeight: FontWeight.w600,
-
-                ),
+                style: TextStyles.f12w600Gray9
               ),
               const SizedBox(height: 2),
-              Text(
-                "Staff ID: ${manager ? "Manager" : "Staff"}",
-                style: GoogleFonts.inter(
-                  fontSize: 12,
-                  fontWeight: FontWeight.w400,
-
+              Text.rich(
+                TextSpan(
+                  children: [
+                    TextSpan(
+                      text: "Staff ID: ",
+                      style: TextStyles.f12w400Gray6H.copyWith(
+                        color: AppColors.mBlack9
+                      ),
+                    ),
+                    TextSpan(
+                      text: manager ? "Manager" : "Staff",
+                      style: TextStyles.f10w400Gray6.copyWith(
+                        fontWeight: FontWeight.bold,
+                        color: AppColors.mBlack9
+                      ),
+                    ),
+                  ],
                 ),
-              ),
+              )
             ],
           ),
         ),
@@ -140,8 +143,7 @@ class StaffProfitTile extends StatelessWidget {
           ),
           child: Text(
             amount,
-    style: GoogleFonts.inter(
-    fontSize: 12,
+    style: TextStyles.f12w600Gray9.copyWith(
     fontWeight: FontWeight.w700,
               color: isProfit
                   ? const Color(0xff1E8E3E)

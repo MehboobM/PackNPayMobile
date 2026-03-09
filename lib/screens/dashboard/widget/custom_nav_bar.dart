@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:pack_n_pay/utils/app_colors.dart';
+
+import '../../../utils/m_font_styles.dart';
 
 class CustomBottomNav extends StatelessWidget {
   final int selectedIndex;
@@ -97,12 +100,11 @@ class CustomBottomNav extends StatelessWidget {
               /// LABEL
               Text(
                 label,
-                style: GoogleFonts.inter(
-                    fontSize: 10,
-                    fontWeight: FontWeight.w600,
+                style: TextStyles.f10w400Gray6.copyWith(
+                  fontWeight: FontWeight.w600,
                   color: isSelected
-                      ? const Color(0xff2E3192)
-                      : Colors.grey,
+                      ?  Color(0xff2E3192)
+                      : AppColors.mGray5,
                 ),
               ),
             ],

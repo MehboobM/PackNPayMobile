@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:pack_n_pay/utils/m_font_styles.dart';
 
 class AutoScrollBanner extends StatefulWidget {
   const AutoScrollBanner({super.key});
@@ -56,11 +57,7 @@ class _AutoScrollBannerState extends State<AutoScrollBanner> {
         padding: const EdgeInsets.symmetric(horizontal: 16),
         child:  Text(
           "Different variant main layer. Flatten mask arrange font strikethrough component example scrolling text here...",
-          style: GoogleFonts.inter(
-            fontSize: 12,
-            fontWeight: FontWeight.w400,
-            color: Colors.white,
-          ),
+          style: TextStyles.f12w400mWhite
         ),
       ),
     );
