@@ -19,12 +19,12 @@ class SplashState extends State<SplashScreen> with WidgetsBindingObserver {
     super.initState();
     
     Future.delayed(Duration(seconds: 2),() {
-      Navigator.pushNamed(context, newSurveyRoute);
-      // Navigator.pushNamed(context, onboardRoute).then((value) {
-      //   Future.delayed(Duration(seconds: 3),() {
-      //     Navigator.pushNamed(context, onboardRoute);
-      //   },);
-      // },);
+      //Navigator.pushNamed(context, newSurveyRoute);
+      Navigator.pushNamed(context, onboardRoute).then((value) {
+        Future.delayed(Duration(seconds: 3),() {
+          Navigator.pushNamed(context, onboardRoute);
+        },);
+      },);
     },);
   }
 

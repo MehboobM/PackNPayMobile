@@ -7,6 +7,7 @@ import 'package:pack_n_pay/screens/otp/otp_screen.dart';
 import '../screens/basic_detail/basic_detail_screen.dart';
 import '../screens/dashboard/dashboard_screen.dart';
 import '../screens/login/login_screen.dart';
+import '../screens/new_survey/survey_link_screen.dart';
 import '../splash_screen.dart';
 
 
@@ -36,6 +37,9 @@ class NavigationRouter {
 
      case newSurveyRoute:
         return MaterialPageRoute(builder: (_) => const NewSurveyScreen());
+
+     case surveyLinkRoute:
+        return MaterialPageRoute(builder: (_) => const SurveyLinkScreen());
 
 
 

@@ -1,9 +1,12 @@
 
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:pack_n_pay/screens/new_survey/widget/FieldLabel.dart';
 import 'package:pack_n_pay/utils/app_colors.dart';
 
 import '../../global_widget/custom_button.dart';
 import '../../global_widget/custom_textfield.dart';
+import '../../routes/route_names_const.dart';
 import '../../utils/m_font_styles.dart';
 
 class NewSurveyScreen extends StatefulWidget {
@@ -65,7 +68,7 @@ class _NewSurveyScreenState extends State<NewSurveyScreen> {
         actions: [
           CustomButton(
             onPressed: () {
-
+              Navigator.pushNamed(context, surveyLinkRoute);
             },
             width: 110,
             height: 36,
@@ -90,7 +93,7 @@ class _NewSurveyScreenState extends State<NewSurveyScreen> {
               children: [
                 const SizedBox(height: 12),
                 // Survey No (disabled)
-                const _FieldLabel('Survey No.'),
+                const FieldLabel('Survey No.'),
                 const SizedBox(height: 6),
                 AbsorbPointer(
                   child: CustomTextField(
@@ -105,7 +108,7 @@ class _NewSurveyScreenState extends State<NewSurveyScreen> {
                 ),
                 const SizedBox(height: 16),
 
-                const _FieldLabel('Name'),
+                const FieldLabel('Name'),
                 const SizedBox(height: 6),
                 CustomTextField(
                   controller: nameCtrl,
@@ -113,7 +116,7 @@ class _NewSurveyScreenState extends State<NewSurveyScreen> {
                 ),
                 const SizedBox(height: 16),
 
-                const _FieldLabel('Phone No.'),
+                const FieldLabel('Phone No.'),
                 const SizedBox(height: 6),
                 CustomTextField(
                   controller: phoneCtrl,
@@ -122,7 +125,7 @@ class _NewSurveyScreenState extends State<NewSurveyScreen> {
                 ),
                 const SizedBox(height: 16),
 
-                const _FieldLabel('Date'),
+                const FieldLabel('Date'),
                 const SizedBox(height: 6),
                 Stack(
                   alignment: Alignment.centerRight,
@@ -159,7 +162,7 @@ class _NewSurveyScreenState extends State<NewSurveyScreen> {
                 ),
                 const SizedBox(height: 16),
 
-                const _FieldLabel('Moving from'),
+                const FieldLabel('Moving from'),
                 const SizedBox(height: 6),
                 CustomTextField(
                   controller: movingFromCtrl,
@@ -167,41 +170,37 @@ class _NewSurveyScreenState extends State<NewSurveyScreen> {
                 ),
                 const SizedBox(height: 16),
 
-                const _FieldLabel('Moving to'),
+                const FieldLabel('Moving to'),
                 const SizedBox(height: 6),
                 CustomTextField(
                   controller: movingToCtrl,
                   hintText: 'Enter Destination',
                 ),
-                const SizedBox(height: 24),
+
 
                 // Items header
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    const Text(
+                     Text(
                       'Items',
-                      style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.w600,
-                        color: Colors.black,
-                      ),
+                      style: TextStyles.f14w600Gray9,
                     ),
                     TextButton.icon(
                       onPressed: () {},
-                      icon: const Icon(Icons.add, size: 18, color: Color(0xff24358A)),
-                      label: const Text(
+                      style: TextButton.styleFrom(
+                        padding: EdgeInsets.symmetric(vertical: 14), // remove extra padding
+                        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                        minimumSize: Size.zero,
+                      ),
+                      icon: const Icon(Icons.add, size: 18, color: AppColors.primary),
+                      label: Text(
                         'Add item',
-                        style: TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w500,
-                          color: Color(0xff24358A),
-                        ),
+                        style: TextStyles.f14w600Primary,
                       ),
                     ),
                   ],
                 ),
-                const SizedBox(height: 8),
 
                 _ItemsHeaderRow(),
                 const SizedBox(height: 4),
@@ -233,51 +232,35 @@ class _ItemsHeaderRow extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 4),
       child: Row(
-        children: const [
+        children: [
           Expanded(
             flex: 3,
             child: Text(
               'ITEM',
-              style: TextStyle(
-                fontSize: 12,
-                fontWeight: FontWeight.w600,
-                color: Color(0xff8C8C96),
-              ),
+              style: TextStyles.f10w500Gray6,
             ),
           ),
           Expanded(
             flex: 3,
             child: Text(
               'CATEGORY',
-              style: TextStyle(
-                fontSize: 12,
-                fontWeight: FontWeight.w600,
-                color: Color(0xff8C8C96),
-              ),
-            ),
-          ),
-          Expanded(
-            flex: 2,
-            child: Text(
-              'QUANTITY',
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                fontSize: 12,
-                fontWeight: FontWeight.w600,
-                color: Color(0xff8C8C96),
-              ),
+              style: TextStyles.f10w500Gray6,
             ),
           ),
           Expanded(
             flex: 3,
             child: Text(
+              'QUANTITY',
+              textAlign: TextAlign.center,
+              style: TextStyles.f10w500Gray6,
+            ),
+          ),
+          Expanded(
+            flex: 2,
+            child: Text(
               'ACTION',
               textAlign: TextAlign.center,
-              style: TextStyle(
-                fontSize: 12,
-                fontWeight: FontWeight.w600,
-                color: Color(0xff8C8C96),
-              ),
+              style: TextStyles.f10w500Gray6,
             ),
           ),
         ],
@@ -303,59 +286,38 @@ class _ItemRow extends StatelessWidget {
             children: [
               Text(
                 '#0${index + 1}',
-                style: const TextStyle(
-                  fontSize: 12,
-                  fontWeight: FontWeight.w500,
-                  color: Color(0xff8C8C96),
-                ),
+                style: TextStyles.f10w400Gray6,
               ),
               const SizedBox(height: 2),
-              const Text(
+               Text(
                 'TWIN BED',
-                style: TextStyle(
-                  fontSize: 14,
-                  fontWeight: FontWeight.w600,
-                  color: Colors.black,
-                ),
+                style: TextStyles.f10w700mGray9,
               ),
               const SizedBox(height: 2),
-              const Text(
+               Text(
                 '✓ Installation',
-                style: TextStyle(
-                  fontSize: 12,
-                  fontWeight: FontWeight.w400,
-                  color: Color(0xffF08A24),
-                ),
+                style: TextStyles.f8w400mSecondary,
               ),
             ],
           ),
         ),
 
         // Category
-        const Expanded(
+        Expanded(
           flex: 3,
           child: Padding(
-            padding: EdgeInsets.only(top: 2),
+            padding: const EdgeInsets.only(top: 2),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
                   'FURNITURE',
-                  style: TextStyle(
-                    fontSize: 13,
-                    fontWeight: FontWeight.w600,
-                    color: Colors.black,
-                  ),
+                  style: TextStyles.f10w700mGray9,
                 ),
-                SizedBox(height: 2),
-                Text(
+                const SizedBox(height: 2),
+                 Text(
                   'Wooden\nFurniture',
-                  style: TextStyle(
-                    height: 1.2,
-                    fontSize: 12,
-                    fontWeight: FontWeight.w400,
-                    color: Color(0xff8C8C96),
-                  ),
+                  style: TextStyles.f10w400Gray6,
                 ),
               ],
             ),
@@ -363,43 +325,36 @@ class _ItemRow extends StatelessWidget {
         ),
 
         // Quantity
-        const Expanded(
-          flex: 2,
+         Expanded(
+          flex: 3,
           child: Center(
             child: Text(
               '12',
-              style: TextStyle(
-                fontSize: 15,
-                fontWeight: FontWeight.w600,
-                color: Colors.black,
-              ),
+              style: TextStyles.f10w700mGray9,
             ),
           ),
         ),
 
         // Action
         Expanded(
-          flex: 3,
+          flex: 2,
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             mainAxisSize: MainAxisSize.min,
             children: [
               GestureDetector(
                 onTap: () {},
-                child: const Icon(
-                  Icons.edit_outlined,
-                  size: 20,
-                  color: Color(0xff4A4A52),
-                ),
+                child: SvgPicture.asset("assets/icons/edit.svg")
+                // const Icon(
+                //   Icons.edit_outlined,
+                //   size: 20,
+                //   color: Color(0xff4A4A52),
+                // ),
               ),
-              const SizedBox(width: 10),
+              const SizedBox(width: 8),
               GestureDetector(
                 onTap: () {},
-                child: const Icon(
-                  Icons.delete_outline,
-                  size: 20,
-                  color: Color(0xffD32F2F),
-                ),
+                  child: SvgPicture.asset("assets/icons/delete.svg")
               ),
             ],
           ),
@@ -409,18 +364,6 @@ class _ItemRow extends StatelessWidget {
   }
 }
 
-class _FieldLabel extends StatelessWidget {
-  final String text;
-  const _FieldLabel(this.text);
-
-  @override
-  Widget build(BuildContext context) {
-    return Text(
-      text,
-      style: TextStyles.f12w500mGray7,
-    );
-  }
-}
 
 
 

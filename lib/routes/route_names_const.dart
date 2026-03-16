@@ -6,5 +6,6 @@ const String otpScreenRoute = "/otp_screen";
 const String basicDetailRoute = "/basic_detail_screen";
 const String homeScreenRoute = "/home_screen";
 const String newSurveyRoute = "/new_survey_screen";
+const String surveyLinkRoute = "/survey_link_screen";
 
 
