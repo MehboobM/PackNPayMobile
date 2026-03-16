@@ -51,7 +51,7 @@ class OrdersListSection extends StatelessWidget {
           Container(
             padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
             decoration: BoxDecoration(
-              color: const Color(0xffE9ECF6),
+              color: AppColors.tab,
               borderRadius: BorderRadius.circular(6),
             ),
             child: Row(
@@ -135,7 +135,7 @@ class OrderTile extends StatelessWidget {
                       "Pending",
                       style: TextStyle(
                         fontSize: 11,
-                        color: Colors.orange,
+                        color: AppColors.status,
                         fontWeight: FontWeight.w600,
                       ),
                     ),
@@ -209,7 +209,7 @@ class OrderTile extends StatelessWidget {
           const Expanded(
             flex: 1,
             child: Icon(Icons.remove_red_eye_outlined,
-                size: 20, color: Colors.black54),
+                size: 20, color: AppColors.mGray6),
           ),
         ],
       ),

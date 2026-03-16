@@ -7,5 +7,7 @@ const String basicDetailRoute = "/basic_detail_screen";
 const String homeScreenRoute = "/home_screen";
 const String newSurveyRoute = "/new_survey_screen";
 const String surveyLinkRoute = "/survey_link_screen";
+const String quotationScreenRoute = "/quotation_screen";
+const String newQuotationRoute = "/new_quotation_screen";
 
 

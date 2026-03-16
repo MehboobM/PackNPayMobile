@@ -66,7 +66,7 @@ class CustomBottomNav extends StatelessWidget {
               begin: Alignment.topCenter,
               end: Alignment.bottomCenter,
               colors: [
-                Color(0xffDADFFF),
+                AppColors.tab,
                 Colors.white,
               ],
             )
@@ -81,7 +81,7 @@ class CustomBottomNav extends StatelessWidget {
                   ? SvgPicture.asset(
                 iconPath,
                 height: 24,
-                colorFilter: isSelected ? ( const ColorFilter.mode(Color(0xff2E3192), BlendMode.srcIn,))
+                colorFilter: isSelected ? ( const ColorFilter.mode(AppColors.primary, BlendMode.srcIn,))
 
                     : const ColorFilter.mode(Colors.grey, BlendMode.srcIn,),
               )
@@ -91,7 +91,7 @@ class CustomBottomNav extends StatelessWidget {
                 color: isSelected
                     ? (isHome
                     ? null // 🔥 Home active → original
-                    : const Color(0xff2E3192))
+                    : AppColors.primary)
                     : Colors.grey,
               ),
 
@@ -103,7 +103,7 @@ class CustomBottomNav extends StatelessWidget {
                 style: TextStyles.f10w400Gray6.copyWith(
                   fontWeight: FontWeight.w600,
                   color: isSelected
-                      ?  Color(0xff2E3192)
+                      ?  AppColors.primary
                       : AppColors.mGray5,
                 ),
               ),

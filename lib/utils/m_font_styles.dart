@@ -112,6 +112,13 @@ class TextStyles {
     color: AppColors.primary,
     letterSpacing: 0.0,
   );
+  static final TextStyle f14w600mGray9 = GoogleFonts.inter(
+    fontSize: 14,
+    fontWeight: FontWeight.w600,
+    height: 2,
+    color: AppColors.mGray9,
+    letterSpacing: 0.0,
+  );
 
   static final TextStyle f14w600Gray9 = GoogleFonts.inter(
     fontSize: 14,
@@ -145,6 +152,11 @@ class TextStyles {
     fontSize: 12,
     fontWeight: FontWeight.w400,
     color: AppColors.mGray5,
+  );
+  static final TextStyle f12w500Gray7 =  GoogleFonts.inter(
+    fontSize: 12,
+    fontWeight: FontWeight.w500,
+    color: AppColors.mGray7,
   );
   static final TextStyle f12w400mWhite =  GoogleFonts.inter(
     fontSize: 12,
@@ -216,6 +228,12 @@ class TextStyles {
     color: AppColors.primary,
     height: 1.0,
   );
+  static final TextStyle f10w500mWhite= GoogleFonts.inter(
+    fontSize: 10,
+    fontWeight: FontWeight.w500,
+    color: AppColors.mWhite,
+    height: 1.0,
+  );
   static final TextStyle f10w700mGray9 = GoogleFonts.inter(
     fontSize: 10,
     fontWeight: FontWeight.w700,
@@ -224,6 +242,12 @@ class TextStyles {
   );
   static final TextStyle f8w500mWhite = GoogleFonts.inter(
     fontSize: 8,
+    fontWeight: FontWeight.w500,
+    color: AppColors.mWhite,
+    height: 1.0,
+  );
+  static final TextStyle f9w500mWhite = GoogleFonts.inter(
+    fontSize: 9,
     fontWeight: FontWeight.w500,
     color: AppColors.mWhite,
     height: 1.0,

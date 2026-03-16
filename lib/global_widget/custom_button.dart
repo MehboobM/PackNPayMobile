@@ -13,6 +13,8 @@ class CustomButton extends StatelessWidget {
   final TextStyle? textStyle;
   final EdgeInsets? padding;
   final double? elevation;
+  final bool iconRight;
+  final Color? borderColor;
 
   /// NEW
   final IconData? icon;
@@ -32,6 +34,8 @@ class CustomButton extends StatelessWidget {
     this.elevation = 0,
     this.icon,
     this.iconSize = 18,
+    this.iconRight = false,
+    this.borderColor,
   });
 
   @override
@@ -48,13 +52,17 @@ class CustomButton extends StatelessWidget {
           padding: padding ?? const EdgeInsets.symmetric(horizontal: 14),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(borderRadius ?? 12),
+            side: borderColor != null
+                ? BorderSide(color: borderColor!)
+                : BorderSide.none,
           ),
         ),
         child: Row(
           mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
 
-            if (icon != null) ...[
+            if (icon != null && !iconRight) ...[
               Icon(icon, size: iconSize),
               const SizedBox(width: 6),
             ],
@@ -67,6 +75,11 @@ class CustomButton extends StatelessWidget {
                     fontWeight: FontWeight.w600,
                   ),
             ),
+
+            if (icon != null && iconRight) ...[
+              const SizedBox(width: 6),
+              Icon(icon, size: iconSize),
+            ],
           ],
         ),
       ),

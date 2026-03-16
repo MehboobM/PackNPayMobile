@@ -19,6 +19,9 @@ class CustomTextField extends StatelessWidget {
   final FocusNode? focusNode;
   final ValueChanged<String>? onFieldSubmitted;
   final TextInputAction? textInputAction;
+  final Color? backgroundColor;
+  final IconData? materialIcon;
+  final double? iconSize;
 
   /// NEW
   final double borderRadius;
@@ -37,7 +40,10 @@ class CustomTextField extends StatelessWidget {
     this.focusNode,
     this.onFieldSubmitted,
     this.textInputAction,
-    this.borderRadius = 5, // default
+    this.backgroundColor,
+    this.iconSize,
+    this.borderRadius = 5,// default
+    this.materialIcon,
   }) : super(key: key);
 
   @override
@@ -65,7 +71,6 @@ class CustomTextField extends StatelessWidget {
               fontWeight: FontWeight.w400,
             ),
 
-        /// PREFIX ICON
         prefixIcon: prefixIcon != null
             ? Padding(
           padding: const EdgeInsets.only(left: 12, right: 6),
@@ -81,18 +86,28 @@ class CustomTextField extends StatelessWidget {
         )
             : null,
 
+        suffixIcon: materialIcon != null
+            ? Padding(
+          padding: const EdgeInsets.only(right: 12),
+          child: Icon(
+            materialIcon,
+            size: iconSize ?? 20,
+            color: AppColors.mGray5,
+          ),
+        )
+            : null,
+
         prefixIconConstraints: const BoxConstraints(
           minWidth: 30,
           minHeight: 30,
         ),
 
         filled: true,
-        fillColor: AppColors.mWhite,
+        fillColor: backgroundColor ?? AppColors.mWhite,
 
         contentPadding:
-        const EdgeInsets.symmetric(horizontal: 10, vertical: 14),
+        const EdgeInsets.symmetric(horizontal: 12, vertical: 14),
 
-        /// BORDERS
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(borderRadius),
           borderSide: BorderSide(color: AppColors.mGray3),

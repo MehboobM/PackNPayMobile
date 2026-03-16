@@ -8,6 +8,7 @@ import 'package:pack_n_pay/screens/dashboard/widget/section_card.dart';
 import 'package:pack_n_pay/screens/dashboard/widget/staffWise_profit.dart';
 import 'package:pack_n_pay/screens/dashboard/widget/subscription_card.dart';
 import 'package:pack_n_pay/screens/dashboard/widget/top_section.dart';
+import 'package:pack_n_pay/utils/app_colors.dart';
 
 import '../../models/order_item.dart';
 import '../survey/survey_list_screen.dart';
@@ -81,7 +82,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   title: "Orders",
                   total: "2,420",
                   items: [
-                    StatItem("Pending", "₹2000", color: Colors.red),
+                    StatItem("Pending", "₹2000", color: AppColors.primarySecond),
                     StatItem("Shifting Started", "20"),
                     StatItem("Pickup Completed", "20"),
                     StatItem("Shifting Completed", "20"),
@@ -96,7 +97,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   total: "2,420",
                   crossAxisCount: 2,
                   items: [
-                    StatItem("Pending", "₹2000", color: Colors.red),
+                    StatItem("Pending", "₹2000", color: AppColors.primarySecond),
                     StatItem("Converted Quotations", "20"),
                   ],
                 ),
@@ -106,7 +107,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   title: "Quotation",
                   total: "2,420",
                   items: [
-                    StatItem("Pending", "₹2000", color: Colors.red),
+                    StatItem("Pending", "₹2000", color: AppColors.primarySecond),
                     StatItem("Conv. Orders", "20"),
                     StatItem("Cancelled", "20"),
                   ],
@@ -119,7 +120,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   crossAxisCount: 2,
                   items: [
                     StatItem("Revenue", "₹2000"),
-                    StatItem("Expenses", "-₹2000", color: Colors.red),
+                    StatItem("Expenses", "-₹2000", color: AppColors.primarySecond),
                   ],
                 ),
 

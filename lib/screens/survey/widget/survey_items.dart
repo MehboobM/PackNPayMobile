@@ -63,7 +63,7 @@ class SurveyListItem extends StatelessWidget {
                   child: Text(
                     status,
                     style: TextStyles.f10w500primary.copyWith(
-                      color: isPending ? const Color(0xFFFDB022) : AppColors.primary,
+                      color: isPending ? AppColors.status : AppColors.primary,
                     ),
                   ),
                 ),
@@ -126,12 +126,12 @@ class SurveyListItem extends StatelessWidget {
 
                 /// TOP ICON ROW
                 Row(
-                  children: const [
-                    Icon(Icons.visibility_outlined, color: Colors.grey, size: 20),
+                  children:  [
+                    Icon(Icons.visibility_outlined, color: AppColors.mGray6, size: 20),
                     SizedBox(width: 12),
-                    Icon(Icons.download_outlined, color: Colors.grey, size: 20),
+                    Icon(Icons.download_outlined, color: AppColors.mGray6, size: 20),
                     SizedBox(width: 12),
-                    Icon(Icons.more_vert, color: Colors.grey, size: 20),
+                    Icon(Icons.more_vert, color: AppColors.mGray6, size: 20),
                   ],
                 ),
 
