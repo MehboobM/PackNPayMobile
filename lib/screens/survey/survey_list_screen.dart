@@ -21,7 +21,7 @@ class _SurveyListScreenState extends State<SurveyListScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xffF7F7F7),
+      backgroundColor: AppColors.bodysecondry,
 
       appBar: AppBar(
         backgroundColor: Colors.white,
@@ -40,7 +40,7 @@ class _SurveyListScreenState extends State<SurveyListScreen> {
             "assets/icons/pdf.svg",
             width: 22,
             height: 22,
-            color: const Color(0xFF2A3582),
+            color: AppColors.primary,
           ),
 
           const SizedBox(width: 16),
@@ -49,7 +49,7 @@ class _SurveyListScreenState extends State<SurveyListScreen> {
             "assets/icons/share.svg",
             width: 22,
             height: 22,
-            color: const Color(0xFF2A3582),
+            color: AppColors.primary,
           ),
 
           const SizedBox(width: 16),
@@ -167,7 +167,7 @@ class _SurveyListScreenState extends State<SurveyListScreen> {
                 height: 48,
                 width: 48,
                 decoration: BoxDecoration(
-                  color: const Color(0xffE9ECF7),
+                  color: AppColors.tab,
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: const Icon(Icons.calendar_today),
@@ -181,7 +181,7 @@ class _SurveyListScreenState extends State<SurveyListScreen> {
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 2),
             decoration: BoxDecoration(
-              color: const Color(0xffE9ECF7),
+              color: AppColors.tab,
               borderRadius: BorderRadius.circular(12),
             ),
             child: Row(
@@ -297,7 +297,7 @@ class _StatusChip extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
         decoration: BoxDecoration(
           color: isActive
-              ? const Color(0xFFE2E6FF) // active
+              ?AppColors.tab // active
               : const Color(0xFFF5F5F7), // inactive
           borderRadius: BorderRadius.circular(20),
         ),

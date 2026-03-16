@@ -3,6 +3,8 @@ import 'package:pack_n_pay/routes/route_names_const.dart';
 import 'package:pack_n_pay/onboard_screen.dart';
 import 'package:pack_n_pay/screens/otp/otp_screen.dart';
 
+import '../screens/Quotation/Quotation_screen.dart';
+import '../screens/Quotation/new_quotation_screen.dart';
 import '../screens/basic_detail/basic_detail_screen.dart';
 import '../screens/dashboard/dashboard_screen.dart';
 import '../screens/login/login_screen.dart';
@@ -32,7 +34,10 @@ class NavigationRouter {
 
      case homeScreenRoute:
         return MaterialPageRoute(builder: (_) => const HomeScreen());
-
+      case quotationScreenRoute:
+        return MaterialPageRoute(builder: (_) => const QuotationScreen());
+      case newQuotationRoute:
+        return MaterialPageRoute(builder: (_) => const NewQuotationScreen(),);
 
 
       default:
