@@ -1,26 +1,73 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:pack_n_pay/notifier/survey_notifier.dart';
 import 'package:pack_n_pay/screens/survey/widget/filter_bottom_sheet.dart';
 import 'package:pack_n_pay/screens/survey/widget/survey_items.dart';
 import 'package:pack_n_pay/utils/app_colors.dart';
 import 'package:pack_n_pay/utils/m_font_styles.dart';
 
+import '../../global_widget/menu_widget.dart';
+import '../../global_widget/view_download_service.dart';
 import '../../global_widget/custom_button.dart';
 import '../../global_widget/custom_textfield.dart';
 import '../../routes/route_names_const.dart';
 
-class SurveyListScreen extends StatefulWidget {
+class SurveyListScreen extends ConsumerStatefulWidget {
   const SurveyListScreen({super.key});
 
   @override
-  State<SurveyListScreen> createState() => _SurveyListScreenState();
+  ConsumerState<SurveyListScreen> createState() => _SurveyListScreenState();
 }
-class _SurveyListScreenState extends State<SurveyListScreen> {
+
+
+class _SurveyListScreenState extends ConsumerState<SurveyListScreen> {
 
   int selectedIndex = 0;
 
+  DateTime? fromDate;
+  DateTime? toDate;
+
+  final ScrollController _scrollController = ScrollController();
+  final TextEditingController searchController = TextEditingController();
+
+  String formatDate(DateTime date) {
+    return "${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}";
+  }
+
+  @override
+  void initState() {
+    super.initState();
+
+    /// First API Call
+    Future.microtask(() {
+      ref.read(surveyDataProvider.notifier).fetchSurveyList();
+    });
+
+    /// Pagination Listener
+    _scrollController.addListener(() {
+      if (_scrollController.position.pixels ==
+          _scrollController.position.maxScrollExtent) {
+        ref.read(surveyDataProvider.notifier).fetchSurveyList(
+          isLoadMore: true,
+          fromDate: fromDate != null ? formatDate(fromDate!) : null,
+          toDate: toDate != null ? formatDate(toDate!) : null,
+        );
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    searchController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
+    final state = ref.watch(surveyDataProvider);
+    final list = state.filteredList ?? [];
     return Scaffold(
       backgroundColor: AppColors.bodysecondry,
 
@@ -28,9 +75,8 @@ class _SurveyListScreenState extends State<SurveyListScreen> {
         backgroundColor: Colors.white,
         elevation: 0,
         titleSpacing: 0,
-
+        surfaceTintColor: Colors.white,
         leading: const Icon(Icons.arrow_back, color: Colors.black),
-
         title:  Text(
           "Survey list",
           style: TextStyles.f16w600mGray9
@@ -112,173 +158,245 @@ class _SurveyListScreenState extends State<SurveyListScreen> {
           ),
         ),
       ),
-
-      body: ListView(
+      body: Padding(
         padding: const EdgeInsets.all(16),
-        children: [
+        child: Column(
+          children: [
+            /// SEARCH ROW
+            Row(
+              children: [
+                Expanded(
+                  child: CustomTextField(
+                    controller: searchController,
+                    hintText: "Search",
+                    prefixIcon: "assets/icons/search.svg",
+                    hintStyle: TextStyles.f12w400Gray5,
+                    textStyle: const TextStyle(fontSize: 14),
+                    borderRadius: 12,
+                    onChanged: (value) {
+                      ref.read(surveyDataProvider.notifier).filterLocalList(value);
+                    },
 
-
-
-
-          /// SEARCH + FILTER + CALENDAR
-          Row(
-            children: [
-
-              /// SEARCH FIELD
-              Expanded(
-                child: CustomTextField(
-                  controller: TextEditingController(),
-                  hintText: "Search",
-                  prefixIcon: "assets/icons/search.svg",
-                  hintStyle: TextStyles.f12w400Gray5,
-                  textStyle: const TextStyle(fontSize: 14),
-                  borderRadius: 12,
-                ),
-              ),
-
-              const SizedBox(width: 10),
-
-              /// FILTER BUTTON
-              GestureDetector(
-                onTap: () {
-                  showModalBottomSheet(
-                    context: context,
-                    isScrollControlled: true,
-                    backgroundColor: Colors.transparent,
-                    builder: (context) => const FilterBottomSheet(),
-                  );
-                },
-                child: Container(
-                  height: 48,
-                  width: 48,
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(12),
-                    border: Border.all(
-                      color: AppColors.mGray3,
-                      width: 1,
-                    ),
                   ),
-                  child: const Icon(Icons.filter_list),
                 ),
-              ),
 
-              const SizedBox(width: 10),
+                const SizedBox(width: 10),
 
-              /// CALENDAR BUTTON
+                /// FILTER
+                GestureDetector(
+                  onTap: () {
+                    showModalBottomSheet(
+                      context: context,
+                      isScrollControlled: true,
+                      backgroundColor: Colors.transparent,
+                      builder: (context) => const FilterBottomSheet(),
+                    );
+                  },
+                  child: Container(
+                    height: 48,
+                    width: 48,
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(color: AppColors.mGray3),
+                    ),
+                    child: const Icon(Icons.filter_list),
+                  ),
+                ),
+
+                const SizedBox(width: 10),
+
+                /// CALENDAR
+                GestureDetector(
+                  onTap: () async {
+                    final picked = await showDateRangePicker(
+                      context: context,
+                      firstDate: DateTime(2020),
+                      lastDate: DateTime(2100),
+                    );
+
+                    if (picked != null) {
+                      setState(() {
+                        fromDate = picked.start;
+                        toDate = picked.end;
+                      });
+
+                      ref.read(surveyDataProvider.notifier).fetchSurveyList(fromDate: formatDate(fromDate!), toDate: formatDate(toDate!),);
+                    }
+                  },
+                  child: Container(
+                    height: 48,
+                    width: 48,
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(color: AppColors.mGray3),
+                    ),
+                    child: const Icon(Icons.calendar_today),
+                  ),
+                ),
+              ],
+            ),
+
+
+
+            /// DATE HEADER (WITH CLEAR)
+            if (fromDate != null && toDate != null)
               Container(
-                height: 48,
-                width: 48,
+                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                margin: EdgeInsets.only(top: 12),
                 decoration: BoxDecoration(
                   color: AppColors.tab,
                   borderRadius: BorderRadius.circular(12),
                 ),
-                child: const Icon(Icons.calendar_today),
-              ),
-            ],
-          ),
+                child: Row(
+                  children: [
+                    const Icon(Icons.calendar_today, size: 18),
+                    const SizedBox(width: 10),
+                    Text(
+                      "${formatDate(fromDate!)} - ${formatDate(toDate!)}",
+                    ),
+                    const Spacer(),
+                    IconButton(
+                      icon: const Icon(Icons.close, size: 20),
+                      onPressed: () {
+                        setState(() {
+                          fromDate = null;
+                          toDate = null;
+                        });
 
-          const SizedBox(height: 10),
-
-          /// HEADER CONTAINER
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 2),
-            decoration: BoxDecoration(
-              color: AppColors.tab,
-              borderRadius: BorderRadius.circular(12),
-            ),
-            child: Row(
-              children: [
-                const Icon(Icons.calendar_today, size: 18, color: const Color(0xFF2A3582),),
-                const SizedBox(width: 10),
-
-                 Text(
-                  "Jan 16, 2026 - Jan 16, 2026",
-                  style: TextStyles.f11w600mWhite.copyWith(
-                    color: AppColors.primary,
-                  ),
+                        ref.read(surveyDataProvider.notifier).fetchSurveyList();
+                      },
+                    ),
+                  ],
                 ),
+              ),
 
-                const Spacer(),
+            const SizedBox(height: 10),
 
-                IconButton(
-                  icon: const Icon(Icons.close, size: 20, color: const Color(0xFF2A3582)),
-                  onPressed: () {},
+            /// TABLE HEADER (UNCHANGED)
+            SurveyListHeader(),
+
+            // LIST (DYNAMIC)
+             Expanded(
+              child: (state.isPageLoading) && list.isEmpty
+                  ? const Center(child: CircularProgressIndicator())
+                  : state.error != null
+                  ? Center(
+                child: Text(
+                  state.error ?? "Something went wrong",
+                  style: TextStyles.f12w400Gray5,
+                  textAlign: TextAlign.center,
                 ),
-              ],
-            ),
-          ),
+              )
+                  : list.isEmpty
+                  ? Center(
+                child: Text(
+                  searchController.text.isNotEmpty
+                      ? "No data available for search"
+                      : (fromDate != null || toDate != null)
+                      ? "No data available for selected filter"
+                      : state.isInitialLoading ? "":"No data available",
+                  style: TextStyles.f12w400Gray5,
+                  textAlign: TextAlign.center,
+                ),
+              )
+                          : ListView.builder(
+                              controller: _scrollController,
+                              itemCount: list.length,
+                              itemBuilder: (context, index) {
+                                final item = list[index];
+                                return SurveyListItem(
+                                  status: item.status ?? "",
+                                  orderNo: item.id ?? "",
+                                  date: item.date ?? "",
+                                  name: item.customer ?? "",
+                                  phone: item.phone ?? "",
+                                  from: item.location ?? "",
+                                  to: "DELHI",
+                                  itemNo: item.items.toString(),
+                                  actionText: item.flag ?? "",
+                                  onTapView: () {
+                                    ViewDownloadService.handlePdf(
+                                      context: context,
+                                      type: "survey",
+                                      uid: item.uid ?? "",
+                                      isDownload: false,
+                                    );
+                                  },
+                                  onTapDownload: () {
+                                    ViewDownloadService.handlePdf(
+                                      context: context,
+                                      type: "survey",
+                                      uid: item.uid ?? "",
+                                      isDownload: true,
+                                    );
+                                  },
+                                  onTapMenu: (detail) {
+                                    _onTapMenu(context, detail.globalPosition);
+                                  },
+                                );
+                              },
+                            ),
+            )
 
-          const SizedBox(height: 10),
-          Column(
-            children: [
 
-              SurveyListHeader(),
-
-              SurveyListItem(
-                status: "Pending",
-                orderNo: "#3066",
-                date: "JAN 9, 2026",
-                name: "RAKESH SINGH",
-                phone: "+91 0000000000",
-                from: "BENGALURU",
-                to: "DELHI",
-                itemNo: "12",
-                actionText: "Quotation",
-              ),
-
-              SurveyListItem(
-                status: "Submitted",
-                orderNo: "#3066",
-                date: "JAN 9, 2026",
-                name: "RAKESH SINGH",
-                phone: "+91 0000000000",
-                from: "BENGALURU",
-                to: "DELHI",
-                itemNo: "12",
-                actionText: "Quotation",
-              ),
-              SurveyListItem(
-                status: "Pending",
-                orderNo: "#3066",
-                date: "JAN 9, 2026",
-                name: "RAKESH SINGH",
-                phone: "+91 0000000000",
-                from: "BENGALURU",
-                to: "DELHI",
-                itemNo: "12",
-                actionText: "Quotation",
-              ),
-              SurveyListItem(
-                status: "Submitted",
-                orderNo: "#3066",
-                date: "JAN 9, 2026",
-                name: "RAKESH SINGH",
-                phone: "+91 0000000000",
-                from: "BENGALURU",
-                to: "DELHI",
-                itemNo: "12",
-                actionText: "Quotation",
-              ),
-              SurveyListItem(
-                status: "Pending",
-                orderNo: "#3066",
-                date: "JAN 9, 2026",
-                name: "RAKESH SINGH",
-                phone: "+91 0000000000",
-                from: "BENGALURU",
-                to: "DELHI",
-                itemNo: "12",
-                actionText: "Quotation",
-              ),
-
-            ],
-          )
-        ],
+          ],
+        ),
       ),
+
+    );
+  }
+
+  void _onTapMenu(BuildContext context, Offset position) {
+    showGlobalPopupMenu(
+      context: context,
+      tapPosition: position,
+      items: [
+        PopupMenuModel(
+          value: 'edit',
+          title: 'Edit',
+          icon: "assets/images/edit.svg",
+        ),
+        PopupMenuModel(
+          value: 'signature',
+          title: 'Customer Signature',
+          icon: "assets/images/signature.svg",
+        ),
+        PopupMenuModel(
+          value: 'link',
+          title: 'Share survey link',
+          icon: "assets/images/share_link.svg",
+        ),
+        PopupMenuModel(
+          value: 'quotation',
+          title: 'Generate Quotation',
+          icon: "assets/images/quotation.svg",
+        ),
+      ],
+      onSelected: (value) {
+        switch (value) {
+          case 'edit':
+            print("Edit clicked");
+            break;
+
+          case 'signature':
+            print("Signature clicked");
+            break;
+
+          case 'link':
+            print("link clicked");
+            break;
+
+          case 'quotation':
+            print("quotation clicked");
+            break;
+        }
+      },
     );
   }
 }
+
 
 class _StatusChip extends StatelessWidget {
   final String text;

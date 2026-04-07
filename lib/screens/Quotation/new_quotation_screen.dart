@@ -1,30 +1,73 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:pack_n_pay/screens/Quotation/widget/Quotation_form.dart';
+import 'package:pack_n_pay/screens/Quotation/widget/insurance_and_other_form.dart';
+import 'package:pack_n_pay/screens/Quotation/widget/moving_details_form.dart';
+import 'package:pack_n_pay/screens/Quotation/widget/payment_detail_form.dart';
 import 'package:pack_n_pay/screens/Quotation/widget/quotation_stepper.dart';
+import '../../database/hive_database/hive_quation_form.dart';
 import '../../global_widget/custom_button.dart';
+import '../../notifier/quotation_form_notifier.dart';
 import '../../utils/app_colors.dart';
 import '../../utils/m_font_styles.dart';
 
-class NewQuotationScreen extends StatelessWidget {
+class NewQuotationScreen extends ConsumerStatefulWidget {
   const NewQuotationScreen({super.key});
 
+  @override
+  ConsumerState<NewQuotationScreen> createState() => _NewQuotationScreenState();
+}
+class _NewQuotationScreenState extends ConsumerState<NewQuotationScreen> {
+  int currentStep = 0;
+  void nextStep() {
+    if (currentStep < 3) {
+      setState(() {
+        currentStep++;
+      });
+    }
+  }
 
+  void previousStep() {
+    if (currentStep > 0) {
+      setState(() {
+        currentStep--;
+      });
+    } else {
+      Navigator.pop(context);
+    }
+  }
+
+  Widget buildStepBody() {
+    switch (currentStep) {
+    /// STEP 0
+      case 0:
+        return  QuotationDetailsForm();
+    /// STEP 1
+      case 1:
+        return MovingDetailsForm();
+    /// STEP 2
+      case 2:
+        return PaymentDetailForm();
+    /// STEP 2
+      case 3:
+        return InsuranceAndOtherForm();
+      default:
+        return const SizedBox();
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xffF5F5F7),
-
+      backgroundColor: Colors.white,
       appBar: AppBar(
         backgroundColor: Colors.white,
-        elevation: 0,
-
+        elevation: 2,
+        surfaceTintColor: Colors.white,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back, color: Colors.black),
-          onPressed: () {
-            Navigator.pop(context);
-          },
+          onPressed: previousStep,
         ),
 
         title: Text(
@@ -61,25 +104,33 @@ class NewQuotationScreen extends StatelessWidget {
 
         bottom: PreferredSize(
           preferredSize: const Size.fromHeight(50),
-          child: QuotationStepper(currentStep: 1),
+          child: QuotationStepper(
+            currentStep: currentStep,
+            onStepTapped: (index) {
+              setState(() {
+                currentStep = index;
+              });
+            },
+          ),
         ),
       ),
 
       body: Column(
         children: [
-          const SizedBox(height: 10),
 
-          /// FORM AREA
+          Container(height: 10,color: Color(0xFFDBDBDB)),
+
+          /// STEP CONTENT
           Expanded(
             child: Container(
               color: Colors.white,
               child: SingleChildScrollView(
-                child: QuotationDetailsForm(),
+                child: buildStepBody(),
               ),
             ),
           ),
 
-          /// STICKY BOTTOM BUTTONS
+          /// STICKY BUTTONS
           Container(
             padding: const EdgeInsets.all(16),
             decoration: const BoxDecoration(
@@ -91,13 +142,11 @@ class NewQuotationScreen extends StatelessWidget {
             child: Row(
               children: [
 
-                /// BACK BUTTON
+                /// BACK
                 Expanded(
                   child: CustomButton(
                     text: "Back",
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
+                    onPressed: previousStep,
                     backgroundColor: Colors.white,
                     foregroundColor: AppColors.primary,
                     borderRadius: 12,
@@ -108,13 +157,41 @@ class NewQuotationScreen extends StatelessWidget {
 
                 const SizedBox(width: 12),
 
-                /// SAVE & NEXT
+                /// NEXT
                 Expanded(
                   child: CustomButton(
-                    text: "Save & Next",
+                    text: currentStep == 3 ? "Save" : "Save & Next",
                     icon: Icons.keyboard_double_arrow_right,
                     iconRight: true,
-                    onPressed: () {},
+                    // onPressed: (){
+                    //   final data = ref.read(quotationFormProvider);
+                    //
+                    //   if (currentStep == 3) {
+                    //     /// FINAL SAVE
+                    //     print("FINAL DATA 👉 ${data.toJson()}");
+                    //
+                    //     ref.read(quotationFormProvider.notifier).clear();
+                    //   } else {
+                    //     nextStep();
+                    //   }
+                    // },
+                    onPressed: () async {
+                      final data = ref.read(quotationFormProvider);
+
+                      /// ✅ SAVE TO HIVE
+                      await HiveService.save(data);
+
+                      if (currentStep == 3) {
+                        print("FINAL DATA 👉 ${data.toJson()}");
+
+                        /// ✅ CLEAR AFTER FINAL SAVE
+                        await HiveService.clear();
+                        ref.read(quotationFormProvider.notifier).clear();
+
+                      } else {
+                        nextStep();
+                      }
+                    },
                     backgroundColor: AppColors.primary,
                     borderRadius: 12,
                   ),
@@ -127,3 +204,7 @@ class NewQuotationScreen extends StatelessWidget {
     );
   }
 }
+
+
+
+

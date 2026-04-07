@@ -4,8 +4,13 @@ import 'package:pack_n_pay/utils/m_font_styles.dart';
 
 class QuotationStepper extends StatelessWidget {
   final int currentStep;
+  final Function(int) onStepTapped; // 👈 add this
 
-  const QuotationStepper({super.key, required this.currentStep});
+  const QuotationStepper({
+    super.key,
+    required this.currentStep,
+    required this.onStepTapped,
+  });
 
   Widget circle(int index) {
     bool completed = index < currentStep;
@@ -66,12 +71,17 @@ class QuotationStepper extends StatelessWidget {
 
   Widget step(int index, String text) {
     return Expanded(
-      child: Column(
-        children: [
-          circle(index),
-          const SizedBox(height: 14),
-          title(index, text),
-        ],
+      child: InkWell(
+        onTap: () {
+          onStepTapped(index); // 👈 click event
+        },
+        child: Column(
+          children: [
+            circle(index),
+            const SizedBox(height: 14),
+            title(index, text),
+          ],
+        ),
       ),
     );
   }

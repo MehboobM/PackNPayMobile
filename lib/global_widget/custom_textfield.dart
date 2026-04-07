@@ -16,6 +16,7 @@ class CustomTextField extends StatelessWidget {
   final TextInputType? keyboardType;
   final List<TextInputFormatter>? inputFormatters;
   final String? Function(String?)? validator;
+  final Function(String)? onChanged;
   final FocusNode? focusNode;
   final ValueChanged<String>? onFieldSubmitted;
   final TextInputAction? textInputAction;
@@ -37,6 +38,7 @@ class CustomTextField extends StatelessWidget {
     this.keyboardType,
     this.inputFormatters,
     this.validator,
+    this.onChanged,
     this.focusNode,
     this.onFieldSubmitted,
     this.textInputAction,
@@ -57,18 +59,19 @@ class CustomTextField extends StatelessWidget {
       onTap: onTap,
       keyboardType: keyboardType,
       inputFormatters: inputFormatters,
+      onChanged: onChanged,
       style: textStyle ??
-          GoogleFonts.interTight(
-            fontSize: 16,
+          GoogleFonts.inter(
+            fontSize: 14,
             fontWeight: FontWeight.w500,
           ),
       decoration: InputDecoration(
         hintText: hintText,
         hintStyle: hintStyle ??
-            GoogleFonts.interTight(
-              fontSize: 16,
-              color: Colors.grey[400],
+            GoogleFonts.inter(
+              fontSize: 12,
               fontWeight: FontWeight.w400,
+              color: AppColors.mGray5,
             ),
 
         prefixIcon: prefixIcon != null
@@ -88,11 +91,11 @@ class CustomTextField extends StatelessWidget {
 
         suffixIcon: materialIcon != null
             ? Padding(
-          padding: const EdgeInsets.only(right: 12),
+          padding: const EdgeInsets.only(right: 0),
           child: Icon(
             materialIcon,
             size: iconSize ?? 20,
-            color: AppColors.mGray5,
+            color: AppColors.mGray4,
           ),
         )
             : null,
@@ -106,7 +109,7 @@ class CustomTextField extends StatelessWidget {
         fillColor: backgroundColor ?? AppColors.mWhite,
 
         contentPadding:
-        const EdgeInsets.symmetric(horizontal: 12, vertical: 14),
+        const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
 
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(borderRadius),

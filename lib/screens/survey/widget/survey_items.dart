@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:pack_n_pay/utils/app_colors.dart';
 
+import '../../../utils/common_funtion.dart';
 import '../../../utils/m_font_styles.dart';
+
 
 class SurveyListItem extends StatelessWidget {
 
@@ -14,6 +16,9 @@ class SurveyListItem extends StatelessWidget {
   final String to;
   final String itemNo;
   final String actionText;
+  final VoidCallback onTapView;
+  final VoidCallback onTapDownload;
+  final Function(TapDownDetails)? onTapMenu;
 
   const SurveyListItem({
     super.key,
@@ -26,13 +31,14 @@ class SurveyListItem extends StatelessWidget {
     required this.to,
     required this.itemNo,
     required this.actionText,
+    required this.onTapView,
+    required this.onTapDownload,
+    required this.onTapMenu,
   });
 
   @override
   Widget build(BuildContext context) {
-
-    bool isPending = status == "Pending";
-
+    final style = getStatusStyle(status);
     return Container(
       margin: const EdgeInsets.only(top: 10),
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
@@ -52,21 +58,20 @@ class SurveyListItem extends StatelessWidget {
               children: [
 
                 Container(
-                  padding: const EdgeInsets.symmetric(
-                      horizontal: 8, vertical: 3),
+                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
                   decoration: BoxDecoration(
-                    color: isPending
-                        ? Colors.orange.shade50
-                        : Colors.blue.shade50,
+                    color: style.bgColor,
                     borderRadius: BorderRadius.circular(6),
                   ),
                   child: Text(
                     status,
                     style: TextStyles.f10w500primary.copyWith(
-                      color: isPending ? AppColors.status : AppColors.primary,
+                      color: style.textColor,
                     ),
                   ),
                 ),
+
+
 
                 const SizedBox(height: 6),
 
@@ -103,7 +108,7 @@ class SurveyListItem extends StatelessWidget {
                 const SizedBox(height: 4),
 
                 Text(
-                  "$from → $to",
+                  "$from", // → $to
                     style: TextStyles.f10w400Gray6
                 ),
               ],
@@ -126,21 +131,31 @@ class SurveyListItem extends StatelessWidget {
 
                 /// TOP ICON ROW
                 Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
                   children:  [
-                    Icon(Icons.visibility_outlined, color: AppColors.mGray6, size: 20),
-                    SizedBox(width: 12),
-                    Icon(Icons.download_outlined, color: AppColors.mGray6, size: 20),
-                    SizedBox(width: 12),
-                    Icon(Icons.more_vert, color: AppColors.mGray6, size: 20),
+                    InkWell(
+                        onTap: onTapView,
+                        child: Icon(Icons.visibility_outlined, size: 20)),
+                    SizedBox(width: 10),
+                    InkWell(
+                        onTap: onTapDownload,
+                        child: Icon(Icons.download_outlined, size: 20)),
+                    SizedBox(width: 10),
+                    GestureDetector(
+                        onTapDown: (details) {
+                          onTapMenu?.call(details);
+                        },
+                        child: Icon(Icons.more_vert, size: 20)),
+
                   ],
                 ),
 
-                const SizedBox(height: 8),
+                const SizedBox(height: 7),
 
                 /// QUOTATION BUTTON
                 Container(
                   padding: const EdgeInsets.symmetric(
-                    horizontal: 10,
+                    horizontal: 6,
                     vertical: 4,
                   ),
                   decoration: BoxDecoration(
@@ -155,9 +170,9 @@ class SurveyListItem extends StatelessWidget {
                         size: 14,
                         color: Colors.white,
                       ),
-                      SizedBox(width: 4),
+                      SizedBox(width: 3),
                       Text(
-                        "Quotation",
+                          actionText,
                         style: TextStyles.f10w500primary.copyWith(
                           color: AppColors.mWhite,
                         )
@@ -173,6 +188,7 @@ class SurveyListItem extends StatelessWidget {
     );
   }
 }
+
 class SurveyListHeader extends StatelessWidget {
   const SurveyListHeader({super.key});
 

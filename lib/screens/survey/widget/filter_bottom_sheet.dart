@@ -85,39 +85,39 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
             }),
           ],
 
-          Divider(color: Colors.grey.shade200,),
-
-          /// STATUS
-          _sectionHeader(
-            "Status",
-            statusOpen,
-                () => setState(() => statusOpen = !statusOpen),
-          ),
-
-          if (statusOpen) ...[
-            _radioTile("Pending", 1, statusValue, (v) {
-              setState(() => statusValue = v);
-            }),
-            _radioTile("Submitted", 2, statusValue, (v) {
-              setState(() => statusValue = v);
-            }),
-            _radioTile("Unassigned", 3, statusValue, (v) {
-              setState(() => statusValue = v);
-            }),
-          ],
-
-          const SizedBox(height: 20),
-
-          /// APPLY BUTTON
-          CustomButton(
-            onPressed: () {
-              Navigator.pop(context);
-            },
-            text: "Apply",
-            height: 50,
-            borderRadius: 10,
-            backgroundColor: const Color(0xFF2A3582),
-          ),
+          // Divider(color: Colors.grey.shade200,),
+          //
+          // /// STATUS
+          // _sectionHeader(
+          //   "Status",
+          //   statusOpen,
+          //       () => setState(() => statusOpen = !statusOpen),
+          // ),
+          //
+          // if (statusOpen) ...[
+          //   _radioTile("Pending", 1, statusValue, (v) {
+          //     setState(() => statusValue = v);
+          //   }),
+          //   _radioTile("Submitted", 2, statusValue, (v) {
+          //     setState(() => statusValue = v);
+          //   }),
+          //   _radioTile("Unassigned", 3, statusValue, (v) {
+          //     setState(() => statusValue = v);
+          //   }),
+          // ],
+          //
+          // const SizedBox(height: 20),
+          //
+          // /// APPLY BUTTON
+          // CustomButton(
+          //   onPressed: () {
+          //     Navigator.pop(context);
+          //   },
+          //   text: "Apply",
+          //   height: 50,
+          //   borderRadius: 10,
+          //   backgroundColor: const Color(0xFF2A3582),
+          // ),
         ],
       ),
     );

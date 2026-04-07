@@ -32,7 +32,8 @@ class NavigationRouter {
         return MaterialPageRoute(builder: (_) => OtpScreen(mobile: args['mobile'],),);
 
       case basicDetailRoute:
-        return MaterialPageRoute(builder: (_) => const BasicDetailScreen());
+        final args = settings.arguments as Map<String, dynamic>;
+        return MaterialPageRoute(builder: (_) =>  BasicDetailScreen(mobile: args['mobile'],otp:args['otp'],));
 
      case homeScreenRoute:
         return MaterialPageRoute(builder: (_) => const HomeScreen());
@@ -45,6 +46,7 @@ class NavigationRouter {
 
       case quotationScreenRoute:
         return MaterialPageRoute(builder: (_) => const QuotationScreen());
+
       case newQuotationRoute:
         return MaterialPageRoute(builder: (_) => const NewQuotationScreen(),);
 
@@ -53,14 +55,4 @@ class NavigationRouter {
         return MaterialPageRoute(builder: (_) => const SplashScreen());
     }
   }
-}
-
-
-class ProductArg {
-  int productId;
-  bool isCat;
-  bool isCommingFromBrand;
-
-
-  ProductArg({required this.productId, required this.isCat,this.isCommingFromBrand = false,});
 }

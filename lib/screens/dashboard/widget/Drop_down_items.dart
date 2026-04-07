@@ -68,11 +68,12 @@ class _MenuDropdownState extends State<MenuDropdown> {
 class MenuItem extends StatelessWidget {
   final String title;
   final String icon;
-
+  final VoidCallback? onTap;
   const MenuItem({
     super.key,
     required this.title,
     required this.icon,
+    this.onTap,
   });
 
   @override
@@ -89,7 +90,7 @@ class MenuItem extends StatelessWidget {
             color: AppColors.mGray9
           )
       ),
-      onTap: () {},
+      onTap:onTap,
     );
   }
 }

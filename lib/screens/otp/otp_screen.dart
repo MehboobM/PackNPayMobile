@@ -9,10 +9,13 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:pack_n_pay/utils/app_colors.dart';
 import 'package:pinput/pinput.dart';
 
+import '../../database/shared_preferences/shared_storage.dart';
+import '../../notifier/login_notifier.dart';
 import '../../routes/route_names_const.dart';
 import '../../utils/common_funtion.dart';
 import '../../global_widget/custom_button.dart';
 import '../../utils/m_font_styles.dart';
+import '../../utils/toast_message.dart';
 
 class OtpScreen extends ConsumerStatefulWidget {
   final String mobile;
@@ -42,12 +45,14 @@ class _OtpScreenState extends ConsumerState<OtpScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final authState = ref.watch(authProvider);
     SystemChrome.setSystemUIOverlayStyle(
       const SystemUiOverlayStyle(
         statusBarColor: AppColors.mWhite,
         statusBarIconBrightness: Brightness.dark,
       ),
     );
+    final storage = StorageService();
 
     return Scaffold(
       backgroundColor: AppColors.mWhite,
@@ -192,15 +197,62 @@ class _OtpScreenState extends ConsumerState<OtpScreen> {
               SizedBox(height: context.height(0.04)),
 
               // Continue button
-              CustomButton(
-                onPressed:  () {
-                  Navigator.pushNamed(context, basicDetailRoute);
+              CustomButton2(
+                onPressed: authState.isLoading  ? null : () async {
+                  if (_otpController.text.length != 4) {
+                    ToastHelper.showError(message: authState.error ?? "Enter valid OTP");
+                    return;
+                  }
+
+                  final response = await ref.read(authProvider.notifier).verifyOtp(
+                      mobile: widget.mobile,
+                      otp: _otpController.text.trim(),
+                  );
+
+                  if (response == null || response['success']==false) {
+                    ToastHelper.showError(message: authState.error ?? "Invalid OTP. Please try again.");
+                    return;
+                  }
+
+                  /// ✅ SUCCESS
+                  storage.saveNewUser("${response['isNewUser']}");
+                  if(response['token'] != null) {
+                    storage.saveToken(response['token']);
+                  }
+
+                  ToastHelper.showSuccess(message: "OTP verified");
+
+
+                  if(response['isNewUser']==true){
+                    Navigator.pushNamedAndRemoveUntil(context, basicDetailRoute, (route) => false,
+                      arguments: {
+                        "mobile":widget.mobile,
+                        "otp": _otpController.text.trim(),
+                      },
+                    );
+                  }else{
+                    Navigator.pushNamedAndRemoveUntil(
+                      context,
+                      homeScreenRoute,
+                          (route) => false,
+                    );
+                  }
+
+
                 },
+
                 borderRadius: 6,
                 backgroundColor: AppColors.primary,
-                text: "Continue",
-                textStyle: TextStyles.f14w600Primary.copyWith(color: AppColors.mWhite),
+                textWidget:  authState.isLoading ? CupertinoActivityIndicator(
+                  radius: 14, // you can adjust size
+                ) :
+                Text(
+                  "Continue",
+                  style: TextStyles.f14w600Primary.copyWith(color: AppColors.mWhite),
+                ),
               ),
+
+
 
               Spacer(),
             ],

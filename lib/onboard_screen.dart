@@ -3,6 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:pack_n_pay/utils/app_colors.dart';
 
+import 'database/shared_preferences/shared_storage.dart';
 import 'routes/route_names_const.dart';
 import 'utils/common_funtion.dart';
 import 'global_widget/custom_button.dart';
@@ -70,7 +71,8 @@ class OnboardState extends State<OnboardScreen> {
                 Padding(
                   padding: const EdgeInsets.only(top: 12.0,bottom: 10),
                   child: CustomButton(
-                    onPressed: () {
+                    onPressed: () async {
+                      await StorageService().saveIsLoginClick("click");
                       Navigator.pushNamed(context, loginScreenRoute);
                     },
                     borderRadius: 6,

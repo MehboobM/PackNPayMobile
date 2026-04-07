@@ -14,8 +14,12 @@ class QuotationListItem extends StatelessWidget {
   final String surveyId;
   final String lrId;
   final String orderId;
+  final VoidCallback onTapView;
+  final VoidCallback onTapDownload;
+  final Function(TapDownDetails)? onTapMenu;
 
-  const QuotationListItem({
+
+   QuotationListItem({
     super.key,
     required this.orderNo,
     required this.date,
@@ -28,7 +32,12 @@ class QuotationListItem extends StatelessWidget {
     required this.surveyId,
     required this.lrId,
     required this.orderId,
+    required this.onTapView,
+    required this.onTapDownload,
+    required this.onTapMenu,
   });
+
+  Offset _tapPosition = Offset.zero;
 
   @override
   Widget build(BuildContext context) {
@@ -161,12 +170,21 @@ class QuotationListItem extends StatelessWidget {
 
                 Row(
                   mainAxisAlignment: MainAxisAlignment.end,
-                  children: const [
-                    Icon(Icons.visibility_outlined, size: 20),
+                  children:  [
+                    InkWell(
+                        onTap: onTapView,
+                        child: Icon(Icons.visibility_outlined, size: 20)),
                     SizedBox(width: 10),
-                    Icon(Icons.download_outlined, size: 20),
+                    InkWell(
+                        onTap: onTapDownload,
+                        child: Icon(Icons.download_outlined, size: 20)),
                     SizedBox(width: 10),
-                    Icon(Icons.more_vert, size: 20),
+                    GestureDetector(
+                        onTapDown: (details) {
+                          onTapMenu?.call(details);
+                        },
+                        child: Icon(Icons.more_vert, size: 20)),
+
                   ],
                 ),
 

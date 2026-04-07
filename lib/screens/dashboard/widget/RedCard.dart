@@ -57,7 +57,7 @@ class _AutoScrollBannerState extends State<AutoScrollBanner> {
         padding: const EdgeInsets.symmetric(horizontal: 16),
         child:  Text(
           "Different variant main layer. Flatten mask arrange font strikethrough component example scrolling text here...",
-          style: TextStyles.f12w400mWhite
+          style: TextStyles.f12w400mWhi
         ),
       ),
     );

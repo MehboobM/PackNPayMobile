@@ -10,6 +10,8 @@ class StorageService {
 
   static const String _localeKey = "selected_locale";
   static const String _tokenKey = "auth_token";
+  static const String _newUserKey = "new_user";
+  static const String _isLoginKey = "login_click";
 
 
   Future<void> writeData(String key, String? value) async {
@@ -20,6 +22,8 @@ class StorageService {
     final prefs = await SharedPreferences.getInstance();
     return prefs.getString(key);
   }
+
+
 
   Future<void> saveLocal(String locale) async {
     await writeData(_localeKey, locale);
@@ -39,6 +43,21 @@ class StorageService {
     return await readData(_tokenKey);
   }
 
+
+  Future<void> saveNewUser(String isNewUser) async {
+    await writeData(_newUserKey, isNewUser);
+  }
+  Future<String?> getNewUser() async {
+    return await readData(_newUserKey);
+  }
+
+  Future<void> saveIsLoginClick(String isLoginClick) async {
+    await writeData(_isLoginKey, isLoginClick);
+  }
+
+  Future<String?> getIsLoginClick() async {
+    return await readData(_isLoginKey);
+  }
 
   ///Clear
   Future<void> clearToken() async {

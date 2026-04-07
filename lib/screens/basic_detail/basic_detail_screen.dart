@@ -1,23 +1,37 @@
 
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../../database/shared_preferences/shared_storage.dart';
 import '../../global_widget/custom_textfield.dart';
+import '../../notifier/login_notifier.dart';
 import '../../routes/route_names_const.dart';
 import '../../utils/app_colors.dart';
 import '../../utils/common_funtion.dart';
 import '../../global_widget/custom_button.dart';
 import '../../utils/m_font_styles.dart';
+import '../../utils/toast_message.dart';
 
 
-class BasicDetailScreen extends StatefulWidget {
-  const BasicDetailScreen({super.key});
+class BasicDetailScreen extends ConsumerStatefulWidget {
+
+  final String mobile;
+  final String otp;
+
+  const BasicDetailScreen({
+    super.key,
+    required this.mobile,
+    required this.otp,
+  });
+
 
   @override
-  State<BasicDetailScreen> createState() => _BasicDetailScreenState();
+  ConsumerState<BasicDetailScreen> createState() => _BasicDetailScreenState();
 }
 
-class _BasicDetailScreenState extends State<BasicDetailScreen> {
+class _BasicDetailScreenState extends ConsumerState<BasicDetailScreen> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>(); // ✅ FormKey
   final TextEditingController nameController = TextEditingController();
   final TextEditingController emailController = TextEditingController();
@@ -37,10 +51,15 @@ class _BasicDetailScreenState extends State<BasicDetailScreen> {
   @override
   void initState() {
     super.initState();
+    print("otp is >>>>>>>>>>>>${widget.otp}");
+    print(widget.mobile);
   }
 
   @override
   Widget build(BuildContext context) {
+
+    final authState = ref.watch(authProvider);
+
     SystemChrome.setSystemUIOverlayStyle(
       const SystemUiOverlayStyle(
         statusBarColor: AppColors.mWhite,
@@ -91,7 +110,7 @@ class _BasicDetailScreenState extends State<BasicDetailScreen> {
                   textInputAction: TextInputAction.next,     // ✅ Fixed
                   onFieldSubmitted: (_) => emailFocus.requestFocus(),  // ✅ Works now
                   validator: (value) {
-                    if (value == null || value.trim().isEmpty) {
+                    if (value == null || value.trim().isEmpty || value.length<=3) {
                       return "Name is required";
                     }
                     return null;
@@ -123,19 +142,34 @@ class _BasicDetailScreenState extends State<BasicDetailScreen> {
                 SizedBox(height: context.height(0.04)),
 
                 // Continue button
-                CustomButton(
-                  onPressed:  () {
-                    // ✅ Name & Email validation
-                    // if (_formKey.currentState!.validate()) {  // ✅ Form validation only
-                    //   print("Valid! Navigate...");
-                    // }
-
-                    Navigator.pushNamed(context, homeScreenRoute);
+                CustomButton2(
+                  onPressed:  () async {
+                    if (_formKey.currentState!.validate()) {
+                      final response = await ref.read(authProvider.notifier).register(
+                        mobile: widget.mobile,
+                        otp: widget.otp,
+                        name: nameController.text.trim(),
+                        email:emailController.text.trim(),
+                      );
+                      if (response != null && response['success']) {
+                        ToastHelper.showSuccess(message: response['message']);
+                        await StorageService().saveToken(response['token']);
+                        Navigator.pushNamedAndRemoveUntil(context, homeScreenRoute, (_) => false,);
+                      }else{
+                        ToastHelper.showError(message: authState.error ?? "Something went wrong");
+                      }
+                    }
                   },
                   borderRadius: 6,
                   backgroundColor: AppColors.primary,
-                  text: "Continue",
-                  textStyle: TextStyles.f14w600Primary.copyWith(color: AppColors.mWhite),
+                  textWidget:  authState.isLoading ? CupertinoActivityIndicator(
+                    radius: 14,
+                  ) :
+                  Text(
+                    "Continue",
+                    style: TextStyles.f14w600Primary.copyWith(color: AppColors.mWhite),
+                  ),
+
                 ),
 
                 Spacer(),

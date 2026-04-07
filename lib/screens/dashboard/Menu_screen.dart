@@ -4,6 +4,8 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:pack_n_pay/screens/dashboard/widget/Drop_down_items.dart';
 
+import '../../routes/route_names_const.dart';
+import '../../utils/app_colors.dart';
 import '../../utils/m_font_styles.dart';
 
 class MenuScreen extends StatelessWidget {
@@ -12,16 +14,18 @@ class MenuScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xffF3F3F3),
+      backgroundColor: AppColors.mWhite,
 
       appBar: AppBar(
         automaticallyImplyLeading: false, // hides back button
+        shadowColor: Colors.black38, // stronger shadow
+        surfaceTintColor: Colors.transparent,
+        backgroundColor: AppColors.mWhite,
         title: Text(
           "Menus",
           style: TextStyles.f16w600Black8,
         ),
-        backgroundColor: Colors.white,
-        elevation: 0,
+        elevation: 2,
         actions: [
           Padding(
             padding: const EdgeInsets.only(right: 16),
@@ -43,7 +47,7 @@ class MenuScreen extends StatelessWidget {
       ),
 
       body: Container(
-        color: const Color(0xffF3F3F3),
+        color: Color(0xFFDBDBDB),
         child: Container(
           margin: const EdgeInsets.only(top: 10),
           decoration: const BoxDecoration(
@@ -52,20 +56,27 @@ class MenuScreen extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-
-
+          // Container(
+          // padding: const EdgeInsets.all(16),
+          // decoration: const BoxDecoration(
+          //   color: Colors.white,
+          //   border: Border(
+          //     top: BorderSide(color: Color(0xFFE5E5E5)),
+          //   ),
+          // ),
+          // ),
               /// MENU LIST
               Expanded(
                 child: ListView(
-                  children: const [
-                    MenuSectionHeader(title: "Main"),
-                    MenuDropdown(
+                  children: [
+                    const MenuSectionHeader(title: "Main"),
+                    const MenuDropdown(
                       title: "Home",
                       icon: "assets/images/home_icon.svg",
                       children: [],
                     ),
 
-                    MenuDropdown(
+                    const MenuDropdown(
                       title: "Survey List",
                       icon: "assets/icons/Survey.svg",
                       children: [
@@ -87,50 +98,66 @@ class MenuScreen extends StatelessWidget {
                     MenuDropdown(
                       title: "Quotation",
                       icon: "assets/icons/generic.svg",
-                      children: [],
+                      children: [
+                        MenuItem(
+                          title: "Quotation",
+                          icon: "assets/icons/bar.svg",
+                          onTap: () {
+                            Navigator.pushNamed(context, quotationScreenRoute);
+                          },
+                        ),
+                        // MenuItem(
+                        //   title: "New Quotation",
+                        //   icon: "assets/icons/bar.svg",
+                        //   onTap: () {
+                        //   //  Navigator.pushNamed(context, newQuotationScreenRoute);
+                        //   },
+                        // ),
+
+                      ],
                     ),
 
-                    MenuDropdown(
+                    const MenuDropdown(
                       title: "Orders",
                       icon: "assets/icons/Box.svg",
                       children: [],
                     ),
 
-                    MenuDropdown(
+                    const MenuDropdown(
                       title: "LR Bilty",
                       icon: "assets/icons/Bilty.svg",
                       children: [],
                     ),
 
-                    MenuDropdown(
+                    const MenuDropdown(
                       title: "Money Receipt",
                       icon: "assets/icons/Receipt.svg",
                       children: [],
                     ),
 
-                    MenuDropdown(
+                    const MenuDropdown(
                       title: "Staffs",
                       icon: "assets/icons/users.svg",
                       children: [],
                     ),
 
-                    MenuDropdown(
+                    const MenuDropdown(
                       title: "Expanse Management",
                       icon: "assets/icons/expense.svg",
                       children: [],
                     ),
-                    MenuSectionHeader(title: "Others"),
-                    MenuDropdown(
+                    const MenuSectionHeader(title: "Others"),
+                    const MenuDropdown(
                       title: "Letter Head",
                       icon: "assets/icons/Letterhead.svg",
                       children: [],
                     ),
-                    MenuDropdown(
+                    const MenuDropdown(
                       title: "Subscription",
                       icon: "assets/icons/subs.svg",
                       children: [],
                     ),
-                    MenuDropdown(
+                    const MenuDropdown(
                       title: "Business Details",
                       icon: "assets/icons/buisness.svg",
                       children: [],
