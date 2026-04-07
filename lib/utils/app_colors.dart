@@ -22,6 +22,7 @@ class AppColors{
   static const tab=Color(0xffDADFFF);
   static const status= Color(0xFFFDB022);
   static const Color redPrimary = Color(0xFFD92D20);
+  static const Color pinkish = Color(0xFFDD00FF);
 
 
 

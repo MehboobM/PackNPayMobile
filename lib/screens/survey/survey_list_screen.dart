@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:pack_n_pay/screens/survey/widget/filter_bottom_sheet.dart';
+import 'package:pack_n_pay/screens/survey/widget/status_chip.dart';
 import 'package:pack_n_pay/screens/survey/widget/survey_items.dart';
 import 'package:pack_n_pay/utils/app_colors.dart';
 import 'package:pack_n_pay/utils/m_font_styles.dart';
@@ -85,21 +86,21 @@ class _SurveyListScreenState extends State<SurveyListScreen> {
               scrollDirection: Axis.horizontal,
               child: Row(
                 children: [
-                  _StatusChip(
+                  StatusChip(
                     text: "All: 100",
                     isActive: selectedIndex == 0,
                     onTap: () {
                       setState(() => selectedIndex = 0);
                     },
                   ),
-                  _StatusChip(
+                  StatusChip(
                     text: "Pending: 70",
                     isActive: selectedIndex == 1,
                     onTap: () {
                       setState(() => selectedIndex = 1);
                     },
                   ),
-                  _StatusChip(
+                  StatusChip(
                     text: "InProgress: 10",
                     isActive: selectedIndex == 2,
                     onTap: () {
@@ -280,35 +281,3 @@ class _SurveyListScreenState extends State<SurveyListScreen> {
   }
 }
 
-class _StatusChip extends StatelessWidget {
-  final String text;
-  final bool isActive;
-  final VoidCallback onTap;
-
-  const _StatusChip({
-    required this.text,
-    required this.isActive,
-    required this.onTap,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        margin: const EdgeInsets.only(right: 8),
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-        decoration: BoxDecoration(
-          color: isActive
-              ?AppColors.tab // active
-              : const Color(0xFFF5F5F7), // inactive
-          borderRadius: BorderRadius.circular(20),
-        ),
-        child: Text(
-          text,
-          style: TextStyles.f10w500primary
-        ),
-      ),
-    );
-  }
-}

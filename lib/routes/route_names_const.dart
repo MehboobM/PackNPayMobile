@@ -9,5 +9,7 @@ const String newSurveyRoute = "/new_survey_screen";
 const String surveyLinkRoute = "/survey_link_screen";
 const String quotationScreenRoute = "/quotation_screen";
 const String newQuotationRoute = "/new_quotation_screen";
+const String ordersScreenRoute = "/orders_screen";
+const String orderDetailsScreenRoute = "/order_details_screen";
 
 

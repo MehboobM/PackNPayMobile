@@ -91,7 +91,7 @@ class MenuScreen extends StatelessWidget {
                     ),
 
                     MenuDropdown(
-                      title: "Orders",
+                      title: "orders",
                       icon: "assets/icons/Box.svg",
                       children: [],
                     ),

@@ -79,7 +79,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
                 /// ORDERS
                 StatsSection(
-                  title: "Orders",
+                  title: "orders",
                   total: "2,420",
                   items: [
                     StatItem("Pending", "₹2000", color: AppColors.primarySecond),
@@ -108,7 +108,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   total: "2,420",
                   items: [
                     StatItem("Pending", "₹2000", color: AppColors.primarySecond),
-                    StatItem("Conv. Orders", "20"),
+                    StatItem("Conv. orders", "20"),
                     StatItem("Cancelled", "20"),
                   ],
                 ),
@@ -129,7 +129,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
                 /// UPCOMING ORDERS
                 OrdersListSection(
-                  title: "Upcoming Orders",
+                  title: "Upcoming orders",
                   items: [
                     OrderItemModel(
                       orderNo: "#3066",
