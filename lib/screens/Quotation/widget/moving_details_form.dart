@@ -34,23 +34,7 @@ class _MovingDetailsFormState extends ConsumerState<MovingDetailsForm> {
   late TextEditingController _deliveryPincodeController;
 
 
-  States? findState(List<States>? list, String? id) {
-    if (list == null || id == null) return null;
-    try {
-      return list.firstWhere((e) => e.id.toString() == id);
-    } catch (e) {
-      return null;
-    }
-  }
 
-  Cities? findCity(List<Cities>? list, String? id) {
-    if (list == null || id == null) return null;
-    try {
-      return list.firstWhere((e) => e.id.toString() == id);
-    } catch (e) {
-      return null;
-    }
-  }
 
   @override
   void dispose() {
@@ -65,6 +49,24 @@ class _MovingDetailsFormState extends ConsumerState<MovingDetailsForm> {
     super.dispose();
   }
 
+
+  States? findState(List<States>? list, String? id,String? code) {
+    if (list == null || id == null) return null;
+    try {
+      return list.firstWhere((e) => (e.id.toString() == id || e.code.toString() == code));
+    } catch (e) {
+      return null;
+    }
+  }
+
+  Cities? findCity(List<Cities>? list, String? id, String? name) {
+    if (list == null || id == null) return null;
+    try {
+      return list.firstWhere((e) => (e.id.toString() == id || e.name.toString() == name));
+    } catch (e) {
+      return null;
+    }
+  }
   @override
   void initState() {
     super.initState();
@@ -100,8 +102,13 @@ class _MovingDetailsFormState extends ConsumerState<MovingDetailsForm> {
       /// =========================
 
       /// 2️⃣ Pickup State
-      selectedPickupState =
-          findState(stateData.states, data.pickupStateId);
+
+      print("2:>>>>>>>>>>>>${data.pickupStateId}");
+      print("3:>>>>>>>>>>>>${data.pickupCityId}");
+      print("4:>>>>>>>>>>>>${data.pickupStateCode}");
+
+      selectedPickupState = findState(stateData.states, data.pickupStateId,data.pickupStateCode);
+
 
       if (selectedPickupState != null) {
         /// 3️⃣ Load pickup cities properly
@@ -110,8 +117,7 @@ class _MovingDetailsFormState extends ConsumerState<MovingDetailsForm> {
         /// 4️⃣ NOW cities available → set city
         final cities = ref.read(quotationProvider).cities;
 
-        selectedPickupCity =
-            findCity(cities, data.pickupCityId);
+        selectedPickupCity = findCity(cities, data.pickupCityId,data.pickupCityName);
       }
 
       /// =========================
@@ -119,8 +125,7 @@ class _MovingDetailsFormState extends ConsumerState<MovingDetailsForm> {
       /// =========================
 
       /// 5️⃣ Delivery State
-      selectedDeliveryState =
-          findState(stateData.states, data.deliveryStateId);
+      selectedDeliveryState = findState(stateData.states, data.deliveryStateId,data.deliveryStateCode);
 
       if (selectedDeliveryState != null) {
         /// 6️⃣ Load delivery cities
@@ -131,7 +136,7 @@ class _MovingDetailsFormState extends ConsumerState<MovingDetailsForm> {
 
         /// 7️⃣ NOW set delivery city
         selectedDeliveryCity =
-            findCity(deliveryCities, data.deliveryCityId);
+            findCity(deliveryCities, data.deliveryCityId,data.deliveryCityName);
       }
 
       /// FINAL UI UPDATE

@@ -1,9 +1,7 @@
 
 class QuotationFormModel {
-  /// =========================
-  /// STEP 1: QUOTATION DETAILS
-  /// =========================
 
+  /// STEP 1: QUOTATION DETAILS
   String? quotationNo;
   String? companyName;
   String? partyName;
@@ -13,18 +11,14 @@ class QuotationFormModel {
 
   String? quotationDate;
   String? packingDate;
-  String? deliveryDate;
+  String? deliveryDate; // this date initialize from delivery_address "moving_date": "2026-04-16"  because they added by mistackly
 
   /// Dropdowns (STORE VALUE)
-  String? vehicleType;     // tempo, truck
-  String? loadType;        // ftl, ptl
-  String? movingPath;      // by_road, by_air
+  String? vehicleType;
+  String? loadType;
+  String? movingPath;
 
-
-  /// =========================
   /// STEP 2: MOVING DETAILS
-  /// =========================
-
   String? shiftingDate;
 
   String? pickupPhone;
@@ -36,22 +30,24 @@ class QuotationFormModel {
   String? deliveryPincode;
 
   /// Dropdowns
-  String? pickupLiftAvailable;   // yes/no
-  String? deliveryLiftAvailable; // yes/no
+  String? pickupLiftAvailable;
+  String? deliveryLiftAvailable;
 
-  /// State & City (IMPORTANT → store ID)
+  /// State & City
   String? pickupStateId;
+  String? pickupStateCode;
   String? pickupCityId;
+  String? pickupCityName;
+  String? movingFrom;
+  String? movingTo;
+
 
   String? deliveryStateId;
+  String? deliveryStateCode;
   String? deliveryCityId;
+  String? deliveryCityName;
 
-
-
-
-  /// =========================
   /// STEP 3: PAYMENT DETAILS
-  /// =========================
 
   String? freightCharge;
   String? advancePaid;
@@ -65,32 +61,23 @@ class QuotationFormModel {
   String? stCharges;
   String? surchargeAmount;
 
-
-  /// ✅ ADD THESE (MISSING)
   String? otherCharges;
   String? storageCharge;
   String? tptCharge;
   String? miscCharge;
 
-  /// Dropdowns (Included / Excluded)
+
   String? packingChargeType;
   String? unpackingChargeType;
   String? loadingChargeType;
   String? unloadingChargeType;
   String? packingMaterialChargeType;
 
-  /// GST
-  dynamic gstPercent; // 5, 12, 18
-  String? gstType;    // CGST/SGST, IGST
+  dynamic gstPercent;
+  String? gstType;
+  String? surchargeType;
 
-  /// Surcharge
-  String? surchargeType; // applicable / not_applicable
-
-
-  /// =========================
   /// STEP 4: INSURANCE & OTHER
-  /// =========================
-
   /// Goods Insurance
   String? insuranceType;
   dynamic insurancePercent;
@@ -140,9 +127,13 @@ class QuotationFormModel {
     this.pickupLiftAvailable,
     this.deliveryLiftAvailable,
     this.pickupStateId,
+    this.pickupStateCode,
     this.pickupCityId,
+    this.pickupCityName,
     this.deliveryStateId,
+    this.deliveryStateCode,
     this.deliveryCityId,
+    this.deliveryCityName,
 
     this.freightCharge,
     this.advancePaid,
@@ -212,9 +203,13 @@ class QuotationFormModel {
       "pickupLiftAvailable": pickupLiftAvailable,
       "deliveryLiftAvailable": deliveryLiftAvailable,
       "pickupStateId": pickupStateId,
+      "pickupStateCode": pickupStateCode,
       "pickupCityId": pickupCityId,
+      "pickupCityName": pickupCityName,
       "deliveryStateId": deliveryStateId,
+      "deliveryStateCode": deliveryStateCode,
       "deliveryCityId": deliveryCityId,
+      "deliveryCityName": deliveryCityName,
 
       "freightCharge": freightCharge,
       "advancePaid": advancePaid,
@@ -285,9 +280,13 @@ class QuotationFormModel {
       pickupLiftAvailable: json["pickupLiftAvailable"],
       deliveryLiftAvailable: json["deliveryLiftAvailable"],
       pickupStateId: json["pickupStateId"],
+      pickupStateCode: json["pickupStateCode"],
       pickupCityId: json["pickupCityId"],
+      pickupCityName: json["pickupCityName"],
       deliveryStateId: json["deliveryStateId"],
+      deliveryStateCode: json["deliveryStateCode"],
       deliveryCityId: json["deliveryCityId"],
+      deliveryCityName: json["deliveryCityName"],
 
       freightCharge: json["freightCharge"],
       advancePaid: json["advancePaid"],

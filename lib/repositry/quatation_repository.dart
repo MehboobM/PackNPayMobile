@@ -81,4 +81,21 @@ class QuatationRepository {
       rethrow;
     }
   }
+
+
+  Future<dynamic> createQuotation(Map<String, dynamic> body) async {
+    try {
+      final response = await network.post(
+        ApiEndPoints.createQuotationApi, body,
+      );
+
+      if (response.statusCode == 201 && response.data['success'] == true) {
+        return response.data;
+      } else {
+        throw Exception("Failed to create quotation");
+      }
+    } catch (e) {
+      rethrow;
+    }
+  }
 }

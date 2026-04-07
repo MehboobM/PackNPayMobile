@@ -41,4 +41,20 @@ class SurveyRepository {
     }
   }
 
+  Future<dynamic> fetchSurveyById(String surveyId) async {
+    try {
+      final response = await network.get(
+        "${ApiEndPoints.prefillFormApi}/$surveyId",
+      );
+
+      if (response.statusCode == 200 && response.data['success'] == true) {
+        return response.data['data']; // ✅ return only data
+      } else {
+        throw Exception("Failed to fetch");
+      }
+    } catch (e) {
+      rethrow;
+    }
+  }
+
 }

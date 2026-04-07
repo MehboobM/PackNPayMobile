@@ -248,7 +248,7 @@ class _QuotationScreenState extends ConsumerState<QuotationScreen> {
 
                           ref.read(quotationFormProvider.notifier).state = oldData;
 
-                          Navigator.pushNamed(context, newQuotationRoute);
+                          Navigator.pushNamed(context, newQuotationRoute,arguments: "create_quatation");
                         },
                         onNew: () async {
                           await HiveService.clear();
@@ -256,13 +256,14 @@ class _QuotationScreenState extends ConsumerState<QuotationScreen> {
                           ref.read(quotationFormProvider.notifier).clear();
 
                           Navigator.pop(context);
-                          Navigator.pushNamed(context, newQuotationRoute);
+                          Navigator.pushNamed(context, newQuotationRoute,arguments: "create_quatation");
                         },
                       );
                     },
                   );
                 } else {
-                  Navigator.pushNamed(context, newQuotationRoute);
+                  ref.read(quotationFormProvider.notifier).clear();
+                  Navigator.pushNamed(context, newQuotationRoute,arguments: "create_quatation");
                 }
               },
 

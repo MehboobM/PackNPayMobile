@@ -23,6 +23,7 @@ class CustomTextField extends StatelessWidget {
   final Color? backgroundColor;
   final IconData? materialIcon;
   final double? iconSize;
+  final bool? isEnable;
 
   /// NEW
   final double borderRadius;
@@ -46,6 +47,7 @@ class CustomTextField extends StatelessWidget {
     this.iconSize,
     this.borderRadius = 5,// default
     this.materialIcon,
+    this.isEnable,
   }) : super(key: key);
 
   @override
@@ -54,6 +56,7 @@ class CustomTextField extends StatelessWidget {
       controller: controller,
       validator: validator,
       focusNode: focusNode,
+      enabled:isEnable ,
       onFieldSubmitted: onFieldSubmitted,
       textInputAction: textInputAction ?? TextInputAction.next,
       onTap: onTap,

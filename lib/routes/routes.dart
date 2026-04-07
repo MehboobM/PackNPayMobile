@@ -48,7 +48,8 @@ class NavigationRouter {
         return MaterialPageRoute(builder: (_) => const QuotationScreen());
 
       case newQuotationRoute:
-        return MaterialPageRoute(builder: (_) => const NewQuotationScreen(),);
+        final args = settings.arguments as String?;
+        return MaterialPageRoute(builder: (_) =>  NewQuotationScreen(keyType: args,),);
 
 
       default:

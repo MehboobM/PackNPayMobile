@@ -38,11 +38,9 @@ class _QuotationDetailsFormState extends ConsumerState<QuotationDetailsForm> {
 
     final data = ref.read(quotationFormProvider);
 
-    quotationNoController =
-        TextEditingController(text: data.quotationNo ?? "#PNP0001");
+    quotationNoController = TextEditingController(text: data.quotationNo ?? "");
 
-    companyController =
-        TextEditingController(text: data.companyName ?? "");
+    companyController = TextEditingController(text: data.companyName ?? "");
 
     partyController =
         TextEditingController(text: data.partyName ?? "");
@@ -109,6 +107,7 @@ class _QuotationDetailsFormState extends ConsumerState<QuotationDetailsForm> {
           CustomTextField(
             controller: quotationNoController,
             hintText: "#PNP0001",
+            isEnable: false,
             borderRadius: 12,
             onChanged: (val) {
               ref.read(quotationFormProvider.notifier)
@@ -407,22 +406,4 @@ class _QuotationDetailsFormState extends ConsumerState<QuotationDetailsForm> {
       }
     }
   }
-  // Future<void> pickDate(
-  //     BuildContext context,
-  //     TextEditingController controller,
-  //     ) async {
-  //   DateTime? pickedDate = await showDatePicker(
-  //     context: context,
-  //     initialDate: DateTime.now(),
-  //     firstDate: DateTime(2000),
-  //     lastDate: DateTime(2100),
-  //   );
-  //
-  //   if (pickedDate != null) {
-  //     controller.text =
-  //     "${pickedDate.day.toString().padLeft(2, '0')}/"
-  //         "${pickedDate.month.toString().padLeft(2, '0')}/"
-  //         "${pickedDate.year}";
-  //   }
-  // }
 }

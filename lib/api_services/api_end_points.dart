@@ -16,8 +16,10 @@ class ApiEndPoints {
   static const  register = "auth/register";
   static const  quatationApi = "quotation-list";
   static const  surveylistApi = "survey-list";
+  static const  prefillFormApi = "quotation/survey/";
   static const  stateApi = "get-states";
   static const  cityApi = "get-cities";
+  static const  createQuotationApi = "quotation/create";
 
 
 }

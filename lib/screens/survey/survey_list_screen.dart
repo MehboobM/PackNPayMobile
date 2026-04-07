@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/svg.dart';
@@ -12,6 +13,7 @@ import '../../global_widget/view_download_service.dart';
 import '../../global_widget/custom_button.dart';
 import '../../global_widget/custom_textfield.dart';
 import '../../routes/route_names_const.dart';
+import '../../utils/toast_message.dart';
 
 class SurveyListScreen extends ConsumerStatefulWidget {
   const SurveyListScreen({super.key});
@@ -333,7 +335,7 @@ class _SurveyListScreenState extends ConsumerState<SurveyListScreen> {
                                     );
                                   },
                                   onTapMenu: (detail) {
-                                    _onTapMenu(context, detail.globalPosition);
+                                    _onTapMenu(context, detail.globalPosition,item.uid ?? "");
                                   },
                                 );
                               },
@@ -348,7 +350,37 @@ class _SurveyListScreenState extends ConsumerState<SurveyListScreen> {
     );
   }
 
-  void _onTapMenu(BuildContext context, Offset position) {
+  Future<void> handleSurveyNavigation({
+    required BuildContext context,
+    required WidgetRef ref,
+    required String surveyId,
+  }) async {
+    try {
+      /// 🔄 SHOW LOADER
+      showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (_) =>  Center(
+          child: CupertinoActivityIndicator(radius: 16,),
+        ),
+      );
+
+      /// 🔥 API CALL
+      await ref.read(surveyDataProvider.notifier).fetchSurveyAndFillForm(surveyId, ref);
+
+      Navigator.pop(context);
+
+      Navigator.pushNamed(context, newQuotationRoute,arguments: "generate");
+
+    } catch (e) {
+      Navigator.pop(context);
+      ToastHelper.showError(
+        message: "Unable to load survey. Please try again.",
+      );
+    }
+  }
+
+  void _onTapMenu(BuildContext context, Offset position, String surveyId) async {
     showGlobalPopupMenu(
       context: context,
       tapPosition: position,
@@ -374,26 +406,39 @@ class _SurveyListScreenState extends ConsumerState<SurveyListScreen> {
           icon: "assets/images/quotation.svg",
         ),
       ],
-      onSelected: (value) {
+
+      /// 🔥 IMPORTANT: make async
+      onSelected: (value) async {
         switch (value) {
+
+        /// ✅ EDIT + QUOTATION (same flow)
           case 'edit':
-            print("Edit clicked");
+            print("edit clicked");
             break;
 
+
+        /// SIGNATURE
           case 'signature':
             print("Signature clicked");
             break;
 
+        /// SHARE LINK
           case 'link':
-            print("link clicked");
+            print("Link clicked");
             break;
 
           case 'quotation':
-            print("quotation clicked");
+            await handleSurveyNavigation(
+              context: context,
+              ref: ref,
+              surveyId: surveyId,
+            );
             break;
         }
       },
     );
+
+
   }
 }
 

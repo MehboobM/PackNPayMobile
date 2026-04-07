@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -8,16 +9,20 @@ import 'package:pack_n_pay/screens/Quotation/widget/payment_detail_form.dart';
 import 'package:pack_n_pay/screens/Quotation/widget/quotation_stepper.dart';
 import '../../database/hive_database/hive_quation_form.dart';
 import '../../global_widget/custom_button.dart';
+import '../../notifier/quatation_notifier.dart';
 import '../../notifier/quotation_form_notifier.dart';
 import '../../utils/app_colors.dart';
 import '../../utils/m_font_styles.dart';
+import '../../utils/toast_message.dart';
 
 class NewQuotationScreen extends ConsumerStatefulWidget {
-  const NewQuotationScreen({super.key});
+   final String? keyType;
+   NewQuotationScreen({super.key, required this.keyType});
 
   @override
   ConsumerState<NewQuotationScreen> createState() => _NewQuotationScreenState();
 }
+
 class _NewQuotationScreenState extends ConsumerState<NewQuotationScreen> {
   int currentStep = 0;
   void nextStep() {
@@ -175,23 +180,8 @@ class _NewQuotationScreenState extends ConsumerState<NewQuotationScreen> {
                     //     nextStep();
                     //   }
                     // },
-                    onPressed: () async {
-                      final data = ref.read(quotationFormProvider);
 
-                      /// ✅ SAVE TO HIVE
-                      await HiveService.save(data);
-
-                      if (currentStep == 3) {
-                        print("FINAL DATA 👉 ${data.toJson()}");
-
-                        /// ✅ CLEAR AFTER FINAL SAVE
-                        await HiveService.clear();
-                        ref.read(quotationFormProvider.notifier).clear();
-
-                      } else {
-                        nextStep();
-                      }
-                    },
+                    onPressed: handleSaveQuotation,
                     backgroundColor: AppColors.primary,
                     borderRadius: 12,
                   ),
@@ -202,6 +192,57 @@ class _NewQuotationScreenState extends ConsumerState<NewQuotationScreen> {
         ],
       ),
     );
+  }
+
+
+  Future<void> handleSaveQuotation() async {
+    final data = ref.read(quotationFormProvider);
+
+    try {
+      /// 🔄 SHOW LOADER
+      showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (_) => const Center(
+          child: CupertinoActivityIndicator(),
+        ),
+      );
+
+      /// ✅ SAVE DRAFT TO HIVE
+      if(widget.keyType=="create_quatation"){
+        await HiveService.save(data);
+      }
+
+
+      if (currentStep == 3) {
+
+        /// 🔥 CALL API
+        final res = await ref.read(quotationProvider.notifier).createQuotation(data);
+
+
+        if (mounted) Navigator.pop(context);
+
+        /// ✅ SUCCESS MESSAGE
+        ToastHelper.showSuccess(message: "Quotation Created: ${res['quotation_no']}",);//error
+
+        /// 🧹 CLEAR DATA
+        await HiveService.clear();
+        ref.read(quotationFormProvider.notifier).clear();
+
+        /// 🔙 GO BACK
+        if (mounted) Navigator.pop(context);
+
+      } else {
+        if (mounted) Navigator.pop(context);
+        nextStep();
+      }
+
+    } catch (e) {
+      if (mounted) Navigator.pop(context);
+      ToastHelper.showError(
+        message: "Failed to create quotation",
+      );
+    }
   }
 }
 

@@ -216,8 +216,17 @@ class _OtpScreenState extends ConsumerState<OtpScreen> {
 
                   /// ✅ SUCCESS
                   storage.saveNewUser("${response['isNewUser']}");
+
                   if(response['token'] != null) {
                     storage.saveToken(response['token']);
+                  }
+
+                  if(response['company_id'] != null) {
+                    storage.saveCompanyId(response['company_id']);
+                  }
+
+                  if(response['name'] != null) {
+                    storage.saveUserName(response['name']);
                   }
 
                   ToastHelper.showSuccess(message: "OTP verified");
@@ -232,9 +241,7 @@ class _OtpScreenState extends ConsumerState<OtpScreen> {
                     );
                   }else{
                     Navigator.pushNamedAndRemoveUntil(
-                      context,
-                      homeScreenRoute,
-                          (route) => false,
+                      context, homeScreenRoute, (route) => false,
                     );
                   }
 
