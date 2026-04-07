@@ -47,7 +47,7 @@ class MenuScreen extends StatelessWidget {
       ),
 
       body: Container(
-        color: Color(0xFFDBDBDB),
+        color: const Color(0xffF3F3F3),
         child: Container(
           margin: const EdgeInsets.only(top: 10),
           decoration: const BoxDecoration(
@@ -56,15 +56,8 @@ class MenuScreen extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-          // Container(
-          // padding: const EdgeInsets.all(16),
-          // decoration: const BoxDecoration(
-          //   color: Colors.white,
-          //   border: Border(
-          //     top: BorderSide(color: Color(0xFFE5E5E5)),
-          //   ),
-          // ),
-          // ),
+
+
               /// MENU LIST
               Expanded(
                 child: ListView(
@@ -117,8 +110,9 @@ class MenuScreen extends StatelessWidget {
                       ],
                     ),
 
-                    const MenuDropdown(
-                      title: "Orders",
+
+                    MenuDropdown(
+                      title: "orders",
                       icon: "assets/icons/Box.svg",
                       children: [],
                     ),
@@ -141,7 +135,7 @@ class MenuScreen extends StatelessWidget {
                       children: [],
                     ),
 
-                    const MenuDropdown(
+                    MenuDropdown(
                       title: "Expanse Management",
                       icon: "assets/icons/expense.svg",
                       children: [],

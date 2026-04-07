@@ -10,7 +10,6 @@ class AppColors{
   static const cyanBlue = Color(0xffDCEFFF);
   static const tab=Color(0xffDADFFF);
   static const status= Color(0xFFFDB022);
-  static const Color redPrimary = Color(0xFFD92D20);
   static const mBlack9 = Color(0xFF202020);
   static const mBlack8 = Color(0xFF181D27);
   static const mGray = Color(0xFFC6CEDA);
@@ -24,6 +23,11 @@ class AppColors{
   static const mWhite = Color(0xFFFFFFFF);
   static const mWhite54 = Color(0x8AFFFFFF);
 
+
+
+  static const orangeStatus= Color(0xFFFDB022);
+  static const Color redPrimary = Color(0xFFD92D20);
+  static const Color pinkish = Color(0xFFDD00FF);
 
 
 

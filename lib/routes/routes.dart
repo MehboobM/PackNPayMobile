@@ -10,6 +10,8 @@ import '../screens/basic_detail/basic_detail_screen.dart';
 import '../screens/dashboard/dashboard_screen.dart';
 import '../screens/login/login_screen.dart';
 import '../screens/new_survey/survey_link_screen.dart';
+import '../screens/orders/order_details.dart';
+import '../screens/orders/order_screen.dart';
 import '../splash_screen.dart';
 
 
@@ -50,6 +52,14 @@ class NavigationRouter {
       case newQuotationRoute:
         final args = settings.arguments as String?;
         return MaterialPageRoute(builder: (_) =>  NewQuotationScreen(keyType: args,),);
+
+      case ordersScreenRoute:
+        return MaterialPageRoute(builder: (_) => const OrdersScreen());
+
+      case orderDetailsScreenRoute:
+        return MaterialPageRoute(
+          builder: (_) => const OrderDetailsScreen(),
+        );
 
 
       default:

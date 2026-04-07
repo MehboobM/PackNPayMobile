@@ -135,7 +135,7 @@ class OrderTile extends StatelessWidget {
                       "Pending",
                       style: TextStyle(
                         fontSize: 11,
-                        color: AppColors.status,
+                        color: AppColors.orangeStatus,
                         fontWeight: FontWeight.w600,
                       ),
                     ),
