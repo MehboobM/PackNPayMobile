@@ -1,0 +1,507 @@
+import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+import '../../global_widget/custom_button.dart';
+import '../../global_widget/custom_textfield.dart';
+import '../../global_widget/dropdown_with textfield.dart';
+import '../../repositry/money_receipt_repository.dart';
+import '../../utils/app_colors.dart';
+import '../../utils/m_font_styles.dart';
+import '../../utils/toast_message.dart';
+import '../Quotation/widget/insurance_and_other_form.dart';
+
+class NewReceiptScreen extends StatefulWidget {
+  const NewReceiptScreen({super.key});
+
+  @override
+  State<NewReceiptScreen> createState() => _NewReceiptScreenState();
+}
+
+class _NewReceiptScreenState extends State<NewReceiptScreen> {
+
+
+  final receiptNoController = TextEditingController();
+  final dateController = TextEditingController();
+  final branchController = TextEditingController();
+  final nameController = TextEditingController();
+  final phoneController = TextEditingController();
+  final quotationNoController = TextEditingController();
+  final billDateController = TextEditingController();
+  final fromController = TextEditingController();
+  final toController = TextEditingController();
+
+  /// ✅ NEW CONTROLLERS
+  final amountController = TextEditingController();
+  final transactionController = TextEditingController();
+  final remarksController = TextEditingController();
+
+  /// ✅ DROPDOWN VALUES
+  String receiptAgainst = "Quotation";
+  String paymentType = "Part";
+  String paymentMode = "Cash";
+  String? uid; // 👈 add this
+
+  final MoneyReceiptRepo _repo = MoneyReceiptRepo();
+  bool isLoading = false;
+  bool _isInit = true;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+
+    if (_isInit) {
+      final args = ModalRoute.of(context)?.settings.arguments;
+
+      if (args != null && args is Map<String, dynamic>) {
+        _setEditData(args);
+      }
+
+      _isInit = false;
+    }
+  }
+
+
+  /// ✅ DATE FORMAT
+  String formatDate(String input) {
+    try {
+      final parsed = DateFormat("dd/MM/yyyy").parse(input);
+      return DateFormat("yyyy-MM-dd").format(parsed);
+    } catch (e) {
+      return "";
+    }
+  }
+  void _setEditData(Map<String, dynamic> data) {
+    print("EDIT DATA: $data");
+
+    uid = data["uid"];
+    print("UID SET: $uid");
+
+    if (uid == null || uid!.isEmpty) {
+      print("❌ UID MISSING → WILL CREATE INSTEAD OF UPDATE");
+    }
+
+    receiptNoController.text = data["receipt_no"] ?? "";
+    dateController.text = _formatDisplayDate(data["receipt_date"]);
+    branchController.text = data["branch"] ?? "";
+    nameController.text = data["name"] ?? "";
+    phoneController.text = data["phone"] ?? "";
+    quotationNoController.text = data["receipt_against_id"] ?? "";
+    billDateController.text =
+        _formatDisplayDate(data["bill_quotation_date"]);
+    fromController.text = data["move_from"] ?? "";
+    toController.text = data["move_to"] ?? "";
+
+    amountController.text =
+        (double.tryParse(data["receipt_amount"].toString()) ?? 0)
+            .toInt()
+            .toString();
+
+    transactionController.text = data["transaction_no"] ?? "";
+    remarksController.text = data["remarks"] ?? "";
+
+    receiptAgainst = data["receipt_against"] ?? "Quotation";
+    paymentType = data["payment_type"] ?? "Part";
+    paymentMode = data["payment_mode"] ?? "Cash";
+
+    setState(() {});
+  }
+  String _formatDisplayDate(String? date) {
+    if (date == null || date.isEmpty) return "";
+
+    try {
+      final d = DateTime.parse(date); // handles ISO
+      return "${d.day.toString().padLeft(2, '0')}/"
+          "${d.month.toString().padLeft(2, '0')}/"
+          "${d.year}";
+    } catch (e) {
+      return "";
+    }
+  }
+
+  /// ✅ API CALL
+  Future<void> saveReceipt() async {
+    if (amountController.text.isEmpty ||
+        int.tryParse(amountController.text) == null ||
+        int.parse(amountController.text) <= 0) {
+      ToastHelper.showError(message: "Enter valid amount (> 0)");
+      return;
+    }
+
+    setState(() => isLoading = true);
+
+    try {
+      final body = {
+        "receipt_date": formatDate(dateController.text),
+        "branch": branchController.text,
+        "name": nameController.text,
+        "phone": phoneController.text,
+        "receipt_against": receiptAgainst,
+        "receipt_against_id": quotationNoController.text,
+        "bill_quotation_date": formatDate(billDateController.text),
+        "move_from": fromController.text,
+        "move_to": toController.text,
+        "payment_type": paymentType,
+        "receipt_amount": double.parse(amountController.text),
+        "payment_mode": paymentMode,
+        "transaction_no": transactionController.text.isEmpty
+            ? null
+            : transactionController.text,
+        "remarks": remarksController.text,
+      };
+
+      if (uid != null) {
+        /// 🔥 UPDATE
+        await _repo.updateReceipt(uid!, body);
+
+        ToastHelper.showSuccess(
+          message: "Receipt updated successfully",
+        );
+      } else {
+        /// 🔥 CREATE
+        await _repo.createReceipt(body);
+
+        ToastHelper.showSuccess(
+          message: "Receipt created successfully",
+        );
+      }
+
+      Navigator.pop(context);
+
+    } catch (e) {
+      ToastHelper.showError(message: e.toString());
+    } finally {
+      setState(() => isLoading = false);
+    }
+  }
+
+  @override
+  void dispose() {
+    receiptNoController.dispose();
+    dateController.dispose();
+    branchController.dispose();
+    nameController.dispose();
+    phoneController.dispose();
+    quotationNoController.dispose();
+    billDateController.dispose();
+    fromController.dispose();
+    toController.dispose();
+    amountController.dispose();
+    transactionController.dispose();
+    remarksController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: const Color(0xffF5F5F7),
+
+      appBar: AppBar(
+        backgroundColor: Colors.white,
+        elevation: 0,
+        surfaceTintColor: Colors.white,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back, color: Colors.black),
+          onPressed: () => Navigator.pop(context),
+        ),
+        titleSpacing: 0,
+        title: Row(
+
+            children: [
+              Text("New Receipt", style: TextStyles.f16w600mGray9),
+
+              /// ✅ SHOW ONLY IF AVAILABLE
+              if (receiptNoController.text.isNotEmpty) ...[
+                const SizedBox(width: 6),
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                  decoration: BoxDecoration(
+                    color: AppColors.tab,
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: Text(
+                    receiptNoController.text,
+                    style: TextStyles.f10w500primary,
+                  ),
+                ),
+              ],
+            ],
+          ),
+        ),
+
+
+      body: Column(
+        children: [
+          Container(height: 14, color: AppColors.mGray3),
+
+          Expanded(
+            child: Container(
+              width: double.infinity,
+              color: Colors.white,
+              child: SingleChildScrollView(
+                padding: const EdgeInsets.all(16),
+                child: Column(
+                  children: [
+
+                    /// 🔹 RECEIPT NO + DATE
+                    Row(
+                      children: [
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text("Receipt No.", style: TextStyles.f12w500Gray7),
+                              const SizedBox(height: 6),
+                              CustomTextField(
+                                controller: receiptNoController,
+                                isEnable: false,
+                                hintText: "#PNP0001",
+                                backgroundColor: const Color(0xFFF3F3F3),
+                                borderRadius: 12,
+                              ),
+                            ],
+                          ),
+                        ),
+
+                        const SizedBox(width: 12),
+
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text("Date", style: TextStyles.f12w500Gray7),
+                              const SizedBox(height: 6),
+                              CustomTextField(
+                                controller: dateController,
+                                hintText: "00/00/0000",
+                                materialIcon: Icons.calendar_today_outlined,
+                                borderRadius: 12,
+                                onTap: () => pickDate(dateController),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+
+                    const SizedBox(height: 16),
+
+                    buildField("Branch", branchController, "Enter Branch"),
+                    buildField("Name", nameController, "Enter name"),
+                    buildField("Phone no.", phoneController, "Enter phone no.",
+                        keyboard: TextInputType.phone),
+
+                    DropdownWithField(
+                      title: "Receipt against",
+                      value: receiptAgainst,
+                      items: ["Quotation", "Bill"],
+                      controller: quotationNoController,
+                      hintText: "Enter Qat. no.",
+                      onChanged: (val) {
+                        setState(() {
+                          receiptAgainst = val!;
+                        });
+                      },
+                    ),
+
+                    const SizedBox(height: 16),
+
+                    buildDateField("Bill/Quotation date", billDateController),
+
+                    const SizedBox(height: 16),
+
+                    Row(
+                      children: [
+                        Expanded(
+                          child: buildField("Move from", fromController, "Enter"),
+                        ),
+                        const SizedBox(width: 12),
+                        Expanded(
+                          child: buildField("Move to", toController, "Enter"),
+                        ),
+                      ],
+                    ),
+
+                    /// 🔹 PAYMENT TYPE + AMOUNT
+                    Row(
+                      children: [
+                        reusableDropdown(
+                          title: "Payment type",
+                          value: paymentType,
+                          items: ["Part", "Full"],
+                          onChanged: (val) {
+                            setState(() {
+                              paymentType = val!;
+                            });
+                          },
+                          flex: 1,
+                        ),
+
+                        const SizedBox(width: 12),
+
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text("Receipt amount", style: TextStyles.f12w500Gray7),
+                              const SizedBox(height: 6),
+                              CustomTextField(
+                                controller: amountController,
+                                hintText: "₹",
+                                keyboardType: TextInputType.number,
+                                borderRadius: 12,
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+
+                    const SizedBox(height: 16),
+
+                    /// 🔹 PAYMENT MODE
+                    DropdownWithField(
+                      title: "Payment mode",
+                      value: paymentMode,
+                      items: ["Cash", "Online", "Cheque"],
+                      controller: transactionController,
+                      hintText: "Enter Transaction no.",
+                      onChanged: (val) {
+                        setState(() {
+                          paymentMode = val!;
+                        });
+                      },
+                    ),
+
+                    const SizedBox(height: 16),
+
+                    /// 🔹 REMARKS
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text("Remarks", style: TextStyles.f12w500Gray7),
+                        const SizedBox(height: 6),
+                        TextFormField(
+                          controller: remarksController,
+                          maxLines: 3,
+                          decoration: InputDecoration(
+                            hintText: "Enter remarks.....",
+                            hintStyle: TextStyles.f12w400Gray5,
+                            filled: true,
+                            fillColor: Colors.white,
+                            contentPadding:
+                            const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(12),
+                              borderSide: BorderSide(color: AppColors.mGray3),
+                            ),
+                            enabledBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(12),
+                              borderSide: BorderSide(color: AppColors.mGray3),
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(12),
+                              borderSide:
+                              BorderSide(color: AppColors.primary, width: 1.5),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+
+                    const SizedBox(height: 20),
+
+                    /// 🔹 BUTTONS
+                    Row(
+                      children: [
+                        Expanded(
+                          child: CustomButton(
+                            text: "Back",
+                            onPressed: () => Navigator.pop(context),
+                            backgroundColor: Colors.white,
+                            foregroundColor: Colors.black,
+                            borderColor: AppColors.primary,
+                            borderRadius: 10,
+                          ),
+                        ),
+                        const SizedBox(width: 12),
+                        Expanded(
+                          child: CustomButton(
+                            text: isLoading ? "Saving..." : "Save",
+                            onPressed: isLoading ? null : saveReceipt,
+                            backgroundColor: AppColors.primary,
+                            borderRadius: 10,
+                          ),
+                        ),
+                      ],
+                    ),
+
+                    const SizedBox(height: 30),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+
+  /// 🔹 REUSABLE FIELD
+  Widget buildField(String title, TextEditingController controller,
+      String hint,
+      {TextInputType keyboard = TextInputType.text}) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 16),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(title, style: TextStyles.f12w500Gray7),
+          const SizedBox(height: 6),
+          CustomTextField(
+            controller: controller,
+            hintText: hint,
+            keyboardType: keyboard,
+            borderRadius: 12,
+            hintStyle: TextStyles.f12w400Gray5,
+          ),
+        ],
+      ),
+    );
+  }
+
+  /// 🔹 DATE FIELD
+  Widget buildDateField(String title, TextEditingController controller) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(title, style: TextStyles.f12w500Gray7),
+        const SizedBox(height: 6),
+        CustomTextField(
+          controller: controller,
+          hintText: "00/00/0000",
+          materialIcon: Icons.calendar_today_outlined,
+          borderRadius: 12,
+          onTap: () => pickDate(controller),
+        ),
+      ],
+    );
+  }
+
+  /// 🔹 DATE PICKER
+  Future<void> pickDate(TextEditingController controller) async {
+    DateTime? picked = await showDatePicker(
+      context: context,
+      initialDate: DateTime.now(),
+      firstDate: DateTime(2000),
+      lastDate: DateTime(2100),
+    );
+
+    if (picked != null) {
+      controller.text =
+      "${picked.day.toString().padLeft(2, '0')}/"
+          "${picked.month.toString().padLeft(2, '0')}/"
+          "${picked.year}";
+    }
+  }
+}

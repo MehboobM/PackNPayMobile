@@ -123,10 +123,25 @@ class MenuScreen extends StatelessWidget {
                       children: [],
                     ),
 
-                    const MenuDropdown(
+                    MenuDropdown(
                       title: "Money Receipt",
                       icon: "assets/icons/Receipt.svg",
-                      children: [],
+                      children: [
+                        MenuItem(
+                          title: "Money List",
+                          icon: "assets/icons/bar.svg",
+                          onTap: () {
+                            Navigator.pushNamed(context, moneyListScreenRoute);
+                          },
+                        ),
+                        MenuItem(
+                          title: "New Receipt",
+                          icon: "assets/icons/Plus.svg",
+                          onTap: () {
+                            Navigator.pushNamed(context, newReceiptScreenRoute);
+                          },
+                        ),
+                      ],
                     ),
 
                     const MenuDropdown(

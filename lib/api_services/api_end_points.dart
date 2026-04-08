@@ -23,6 +23,8 @@ class ApiEndPoints {
   static const  deleteQuotationApi = "quotation";
   static const  getQuotationApi = "quotation";
   static const  updateQuotationApi = "quotation/update";
+  static const moneyReceiptList = "money-receipt-list";
+  static const createMoneyReceipt = "money-receipt/create";
 
 
 }

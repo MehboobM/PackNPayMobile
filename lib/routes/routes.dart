@@ -4,6 +4,8 @@ import 'package:pack_n_pay/onboard_screen.dart';
 import 'package:pack_n_pay/screens/new_survey/new_survey_screen.dart';
 import 'package:pack_n_pay/screens/otp/otp_screen.dart';
 
+import '../screens/Money_receipt/Money_list_receipt.dart';
+import '../screens/Money_receipt/new_receipt.dart';
 import '../screens/Quotation/Quotation_screen.dart';
 import '../screens/Quotation/new_quotation_screen.dart';
 import '../screens/basic_detail/basic_detail_screen.dart';
@@ -59,6 +61,15 @@ class NavigationRouter {
       case orderDetailsScreenRoute:
         return MaterialPageRoute(
           builder: (_) => const OrderDetailsScreen(),
+        );
+      case moneyListScreenRoute:
+        return MaterialPageRoute(
+          builder: (_) => const MoneyListScreen(),
+        );
+
+      case newReceiptScreenRoute:
+        return MaterialPageRoute(
+          builder: (_) => const NewReceiptScreen(),
         );
 
 
