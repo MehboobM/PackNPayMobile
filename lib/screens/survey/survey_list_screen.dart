@@ -370,7 +370,7 @@ class _SurveyListScreenState extends ConsumerState<SurveyListScreen> {
 
       Navigator.pop(context);
 
-      Navigator.pushNamed(context, newQuotationRoute,arguments: "generate");
+      Navigator.pushNamed(context, newQuotationRoute,arguments: {"keyType":"generate"});
 
     } catch (e) {
       Navigator.pop(context);

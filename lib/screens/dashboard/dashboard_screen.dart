@@ -10,6 +10,7 @@ import 'package:pack_n_pay/screens/dashboard/widget/subscription_card.dart';
 import 'package:pack_n_pay/screens/dashboard/widget/top_section.dart';
 import 'package:pack_n_pay/utils/app_colors.dart';
 
+import '../../global_widget/confirmation_dialog.dart';
 import '../../models/order_item.dart';
 import '../survey/survey_list_screen.dart';
 import 'Menu_screen.dart'; // 👈 ADD THIS
@@ -192,19 +193,44 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
 
-    return Scaffold(
+    return WillPopScope(
+      onWillPop: () async {
+        /// 👇 SHOW CONFIRM DIALOG
+        final shouldExit = await showDialog<bool>(
+          context: context,
+          barrierDismissible: false,
+          builder: (_) {
+            return CommonConfirmDialog(
+              iconData: Icons.close,
+              title: "Exit App",
+              description: "Are you sure you want to close the application?",
+              yesText: "Exit",
+              onNo: () {
+                Navigator.pop(context, false); // ❌ don't exit
+              },
+              onYes: () {
+                Navigator.pop(context, true); // ✅ exit
+              },
+            );
+          },
+        );
 
-      backgroundColor: const Color(0xffF7F7F7),
+        return shouldExit ?? false;
+      },
+      child: Scaffold(
 
-      body: _getScreen(), // 👈 SWITCH SCREENS HERE
+        backgroundColor: const Color(0xffF7F7F7),
 
-      bottomNavigationBar: CustomBottomNav(
-        selectedIndex: selectedIndex,
-        onTap: (index) {
-          setState(() {
-            selectedIndex = index;
-          });
-        },
+        body: _getScreen(), // 👈 SWITCH SCREENS HERE
+
+        bottomNavigationBar: CustomBottomNav(
+          selectedIndex: selectedIndex,
+          onTap: (index) {
+            setState(() {
+              selectedIndex = index;
+            });
+          },
+        ),
       ),
     );
   }

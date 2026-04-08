@@ -221,12 +221,16 @@ class _OtpScreenState extends ConsumerState<OtpScreen> {
                     storage.saveToken(response['token']);
                   }
 
-                  if(response['company_id'] != null) {
-                    storage.saveCompanyId(response['company_id']);
-                  }
+                  final user = response['user'];
 
-                  if(response['name'] != null) {
-                    storage.saveUserName(response['name']);
+                  if (user != null) {
+                    if (user['company_id'] != null) {
+                      storage.saveCompanyId("${user['company_id']}");
+                    }
+
+                    if (user['name'] != null) {
+                      storage.saveUserName(user['name']);
+                    }
                   }
 
                   ToastHelper.showSuccess(message: "OTP verified");

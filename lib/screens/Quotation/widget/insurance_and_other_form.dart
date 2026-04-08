@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../../global_widget/custom_textfield.dart';
 import '../../../global_widget/dropdown_widget.dart';
+import '../../../global_widget/form_label_widget.dart';
 import '../../../notifier/dropdown_notifier.dart';
 import '../../../notifier/quotation_form_notifier.dart';
 import '../../../utils/app_colors.dart';
@@ -29,15 +30,15 @@ class _InsuranceAndOtherFormState extends ConsumerState<InsuranceAndOtherForm> {
 
 
   dynamic? selectedGst = 0;//'CGST/SGST';
-  dynamic gstSelectedPercentage = 0;
-  String? selectedInsurance = 'not_insured';
-  String? selectedInsuranceVehicle = 'not_insured';
+  dynamic gstSelectedPercentage = null;
+  String? selectedInsurance = null;
+  String? selectedInsuranceVehicle = null;
 
-  dynamic vehicleGstSelectedPercentage = 0;
-  dynamic? vehicleSelectedGst = 0;
+  dynamic vehicleGstSelectedPercentage = null;
+  dynamic? vehicleSelectedGst = null;
 
-  String? selectedEasyAccess = 'yes';
-  String? selectedRestriction = 'yes';
+  String? selectedEasyAccess = null;
+  String? selectedRestriction = null;
 
   @override
   void initState() {
@@ -52,16 +53,19 @@ class _InsuranceAndOtherFormState extends ConsumerState<InsuranceAndOtherForm> {
     needConcernController.text = data.specialNeeds ?? "";
 
     /// ✅ DROPDOWN RESTORE
-    selectedInsurance = data.insuranceType ?? 'not_insured';
-    gstSelectedPercentage = data.insurancePercent ?? 0;
-    selectedGst = data.insuranceGst ?? 0;
+    selectedInsurance = data.insuranceType;
+    gstSelectedPercentage = double.tryParse(data.insurancePercent.toString())?.toInt();
+    selectedGst = double.tryParse(data.insuranceGst.toString())?.toInt();
 
-    selectedInsuranceVehicle = data.vehicleInsuranceType ?? 'not_insured';
-    vehicleGstSelectedPercentage = data.vehicleInsurancePercent ?? 0;
-    vehicleSelectedGst = data.vehicleInsuranceGst ?? 0;
+    selectedInsuranceVehicle = data.vehicleInsuranceType;
 
-    selectedEasyAccess = data.easyAccess ?? 'yes';
-    selectedRestriction = data.restriction ?? 'yes';
+    // vehicleGstSelectedPercentage = data.vehicleInsurancePercent;
+    // vehicleSelectedGst = data.vehicleInsuranceGst;
+    vehicleGstSelectedPercentage = double.tryParse(data.vehicleInsurancePercent.toString())?.toInt();
+    vehicleSelectedGst = double.tryParse(data.vehicleInsuranceGst.toString())?.toInt();
+
+    selectedEasyAccess = data.easyAccess;
+    selectedRestriction = data.restriction;
   }
 
 
@@ -115,7 +119,8 @@ class _InsuranceAndOtherFormState extends ConsumerState<InsuranceAndOtherForm> {
               children: [
                 reusableDropdown(
                   title: "Insurance type",
-                  value: selectedInsuranceLabel ?? "",
+                  isRequired: true,
+                  value: selectedInsuranceLabel,
                   items: insuranceItem,
                   onChanged: (label) {
                     final val = dropdown.getValueByLabel("insurance_type", label ?? "");
@@ -136,13 +141,14 @@ class _InsuranceAndOtherFormState extends ConsumerState<InsuranceAndOtherForm> {
 
              reusableDropdownRow(
               title: "Insurance charge(%)",
-              value1: selectedGstPercentLabel ?? "",
-              value2: selectedGstLabel ?? "",
+              title2: "",
+              value1: selectedGstPercentLabel,
+              value2: selectedGstLabel,
               items1: gstPercentItems,
               items2: gstTypeItems,
               flex1: 6,
               flex2: 4,
-               onChanged1: (label) {
+              onChanged1: (label) {
                  final val = dropdown.getValueByLabel("insurance_charge_percent", label ?? "");
 
                  setState(() {
@@ -152,8 +158,7 @@ class _InsuranceAndOtherFormState extends ConsumerState<InsuranceAndOtherForm> {
                  /// ✅ ADD THIS
                  ref.read(quotationFormProvider.notifier).state.insurancePercent = val;
                },
-
-               onChanged2: (label) {
+              onChanged2: (label) {
                  final val = dropdown.getValueByLabel("gst_percent", label ?? "");
 
                  setState(() {
@@ -169,8 +174,8 @@ class _InsuranceAndOtherFormState extends ConsumerState<InsuranceAndOtherForm> {
 
 
             const SizedBox(height: 16),
-            Text("Declaration of goods",
-                style: TextStyles.f12w500Gray7),
+
+            formLabel("Declaration of goods", isRequired: true),
             const SizedBox(height: 6),
             CustomTextField(
               controller: goodsController,
@@ -185,12 +190,14 @@ class _InsuranceAndOtherFormState extends ConsumerState<InsuranceAndOtherForm> {
             /// Vehicle Insurance details
             const SizedBox(height: 10),
             Text("Vehicle Insurance details", style: TextStyles.f14w600mGray9),
+
             const SizedBox(height: 10),
             Row(
               children: [
                 reusableDropdown(
                   title: "Insurance type",
-                  value: selectedVehicleInsuranceLabel ?? "",
+                  isRequired: true,
+                  value: selectedVehicleInsuranceLabel,
                   items: insuranceVehicleItem,
                   onChanged: (label) {
                     final val = dropdown.getValueByLabel("vehicle_insurance_type", label ?? "");
@@ -209,8 +216,9 @@ class _InsuranceAndOtherFormState extends ConsumerState<InsuranceAndOtherForm> {
             const SizedBox(height: 16),
             reusableDropdownRow(
               title: "Insurance charge(%)",
-              value1: selectedGstVehiclePercentLabel ?? "",
-              value2: selectedVehicleGstLabel ?? "",
+              title2: "",
+              value1: selectedGstVehiclePercentLabel,
+              value2: selectedVehicleGstLabel,
               items1: gstVehiclePercentItems,
               items2: gstVehicleTypeItems,
               flex1: 6,
@@ -260,6 +268,7 @@ class _InsuranceAndOtherFormState extends ConsumerState<InsuranceAndOtherForm> {
               children: [//easy_access
                 reusableDropdown(
                   title: "IS THERE EASY ACCESS FOR LOAD & UNLOADING AT ORIGIN & DESTINATION(क्या लोड और अनलोडिंग आसान है?)",
+
                   value: easyAccessLabel,
                   items: easyAccessItem,
                   onChanged: (value) {
@@ -334,7 +343,7 @@ class _InsuranceAndOtherFormState extends ConsumerState<InsuranceAndOtherForm> {
 
 Widget reusableDropdownRow({
   required String title,
-  String? title2,
+  String title2 = "",
   required String? value1,
   required String? value2,
   required List<String> items1,
@@ -390,7 +399,7 @@ Widget reusableDropdownRow({
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-              Text(title2 ?? "", style: TextStyles.f12w500Gray7),
+              Text(title2, style: TextStyles.f12w500Gray7),
               const SizedBox(height: 6),
              Container(
               height: 48,
@@ -402,7 +411,7 @@ Widget reusableDropdownRow({
               ),
                child:  CustomDropdownField<String>(
                  value: value2,
-                 hintText: "select",
+                 hintText: title2.isEmpty ? "select gst" : "select",
                  items: items2, // ✅ now List<String>
                  onChanged: onChanged2,
                  textStyle: GoogleFonts.inter(
@@ -428,6 +437,7 @@ Widget reusableDropdown({
   required String? value,
   required List<String> items, // ✅ changed
   required ValueChanged<String?> onChanged,
+  bool isRequired = false, // ✅ add this
   int flex = 1,
 }) {
   return Expanded(
@@ -435,7 +445,7 @@ Widget reusableDropdown({
     child: Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(title, style: TextStyles.f12w500Gray7),
+        formLabel(title, isRequired: isRequired), // ✅ use here
         const SizedBox(height: 6),
         Container(
           height: 48,

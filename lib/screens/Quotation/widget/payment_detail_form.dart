@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../global_widget/build_charge_field.dart';
 import '../../../global_widget/build_common_dropdown.dart';
 import '../../../global_widget/custom_textfield.dart';
+import '../../../global_widget/form_label_widget.dart';
 import '../../../models/payment_field_visible.dart';
 import '../../../notifier/dropdown_notifier.dart';
 import '../../../notifier/quotation_form_notifier.dart';
@@ -42,10 +43,10 @@ class _PaymentDetailFormState extends ConsumerState<PaymentDetailForm> {
   String? selectedIncludeForUnloading = 'Included in freight';
   String? selectedIncludeForPackingMaterial = 'Included in freight';
 
-  String? selectedSurcharges = 'Applicable';
+  String? selectedSurcharges = null;
 
-  dynamic gstSelectedPercentage = 18;
-  String? gstTypeSelectedPercentage = 'CGST/SGST';
+  dynamic gstSelectedPercentage = null;
+  String? gstTypeSelectedPercentage = null;
 
   String? selectedIncludeForPacking = 'included';
   String? selectedIncludeForUnpacking = 'included';
@@ -70,8 +71,9 @@ class _PaymentDetailFormState extends ConsumerState<PaymentDetailForm> {
     unLoadingController.text = data.unloadingCharge ?? "";
     packingMaterialController.text = data.packingMaterialCharge ?? "";
     stChargesController.text = data.stCharges ?? "";
-    surChargesController.text = data.surchargeAmount ?? "";
 
+    surChargesController.text = data.surchargeAmount ?? "";
+    print("sur>>>>>>>>>>>>>>>>>>>>>>>>>>>>${data.surchargeAmount}");
     otherController.text = data.otherCharges ?? "";
     storageController.text = data.storageCharge ?? "";
     tptController.text = data.tptCharge ?? "";
@@ -84,10 +86,11 @@ class _PaymentDetailFormState extends ConsumerState<PaymentDetailForm> {
     selectedUnLoadingCharge = data.unloadingChargeType ?? 'included';
     selectedPackingMaterialCharge = data.packingMaterialChargeType ?? 'included';
 
-    selectedSurcharge = data.surchargeType ?? 'not_applicable';
+    selectedSurcharge = data.surchargeType;
 
-    gstSelectedPercentage = data.gstPercent ?? 18;
-    gstTypeSelectedPercentage = data.gstType ?? 'CGST/SGST';
+   // gstSelectedPercentage = data.gstPercent;//"gst_percent": "12.00",
+    gstSelectedPercentage = double.tryParse(data.gstPercent.toString())?.toInt();
+    gstTypeSelectedPercentage = data.gstType;
   }
 
   @override
@@ -145,8 +148,8 @@ class _PaymentDetailFormState extends ConsumerState<PaymentDetailForm> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text("Freight Charge",
-                              style: TextStyles.f12w500Gray7),
+
+                          formLabel("Freight Charge", isRequired: true),
                           const SizedBox(height: 6),
                           CustomTextField(
                             controller: freightController,
@@ -170,8 +173,8 @@ class _PaymentDetailFormState extends ConsumerState<PaymentDetailForm> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text("Advance Paid",
-                              style: TextStyles.f12w500Gray7),
+
+                          formLabel("Advance Paid", isRequired: false),
                           const SizedBox(height: 6),
                           CustomTextField(
                             controller: advanceController,
@@ -195,6 +198,7 @@ class _PaymentDetailFormState extends ConsumerState<PaymentDetailForm> {
             if (visibleFields.isPackingVisible)
               buildChargeField(
                 title: "Packing Charge",
+                isRequired: true,
                 items: includeForPackingItem,
                 selectedValue: selectedIncludeForPackingLabel,
                 controller: packingController,
@@ -218,6 +222,7 @@ class _PaymentDetailFormState extends ConsumerState<PaymentDetailForm> {
             if (visibleFields.isUnpackingVisible)
               buildChargeField(
                 title: "Unpacking Charge",
+                isRequired: true,
                 items: includeForUnpackingItem,
                 selectedValue: selectedForUnpackingLabel,
                 controller: unPackingController,
@@ -242,6 +247,7 @@ class _PaymentDetailFormState extends ConsumerState<PaymentDetailForm> {
             // if (visibleFields.isUnpackingVisible)
             buildChargeField(
               title: "Loading Charge",
+              isRequired: true,
               items: loadingChargeItem,
               selectedValue: loadingChargeLabel,
               controller: loadingController,
@@ -264,6 +270,7 @@ class _PaymentDetailFormState extends ConsumerState<PaymentDetailForm> {
 
             buildChargeField(
               title: "Unloading Charge",
+              isRequired: true,
               items: unLoadingChargeItem,
               selectedValue: unLoadingChargeLabel,
               controller: unLoadingController,
@@ -285,6 +292,7 @@ class _PaymentDetailFormState extends ConsumerState<PaymentDetailForm> {
 
             buildChargeField(
               title: "Packing material charge",
+              isRequired: true,
               items: packingMaterialItem,
               selectedValue: packingMaterialLabel,
               controller: packingMaterialController,
@@ -312,8 +320,8 @@ class _PaymentDetailFormState extends ConsumerState<PaymentDetailForm> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text("Storage charge",
-                            style: TextStyles.f12w500Gray7),
+
+                        formLabel("Storage charge", isRequired: true),
                         const SizedBox(height: 6),
                         CustomTextField(
                           controller: storageController,
@@ -333,8 +341,8 @@ class _PaymentDetailFormState extends ConsumerState<PaymentDetailForm> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text("Car/Bike TPT",
-                            style: TextStyles.f12w500Gray7),
+
+                        formLabel("Car/Bike TPT", isRequired: true),
                         const SizedBox(height: 6),
                         CustomTextField(
                           controller: tptController,
@@ -360,8 +368,8 @@ class _PaymentDetailFormState extends ConsumerState<PaymentDetailForm> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text("Miscellaneous charges",
-                          style: TextStyles.f12w500Gray7),
+
+                      formLabel("Miscellaneous charges", isRequired: true),
                       const SizedBox(height: 6),
                       CustomTextField(
                         controller: miscController,
@@ -381,8 +389,8 @@ class _PaymentDetailFormState extends ConsumerState<PaymentDetailForm> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text("Other charges",
-                          style: TextStyles.f12w500Gray7),
+
+                      formLabel("Other charges", isRequired: true),
                       const SizedBox(height: 6),
                       CustomTextField(
                         controller: otherController,
@@ -408,8 +416,7 @@ class _PaymentDetailFormState extends ConsumerState<PaymentDetailForm> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text("St Charges",
-                          style: TextStyles.f12w500Gray7),
+                      formLabel("St Charges", isRequired: true),
                       const SizedBox(height: 6),
                       CustomTextField(
                         controller: stChargesController,
@@ -417,6 +424,9 @@ class _PaymentDetailFormState extends ConsumerState<PaymentDetailForm> {
                         keyboardType: TextInputType.phone,
                         borderRadius: 12,
                         hintStyle: TextStyles.f12w400Gray5,
+                        onChanged: (val){
+                          ref.read(quotationFormProvider.notifier).state.stCharges = val;
+                        },
                       ),
                     ],
                   ),
@@ -424,6 +434,7 @@ class _PaymentDetailFormState extends ConsumerState<PaymentDetailForm> {
                 const SizedBox(width: 12),
                 buildCommonDropdown(
                   title: "Gst",
+                  isRequired: true,
                   value: selectedGstPercentLabel,
                   items: gstPercentItems,
                   onChanged: (value) {
@@ -446,6 +457,7 @@ class _PaymentDetailFormState extends ConsumerState<PaymentDetailForm> {
               children: [
                 buildCommonDropdown(
                   title: "Gst type",
+                  isRequired: true,
                   value: selectedGstLabel,
                   items: gstTypeItems,
                   onChanged: (value) {
@@ -466,11 +478,14 @@ class _PaymentDetailFormState extends ConsumerState<PaymentDetailForm> {
             SizedBox(height: 16,),
             buildChargeField(
               title: "Surcharge",
+              isRequired: true,
               items: surchargeItem,
               selectedValue: surchargeItemLabel,
               controller: surChargesController,
               onTextChanged: (val){
+
                 ref.read(quotationFormProvider.notifier).state.surchargeAmount = val;
+                print("surcharge amount >>>>>>>>>>>${ref.watch(quotationFormProvider).surchargeAmount}");
               },
               onChanged: (label) {
                 ref.read(quotationFormProvider.notifier).state.surchargeAmount = null;
@@ -479,7 +494,6 @@ class _PaymentDetailFormState extends ConsumerState<PaymentDetailForm> {
                 setState(() {
                   selectedSurcharge = val;
                 });
-
                 /// ✅ ADD THIS
                 ref.read(quotationFormProvider.notifier).state.surchargeType = val;
               },

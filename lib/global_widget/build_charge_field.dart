@@ -6,6 +6,7 @@ import '../utils/app_colors.dart';
 import '../utils/m_font_styles.dart';
 import 'dropdown_reuse_textfield.dart';
 import 'dropdown_widget.dart';
+import 'form_label_widget.dart';
 
 Widget buildChargeField({
   required String title,
@@ -14,11 +15,13 @@ Widget buildChargeField({
   required Function(String?) onChanged,
   required TextEditingController controller,
   Function(String?)? onTextChanged,
+  bool isRequired = false,
 }) {
   return Column(
     crossAxisAlignment: CrossAxisAlignment.start,
     children: [
-      Text(title, style: TextStyles.f12w500Gray7),
+
+      formLabel(title, isRequired: isRequired), // ✅ use here
       const SizedBox(height: 6),
       Container(
         height: 48,

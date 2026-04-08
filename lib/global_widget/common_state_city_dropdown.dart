@@ -6,12 +6,14 @@ import 'package:google_fonts/google_fonts.dart';
 import '../models/dropdown_item.dart';
 import '../utils/app_colors.dart';
 import '../utils/m_font_styles.dart';
+import 'form_label_widget.dart';
 
 Widget commonStateCityDropdowns({
   required String title,
   required String? value,
   required List<DropdownItem> items,
   required ValueChanged<DropdownItem?> onChanged,
+   bool isRequired=false,
   int flex = 1,
 }) {
   final selectedItem = items.where((e) => e.value == value).isNotEmpty
@@ -31,7 +33,8 @@ Widget commonStateCityDropdowns({
   return Column(
     crossAxisAlignment: CrossAxisAlignment.start,
     children: [
-      Text(title, style: TextStyles.f12w500Gray7),
+
+      formLabel(title, isRequired: isRequired), // ✅ use here
       const SizedBox(height: 6),
 
       Container(

@@ -6,6 +6,7 @@ import '../utils/app_colors.dart';
 import '../utils/m_font_styles.dart';
 import 'dropdown_reuse_textfield.dart';
 import 'dropdown_widget.dart';
+import 'form_label_widget.dart';
 
 
 Widget buildCommonDropdown({
@@ -13,12 +14,13 @@ Widget buildCommonDropdown({
   required String? value,
   required List<String> items,
   required Function(String?) onChanged,
+  bool isRequired = false,
 }) {
   return Expanded(
     child: Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(title, style: TextStyles.f12w500Gray7),
+        formLabel(title, isRequired: isRequired),
         const SizedBox(height: 6),
         Container(
           height: 48,

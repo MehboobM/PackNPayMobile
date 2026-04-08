@@ -17,7 +17,8 @@ import '../../utils/toast_message.dart';
 
 class NewQuotationScreen extends ConsumerStatefulWidget {
    final String? keyType;
-   NewQuotationScreen({super.key, required this.keyType});
+   final String? uid;
+   NewQuotationScreen({super.key, required this.keyType,this.uid});
 
   @override
   ConsumerState<NewQuotationScreen> createState() => _NewQuotationScreenState();
@@ -112,6 +113,15 @@ class _NewQuotationScreenState extends ConsumerState<NewQuotationScreen> {
           child: QuotationStepper(
             currentStep: currentStep,
             onStepTapped: (index) {
+              final notifier = ref.read(quotationFormProvider.notifier);
+              /// 🔒 Prevent skipping steps forward
+              if (index > currentStep) {
+                final error = notifier.validateStep(currentStep);
+                if (error != null) {
+                  ToastHelper.showError(message: error);
+                  return;
+                }
+              }
               setState(() {
                 currentStep = index;
               });
@@ -168,19 +178,6 @@ class _NewQuotationScreenState extends ConsumerState<NewQuotationScreen> {
                     text: currentStep == 3 ? "Save" : "Save & Next",
                     icon: Icons.keyboard_double_arrow_right,
                     iconRight: true,
-                    // onPressed: (){
-                    //   final data = ref.read(quotationFormProvider);
-                    //
-                    //   if (currentStep == 3) {
-                    //     /// FINAL SAVE
-                    //     print("FINAL DATA 👉 ${data.toJson()}");
-                    //
-                    //     ref.read(quotationFormProvider.notifier).clear();
-                    //   } else {
-                    //     nextStep();
-                    //   }
-                    // },
-
                     onPressed: handleSaveQuotation,
                     backgroundColor: AppColors.primary,
                     borderRadius: 12,
@@ -194,12 +191,20 @@ class _NewQuotationScreenState extends ConsumerState<NewQuotationScreen> {
     );
   }
 
-
   Future<void> handleSaveQuotation() async {
+    final notifier = ref.read(quotationFormProvider.notifier);
+    final error = notifier.validateStep(currentStep);
+
+    /// ❌ STOP IF ERROR
+    if (error != null) {
+      ToastHelper.showError(message: error);
+      return;
+    }
+
     final data = ref.read(quotationFormProvider);
 
     try {
-      /// 🔄 SHOW LOADER
+      /// 🔄 LOADER
       showDialog(
         context: context,
         barrierDismissible: false,
@@ -208,42 +213,72 @@ class _NewQuotationScreenState extends ConsumerState<NewQuotationScreen> {
         ),
       );
 
-      /// ✅ SAVE DRAFT TO HIVE
-      if(widget.keyType=="create_quatation"){
+      /// ✅ SAVE DRAFT ONLY FOR CREATE
+      if (widget.keyType == "create_quatation") {
         await HiveService.save(data);
       }
 
-
+      /// ✅ FINAL STEP
       if (currentStep == 3) {
+        bool success = false;
 
-        /// 🔥 CALL API
-        final res = await ref.read(quotationProvider.notifier).createQuotation(data);
+        /// 🔥 EDIT FLOW
+        if (widget.keyType == "edit_click") {
+          success = await ref.read(quotationProvider.notifier).updateQuotation(widget.uid ?? "", data);
+        }
 
+        /// 🔥 CREATE FLOW
+        else {
+          final res = await ref
+              .read(quotationProvider.notifier)
+              .createQuotation(data);
+
+          success = res['success'] == true;
+
+          if (success) {
+            ToastHelper.showSuccess(
+              message: "Quotation Created: ${res['quotation_no']}",
+            );
+          }
+        }
 
         if (mounted) Navigator.pop(context);
 
-        /// ✅ SUCCESS MESSAGE
-        ToastHelper.showSuccess(message: "Quotation Created: ${res['quotation_no']}",);//error
+        /// ✅ COMMON SUCCESS HANDLING
+        if (success) {
+          if (widget.keyType == "edit_click") {
+            ToastHelper.showSuccess(message: "Quotation updated successfully");
+          }
 
-        /// 🧹 CLEAR DATA
-        await HiveService.clear();
-        ref.read(quotationFormProvider.notifier).clear();
+          await HiveService.clear();
+          ref.read(quotationFormProvider.notifier).clear();
 
-        /// 🔙 GO BACK
-        if (mounted) Navigator.pop(context);
-
+          if (mounted) Navigator.pop(context, true);
+        } else {
+          ToastHelper.showError(
+            message: widget.keyType == "edit_click"
+                ? "Update failed"
+                : "Create failed",
+          );
+        }
       } else {
         if (mounted) Navigator.pop(context);
+
+        /// ✅ NEXT STEP
         nextStep();
       }
-
     } catch (e) {
       if (mounted) Navigator.pop(context);
+
       ToastHelper.showError(
-        message: "Failed to create quotation",
+        message: widget.keyType == "edit_click"
+            ? "Failed to update quotation"
+            : "Failed to create quotation",
       );
     }
   }
+
+
 }
 
 

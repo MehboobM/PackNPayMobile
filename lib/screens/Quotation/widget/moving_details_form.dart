@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../global_widget/common_state_city_dropdown.dart';
 import '../../../global_widget/custom_textfield.dart';
+import '../../../global_widget/form_label_widget.dart';
 import '../../../models/city_data.dart';
 import '../../../models/dropdown_item.dart';
 import '../../../models/state_data.dart';
@@ -85,8 +86,8 @@ class _MovingDetailsFormState extends ConsumerState<MovingDetailsForm> {
     _deliveryPincodeController = TextEditingController(text: data.deliveryPincode ?? "");
 
     /// Dropdown init
-    selectedMovingDetail = data.pickupLiftAvailable ?? 'YES';
-    selectedDeliveryDetail = data.deliveryLiftAvailable ?? 'YES';
+    selectedMovingDetail = data.pickupLiftAvailable ;
+    selectedDeliveryDetail = data.deliveryLiftAvailable;
 
     /// 🔥 MAIN LOGIC (FIXED)
     Future.microtask(() async {
@@ -118,6 +119,8 @@ class _MovingDetailsFormState extends ConsumerState<MovingDetailsForm> {
         final cities = ref.read(quotationProvider).cities;
 
         selectedPickupCity = findCity(cities, data.pickupCityId,data.pickupCityName);
+
+        ref.read(quotationFormProvider.notifier).state.pickupCityName = selectedPickupCity?.name;
       }
 
       /// =========================
@@ -129,14 +132,13 @@ class _MovingDetailsFormState extends ConsumerState<MovingDetailsForm> {
 
       if (selectedDeliveryState != null) {
         /// 6️⃣ Load delivery cities
-        final res = await notifier.repository
-            .fetchCities(selectedDeliveryState!.id!);
+        final res = await notifier.repository.fetchCities(selectedDeliveryState!.id!);
 
         deliveryCities = res.data ?? [];
 
         /// 7️⃣ NOW set delivery city
-        selectedDeliveryCity =
-            findCity(deliveryCities, data.deliveryCityId,data.deliveryCityName);
+        selectedDeliveryCity = findCity(deliveryCities, data.deliveryCityId,data.deliveryCityName);
+        ref.read(quotationFormProvider.notifier).state.deliveryCityName = selectedDeliveryCity?.name;
       }
 
       /// FINAL UI UPDATE
@@ -144,8 +146,8 @@ class _MovingDetailsFormState extends ConsumerState<MovingDetailsForm> {
     });
   }
 
-  String? selectedMovingDetail = 'YES';
-  String? selectedDeliveryDetail = 'YES';
+  String? selectedMovingDetail = null;
+  String? selectedDeliveryDetail = null;
 
   States? selectedPickupState;
   Cities? selectedPickupCity;
@@ -206,7 +208,8 @@ class _MovingDetailsFormState extends ConsumerState<MovingDetailsForm> {
             const SizedBox(height: 16),
 
             /// Shifting DATE + Moving DATE
-            Text("Shifting/Moving Date", style: TextStyles.f12w500Gray7,),
+
+            formLabel("Shifting/Moving Date", isRequired: true),
             const SizedBox(height: 6),
             CustomTextField(
               controller: _shiftDateController,
@@ -230,8 +233,8 @@ class _MovingDetailsFormState extends ConsumerState<MovingDetailsForm> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text("Additional phone no.",
-                        style: TextStyles.f12w500Gray7,),
+
+                      formLabel("Additional phone no.", isRequired: true),
                       const SizedBox(height: 6),
                       CustomTextField(
                         controller: _pickupPhoneNoController,
@@ -251,8 +254,8 @@ class _MovingDetailsFormState extends ConsumerState<MovingDetailsForm> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text("Email",
-                        style: TextStyles.f12w500Gray7,),
+
+                      formLabel("Email", isRequired: true),
                       const SizedBox(height: 6),
                       CustomTextField(
                         controller: _pickupEmailController,
@@ -280,12 +283,12 @@ class _MovingDetailsFormState extends ConsumerState<MovingDetailsForm> {
                 Expanded(
                   child: commonStateCityDropdowns(
                     title: "State",
+                    isRequired: true,
                     value: selectedPickupState?.id.toString(),
                     items: stateItems,
                       onChanged: (item) {
                         if (item != null) {
-                          final selected = stateData.states
-                              ?.firstWhere((e) => e.id.toString() == item.value);
+                          final selected = stateData.states?.firstWhere((e) => e.id.toString() == item.value);
 
                           if (selected != null) {
                             setState(() {
@@ -311,6 +314,7 @@ class _MovingDetailsFormState extends ConsumerState<MovingDetailsForm> {
                 Expanded(
                   child: commonStateCityDropdowns(
                     title: "City",
+                      isRequired: true,
                     value: selectedPickupCity?.id.toString(),
                     items: pickupCityItems,
                       onChanged: (item) {
@@ -325,6 +329,7 @@ class _MovingDetailsFormState extends ConsumerState<MovingDetailsForm> {
 
                             /// ✅ SAVE
                             ref.read(quotationFormProvider.notifier).state.pickupCityId = item.value;
+                            ref.read(quotationFormProvider.notifier).state.pickupCityName = selected.name;
                           }
                         }
                       }
@@ -343,8 +348,7 @@ class _MovingDetailsFormState extends ConsumerState<MovingDetailsForm> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text("Pincode",
-                        style: TextStyles.f12w500Gray7,),
+                      formLabel("Pincode", isRequired: true),
                       const SizedBox(height: 6),
                       CustomTextField(
                         controller: _pickupPincodeController,
@@ -363,6 +367,7 @@ class _MovingDetailsFormState extends ConsumerState<MovingDetailsForm> {
                 Expanded(
                   child: reusableDropdown(
                     title: "Lift",
+                    isRequired: true,
                     value: liftAvailableLabel,
                     items: liftAvailableItem,
                       onChanged: (value) {
@@ -405,8 +410,8 @@ class _MovingDetailsFormState extends ConsumerState<MovingDetailsForm> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text("Additional phone no.",
-                        style: TextStyles.f12w500Gray7,),
+
+                      formLabel("Additional phone no.", isRequired: true),
                       const SizedBox(height: 6),
                       CustomTextField(
                         controller: _deliveryPhoneNoController,
@@ -426,8 +431,7 @@ class _MovingDetailsFormState extends ConsumerState<MovingDetailsForm> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text("Email",
-                        style: TextStyles.f12w500Gray7,),
+                      formLabel("Email", isRequired: true),
                       const SizedBox(height: 6),
                       CustomTextField(
                         controller: _deliveryEmailController,
@@ -455,6 +459,7 @@ class _MovingDetailsFormState extends ConsumerState<MovingDetailsForm> {
                 Expanded(
                   child: commonStateCityDropdowns(
                     title: "State",
+                    isRequired: true,
                     value: selectedDeliveryState?.id.toString(),
                     items: stateItems,
                       onChanged: (item) async {
@@ -494,6 +499,7 @@ class _MovingDetailsFormState extends ConsumerState<MovingDetailsForm> {
                 Expanded(
                   child: commonStateCityDropdowns(
                     title: "City",
+                    isRequired: true,
                     value: selectedDeliveryCity?.id.toString(),
                     items: deliveryCityItems,
                       onChanged: (item) {
@@ -507,6 +513,7 @@ class _MovingDetailsFormState extends ConsumerState<MovingDetailsForm> {
 
                           /// ✅ SAVE
                           ref.read(quotationFormProvider.notifier).state.deliveryCityId = item.value;
+                          ref.read(quotationFormProvider.notifier).state.deliveryCityName = selected.name;
                         }
                       }
 
@@ -524,8 +531,8 @@ class _MovingDetailsFormState extends ConsumerState<MovingDetailsForm> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text("Pincode",
-                        style: TextStyles.f12w500Gray7,),
+
+                      formLabel("Pincode", isRequired: true),
                       const SizedBox(height: 6),
                       CustomTextField(
                         controller: _deliveryPincodeController,
@@ -544,6 +551,7 @@ class _MovingDetailsFormState extends ConsumerState<MovingDetailsForm> {
                 Expanded(
                   child: reusableDropdown(
                     title: "Lift",
+                    isRequired: true,
                     value: liftDeliveryLabel,
                     items: liftDeliveryItem,
                       onChanged: (value) {

@@ -98,4 +98,53 @@ class QuatationRepository {
       rethrow;
     }
   }
+
+  Future<bool> deleteQuotation(String quotationNo) async {
+    try {
+      final response = await network.delete("${ApiEndPoints.deleteQuotationApi}/$quotationNo",{});
+
+      if (response.statusCode == 200 && response.data['success'] == true) {
+        return true;
+      } else {
+        return false;
+      }
+    } catch (e) {
+      return false;
+    }
+  }
+
+  Future<Map<String, dynamic>> fetchQuotationByUid(String uid) async {
+    try {
+      final response = await network.get(
+        "${ApiEndPoints.getQuotationApi}?uid=$uid",
+      );
+
+      if (response.statusCode == 200 &&
+          response.data['success'] == true) {
+        return response.data['data'];
+      } else {
+        throw Exception("Failed to fetch quotation");
+      }
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<bool> updateQuotation(String uid, Map<String, dynamic> body) async {
+    try {
+      final response = await network.put(
+        "${ApiEndPoints.updateQuotationApi}/$uid", body,
+      );
+
+      if (response.statusCode == 200 &&
+          response.data['success'] == true) {
+        return true;
+      } else {
+        return false;
+      }
+    } catch (e) {
+      return false;
+    }
+  }
+
 }

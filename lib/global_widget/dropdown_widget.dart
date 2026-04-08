@@ -6,7 +6,7 @@ import 'package:google_fonts/google_fonts.dart';
 import '../utils/app_colors.dart';
 
 class CustomDropdownField<T> extends StatelessWidget {
-  final String hintText;
+  final String? hintText;
   final TextStyle? hintStyle;
   final List<T> items; // ✅ changed
   final T? value;
@@ -16,7 +16,7 @@ class CustomDropdownField<T> extends StatelessWidget {
 
   const CustomDropdownField({
     Key? key,
-    required this.hintText,
+     this.hintText,
     required this.items,
     required this.value,
     required this.onChanged,
@@ -66,7 +66,7 @@ class CustomDropdownField<T> extends StatelessWidget {
       hint: Align(
         alignment: Alignment.centerLeft,
         child: Text(
-          "Select",
+          hintText ?? "Select",
           style: GoogleFonts.inter(
             fontSize: 12,
             color: AppColors.mGray4, // 👈 grey hint

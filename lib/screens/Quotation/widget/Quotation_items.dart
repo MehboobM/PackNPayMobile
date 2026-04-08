@@ -190,13 +190,13 @@ class QuotationListItem extends StatelessWidget {
 
                 const SizedBox(height: 6),
 
-                _actionChip("Survey list: $surveyId"),
+                _actionChip("SRV list: $surveyId"),
                 const SizedBox(height: 2),
 
                 _actionChip("LR list: $lrId"),
                 const SizedBox(height: 2),
 
-                _actionChip("Order list: $orderId"),
+                _actionChip("ODR list: $orderId"),
               ],
             ),
           )

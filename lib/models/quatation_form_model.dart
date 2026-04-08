@@ -134,6 +134,8 @@ class QuotationFormModel {
     this.deliveryStateCode,
     this.deliveryCityId,
     this.deliveryCityName,
+    this.movingFrom,
+    this.movingTo,
 
     this.freightCharge,
     this.advancePaid,
@@ -210,6 +212,8 @@ class QuotationFormModel {
       "deliveryStateCode": deliveryStateCode,
       "deliveryCityId": deliveryCityId,
       "deliveryCityName": deliveryCityName,
+      "movingFrom": movingFrom,
+      "movingTo": movingTo,
 
       "freightCharge": freightCharge,
       "advancePaid": advancePaid,
@@ -232,6 +236,7 @@ class QuotationFormModel {
       "gstPercent": gstPercent,
       "gstType": gstType,
       "surchargeType": surchargeType,
+      "surchargeAmount": surchargeAmount,
 
       "insuranceType": insuranceType,
       "insurancePercent": insurancePercent,
@@ -287,7 +292,8 @@ class QuotationFormModel {
       deliveryStateCode: json["deliveryStateCode"],
       deliveryCityId: json["deliveryCityId"],
       deliveryCityName: json["deliveryCityName"],
-
+      movingFrom: json["movingFrom"],
+      movingTo: json["movingTo"],
       freightCharge: json["freightCharge"],
       advancePaid: json["advancePaid"],
       packingCharge: json["packingCharge"],
@@ -308,6 +314,7 @@ class QuotationFormModel {
       gstPercent: json["gstPercent"],
       gstType: json["gstType"],
       surchargeType: json["surchargeType"],
+      surchargeAmount: json["surchargeAmount"],
 
       insuranceType: json["insuranceType"],
       insurancePercent: json["insurancePercent"],

@@ -50,8 +50,8 @@ class NavigationRouter {
         return MaterialPageRoute(builder: (_) => const QuotationScreen());
 
       case newQuotationRoute:
-        final args = settings.arguments as String?;
-        return MaterialPageRoute(builder: (_) =>  NewQuotationScreen(keyType: args,),);
+        final args = settings.arguments as Map<String, dynamic>;
+        return MaterialPageRoute(builder: (_) =>  NewQuotationScreen(keyType: args['keyType'],uid: args['uid'],),);
 
       case ordersScreenRoute:
         return MaterialPageRoute(builder: (_) => const OrdersScreen());

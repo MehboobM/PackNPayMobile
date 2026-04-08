@@ -1,6 +1,7 @@
 
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:pack_n_pay/notifier/quotation_form_notifier.dart';
 
 import '../all_state/quatation_state.dart';
 import '../api_services/network_handler.dart';
@@ -149,9 +150,12 @@ class QuotationNotifier extends StateNotifier<QuotationState> {
   Future<Map<String, dynamic>> _buildPayload(QuotationFormModel m) async {
     final companyId = await StorageService().getCompanyId();
     final userName = await StorageService().getUserName();
+    int companyIdInt = int.parse(companyId ?? "-1");
+
+    print("id is $companyIdInt>>>>>>>>>>$userName");
     return {
-      "company_id": companyId,//int
-      "customer_name": userName,//string
+      "company_id": companyId,
+      "customer_name": userName,
       "phone": m.phone,
       "email": m.email,
       "company_or_party_name": m.companyName,
@@ -164,8 +168,8 @@ class QuotationNotifier extends StateNotifier<QuotationState> {
       "packing_date": formatToApiDate(m.packingDate),
       "delivery_date": formatToApiDate(m.deliveryDate),
 
-      "moving_from": m.pickupCityId,
-      "moving_to": m.deliveryCityId,
+      "moving_from": m.pickupCityName,
+      "moving_to": m.deliveryCityName,
 
       "vehicle_type": m.vehicleType,
       "load_type": m.loadType,
@@ -256,6 +260,158 @@ class QuotationNotifier extends StateNotifier<QuotationState> {
     if (parts.length != 3) return date;
 
     return "${parts[2]}-${parts[1]}-${parts[0]}"; // yyyy-mm-dd
+  }
+
+
+  Future<bool> deleteQuotation(String quotationNo) async {
+    try {
+      state = state.copyWith(isPageLoading: true);
+      final success = await repository.deleteQuotation(quotationNo);
+
+      if (success) {
+        state = state.copyWith(isPageLoading: false);
+        return true;
+      } else {
+        return false;
+      }
+    } catch (e) {
+      return false;
+    }
+  }
+
+  Future<void> fetchQuotationAndFillForm(
+      String uid, WidgetRef ref) async {
+    try {
+      state = state.copyWith(isPageLoading: true);
+
+      final data = await repository.fetchQuotationByUid(uid);
+
+      final model = QuotationFormModel(
+        /// STEP 1
+        quotationNo: data["quotation_no"],
+        companyName: data["company_or_party_name"],
+        partyName: data["party_name"],
+        phone: data["phone"],
+        email: data["email"],
+        gstNo: data["gst_no"],
+
+        shiftingDate: _formatDate(data["pickup_address"]?["moving_date"]),
+        quotationDate: _formatDate(data["quotation_date"]),
+        packingDate: _formatDate(data["packing_date"]),
+        deliveryDate: _formatDate(data["delivery_address"]?["moving_date"]), // ✅ FIX
+
+        /// LOCATION
+        movingFrom: data["moving_from"],
+        movingTo: data["moving_to"],
+        pickupCityName: data["moving_from"],
+        deliveryCityName: data["moving_to"],
+
+        vehicleType: data["vehicle_type"],
+        loadType: data["load_type"],
+        movingPath: data["moving_path"],
+
+        /// PICKUP
+        pickupPhone: data["pickup_address"]?["phone"],
+        pickupEmail: data["pickup_address"]?["email"],
+        pickupPincode: data["pickup_address"]?["pincode"],
+        pickupStateId: data["pickup_address"]?["state"]?.toString(),
+        pickupCityId: data["pickup_address"]?["city"]?.toString(),
+        pickupLiftAvailable: data["pickup_address"]?["lift_available"],
+
+        /// DELIVERY
+        deliveryPhone: data["delivery_address"]?["phone"],
+        deliveryEmail: data["delivery_address"]?["email"],
+        deliveryPincode: data["delivery_address"]?["pincode"],
+        deliveryStateId: data["delivery_address"]?["state"]?.toString(),
+        deliveryCityId: data["delivery_address"]?["city"]?.toString(),
+        deliveryLiftAvailable: data["delivery_address"]?["lift_available"],
+
+        /// CHARGES
+        freightCharge: data["freight_charge"],
+        packingCharge: data["packing_charge"],
+        unpackingCharge: data["unpacking_charge"],
+        loadingCharge: data["loading_charge"],
+        unloadingCharge: data["unloading_charge"],
+        packingMaterialCharge: data["packing_material_charge"],
+
+        storageCharge: data["storage_charge"],
+        tptCharge: data["car_bike_tpt"],
+        miscCharge: data["misc_charge"],
+        otherCharges: data["other_charges"],
+        stCharges: data["st_charge"],
+
+        surchargeAmount: data["surcharge"],
+        surchargeType: data["surcharge_type"],
+
+        /// TYPES
+        packingChargeType: data["packing_charge_type"],
+        unpackingChargeType: data["unpacking_charge_type"],
+        loadingChargeType: data["loading_charge_type"],
+        unloadingChargeType: data["unloading_charge_type"],
+        packingMaterialChargeType:
+        data["packing_material_charge_type"],
+
+        /// GST
+        gstType: data["gst_type"],
+        gstPercent: data["gst_percent"],
+
+        /// INSURANCE
+        insuranceType: data["insurance_type"],
+        insurancePercent: data["insurance_charge"],
+        insuranceGst: data["insurance_gst"],
+
+        vehicleInsuranceType: data["vehicle_insurance_type"],
+        vehicleInsurancePercent:
+        data["vehicle_insurance_charge"],
+        vehicleInsuranceGst: data["vehicle_insurance_gst"],
+
+        /// DECLARATION
+        goodsDeclaration: data["declaration_of_goods"],
+        vehicleDeclaration: data["declaration_of_vehicle"],
+
+        /// OTHER
+        easyAccess: data["easy_access"],
+        balconyRemarks: data["balcony_items"],
+        restriction: data["loading_restrictions"],
+        specialNeeds: data["special_needs"],
+      );
+
+      ref.read(quotationFormProvider.notifier).state = model;
+
+      state = state.copyWith(isPageLoading: false);
+    } catch (e) {
+      state = state.copyWith(isPageLoading: false);
+      throw Exception("Failed to load quotation");
+    }
+  }
+
+  String _formatDate(String? date) {
+    if (date == null) return "";
+
+    final parsed = DateTime.tryParse(date);
+    if (parsed == null) return "";
+
+    return "${parsed.day.toString().padLeft(2, '0')}/"
+        "${parsed.month.toString().padLeft(2, '0')}/"
+        "${parsed.year}";
+  }
+
+  Future<bool> updateQuotation(
+      String uid, QuotationFormModel model) async {
+    try {
+      state = state.copyWith(isPageLoading: true);
+
+      final payload = await _buildPayload(model);
+
+      final success = await repository.updateQuotation(uid, payload);
+
+      state = state.copyWith(isPageLoading: false);
+
+      return success;
+    } catch (e) {
+      state = state.copyWith(isPageLoading: false);
+      return false;
+    }
   }
 
 }
