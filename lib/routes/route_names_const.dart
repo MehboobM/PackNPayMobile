@@ -11,5 +11,7 @@ const String quotationScreenRoute = "/quotation_screen";
 const String newQuotationRoute = "/new_quotation_screen";
 const String ordersScreenRoute = "/orders_screen";
 const String orderDetailsScreenRoute = "/order_details_screen";
+const String moneyListScreenRoute = "/moneyListScreen";
+const String newReceiptScreenRoute = "/newReceiptScreen";
 
 

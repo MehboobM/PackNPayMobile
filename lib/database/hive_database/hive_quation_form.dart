@@ -1,7 +1,4 @@
-
-
 import 'package:hive/hive.dart';
-
 import '../../models/quatation_form_model.dart';
 
 class HiveService {

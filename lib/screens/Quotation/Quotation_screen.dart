@@ -497,7 +497,7 @@ class _QuotationScreenState extends ConsumerState<QuotationScreen> {
                                     );
                                   },
                                   onTapMenu: (detail) {
-                                    _onTapMenu(context, detail.globalPosition);
+                                    onTapMenu(context, detail.globalPosition);
 
                                   },
                                 );
@@ -510,7 +510,7 @@ class _QuotationScreenState extends ConsumerState<QuotationScreen> {
       ),
     );
   }
-  void _onTapMenu(BuildContext context, Offset position) {
+  void onTapMenu(BuildContext context, Offset position) {
     showGlobalPopupMenu(
       context: context,
       tapPosition: position,

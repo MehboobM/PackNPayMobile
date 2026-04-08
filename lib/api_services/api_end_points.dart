@@ -20,6 +20,8 @@ class ApiEndPoints {
   static const  stateApi = "get-states";
   static const  cityApi = "get-cities";
   static const  createQuotationApi = "quotation/create";
+  static const moneyReceiptList = "money-receipt-list";
+  static const createMoneyReceipt = "money-receipt/create";
 
 
 }
