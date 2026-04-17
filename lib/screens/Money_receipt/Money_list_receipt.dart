@@ -8,6 +8,7 @@ import 'package:pack_n_pay/utils/m_font_styles.dart';
 import 'package:pack_n_pay/global_widget/custom_textfield.dart';
 import '../../global_widget/menu_widget.dart';
 import '../../global_widget/view_download_service.dart';
+import '../../notifier/money_recepitform.dart';
 import '../../notifier/moneyreceipt_notifier.dart';
 import '../../routes/route_names_const.dart';
 import '../../utils/toast_message.dart';
@@ -353,12 +354,14 @@ class _MoneyListScreenState
     try {
       final data = await ref
           .read(moneyReceiptProvider.notifier)
-          .getReceiptByUid(item.uid); // ✅ FIXED
+          .getReceiptByUid(item.uid);
+
+      ref.read(moneyReceiptFormProvider.notifier).clear();
 
       Navigator.pushNamed(
         context,
         newReceiptScreenRoute,
-        arguments: Map<String, dynamic>.from(data), // 🔥 ensure map copy
+        arguments: data,
       );
     } catch (e) {
       ToastHelper.showError(

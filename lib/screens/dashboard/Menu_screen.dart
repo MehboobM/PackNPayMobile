@@ -11,6 +11,7 @@ import '../../notifier/quotation_form_notifier.dart';
 import '../../routes/route_names_const.dart';
 import '../../utils/app_colors.dart';
 import '../../utils/m_font_styles.dart';
+import '../dummy/dummy_screen.dart';
 import '../Quotation/widget/common_dialog.dart';
 
 class MenuScreen extends StatelessWidget {
@@ -32,27 +33,40 @@ class MenuScreen extends StatelessWidget {
         ),
         elevation: 2,
         actions: [
+          /// 🔹 Help & Support Icon
           Padding(
             padding: const EdgeInsets.only(right: 16),
-            child: SvgPicture.asset(
-              "assets/icons/P_support.svg",
-              width: 22,
-              height: 22,
+            child: GestureDetector(
+              onTap: () {
+                Navigator.pushNamed(context, helpSupportScreenRoute);
+              },
+              child: SvgPicture.asset(
+                "assets/icons/P_support.svg",
+                width: 22,
+                height: 22,
+              ),
             ),
           ),
+
+          /// 🔹 Settings Icon
           Padding(
             padding: const EdgeInsets.only(right: 16),
-            child: SvgPicture.asset(
-              "assets/icons/Settings.svg",
-              width: 22,
-              height: 22,
+            child: GestureDetector(
+              onTap: () {
+                Navigator.pushNamed(context, settingsScreenRoute);
+              },
+              child: SvgPicture.asset(
+                "assets/icons/Settings.svg",
+                width: 22,
+                height: 22,
+              ),
             ),
           ),
         ],
       ),
 
       body: Consumer(
-        builder: (context, ref, child) {
+          builder: (context, ref, child) {
           return Container(
             color: const Color(0xffF3F3F3),
             child: Container(
@@ -75,14 +89,13 @@ class MenuScreen extends StatelessWidget {
                           icon: "assets/images/home_icon.svg",
                           children: [],
                         ),
-
-                         MenuDropdown(
+                        MenuDropdown(
                           title: "Survey",
                           icon: "assets/icons/Survey.svg",
                           children: [
                             MenuItem(
-                                title: "Survey list",
-                                icon: "assets/icons/bar.svg",
+                              title: "Survey list",
+                              icon: "assets/icons/bar.svg",
                               onTap: () {
                                 Navigator.pushNamed(context, surveyScreenRoute);
                               },
@@ -90,8 +103,8 @@ class MenuScreen extends StatelessWidget {
 
                             ),
                             MenuItem(
-                                title: "Add new survey",
-                                icon: "assets/icons/Plus.svg",
+                              title: "Add new survey",
+                              icon: "assets/icons/Plus.svg",
                               onTap: () {
                                 Navigator.pushNamed(context, surveyLinkRoute);
                               },
@@ -105,6 +118,7 @@ class MenuScreen extends StatelessWidget {
                                 icon: "assets/icons/generic.svg"),
                           ],
                         ),
+
 
                         MenuDropdown(
                           title: "Quotation",
@@ -202,10 +216,19 @@ class MenuScreen extends StatelessWidget {
                           ],
                         ),
 
-                        const MenuDropdown(
+                        MenuDropdown(
                           title: "LR Bilty",
                           icon: "assets/icons/Bilty.svg",
-                          children: [],
+                          children: [
+                            MenuItem(
+                              title: "Lorry Receipts",
+                              icon: "assets/icons/bar.svg", // Replace with a suitable icon if available
+                              onTap: () {
+                                Navigator.pushNamed(context, lorryReceiptListScreenRoute);
+                              },
+                            ),
+
+                          ],
                         ),
 
                         MenuDropdown(
@@ -219,42 +242,88 @@ class MenuScreen extends StatelessWidget {
                                 Navigator.pushNamed(context, moneyListScreenRoute);
                               },
                             ),
-                            MenuItem(
-                              title: "New Receipt",
-                              icon: "assets/icons/Plus.svg",
-                              onTap: () {
-                                Navigator.pushNamed(context, newReceiptScreenRoute);
-                              },
-                            ),
                           ],
                         ),
 
-                        const MenuDropdown(
+                        MenuDropdown(
                           title: "Staffs",
                           icon: "assets/icons/users.svg",
-                          children: [],
+                          children: [
+                            MenuItem(
+                              title: "Staff",
+                              icon: "assets/icons/users.svg",
+                              onTap: () {
+                                Navigator.pushNamed(context, staffScreenRoute);
+                              },
+                            ),
+
+                          ],
                         ),
 
                         MenuDropdown(
                           title: "Expanse Management",
                           icon: "assets/icons/expense.svg",
-                          children: [],
+                          children: [
+                            MenuItem(
+                              title: "Expense Category",
+                              icon: "assets/icons/users.svg",
+                              onTap: () {
+                                Navigator.pushNamed(context, expenseCategoriesRoute);
+                              },
+                            ),
+                            MenuItem(
+                              title: "Office Expense",
+                              icon: "assets/icons/Plus.svg",
+                              onTap: () {
+                                Navigator.pushNamed(context, OfficeExpensePageRoute);
+                              },
+                            ),
+                          ],
                         ),
                         const MenuSectionHeader(title: "Others"),
-                        const MenuDropdown(
+                        MenuDropdown(
                           title: "Letter Head",
                           icon: "assets/icons/Letterhead.svg",
-                          children: [],
+                          children: [
+                            MenuItem(
+                              title: "Letter Head",
+                              icon: "assets/icons/Letterhead.svg",
+                              onTap: () {
+                                Navigator.pushNamed(context, LetterheadRoute);
+                              },
+                            ),
+                          ],
                         ),
-                        const MenuDropdown(
+                         MenuDropdown(
                           title: "Subscription",
                           icon: "assets/icons/subs.svg",
-                          children: [],
+                          children: [
+                            MenuItem(
+                              title: "subscription",
+                              icon: "assets/icons/subs.svg",
+                              onTap: () {
+                                Navigator.pushNamed(context, SubscriptionRoute);
+                              },
+                            ),
+                          ],
                         ),
-                        const MenuDropdown(
+                         MenuDropdown(
                           title: "Business Details",
                           icon: "assets/icons/buisness.svg",
-                          children: [],
+                          children: [
+                            MenuItem(
+                              title: "subscription",
+                              icon: "assets/icons/subs.svg",
+                              onTap: () {
+                                Navigator.pushReplacement(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => const DummyExpenseScreen(),
+                                  ),
+                                );
+                              },
+                            ),
+                          ],
                         ),
 
                       ],
@@ -266,15 +335,11 @@ class MenuScreen extends StatelessWidget {
               ),
             ),
           );
-        },
-      )
-
+        }
+      ),
     );
   }
 }
-
-
-
 
 
 /*

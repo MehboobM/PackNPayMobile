@@ -65,8 +65,8 @@ class OrderStatusStepper extends StatelessWidget {
                           child: isCompleted
                               ? Padding(
                             padding: const EdgeInsets.all(6),
-                            child: Image.asset(
-                              "assets/images/stepper_imgage.png", // ✅ PNG IMAGE
+                            child: SvgPicture.asset(
+                              "assets/icons/stepper_image.svg",
                               fit: BoxFit.contain,
                             ),
                           )

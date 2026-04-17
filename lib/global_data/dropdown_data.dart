@@ -470,6 +470,19 @@ const globalJson = {
     ]
   },
 
+  "issue_type": {
+    "label": "Issue Type",
+    "db_column": "issue_type",
+    "db_enum": ["ACCOUNT", "PAYMENT", "SUBSCRIPTION", "TECHNICAL", "OTHER"],
+    "options": [
+      { "label": "Account Issue", "value": "ACCOUNT" },
+      { "label": "Payment Issue", "value": "PAYMENT" },
+      { "label": "Subscription Issue", "value": "SUBSCRIPTION" },
+      { "label": "Technical Issue", "value": "TECHNICAL" },
+      { "label": "Other", "value": "OTHER" },
+    ],
+  },
+
   "toast_position": {
     "label": "Toast Notification Position",
     "db_column": "toast_position",

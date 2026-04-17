@@ -2,7 +2,8 @@ class ApiEndPoints {
 
 
   ///Local
-//  static const server = "http://192.168.0.176:5000/api/";
+  //static const server = "http://192.168.0.247:5000/api/";
+
 
   ///Production
   static const server = "https://packnpay.in/api/";
@@ -26,6 +27,35 @@ class ApiEndPoints {
   static const moneyReceiptList = "money-receipt-list";
   static const createMoneyReceipt = "money-receipt/create";
   static const orderList = "order-list";
+
+  static const userList = "user-list";
+  static const createUser = "user/create";
+  static const toggle ="user/toggle-status/";
+  static const String lrList = "lr-list";
+  static const String getAllCities = "get-all-cities";
+  static const String getStates = "get-states";
+  static const String getCitiesByState = "get-cities";
+  static const String createLorryReceipt = "lr/create";
+  static String getLorryReceiptByUid(String uid) =>
+      "lr?uid=$uid";
+
+  static String updateLorryReceipt(String uid) =>
+      "lr/update/$uid";
+
+  static String deleteLorryReceipt(String uid) =>
+      "lr/$uid";
+  static const String prefillByOrderNo =
+      "lr/prefill-order/";
+  static const String getSettings = "settings";
+  static const String updateWatermarkSettings = "settings/watermark";
+  static const String updateLetterHeadSettings = "settings/letterhead";
+  static const String updateQuotationSettings =
+      "settings/quotation";
+
+  static const String updateLRSettings =
+      "settings/lr";
+  static const String createSupportTicket = "support/create";
+  static const String getMySupportTickets = "support/my-tickets";
 
 
 

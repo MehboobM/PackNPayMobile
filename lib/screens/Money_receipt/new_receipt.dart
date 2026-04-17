@@ -1,23 +1,24 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import '../../global_widget/custom_button.dart';
 import '../../global_widget/custom_textfield.dart';
 import '../../global_widget/dropdown_with textfield.dart';
-import '../../repositry/money_receipt_repository.dart';
+import '../../notifier/money_recepitform.dart';
 import '../../utils/app_colors.dart';
 import '../../utils/m_font_styles.dart';
 import '../../utils/toast_message.dart';
 import '../Quotation/widget/insurance_and_other_form.dart';
 
-class NewReceiptScreen extends StatefulWidget {
+class NewReceiptScreen extends ConsumerStatefulWidget {
   const NewReceiptScreen({super.key});
 
   @override
-  State<NewReceiptScreen> createState() => _NewReceiptScreenState();
+  ConsumerState<NewReceiptScreen> createState() =>
+      _NewReceiptScreenState();
 }
 
-class _NewReceiptScreenState extends State<NewReceiptScreen> {
-
+class _NewReceiptScreenState extends ConsumerState<NewReceiptScreen> {
 
   final receiptNoController = TextEditingController();
   final dateController = TextEditingController();
@@ -40,22 +41,20 @@ class _NewReceiptScreenState extends State<NewReceiptScreen> {
   String paymentMode = "Cash";
   String? uid; // 👈 add this
 
-  final MoneyReceiptRepo _repo = MoneyReceiptRepo();
+
   bool isLoading = false;
-  bool _isInit = true;
+
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
 
-    if (_isInit) {
-      final args = ModalRoute.of(context)?.settings.arguments;
+    final args = ModalRoute.of(context)?.settings.arguments;
 
-      if (args != null && args is Map<String, dynamic>) {
-        _setEditData(args);
-      }
-
-      _isInit = false;
+    if (args != null && args is Map<String, dynamic>) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        _populateFields(args);
+      });
     }
   }
 
@@ -69,16 +68,7 @@ class _NewReceiptScreenState extends State<NewReceiptScreen> {
       return "";
     }
   }
-  void _setEditData(Map<String, dynamic> data) {
-    print("EDIT DATA: $data");
-
-    uid = data["uid"];
-    print("UID SET: $uid");
-
-    if (uid == null || uid!.isEmpty) {
-      print("❌ UID MISSING → WILL CREATE INSTEAD OF UPDATE");
-    }
-
+  void _populateFields(Map<String, dynamic> data) {
     receiptNoController.text = data["receipt_no"] ?? "";
     dateController.text = _formatDisplayDate(data["receipt_date"]);
     branchController.text = data["branch"] ?? "";
@@ -91,9 +81,9 @@ class _NewReceiptScreenState extends State<NewReceiptScreen> {
     toController.text = data["move_to"] ?? "";
 
     amountController.text =
-        (double.tryParse(data["receipt_amount"].toString()) ?? 0)
-            .toInt()
-            .toString();
+        double.tryParse(data["receipt_amount"].toString())
+            ?.toStringAsFixed(0) ??
+            "";
 
     transactionController.text = data["transaction_no"] ?? "";
     remarksController.text = data["remarks"] ?? "";
@@ -101,9 +91,9 @@ class _NewReceiptScreenState extends State<NewReceiptScreen> {
     receiptAgainst = data["receipt_against"] ?? "Quotation";
     paymentType = data["payment_type"] ?? "Part";
     paymentMode = data["payment_mode"] ?? "Cash";
-
-    setState(() {});
+    uid = data["uid"];
   }
+
   String _formatDisplayDate(String? date) {
     if (date == null || date.isEmpty) return "";
 
@@ -126,50 +116,39 @@ class _NewReceiptScreenState extends State<NewReceiptScreen> {
       return;
     }
 
-    setState(() => isLoading = true);
+    final body = {
+      "receipt_date": formatDate(dateController.text),
+      "branch": branchController.text,
+      "name": nameController.text,
+      "phone": phoneController.text,
+      "receipt_against": receiptAgainst,
+      "receipt_against_id": quotationNoController.text,
+      "bill_quotation_date": formatDate(billDateController.text),
+      "move_from": fromController.text,
+      "move_to": toController.text,
+      "payment_type": paymentType,
+      "receipt_amount": double.parse(amountController.text),
+      "payment_mode": paymentMode,
+      "transaction_no": transactionController.text.isEmpty
+          ? null
+          : transactionController.text,
+      "remarks": remarksController.text,
+    };
 
     try {
-      final body = {
-        "receipt_date": formatDate(dateController.text),
-        "branch": branchController.text,
-        "name": nameController.text,
-        "phone": phoneController.text,
-        "receipt_against": receiptAgainst,
-        "receipt_against_id": quotationNoController.text,
-        "bill_quotation_date": formatDate(billDateController.text),
-        "move_from": fromController.text,
-        "move_to": toController.text,
-        "payment_type": paymentType,
-        "receipt_amount": double.parse(amountController.text),
-        "payment_mode": paymentMode,
-        "transaction_no": transactionController.text.isEmpty
-            ? null
-            : transactionController.text,
-        "remarks": remarksController.text,
-      };
+      await ref
+          .read(moneyReceiptFormProvider.notifier)
+          .saveReceipt(body: body, uid: uid);
 
-      if (uid != null) {
-        /// 🔥 UPDATE
-        await _repo.updateReceipt(uid!, body);
-
-        ToastHelper.showSuccess(
-          message: "Receipt updated successfully",
-        );
-      } else {
-        /// 🔥 CREATE
-        await _repo.createReceipt(body);
-
-        ToastHelper.showSuccess(
-          message: "Receipt created successfully",
-        );
-      }
+      ToastHelper.showSuccess(
+        message: uid != null
+            ? "Receipt updated successfully"
+            : "Receipt created successfully",
+      );
 
       Navigator.pop(context);
-
     } catch (e) {
       ToastHelper.showError(message: e.toString());
-    } finally {
-      setState(() => isLoading = false);
     }
   }
 
@@ -192,6 +171,7 @@ class _NewReceiptScreenState extends State<NewReceiptScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final formState = ref.watch(moneyReceiptFormProvider);
     return Scaffold(
       backgroundColor: const Color(0xffF5F5F7),
 
@@ -207,7 +187,10 @@ class _NewReceiptScreenState extends State<NewReceiptScreen> {
         title: Row(
 
             children: [
-              Text("New Receipt", style: TextStyles.f16w600mGray9),
+              Text(
+                formState.isEdit ? "Edit Receipt" : "New Receipt",
+                style: TextStyles.f16w600mGray9,
+              ),
 
               /// ✅ SHOW ONLY IF AVAILABLE
               if (receiptNoController.text.isNotEmpty) ...[
@@ -426,8 +409,8 @@ class _NewReceiptScreenState extends State<NewReceiptScreen> {
                         const SizedBox(width: 12),
                         Expanded(
                           child: CustomButton(
-                            text: isLoading ? "Saving..." : "Save",
-                            onPressed: isLoading ? null : saveReceipt,
+                            text: formState.isLoading ? "Saving..." : "Save",
+                            onPressed: formState.isLoading ? null : saveReceipt,
                             backgroundColor: AppColors.primary,
                             borderRadius: 10,
                           ),
