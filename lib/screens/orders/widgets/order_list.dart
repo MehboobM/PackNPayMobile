@@ -32,8 +32,49 @@ class OrderListItem extends StatelessWidget {
     required this.lrId,
   });
 
+  String formatStatus(String status) {
+    return status.replaceAll("_", " ").toUpperCase();
+  }
+  StatusStyle getStatusStyle(String status) {
+    switch (status) {
+      case "PENDING":
+        return StatusStyle(
+          bgColor: AppColors.lightYellow,
+          textColor: AppColors.orangeStatus,
+        );
+
+      case "IN_PROGRESS":
+        return StatusStyle(
+          bgColor: AppColors.lightPink,
+          textColor: AppColors.darkPink,
+        );
+
+      case "ORDER_CONFIRMED":
+        return StatusStyle(
+          bgColor: AppColors.primary.withOpacity(0.1),
+          textColor: AppColors.primary,
+        );
+
+      case "SHIFTING_COMPLETED":
+        return StatusStyle(
+          bgColor: Colors.green.withOpacity(0.1),
+          textColor: Colors.green,
+        );
+
+      default:
+        return StatusStyle(
+          bgColor: Colors.grey.shade200,
+          textColor: Colors.black,
+        );
+    }
+  }
+
+
+
   @override
   Widget build(BuildContext context) {
+
+    final statusStyle = getStatusStyle(status);
     return Container(
       margin: const EdgeInsets.only(bottom: 10),
       padding: const EdgeInsets.all(12),
@@ -54,23 +95,16 @@ class OrderListItem extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                 decoration: BoxDecoration(
-                  color: status.toUpperCase() == "PENDING"
-                      ? Colors.orange.shade100
-                      : status.toUpperCase() == "INPROGRESS"
-                      ? AppColors.tab
-                      : Colors.grey.shade200,
+
+                  color: statusStyle.bgColor,
                   borderRadius: BorderRadius.circular(20),
                 ),
                 child: Text(
-                  status.toUpperCase(),
+                  formatStatus(status),
                   style: TextStyle(
                     fontSize: 10,
                     fontWeight: FontWeight.w600,
-                    color: status.toUpperCase() == "PENDING"
-                        ? Colors.orange
-                        : status.toUpperCase() == "INPROGRESS"
-                        ? AppColors.primary
-                        : Colors.grey,
+                    color: statusStyle.textColor,
                   ),
                 ),
               ),
@@ -92,8 +126,8 @@ class OrderListItem extends StatelessWidget {
                   Icon(Icons.visibility_outlined, size: 18),
                   SizedBox(width: 8),
                   Icon(Icons.download_outlined, size: 18),
-                  SizedBox(width: 8),
-                  Icon(Icons.more_vert, size: 18),
+                  // SizedBox(width: 8),
+                  // Icon(Icons.more_vert, size: 18),
                 ],
               ),
             ],
@@ -157,9 +191,9 @@ class OrderListItem extends StatelessWidget {
               /// RIGHT CHIPS
               Column(
                 children: [
-                  _chip("Survey list: $surveyId"),
-                  const SizedBox(height: 4),
-                  _chip("QAT list: $lrId"),
+                  // _chip("Survey list: $surveyId"),
+                  // const SizedBox(height: 4),
+                  // _chip("QAT list: $lrId"),
                 ],
               ),
             ],
@@ -182,4 +216,12 @@ class OrderListItem extends StatelessWidget {
       ),
     );
   }
+}
+
+
+class StatusStyle {
+  final Color bgColor;
+  final Color textColor;
+
+  StatusStyle({required this.bgColor, required this.textColor});
 }

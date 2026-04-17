@@ -4,11 +4,13 @@ import 'package:pack_n_pay/utils/m_font_styles.dart';
 class CustomExpansionSection extends StatefulWidget {
   final String title;
   final List<Widget> children;
+  Widget? titleWidget;
 
-  const CustomExpansionSection({
+   CustomExpansionSection({
     super.key,
     required this.title,
     required this.children,
+     this.titleWidget,
   });
 
   @override
@@ -61,18 +63,34 @@ class _CustomExpansionSectionState extends State<CustomExpansionSection>
             // Title row with dropdown icon
             InkWell(
               onTap: _handleTap,
+              splashColor: Colors.transparent,
+              highlightColor: Colors.transparent,
+              hoverColor: Colors.transparent,
+              focusColor: Colors.transparent,
               child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+                child:
+                Row(
                   children: [
-                    Text(widget.title, style: TextStyles.f12w600Gray9),
+                    Expanded( // 👈 THIS is the correct place for Expanded
+                      child: widget.titleWidget ?? Text(widget.title, style: TextStyles.f12w600Gray9),
+                    ),
                     Icon(
                       _expanded ? Icons.expand_less : Icons.expand_more,
                       color: Colors.black54,
                     ),
                   ],
-                ),
+                )
+                // Row(
+                //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                //   children: [
+                //    widget.titleWidget ?? Text(widget.title, style: TextStyles.f12w600Gray9),
+                //     Icon(
+                //       _expanded ? Icons.expand_less : Icons.expand_more,
+                //       color: Colors.black54,
+                //     ),
+                //   ],
+                // ),
               ),
             ),
 
@@ -85,7 +103,7 @@ class _CustomExpansionSectionState extends State<CustomExpansionSection>
               child: Padding(
                 padding: const EdgeInsets.fromLTRB(16, 4, 16, 10),
                 child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: widget.children,
                 ),
               ),

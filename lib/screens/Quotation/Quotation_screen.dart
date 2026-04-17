@@ -317,8 +317,7 @@ class _QuotationScreenState extends ConsumerState<QuotationScreen> {
 
             /// TABLE HEADER (UNCHANGED)
             Container(
-              padding:
-              const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
               decoration: BoxDecoration(
                 color: const Color(0xFF2A3582),
                 borderRadius: BorderRadius.circular(6),

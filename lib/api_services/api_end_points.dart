@@ -5,7 +5,7 @@ class ApiEndPoints {
 //  static const server = "http://192.168.0.176:5000/api/";
 
   ///Production
-  static const server = "http://packnpay.in/api/";
+  static const server = "https://packnpay.in/api/";
 
 
   static const baseurl = '${server}';
@@ -25,6 +25,8 @@ class ApiEndPoints {
   static const  updateQuotationApi = "quotation/update";
   static const moneyReceiptList = "money-receipt-list";
   static const createMoneyReceipt = "money-receipt/create";
+  static const orderList = "order-list";
+
 
 
 }

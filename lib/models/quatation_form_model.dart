@@ -50,7 +50,8 @@ class QuotationFormModel {
   /// STEP 3: PAYMENT DETAILS
 
   String? freightCharge;
-  String? advancePaid;
+  String? advancePaid; // we will use directly this on advance field
+  String? summaryDiscount;
 
   String? packingCharge;
   String? unpackingCharge;
@@ -72,6 +73,10 @@ class QuotationFormModel {
   String? loadingChargeType;
   String? unloadingChargeType;
   String? packingMaterialChargeType;
+
+  String? paymentStatus;
+  String? totalAmount;
+
 
   dynamic gstPercent;
   String? gstType;
@@ -152,6 +157,9 @@ class QuotationFormModel {
     this.miscCharge,
 
     this.packingChargeType,
+    this.paymentStatus,
+    this.totalAmount,
+
     this.unpackingChargeType,
     this.loadingChargeType,
     this.unloadingChargeType,
@@ -217,6 +225,7 @@ class QuotationFormModel {
 
       "freightCharge": freightCharge,
       "advancePaid": advancePaid,
+      "summaryDiscount": summaryDiscount,
       "packingCharge": packingCharge,
       "unpackingCharge": unpackingCharge,
       "loadingCharge": loadingCharge,
@@ -229,6 +238,8 @@ class QuotationFormModel {
       "miscCharge": miscCharge,
 
       "packingChargeType": packingChargeType,
+      "paymentStatus": paymentStatus,
+      "totalAmount": totalAmount,
       "unpackingChargeType": unpackingChargeType,
       "loadingChargeType": loadingChargeType,
       "unloadingChargeType": unloadingChargeType,
@@ -307,6 +318,8 @@ class QuotationFormModel {
       tptCharge: json["tptCharge"],
       miscCharge: json["miscCharge"],
       packingChargeType: json["packingChargeType"],
+      paymentStatus: json["paymentStatus"],
+      totalAmount: json["totalAmount"],
       unpackingChargeType: json["unpackingChargeType"],
       loadingChargeType: json["loadingChargeType"],
       unloadingChargeType: json["unloadingChargeType"],

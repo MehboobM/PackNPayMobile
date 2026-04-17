@@ -150,36 +150,36 @@ class SurveyListItem extends StatelessWidget {
                   ],
                 ),
 
-                const SizedBox(height: 7),
+               // const SizedBox(height: 7),
 
                 /// QUOTATION BUTTON
-                Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 6,
-                    vertical: 4,
-                  ),
-                  decoration: BoxDecoration(
-                    color: const Color(0xFF2A3582),
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children:  [
-                      Icon(
-                        Icons.remove_red_eye,
-                        size: 14,
-                        color: Colors.white,
-                      ),
-                      SizedBox(width: 3),
-                      Text(
-                          actionText,
-                        style: TextStyles.f10w500primary.copyWith(
-                          color: AppColors.mWhite,
-                        )
-                      ),
-                    ],
-                  ),
-                ),
+                // Container(
+                //   padding: const EdgeInsets.symmetric(
+                //     horizontal: 6,
+                //     vertical: 4,
+                //   ),
+                //   decoration: BoxDecoration(
+                //     color: const Color(0xFF2A3582),
+                //     borderRadius: BorderRadius.circular(20),
+                //   ),
+                //   child: Row(
+                //     mainAxisSize: MainAxisSize.min,
+                //     children:  [
+                //       Icon(
+                //         Icons.remove_red_eye,
+                //         size: 14,
+                //         color: Colors.white,
+                //       ),
+                //       SizedBox(width: 3),
+                //       Text(
+                //           actionText,
+                //         style: TextStyles.f10w500primary.copyWith(
+                //           color: AppColors.mWhite,
+                //         )
+                //       ),
+                //     ],
+                //   ),
+                // ),
               ],
             ),
           )

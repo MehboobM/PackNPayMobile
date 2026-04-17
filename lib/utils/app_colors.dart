@@ -3,13 +3,22 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 
 class AppColors{
+
+
+  static const Color lightYellow = Color(0xFFFFFAEB);// if pending then shoe this bg color
+  static const orangeStatus= Color(0xFFFDB022); // if pending then shoe this text color
+
+  static const lightPink= Color(0xFFFFDCFA); // if inprogress then shoe this bg color
+  static const Color darkPink = Color(0xFFC902BC);//// if inprogress then shoe this text color
   static  Color mTransParent = Colors.transparent;
 
   static const primary = Color(0xFF2A3582);
   static const primarySecond = Color(0xFFF76200);
+  static const darkOrange = Color(0xFFEB670E);
   static const cyanBlue = Color(0xffDCEFFF);
   static const tab=Color(0xffDADFFF);
   static const status= Color(0xFFFDB022);
+  static const mBlack = Color(0xFF000000);
   static const mBlack9 = Color(0xFF202020);
   static const mBlack8 = Color(0xFF181D27);
   static const mGray = Color(0xFFC6CEDA);
@@ -25,7 +34,7 @@ class AppColors{
 
 
 
-  static const orangeStatus= Color(0xFFFDB022);
+
   static const Color redPrimary = Color(0xFFD92D20);
   static const Color pinkish = Color(0xFFDD00FF);
 

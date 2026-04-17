@@ -6,6 +6,7 @@ import 'package:pack_n_pay/screens/Quotation/widget/Quotation_form.dart';
 import 'package:pack_n_pay/screens/Quotation/widget/insurance_and_other_form.dart';
 import 'package:pack_n_pay/screens/Quotation/widget/moving_details_form.dart';
 import 'package:pack_n_pay/screens/Quotation/widget/payment_detail_form.dart';
+import 'package:pack_n_pay/screens/Quotation/widget/payment_summry_dialog.dart';
 import 'package:pack_n_pay/screens/Quotation/widget/quotation_stepper.dart';
 import '../../database/hive_database/hive_quation_form.dart';
 import '../../global_widget/custom_button.dart';
@@ -63,13 +64,31 @@ class _NewQuotationScreenState extends ConsumerState<NewQuotationScreen> {
     }
   }
 
+  void openPaymentSummary(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (_) {
+        return AnimatedPadding(
+          duration: const Duration(milliseconds: 200),
+          padding: EdgeInsets.only(
+            bottom: MediaQuery.of(context).viewInsets.bottom, // 👈 keyboard height
+          ),
+          child: const PaymentSummaryDialog(),
+        );
+      },
+    );
+  }
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
+
       appBar: AppBar(
         backgroundColor: Colors.white,
         elevation: 2,
+        automaticallyImplyLeading: true,
         surfaceTintColor: Colors.white,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back, color: Colors.black),
@@ -82,30 +101,22 @@ class _NewQuotationScreenState extends ConsumerState<NewQuotationScreen> {
         ),
 
         actions: [
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 10),
-            child: SvgPicture.asset(
-              "assets/icons/pdf.svg",
-              width: 22,
-              color: AppColors.primary,
+          if(currentStep == 2)
+           Container(
+            margin: const EdgeInsets.only(right: 12),
+            child: ElevatedButton.icon(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: AppColors.primary,
+                minimumSize: const Size(120, 34),
+                padding: EdgeInsets.zero,
+              ),
+              onPressed: () {
+                openPaymentSummary(context);
+              },
+              icon: const Icon(Icons.calculate_outlined, size: 18, color: AppColors.mWhite),
+              label: Text("Calculate", style: TextStyles.f12w400mWhite),
             ),
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 10),
-            child: SvgPicture.asset(
-              "assets/icons/generic.svg",
-              width: 22,
-              color: AppColors.primary,
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.only(right: 14),
-            child: SvgPicture.asset(
-              "assets/icons/expense.svg",
-              width: 22,
-              color: AppColors.primary,
-            ),
-          ),
+          )
         ],
 
         bottom: PreferredSize(
@@ -175,7 +186,7 @@ class _NewQuotationScreenState extends ConsumerState<NewQuotationScreen> {
                 /// NEXT
                 Expanded(
                   child: CustomButton(
-                    text: currentStep == 3 ? "Save" : "Save & Next",
+                    text: currentStep == 3 ? "Submit" : "Save & Next",
                     icon: Icons.keyboard_double_arrow_right,
                     iconRight: true,
                     onPressed: handleSaveQuotation,
@@ -215,6 +226,7 @@ class _NewQuotationScreenState extends ConsumerState<NewQuotationScreen> {
 
       /// ✅ SAVE DRAFT ONLY FOR CREATE
       if (widget.keyType == "create_quatation") {
+        ref.read(quotationFormProvider.notifier).updatePaymentSummary();
         await HiveService.save(data);
       }
 
@@ -229,9 +241,7 @@ class _NewQuotationScreenState extends ConsumerState<NewQuotationScreen> {
 
         /// 🔥 CREATE FLOW
         else {
-          final res = await ref
-              .read(quotationProvider.notifier)
-              .createQuotation(data);
+          final res = await ref.read(quotationProvider.notifier).createQuotation(data);
 
           success = res['success'] == true;
 

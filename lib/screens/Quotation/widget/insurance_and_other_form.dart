@@ -439,13 +439,14 @@ Widget reusableDropdown({
   required ValueChanged<String?> onChanged,
   bool isRequired = false, // ✅ add this
   int flex = 1,
+  TextStyle? textStle
 }) {
   return Expanded(
     flex: flex,
     child: Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        formLabel(title, isRequired: isRequired), // ✅ use here
+        formLabel(title, isRequired: isRequired,textStyle: textStle), // ✅ use here
         const SizedBox(height: 6),
         Container(
           height: 48,

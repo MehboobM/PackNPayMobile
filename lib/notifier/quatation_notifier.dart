@@ -207,6 +207,11 @@ class QuotationNotifier extends StateNotifier<QuotationState> {
       "unloading_charge_type": m.unloadingChargeType,
       "packing_material_charge": m.packingMaterialCharge,
       "packing_material_charge_type": m.packingMaterialChargeType,
+      "total_amount": m.totalAmount,
+      /// TODO (optional calc)
+      "gst_amount": 0,
+      "discount": 0,
+
 
       "storage_charge": m.storageCharge,
       "car_bike_tpt": m.tptCharge,
@@ -222,10 +227,6 @@ class QuotationNotifier extends StateNotifier<QuotationState> {
       "gst_type": m.gstType,
       "gst_percent": m.gstPercent,
 
-      /// TODO (optional calc)
-      "gst_amount": 0,
-      "discount": 0,
-      "total_amount": 0,
 
       /// PICKUP
       "pickup_address": {

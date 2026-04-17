@@ -14,6 +14,7 @@ import '../screens/login/login_screen.dart';
 import '../screens/new_survey/survey_link_screen.dart';
 import '../screens/orders/order_details.dart';
 import '../screens/orders/order_screen.dart';
+import '../screens/survey/survey_list_screen.dart';
 import '../splash_screen.dart';
 
 
@@ -47,6 +48,9 @@ class NavigationRouter {
 
      case surveyLinkRoute:
         return MaterialPageRoute(builder: (_) => const SurveyLinkScreen());
+
+     case surveyScreenRoute:
+        return MaterialPageRoute(builder: (_) => const SurveyListScreen());
 
       case quotationScreenRoute:
         return MaterialPageRoute(builder: (_) => const QuotationScreen());

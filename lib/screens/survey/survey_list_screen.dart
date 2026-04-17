@@ -7,6 +7,8 @@ import 'package:pack_n_pay/screens/survey/widget/filter_bottom_sheet.dart';
 import 'package:pack_n_pay/screens/survey/widget/survey_items.dart';
 import 'package:pack_n_pay/utils/app_colors.dart';
 import 'package:pack_n_pay/utils/m_font_styles.dart';
+import 'package:share_plus/share_plus.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../../global_widget/menu_widget.dart';
 import '../../global_widget/view_download_service.dart';
@@ -105,7 +107,8 @@ class _SurveyListScreenState extends ConsumerState<SurveyListScreen> {
 
           CustomButton(
             onPressed: () {
-              Navigator.pushNamed(context, newSurveyRoute);
+            //  Navigator.pushNamed(context, newSurveyRoute);
+              Navigator.pushNamed(context, surveyLinkRoute);
             },
             width: 100,
             height: 36,
@@ -335,7 +338,8 @@ class _SurveyListScreenState extends ConsumerState<SurveyListScreen> {
                                     );
                                   },
                                   onTapMenu: (detail) {
-                                    _onTapMenu(context, detail.globalPosition,item.uid ?? "");
+                                    String link = "http://packnpay.in/";
+                                    _onTapMenu(context, detail.globalPosition,item.uid ?? "",link);
                                   },
                                 );
                               },
@@ -353,7 +357,7 @@ class _SurveyListScreenState extends ConsumerState<SurveyListScreen> {
   Future<void> handleSurveyNavigation({
     required BuildContext context,
     required WidgetRef ref,
-    required String surveyId,
+    required String quotationNo,
   }) async {
     try {
       /// 🔄 SHOW LOADER
@@ -366,11 +370,19 @@ class _SurveyListScreenState extends ConsumerState<SurveyListScreen> {
       );
 
       /// 🔥 API CALL
-      await ref.read(surveyDataProvider.notifier).fetchSurveyAndFillForm(surveyId, ref);
+      await ref.read(surveyDataProvider.notifier).fetchSurveyAndFillForm(quotationNo, ref);
 
       Navigator.pop(context);
 
-      Navigator.pushNamed(context, newQuotationRoute,arguments: {"keyType":"generate"});
+      final result = await Navigator.pushNamed(
+        context,
+        newQuotationRoute,
+        arguments: {"keyType": "edit_click","uid": quotationNo},
+      );
+
+      if (result == true) {
+        ref.read(surveyDataProvider.notifier).fetchSurveyList();
+      }
 
     } catch (e) {
       Navigator.pop(context);
@@ -380,7 +392,8 @@ class _SurveyListScreenState extends ConsumerState<SurveyListScreen> {
     }
   }
 
-  void _onTapMenu(BuildContext context, Offset position, String surveyId) async {
+
+  void _onTapMenu(BuildContext context, Offset position, String quotationNo,String link) async {
     showGlobalPopupMenu(
       context: context,
       tapPosition: position,
@@ -419,27 +432,58 @@ class _SurveyListScreenState extends ConsumerState<SurveyListScreen> {
 
         /// SIGNATURE
           case 'signature':
-            print("Signature clicked");
+            _openSignatureUrl();
             break;
 
         /// SHARE LINK
           case 'link':
-            print("Link clicked");
+            await _shareSurveyLink(context, quotationNo, link);
             break;
 
           case 'quotation':
             await handleSurveyNavigation(
               context: context,
               ref: ref,
-              surveyId: surveyId,
+              quotationNo: quotationNo,
             );
             break;
         }
       },
     );
-
-
   }
+
+  Future<void> _shareSurveyLink(BuildContext context,String quotationNo, String link,
+      ) async {
+    final shareText = """Survey Link : $link """;
+
+    final result = await SharePlus.instance.share(
+      ShareParams(
+        text: shareText,
+        subject: "Survey Link",
+      ),
+    );
+
+    if (result.status == ShareResultStatus.success) {
+      print("Shared successfully");
+    }
+  }
+
+  Future<void> _openSignatureUrl() async {
+    final Uri url = Uri.parse("http://packnpay.in/customer-signature");
+
+    if (await canLaunchUrl(url)) {
+      await launchUrl(
+        url,
+        mode: LaunchMode.externalApplication,
+      );
+    } else {
+      ToastHelper.showError(message: "Could not open link");
+    }
+  }
+
+
+
+
 }
 
 
