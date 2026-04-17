@@ -22,6 +22,11 @@ class AppColors{
   static const bodysecondry= Color(0xffF7F7F7);
   static const mWhite = Color(0xFFFFFFFF);
   static const mWhite54 = Color(0x8AFFFFFF);
+  static const Color primaryGreen = Color(0xFF027A48);
+  static const Color activeGreen = Color(0xFF027A48);
+  static const Color primaryGreenDark = Color(0xFF01663C);
+  static const Color greenlight= Color(0xFF32D583);
+
 
 
 

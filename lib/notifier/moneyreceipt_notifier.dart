@@ -20,8 +20,19 @@ class MoneyReceiptNotifier extends ChangeNotifier {
 
   int page = 1;
   int limit = 10;
-  Future<Map<String, dynamic>> getReceiptByUid(String uid) {
-    return _repo.getReceiptByUid(uid);
+  Future<Map<String, dynamic>> getReceiptByUid(String uid) async {
+    try {
+      final data = await _repo.getReceiptByUid(uid);
+
+      if (data.isNotEmpty) {
+        return Map<String, dynamic>.from(data);
+      } else {
+        throw Exception("Receipt data is empty");
+      }
+    } catch (e) {
+      print("GET RECEIPT ERROR: $e");
+      throw Exception("Failed to fetch receipt");
+    }
   }
 
   Future<void> fetchReceipts() async {
@@ -68,6 +79,20 @@ class MoneyReceiptNotifier extends ChangeNotifier {
       notifyListeners();
     } catch (e) {
       rethrow;
+    }
+  }
+  void addReceipt(MoneyReceiptModel receipt) {
+    receipts.insert(0, receipt);
+    filteredReceipts = receipts;
+    notifyListeners();
+  }
+
+  void updateReceiptInList(MoneyReceiptModel receipt) {
+    final index = receipts.indexWhere((e) => e.uid == receipt.uid);
+    if (index != -1) {
+      receipts[index] = receipt;
+      filteredReceipts = receipts;
+      notifyListeners();
     }
   }
 }

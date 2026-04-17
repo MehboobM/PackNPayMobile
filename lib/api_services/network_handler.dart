@@ -61,6 +61,17 @@ class NetworkHandler {
       rethrow;
     }
   }
+  Future<Response> patch(String url, dynamic body) async {
+    try {
+      final token = await StorageService().getToken();
+      return await ServicesConstant.instanceDio(token).patch(
+        url,
+        data: body,
+      );
+    } on DioException {
+      rethrow;
+    }
+  }
 
   Future<Response> putMultipart(
       String url, {

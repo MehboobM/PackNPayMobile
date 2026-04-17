@@ -13,5 +13,20 @@ const String ordersScreenRoute = "/orders_screen";
 const String orderDetailsScreenRoute = "/order_details_screen";
 const String moneyListScreenRoute = "/moneyListScreen";
 const String newReceiptScreenRoute = "/newReceiptScreen";
+const String staffScreenRoute = "/staff_screen";
+const String newStaffScreenRoute = "/new_staff_screen";
+const String staffDetailsScreenRoute = "/staff_details_screen";
+const String lorryReceiptListScreenRoute = "/lorryReceiptListScreen";
+const String newLorryReceiptScreenRoute = "/newLorryReceiptScreen";
+const String expenseCategoriesRoute = "/expenseCategories";
+const String OfficeExpensePageRoute = "/OfficeExpensePage";
+const String LetterheadRoute = "/LetterheadRoute";
+const String SubscriptionRoute = "/SubscriptionRoute";
+const String settingsScreenRoute = "/settingsScreen";
+const String helpSupportScreenRoute = "/helpSupportScreen";
+const String watermarkSettingsRoute = "/watermarkSettingsRoute";
+const String letterHeadSettingsRoute = '/letterHeadSettings';
+const String quotationSettingsRoute = '/quotationSettingsRoute';
+const String lrBiltySettingsRoute = '/lrBiltySettingsRoute';
 
 

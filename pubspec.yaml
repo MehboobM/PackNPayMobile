@@ -29,7 +29,10 @@ dependencies:
   hive: ^2.2.3
   hive_flutter: ^1.1.0
   url_launcher: ^6.2.5
-
+  intl: ^0.20.2
+  syncfusion_flutter_pdfviewer: ^28.1.33
+  image_picker: ^1.1.2
+  file_picker: ^8.0.7
 
 dev_dependencies:
   flutter_test:
