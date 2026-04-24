@@ -1,6 +1,7 @@
 
 
 
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -111,14 +112,14 @@ class _InsuranceAndOtherFormState extends ConsumerState<InsuranceAndOtherForm> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text("Insurance details", style: TextStyles.f14w600mGray9),
-            const SizedBox(height: 10),
+            Text("insurance.insuranceType".tr(), style: TextStyles.f14w600mGray9),
+            SizedBox(height: 10),
 
             /// 🔹 Single Dropdown
             Row(
               children: [
                 reusableDropdown(
-                  title: "Insurance type",
+                  title: "insurance.title".tr(),
                   isRequired: true,
                   value: selectedInsuranceLabel,
                   items: insuranceItem,
@@ -140,7 +141,7 @@ class _InsuranceAndOtherFormState extends ConsumerState<InsuranceAndOtherForm> {
 
 
              reusableDropdownRow(
-              title: "Insurance charge(%)",
+              title: "insurance.insuranceCharges".tr(),
               title2: "",
               value1: selectedGstPercentLabel,
               value2: selectedGstLabel,
@@ -175,7 +176,7 @@ class _InsuranceAndOtherFormState extends ConsumerState<InsuranceAndOtherForm> {
 
             const SizedBox(height: 16),
 
-            formLabel("Declaration of goods", isRequired: true),
+            formLabel("insurance.declarationOfGoods".tr(), isRequired: true),// "insurance.insuranceCharges".tr(),
             const SizedBox(height: 6),
             CustomTextField(
               controller: goodsController,
@@ -189,13 +190,13 @@ class _InsuranceAndOtherFormState extends ConsumerState<InsuranceAndOtherForm> {
 
             /// Vehicle Insurance details
             const SizedBox(height: 10),
-            Text("Vehicle Insurance details", style: TextStyles.f14w600mGray9),
+            Text("insurance.vehicleInsuranceDetails".tr(), style: TextStyles.f14w600mGray9),
 
             const SizedBox(height: 10),
             Row(
               children: [
                 reusableDropdown(
-                  title: "Insurance type",
+                  title: "insurance.insuranceType".tr(),
                   isRequired: true,
                   value: selectedVehicleInsuranceLabel,
                   items: insuranceVehicleItem,
@@ -215,7 +216,7 @@ class _InsuranceAndOtherFormState extends ConsumerState<InsuranceAndOtherForm> {
             ),
             const SizedBox(height: 16),
             reusableDropdownRow(
-              title: "Insurance charge(%)",
+              title: "insurance.insuranceCharges".tr(),
               title2: "",
               value1: selectedGstVehiclePercentLabel,
               value2: selectedVehicleGstLabel,
@@ -246,7 +247,7 @@ class _InsuranceAndOtherFormState extends ConsumerState<InsuranceAndOtherForm> {
               },
             ),
             const SizedBox(height: 16),
-            Text("Declaration of vehicle",
+            Text("insurance.declarationOfVehicle".tr(),
                 style: TextStyles.f12w500Gray7),
             const SizedBox(height: 6),
             CustomTextField(
@@ -261,13 +262,13 @@ class _InsuranceAndOtherFormState extends ConsumerState<InsuranceAndOtherForm> {
 
             /// Other details
             const SizedBox(height: 10),
-            Text("Other details", style: TextStyles.f14w600mGray9),
+            Text("otherDetails.title".tr(), style: TextStyles.f14w600mGray9),
             const SizedBox(height: 10),
 
             Row(
               children: [//easy_access
                 reusableDropdown(
-                  title: "IS THERE EASY ACCESS FOR LOAD & UNLOADING AT ORIGIN & DESTINATION(क्या लोड और अनलोडिंग आसान है?)",
+                  title: "otherDetails.easyAccess".tr(),
 
                   value: easyAccessLabel,
                   items: easyAccessItem,
@@ -286,7 +287,7 @@ class _InsuranceAndOtherFormState extends ConsumerState<InsuranceAndOtherForm> {
               ],
             ),
             const SizedBox(height: 16),
-            Text("SHOULD ANY ITEMS BE GOT DOWN THROUGH BALCONY ETC.(क्या किसी सामान को बालकनी से नीचे उतारना है?)",
+            Text( "otherDetails.balconyItems".tr(),
                 style: TextStyles.f12w500Gray7),
             const SizedBox(height: 6),
             CustomTextField(
@@ -303,7 +304,7 @@ class _InsuranceAndOtherFormState extends ConsumerState<InsuranceAndOtherForm> {
             Row(
               children: [//easy_access
                 reusableDropdown(
-                  title: "ARE THERE ANY RESTRICTIONS FOR LOADING/UNLOADING AT ORIGIN/DESTINATION (क्या लोडिंग/अनलोडिंग वाले स्थान पर कोई रोकेटोक है?)",
+                  title:"otherDetails.loadingRestrictions".tr(),
                   value: restrictionLabel,
                   items: selectedRestrictionItem,
                   onChanged: (value) {
@@ -321,8 +322,7 @@ class _InsuranceAndOtherFormState extends ConsumerState<InsuranceAndOtherForm> {
             ),
 
             const SizedBox(height: 16),
-            Text("DO YOU HAVE ANY SPECIAL NEEDS OR CONCERNS (अन्य जरूरी आवश्यकताएं?)",
-                style: TextStyles.f12w500Gray7),
+            Text("otherDetails.specialNeeds".tr(), style: TextStyles.f12w500Gray7),
             const SizedBox(height: 6),
             CustomTextField(
               controller: needConcernController,

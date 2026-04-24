@@ -12,6 +12,7 @@ import '../../database/hive_database/hive_quation_form.dart';
 import '../../global_widget/confirmation_dialog.dart';
 import '../../global_widget/menu_widget.dart';
 import '../../global_widget/custom_textfield.dart';
+import '../../notifier/order_detail_notifier.dart';
 import '../../notifier/quatation_notifier.dart';
 import '../../notifier/quotation_form_notifier.dart';
 import '../../routes/route_names_const.dart';
@@ -84,7 +85,10 @@ class _QuotationScreenState extends ConsumerState<QuotationScreen> {
         surfaceTintColor: Colors.white,
         elevation: 0,
         titleSpacing: 0,
-        leading: const Icon(Icons.arrow_back, color: Colors.black),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back, color: Colors.black),
+          onPressed: () => Navigator.pop(context),
+        ),
         title: Row(
           children: [
             Text("Quotation", style: TextStyles.f16w600mGray9),
@@ -448,6 +452,14 @@ class _QuotationScreenState extends ConsumerState<QuotationScreen> {
           title: 'Customer Signature',
           icon: "assets/images/signature.svg",
         ),
+
+        PopupMenuModel(
+          value: 'order_generate',
+          title: 'Order Generate',
+          icon: "assets/images/signature.svg",
+        ),
+
+
       ],
       onSelected: (value) {
         switch (value) {
@@ -493,9 +505,24 @@ class _QuotationScreenState extends ConsumerState<QuotationScreen> {
           case 'signature':
             _openSignatureUrl(); // ✅ CLEAN
             break;
+
+          case 'order_generate':
+            generateOrder(context,quotationNo!); // ✅ CLEAN
+            break;
         }
       },
     );
+  }
+
+  Future<void> generateOrder(BuildContext context, String uid) async {
+    final container = ProviderScope.containerOf(context, listen: false);
+    await container.read(orderDetailProvider.notifier).getFormData(uid);
+    Navigator.pushNamed(context, orderDetailsScreenRoute);
+
+    // Navigator.pushNamed(context, orderDetailsScreenRoute);
+    // Future.microtask(() {
+    //   ref.read(orderDetailProvider.notifier).getFormData(uid);
+    // });
   }
 
   Future<void> _handleEdit(BuildContext context, String? quotationNo) async {
@@ -513,6 +540,7 @@ class _QuotationScreenState extends ConsumerState<QuotationScreen> {
       ref.read(quotationProvider.notifier).fetchQuotationList();
     }
   }
+
   Future<void> _openSignatureUrl() async {
     final Uri url = Uri.parse("http://packnpay.in/customer-signature");
 

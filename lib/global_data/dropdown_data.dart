@@ -31,11 +31,12 @@ const globalJson = {
   "lift_available": {
     "label": "Lift Available",
     "db_column": "lift_available",
-    "db_enum": ["YES", "NO"],
+    "db_enum": ["SERVICE_LIFT", "NORMAL_LIFT", "NOT_AVAILABLE"],
     "options": [
-      { "label": "Yes", "value": "YES" },
-      { "label": "No", "value": "NO" }
-    ]
+      { "label": "Service Lift", "value": "SERVICE_LIFT" },
+      { "label": "Normal Lift", "value": "NORMAL_LIFT" },
+      { "label": "Not Available", "value": "NOT_AVAILABLE" },
+    ],
   },
 
   "insurance_type": {

@@ -90,5 +90,21 @@ class SurveyDataNotifier extends StateNotifier<OrderDataState> {
 
 
 
+  Future<bool> deleteOrder(String quotationNo) async {
+    try {
+      state = state.copyWith(isPageLoading: true);
+      final success = await repository.deleteOrder(quotationNo);
+
+      if (success) {
+        state = state.copyWith(isPageLoading: false);
+        return true;
+      } else {
+        return false;
+      }
+    } catch (e) {
+      return false;
+    }
+  }
+
 
 }

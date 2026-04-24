@@ -56,4 +56,20 @@ class OrderRepository {
     }
   }
 
+
+  Future<bool> deleteOrder(String quotationNo) async {
+    try {
+      final response = await network.delete("${ApiEndPoints.getOrderByUid}/$quotationNo",{});
+
+      if (response.statusCode == 200 && response.data['success'] == true) {
+        return true;
+      } else {
+        return false;
+      }
+    } catch (e) {
+      return false;
+    }
+  }
+
+
 }

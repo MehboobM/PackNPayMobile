@@ -11,20 +11,20 @@ class DummyExpenseScreen extends ConsumerWidget {
 
   /// 📌 Expenses Popup
   void _showExpensesPopup(BuildContext context) {
-    showDialog(
-      context: context,
-      barrierDismissible: false,
-      barrierColor: Colors.black.withOpacity(0.5),
-      builder: (context) => const ExpensesPopup(),
-    );
+    // showDialog(
+    //   context: context,
+    //   barrierDismissible: false,
+    //   barrierColor: Colors.black.withOpacity(0.5),
+    //   builder: (context) => const ExpensesPopup(),
+    // );
   }
   void _showVehiclePopup(BuildContext context) {
-    showDialog(
-      context: context,
-      barrierDismissible: false,
-      barrierColor: Colors.black.withOpacity(0.5),
-      builder: (context) => const VehicleDetailsPopup(),
-    );
+    // showDialog(
+    //   context: context,
+    //   barrierDismissible: false,
+    //   barrierColor: Colors.black.withOpacity(0.5),
+    //   builder: (context) => const VehicleDetailsPopup(),
+    // );
   }
   void _showStaff(BuildContext context) {
     showDialog(

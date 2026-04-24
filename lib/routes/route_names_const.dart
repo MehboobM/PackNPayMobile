@@ -29,5 +29,6 @@ const String watermarkSettingsRoute = "/watermarkSettingsRoute";
 const String letterHeadSettingsRoute = '/letterHeadSettings';
 const String quotationSettingsRoute = '/quotationSettingsRoute';
 const String lrBiltySettingsRoute = '/lrBiltySettingsRoute';
+const String languageRoute = '/languageScreen';
 
 

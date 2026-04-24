@@ -397,14 +397,13 @@ class QuotationNotifier extends StateNotifier<QuotationState> {
         "${parsed.year}";
   }
 
-  Future<bool> updateQuotation(
-      String uid, QuotationFormModel model) async {
+  Future<bool> updateQuotation(String uid, QuotationFormModel model,String? keyType) async {
     try {
       state = state.copyWith(isPageLoading: true);
 
       final payload = await _buildPayload(model);
 
-      final success = await repository.updateQuotation(uid, payload);
+      final success = await repository.updateQuotation(uid, payload,keyType);
 
       state = state.copyWith(isPageLoading: false);
 

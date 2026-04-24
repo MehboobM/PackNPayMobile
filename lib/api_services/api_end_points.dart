@@ -18,6 +18,14 @@ class ApiEndPoints {
   static const  quatationApi = "quotation-list";
   static const  surveylistApi = "survey-list";
   static const  prefillFormApi = "quotation/survey/";
+  static const  prefillOrderFormApi = "order/prefill";
+  static const  createOrder = "order/create";
+  static const  getOrderByUid = "order";
+  static const  updateOrder = "order/update";
+  static const  uploadMedia = "order/media";
+  static const  updateOrderStatus = "order/status";
+  static const  generateEncoded = "survey/generate-encoded";
+
   static const  stateApi = "get-states";
   static const  cityApi = "get-cities";
   static const  createQuotationApi = "quotation/create";

@@ -59,12 +59,14 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
           
                 SizedBox(height: 18),
                 Text(
-                  bilingualText(context, "welcome", "welcome_hi"),
+               //  bilingualText(context, "welcome", "welcome_hi"),
+                  "Welcome",
                   style: TextStyles.f18w600Black8,
                 ),
                 SizedBox(height: 8),
                 Text(
-                  bilingualText(context, "enter_mobile", "enter_mobile_hi", nextLine: true),
+                  //bilingualText(context, "enter_mobile", "enter_mobile_hi", nextLine: true),
+                  "Enter mobile no.",
                   style:TextStyles.f12w400Gray6H,
                   textAlign: TextAlign.center,
                 ),

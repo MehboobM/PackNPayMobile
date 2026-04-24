@@ -1,9 +1,340 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../global_widget/custom_textfield.dart';
+import '../../../notifier/order_detail_notifier.dart';
 import '../../../utils/app_colors.dart';
 import '../../../utils/m_font_styles.dart';
+import '../../../utils/toast_message.dart';
 
+class ExpensesPopup extends ConsumerStatefulWidget {
+  final int id;
+  final String uid;
+
+  final String? vehicleNo;
+  final String? driverName;
+  final String? driverPhone;
+  final String? driverLicense;
+
+  final List<dynamic> existingExpenses; // ✅ ADD
+  final List<dynamic> categories; // ✅ ADD
+  final List<Map<String, dynamic>>? staff;    // ✅ ADD
+  final List<Map<String, dynamic>>? labour;    // ✅ ADD
+
+  const ExpensesPopup({
+    super.key,
+    required this.id,
+    required this.uid,
+    this.vehicleNo,
+    this.driverName,
+    this.driverPhone,
+    this.driverLicense,
+    required this.existingExpenses,
+    required this.categories, // ✅ ADD
+    this.staff,
+    this.labour,
+  });
+
+  @override
+  ConsumerState<ExpensesPopup> createState() => _ExpensesPopupState();
+}
+
+class _ExpensesPopupState extends ConsumerState<ExpensesPopup> {
+  final TextEditingController searchController = TextEditingController();
+
+  List<Map<String, dynamic>> expenses = [];
+
+  @override
+  void initState() {
+    super.initState();
+
+    expenses = widget.categories.map<Map<String, dynamic>>((cat) {
+      dynamic existing;
+
+      try {
+        existing = widget.existingExpenses.firstWhere(
+              (e) => e.categoryId == cat["id"],
+        );
+      } catch (e) {
+        existing = null;
+      }
+
+      final controller = TextEditingController(
+        text: existing != null
+            ? (double.tryParse(existing.amount ?? "0") ?? 0)
+            .toInt()
+            .toString()
+            : "",
+      );
+
+      return {
+        "id": cat["id"],
+        "title": cat["name"],
+        "controller": controller,
+      };
+    }).toList();
+  }
+
+  // @override
+  // void initState() {
+  //   super.initState();
+  //
+  //   Future.microtask(() async {
+  //     final categories = await ref.read(orderDetailProvider.notifier).fetchExpenseCategories();
+  //
+  //     expenses = categories.map<Map<String, dynamic>>((cat) {
+  //       dynamic existing;
+  //
+  //       /// ✅ SAFE FIND (no crash)
+  //       try {
+  //         existing = widget.existingExpenses.firstWhere(
+  //               (e) => e.categoryId == cat["id"],
+  //         );
+  //       } catch (e) {
+  //         existing = null;
+  //       }
+  //
+  //       /// ✅ Prefill value
+  //       final controller = TextEditingController(
+  //         text: existing != null
+  //             ? (double.tryParse(existing.amount ?? "0") ?? 0)
+  //             .toInt()
+  //             .toString()
+  //             : "",
+  //       );
+  //
+  //       return {
+  //         "id": cat["id"],
+  //         "title": cat["name"],
+  //         "controller": controller,
+  //       };
+  //     }).toList();
+  //
+  //     setState(() {});
+  //   });
+  // }
+
+
+  double get totalExpenses {
+    double sum = 0;
+    for (var item in expenses) {
+      sum += double.tryParse(item["controller"].text) ?? 0;
+    }
+    return sum;
+  }
+
+  @override
+  void dispose() {
+    searchController.dispose();
+    for (var item in expenses) {
+      item["controller"].dispose();
+    }
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    print(">>>>>>>>>>>>>${widget.existingExpenses}");
+    return Dialog(
+      backgroundColor: Colors.transparent,
+      child: Container(
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(12),
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            /// HEADER
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text("Expenses", style: TextStyles.f14w600Gray9),
+                IconButton(
+                  icon: const Icon(Icons.close, size: 18),
+                  onPressed: () => Navigator.pop(context),
+                ),
+              ],
+            ),
+
+            /// SEARCH
+            CustomTextField(
+              controller: searchController,
+              hintText: "Search expense",
+              onChanged: (_) => setState(() {}),
+            ),
+
+            const SizedBox(height: 10),
+
+            /// LIST
+            ...List.generate(expenses.length, (index) {
+              final item = expenses[index];
+
+              if (searchController.text.isNotEmpty &&
+                  !item["title"]
+                      .toLowerCase()
+                      .contains(searchController.text.toLowerCase())) {
+                return const SizedBox();
+              }
+
+              return Padding(
+                padding: const EdgeInsets.symmetric(vertical: 6),
+                child: Row(
+                  children: [
+                    /// INDEX
+                    Text(
+                      "${index + 1}.",
+                      style: TextStyles.f12w500Gray7,
+                    ),
+                    const SizedBox(width: 6),
+
+                    /// TITLE
+                    Text(
+                      item["title"],
+                      style: TextStyles.f12w500Gray7,
+                    ),
+
+                    /// LINE
+                    const SizedBox(width: 8),
+                    const Expanded(
+                      child: Divider(
+                        thickness: 1,
+                        color: Colors.grey,
+                      ),
+                    ),
+
+                    const SizedBox(width: 8),
+
+                    /// AMOUNT FIELD
+                    SizedBox(
+                      width: 70,
+                      height: 32,
+                      child: TextField(
+                        controller: item["controller"],
+                        keyboardType: TextInputType.number,
+                        onChanged: (_) => setState(() {}), // ✅ update total
+                        style: const TextStyle(fontSize: 12),
+                        decoration: InputDecoration(
+                          hintText: "₹0",
+                          contentPadding: const EdgeInsets.symmetric(
+                            horizontal: 8,
+                            vertical: 6,
+                          ),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(6),
+                          ),
+                          isDense: true,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              );
+            }),
+
+            const SizedBox(height: 8),
+
+            /// TOTAL
+            _summaryRow(
+              "Total Amount",
+              "₹${totalExpenses.toStringAsFixed(0)}",
+              isTotal: true,
+            ),
+
+            const SizedBox(height: 12),
+
+            /// SAVE
+            SizedBox(
+              width: double.infinity,
+              height: 45,
+              child: ElevatedButton(
+                onPressed: () async {
+                  List<Map<String, dynamic>> payload = [];
+
+                  for (var item in expenses) {
+                    final amount =
+                        double.tryParse(item["controller"].text) ?? 0;
+
+                    if (amount > 0) {
+                      payload.add({
+                        "category_id": item["id"],
+                        "amount": amount.toInt(),
+                      });
+                    }
+                  }
+
+                  final message = await ref.read(orderDetailProvider.notifier).updateOrder(
+                    id: widget.id,
+                    uid: widget.uid,
+
+                      vehicleNo: widget.vehicleNo,
+                      driverName: widget.driverName,
+                      driverPhone: widget.driverPhone,
+                      driverLicense: widget.driverLicense,
+                    expenses: payload,
+                    staff: widget.staff,
+                    labour:widget.labour
+                  );
+
+                  Navigator.pop(context);
+
+                  if (message == "Order updated successfully") {
+                    ToastHelper.showSuccess(message: message!);
+                  } else {
+                    ToastHelper.showError(message: message ?? "Error occurred");
+                  }
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color(0xFF2F3A8F),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                ),
+                child: Text(
+                    "Save Expenses",
+                    style: TextStyles.f12w500White
+                ),
+              ),
+            )
+          ],
+        ),
+      ),
+    );
+  }
+
+
+  Widget _summaryRow(String title, String amount,
+      {bool isTotal = false}) {
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+      child: Row(
+        children: [
+          Expanded(
+            child: Text(
+              title,
+              style: TextStyle(
+                fontSize:  11,
+                fontWeight:FontWeight.bold,
+              ),
+            ),
+          ),
+          Text(
+            amount,
+            style: TextStyle(
+              fontSize: 14,
+              fontWeight: FontWeight.bold,
+              color: AppColors.primary,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+}
+
+/*
 class ExpensesPopup extends ConsumerStatefulWidget {
   const ExpensesPopup({super.key});
 
@@ -286,4 +617,4 @@ class _ExpensesPopupState extends ConsumerState<ExpensesPopup> {
       ),
     );
   }
-}
+}*/

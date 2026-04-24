@@ -1,0 +1,916 @@
+{
+  "common": {
+    "welcome": "Welcome (സ്വാഗതം)",
+    "enter_mobile": "Enter your mobile number to continue (തുടരാൻ നിങ്ങളുടെ മൊബൈൽ നമ്പർ നൽകുക)",
+    "contact_us": "Contact Us (ഞങ്ങളെ ബന്ധപ്പെടുക)",
+    "contactDetails": "Contact Details (ബന്ധപ്പെടാനുള്ള വിവരങ്ങൾ)",
+    "phone": "Phone no. (ഫോൺ നം.)",
+    "city": "City (നഗരം)",
+    "state": "State (സംസ്ഥാനം)",
+    "email": "Email (ഇ-മെയിൽ)",
+    "address": "Address (വിലാസം)",
+    "floor": "Floor (നില)",
+    "pincode": "Pincode (പിൻ കോഡ്)",
+    "lift": "Lift (ലിഫ്റ്റ്)",
+    "name": "Name (പേര്)",
+    "date": "Date (തീയതി)",
+    "add": "Add (ചേർക്കുക)",
+    "cancel": "Cancel (റദ്ദാക്കുക)",
+    "save": "Save (സേവ് ചെയ്യുക)",
+    "submit": "Submit (സമർപ്പിക്കുക)",
+    "quantity": "Quantity (അളവ്)",
+    "description": "Description (വിവരണം)",
+    "actions": "Actions (പ്രവർത്തനങ്ങൾ)",
+    "remarks": "Remarks (നിരീക്ഷണങ്ങൾ)",
+    "branch": "Branch (ശാഖ)",
+    "country": "Country (രാജ്യം)",
+    "edit": "Edit (തിരുത്തുക)",
+    "delete": "Delete (ഇല്ലാതാക്കുക)",
+    "yes": "Yes (അതെ)",
+    "no": "No (ഇല്ല)",
+    "downloadPdf": "Download PDF (PDF ഡൗൺലോഡ് ചെയ്യുക)",
+    "export": "Export (യേര്‍ത്തുമതി)",
+    "notAvailable": "N/A (ലഭ്യമല്ല)",
+    "view": "View (കാണുക)",
+    "status": "Status (സ്ഥിതി)",
+    "generate": "Generate (സൃഷ്ടിക്കുക)",
+    "pleaseFixErrors": "Please fix the errors before saving. (സംരക്ഷിക്കുന്നതിന് മുമ്പ് പിശകുകൾ ശരിയാക്കുക)",
+    "stayHere": "Stay Here (ഇവിടെ തന്നെ ഇരിക്കുക)",
+    "goToList": "Go to List (പട്ടികയിലേക്ക് പോകുക)",
+    "customerSignature": "Customer Signature (ഉപഭോക്തൃ ഒപ്പ്)",
+    "shareSurveyListLink": "Share survey list link (സർവേ പട്ടിക ലിങ്ക് പങ്കിടുക)",
+    "generateQuotation": "Generate Quotation (ക്വോട്ടേഷൻ സൃഷ്ടിക്കുക)",
+    "generateOrder": "Generate Order (ഓർഡർ സൃഷ്ടിക്കുക)",
+    "gstPercent": "GST % (ஜிஎஸ்டி %)"
+  },
+
+  "order": {
+    "title": "Order (ഓർഡർ)",
+    "orderStatus": "Order Status (ഓർഡർ സ്ഥിതി)",
+    "shipmentStatus": "Shipment Status (ഷിപ്പ്മെന്റ് സ്ഥിതി)",
+    "orderDetails": "Order Details (ഓർഡർ വിശദാംശങ്ങൾ)",
+    "changeStatus": "Change Status (സ്ഥിതി മാറ്റുക)",
+    "staff": "Staff (സ്റ്റാഫ്)",
+    "addStaff": "Add Staff (സ്റ്റാഫ് ചേർക്കുക)",
+    "labours": "Labours (തൊഴിലാളികൾ)",
+    "addLabour": "Add Labour (തൊഴിലാളിയെ ചേർക്കുക)",
+    "quotationDetails": "Quotation Details (കോട്ടേഷൻ വിശദാംശങ്ങൾ)",
+    "vehicleDetails": "Vehicle Details (വാഹന വിശദാംശങ്ങൾ)",
+    "packingDetails": "Packing Details (പാക്കിംഗ് വിശദാംശങ്ങൾ)",
+    "unpackingDetails": "Unpacking Details (അൺപാക്കിംഗ് വിശദാംശങ്ങൾ)",
+    "addImages": "Add Images (ചിത്രങ്ങൾ ചേർക്കുക)",
+    "item": "Item (ഇനം)",
+    "baseFare": "Base Fare (അടിസ്ഥാന നിരക്ക്)",
+    "taxes": "Taxes & Surcharges (നികുതികളും ചാർജുകളും)",
+    "expenses": "Expenses (ചെലവുകൾ)",
+    "advancePayment": "Advance Payment (അഡ്വാൻസ് പേയ്‌മെന്റ്)",
+    "totalAmount": "Total Amount to pay (ആകെ തുക)",
+    "orderNo": "Order No. (ഓർഡർ നമ്പർ)",
+    "quotationNo": "Quotation No. (കോട്ടേഷൻ നമ്പർ)"
+  },
+  "surveyList": {
+    "title": "Survey List (സർവേ പട്ടിക)",
+    "shareSurveyLink": "Generic Survey Link (സർവേ ലിങ്ക് പങ്കിടുക)",
+    "addSurvey": "Add Survey (സർവേ ചേർക്കുക)",
+    "copyLink": "Copy Link (ലിങ്ക് പകർപ്പിക്കുക)"
+  },
+  "status": {
+    "total": "Total (മൊത്തം)",
+    "pending": "Pending (ശേഷിക്കുന്നവ)",
+    "inProgress": "In Progress (പ്രവർത്തനത്തിലാണ്)",
+    "settled": "Settled (പരിഹരിച്ചു)",
+    "submitted": "Submitted (സമർപ്പിച്ചു)"
+  },
+  "messages": {
+    "exporting": "Exporting surveys, please wait... (സർവേകൾ എക്‌സ്‌പോർട്ട് ചെയ്യുന്നു, ദയവായി കാത്തിരിക്കുക...)",
+    "exportSuccess": "Exported successfully! (വിജയകരമായി എക്‌സ്‌പോർട്ട് ചെയ്തു!)",
+    "exportFail": "Failed to export surveys. (സർവേകൾ എക്‌സ്‌പോർട്ട് ചെയ്യാൻ പരാജയപ്പെട്ടു.)",
+    "copySuccess": "Link copied to clipboard! (ലിങ്ക് ക്ലിപ്ബോർഡിലേക്ക് പകർത്തി!)",
+    "shareFail": "Could not share link (ലിങ്ക് പങ്കുവെക്കാനാകില്ല)",
+    "pdfLoading": "Loading PDF preview... (PDF പ്രിവ്യൂ ലോഡുചെയ്യുന്നു...)",
+    "pdfFail": "Failed to preview PDF (PDF പ്രിവ്യൂ പരാജയപ്പെട്ടു)",
+    "loading": "Loading data... (ഡാറ്റ ലോഡ് ചെയ്യുന്നു...)",
+    "noRecords": "No records found. (രേഖകൾ ഒന്നും കണ്ടെത്തിയില്ല.)"
+  },
+  "basicDetails": {
+    "title": "Basic Details (അടിസ്ഥാന വിവരങ്ങൾ)",
+    "name": "Name (പേര്)",
+    "phone": "Phone no. (ഫോൺ നം.)",
+    "gst": "Company GST No. (കമ്പനി GST നം.)",
+    "companyName": "Company Name of Party (കമ്പനിയുടെ പേര്)",
+    "slDate": "SL Generation Date (SL ജനറേഷൻ തീയതി)",
+    "from": "From (ഇൽ നിന്ന്)",
+    "to": "To (വരെ)"
+  },
+  "tableHeader": {
+    "searchPlaceholder": "Search (തിരയുക)",
+    "sortBy": "Sort By (ക്രമീകരിക്കുക)",
+    "clearSort": "Clear sort (ക്രമമൊക്കെ ഒഴിവാക്കുക)",
+    "selectDateRange": "Select date range (തീയതി പരിധി തിരഞ്ഞെടുക്കുക)",
+    "byOwner": "By Owner (മാലികരുടെ വഴി)",
+    "byStaff": "Staff Wise (സ്റ്റാഫ് അടിസ്ഥാനത്തിൽ)"
+  },
+  "movingDetails": {
+    "title": "Moving Details (മാറ്റം സംബന്ധിച്ച വിവരങ്ങൾ)",
+    "shiftingMovingDate": "Shifting / Moving Date (മാറ്റം/ഷിഫ്റ്റിംഗ് തീയതി)",
+    "email": "Email (ഇ-മെയിൽ)",
+    "additionalPhoneNo": "Additional phone no. (അധിക ഫോൺ നം.)",
+    "state": "State (സംസ്ഥാനം)",
+    "city": "City (നഗരം)",
+    "floor": "Floor (നില)",
+    "pincode": "Pincode (പിൻ കോഡ്)",
+    "lift": "Lift (ലിഫ്റ്റ്)",
+    "address": "Address (വിലാസം)"
+  },
+  "deliveryDetails": {
+    "title": "Delivery Details (ഡെലിവറി വിവരങ്ങൾ)",
+    "email": "Email (ഇ-മെയിൽ)",
+    "additionalPhoneNo": "Additional phone no. (അധിക ഫോൺ നം.)",
+    "state": "State (സംസ്ഥാനം)",
+    "city": "City (നഗരം)",
+    "floor": "Floor (നില)",
+    "pincode": "Pincode (പിൻ കോഡ്)",
+    "lift": "Lift (ലിഫ്റ്റ്)",
+    "address": "Address (വിലാസം)"
+  },
+  "dynamicItemsSection": {
+    "addedItems": "Added Items (ചേർത്ത ഇനങ്ങൾ)",
+    "installation": "Installation (ഇൻസ്റ്റലേഷൻ)",
+    "uninstallation": "Uninstallation (അൺഇൻസ്റ്റലേഷൻ)"
+  },
+  "otherItems": {
+    "title": "Other Items (മറ്റ് ഇനങ്ങൾ)",
+    "serviceOrScaler": "Service Or Scaler (സേവനം അല്ലെങ്കിൽ സ്കേലർ)",
+    "quantity": "Quantity (അളവ്)",
+    "slNo": "Sl No. (ക്രമ നം.)",
+    "addItem": "Add Item (ഇനം ചേർക്കുക)",
+    "itemsName": "Items/particular name (ഇനം / വിശദാംശത്തിന്റെ പേര്)",
+    "itemsList": "Items List (ഇനങ്ങളുടെ പട്ടിക)",
+    "items": "Items (ഇനങ്ങൾ)"
+  },
+  "surveyForm": {
+    "title": "Survey Form (സർവേ ഫോർം)",
+    "summary": "Survey Summary (സർവേ സംഗ്രഹം)",
+    "fillInfo": "Fill Out All Required Information Below (താഴെ എല്ലാ ആവശ്യമായ വിവരങ്ങളും പൂരിപ്പിക്കുക)",
+    "updateSurvey": "Update Survey (സർവേ അപ്‌ഡേറ്റ് ചെയ്യുക)",
+    "submitSurveyForm": "Submit Survey Form (സർവേ ഫോർം സമർപ്പിക്കുക)",
+    "downloading": "Downloading PDF, please wait... (PDF ഡൗൺലോഡ് ചെയ്യുന്നു, ദയവായി കാത്തിരിക്കുക...)",
+    "downloadSuccess": "Downloaded successfully! (വിജയകരമായി ഡൗൺലോഡ് ചെയ്തു!)",
+    "downloadFailed": "Failed to generate PDF (PDF സൃഷ്ടിക്കാൻ പരാജയപ്പെട്ടു)",
+    "downloadNotAvailable": "Cannot download PDF: Survey not created yet (ഡൗൺലോഡ് സാധ്യമല്ല: സർവേ ഇനിയും സൃഷ്ടിച്ചിട്ടില്ല)",
+    "surveyNo": "Survey No (സർവേ നമ്പർ)",
+    "surveySavedSuccess": "Your survey has been saved successfully. Would you like to go back to the list? (നിങ്ങളുടെ സർവേ വിജയകരമായി സംരക്ഷിച്ചു. നിങ്ങൾ പട്ടികയിലേക്ക് മടങ്ങാൻ ആഗ്രഹിക്കുന്നുണ്ടോ?)",
+    "surveySubmitted": "Survey Submitted! (സർവേ സമർപ്പിച്ചു!)"
+  },
+  "quotation": {
+    "title": "Quotation (ഉദ്ധരണി)",
+    "export": "Export (കയറ്റുമതി)",
+    "creditMoneyReceipt": "Credit Money Receipt (ക്രെഡിറ്റ് മണി രസീത്)",
+    "saveQuotation": "Save Quotation (ഉദ്ധരണി സേവ് ചെയ്യുക)",
+    "quotationNo": "Quotation No. (ഉദ്ധരണി നം.)",
+    "companyOrPartyName": "Company or Party Name (കമ്പനി അല്ലെങ്കിൽ കക്ഷിയുടെ പേര്)",
+    "partyName": "Party Name (കക്ഷിയുടെ പേര്)",
+    "companyGst": "Company or Party GST No. (കമ്പനി അല്ലെങ്കിൽ കക്ഷി GST നം.)",
+    "phoneNo": "Phone No. (ഫോൺ നം.)",
+    "email": "Email (ഇ-മെയിൽ)",
+    "quotationDate": "Quotation Date (ഉദ്ധരണി തീയതി)",
+    "openingDate": "Opening Date (ആരംഭ തീയതി)",
+    "deliveryDate": "Delivery date (ഡെലിവറി തീയതി)",
+    "loadNight": "Load Night (രാത്രി ലോഡിംഗ്)",
+    "closingDate": "Closing date (അവസാന തീയതി)",
+    "fullTruck": "Full Truck (പൂർണ്ണ ട്രക്ക്)",
+    "vehicleType": "Vehicle type (വാഹന തരം)",
+    "movingPath": "Moving path (മാറ്റ പാത)",
+    "movingKm": "Moving km (മാറ്റ കി.മീ)",
+    "byRoad": "By Road (റോഡ് വഴി)",
+    "wideMovements": "Wide movements (വ്യാപക ചലനങ്ങൾ)",
+    "newQuotation": "New Quotation (പുതിയ ക്വട്ടേഷൻ)",
+    "customerName": "Customer Name (ഉപഭോക്തൃ നാമം)",
+    "enterName": "Enter name (പേര് നൽകുക)",
+    "enterNo": "Enter no. (നമ്പർ നൽകുക)",
+    "enterMobile": "Enter mobile no. (മൊബൈൽ നമ്പർ നൽകുക)",
+    "enterEmail": "Enter email (ഇമെയിൽ നൽകുക)",
+    "packingDate": "Packing Date (പാക്കിംഗ് തീയതി)",
+    "loadType": "Load Type (ലോഡ് തരം)",
+    "movingPathRemarks": "Moving Path Remarks (പാത കുറിപ്പുകൾ)",
+    "quotationDetails": "Quotation Details (ക്വട്ടേഷൻ വിശദാംശങ്ങൾ)",
+    "saveNext": "സംരക്ഷിച്ച് & അടുത്തത്",
+    "companyName": "Company Name (കമ്പനിയുടെ പേര്)",
+    "partyName": "Party Name (പാർട്ടിയുടെ പേര്)"
+  },
+  "insurance": {
+    "title": "Insurance details (ഇൻഷൂറൻസ് വിവരങ്ങൾ)",
+    "insuranceType": "Insurance Type (ഇൻഷൂറൻസ് തരം)",
+    "optional": "Optional (ഐച്ഛികം)",
+    "insuranceCharges": "Insurance charge(s) (ഇൻഷൂറൻസ് ചാർജ്)",
+    "declarationOfGoods": "Declaration of goods (ചരക്ക് പ്രഖ്യാപനം)",
+    "enterDescription": "Enter a description... (വിവരണം നൽകുക...)",
+    "vehicleInsuranceDetails": "Vehicle Insurance details (വാഹന ഇൻഷൂറൻസ് വിവരങ്ങൾ)",
+    "insuranceChargesVehicle": "Insurance Charge(s) (ഇൻഷൂറൻസ് ചാർജ്)",
+    "declarationOfVehicle": "Declaration of vehicle (വാഹന പ്രഖ്യാപനം)"
+  },
+  "pickupDelivery": {
+    "title": "Pickup & Delivery Details (പിക്കപ്പ് & ഡെലിവറി വിവരങ്ങൾ)",
+    "pickupAddress": "Pickup Address (പിക്കപ്പ് വിലാസം)",
+    "shiftingMovingDate": "Shifting Moving Date (മാറ്റ തീയതി)",
+    "email": "Email (ഇ-മെയിൽ)",
+    "additionalPhoneNo": "Additional phone no. (അധിക ഫോൺ നം.)",
+    "city": "City (നഗരം)",
+    "state": "State (സംസ്ഥാനം)",
+    "floor": "Floor (നില)",
+    "pincode": "Pincode (പിൻ കോഡ്)",
+    "lift": "Lift (ലിഫ്റ്റ്)",
+    "address": "Address (വിലാസം)",
+    "deliveryAddress": "Delivery Address (ഡെലിവറി വിലാസം)"
+  },
+  "otherDetails": {
+    "title": "Other details (മറ്റ് വിവരങ്ങൾ)",
+    "easyAccess": "Is there easy access for load & unloading? (ലോഡിംഗ്/അൺലോഡിംഗിന് എളുപ്പ പ്രവേശനമുണ്ടോ?)",
+    "balconyItems": "Should any items be got down through balcony? (ബാൽക്കണി വഴി എന്തെങ്കിലും ഇറക്കണമോ?)",
+    "loadingRestrictions": "Are there any restrictions for loading/unloading? (ലോഡിംഗ്/അൺലോഡിംഗിന് വല്ല നിയന്ത്രണങ്ങളുമുണ്ടോ?)",
+    "specialNeeds": "Do you have any special needs or concerns? (എന്തെങ്കിലും പ്രത്യേക ആവശ്യങ്ങളുണ്ടോ?)"
+  },
+  "payment": {
+    "title": "Payment Details (പേമെന്റ് വിവരങ്ങൾ)",
+    "charges": "Charges (ചാർജുകൾ)",
+    "advancePaid": "Advance Paid (മുൻകൂർ അടച്ചത്)",
+    "packingCharge": "Packing Charge (പാക്കിംഗ് ചാർജ്)",
+    "unpackingCharge": "Unpacking Charge (അൺപാക്കിംഗ് ചാർജ്)",
+    "includedInHeight": "Included in Height (ഉയരത്തിൽ ഉൾപ്പെടുത്തിയത്)",
+    "loadingCharge": "Loading Charge (ലോഡിംഗ് ചാർജ്)",
+    "unloadingCharge": "Unloading Charge (അൺലോഡിംഗ് ചാർജ്)",
+    "adjustedInHeight": "Adjusted in Height (ഉയരത്തിൽ ക്രമീകരിച്ചത്)",
+    "handlingOrStorage": "Handling or storage (കൈകാര്യം അല്ലെങ്കിൽ സ്റ്റോറേജ്)",
+    "storageCharge": "Storage charge (സ്റ്റോറേജ് ചാർജ്)",
+    "includedInFreight": "Included in freight (ചരക്ക് നിരക്കിൽ ഉൾപ്പെടുത്തിയത്)",
+    "codCharges": "CodCharges (COD ചാർജ്)",
+    "ft": "FT",
+    "interMilestone": "InterMilestone charges (ഇന്റർമൈൽസ്റ്റോൺ ചാർജുകൾ)",
+    "otherCharges": "Other charges (മറ്റ് ചാർജുകൾ)",
+    "stCharge": "ST Charge (ST ചാർജ്)",
+    "surcharge": "Surcharge (അധിക ചാർജ്)",
+    "notApplicable": "Not applicable (ബാധകമല്ല)",
+    "sst": "SST follow or little gst (in Quotation) (SST / GST ഉദ്ധരണിയിൽ)",
+    "gst": "GST",
+    "gstPercentAmt": "GST percent/Amt (GST ശതമാനം/തുക)",
+    "currentTotal": "Current Total (നിലവിലെ ആകെ)",
+    "freightCharge": "Freight Charge (ചരക്ക് നിരക്ക്)",
+    "packingMaterialCharge": "Packing Material Charge (പാക്കിംഗ് മെറ്റീരിയൽ നിരക്ക്)",
+    "carBikeTpt": "Car/Bike TPT (കാർ/ബൈക്ക് ടിപിടി)",
+    "miscCharges": "Miscellaneous Charges (വിവിധ നിരക്കുകൾ)",
+    "gstType": "GST Type (ജിഎസ്ടി തരം)",
+    "gstAmount": "GST Amount (ജിഎസ്ടി തുക)"
+  },
+  "paymentSummary": {
+    "title": "Payment Summary (പേമെന്റ് സംഗ്രഹം)",
+    "advancePayment": "Advance Payment (മുൻകൂർ പേമെന്റ്)",
+    "amount": "Amount (തുക)",
+    "add": "Add (ചേർക്കുക)",
+    "paymentStatus": "Payment Status (പേമെന്റ് നില)",
+    "applyDiscount": "Apply Discount (കിഴിവ് പ്രയോഗിക്കുക)",
+    "discountAmount": "Discount Amount (കിഴിവ് തുക)",
+    "applyOnTotal": "Applicable on total amount (ആകെ തുകയ്ക്ക് ബാധകം)",
+    "apply": "Apply (പ്രയോഗിക്കുക)",
+    "totalAmount": "Total Amount (ആകെ തുക)",
+    "termsAndConditions": "Terms and Conditions (നിബന്ധനകളും വ്യവസ്ഥകളും)",
+    "totalAmountToPay": "Total Amount to pay (അടക്കാനുള്ള ആകെ തുക)",
+    "baseFare": "Base Fare (അടിസ്ഥാന നിരക്ക്)",
+    "taxesAndSurcharges": "Taxes & Surcharges (നികുതിയും അധിക ചാർജും)",
+    "enterAdvanceAmount": "Enter Advance Amount (മുൻകൂർ തുക നൽകുക)",
+    "enterDiscountAmount": "Enter Discount Amount (കിഴിവ് തുക നൽകുക)",
+    "selectStatus": "Select Status (സ്ഥിതി തിരഞ്ഞെടുക്കുക)"
+  },
+  "paymentExpenses": {
+    "paymentsReceived": "Payments Received (ലഭിച്ച പേയ്‌മെന്റുകൾ)",
+    "expenses": "Expenses (ചെലവുകൾ)",
+    "totalExpense": "Total Expense (മൊത്തം ചെലവ്)",
+    "totalExpenses": "Total Expenses (മൊത്തം ചെലവുകൾ)",
+    "searchExpense": "Search Expense Category (ചെലവ് വിഭാഗം തിരയുക)",
+    "noExpenseCategories": "No Expense Categories (ചെലവ് വിഭാഗങ്ങളൊന്നുമില്ല)",
+    "noExpensesEntered": "No Expenses Entered (ചെലവുകൾ നൽകിയിട്ടില്ല)",
+    "expenseSummary": "Expense Summary (ചെലവ് സംഗ്രഹം)"
+  },
+  "addQuotation": {
+    "loadError": "Failed to Load Data (ഡാറ്റ ലോഡ് ചെയ്യുന്നതിൽ പരാജയപ്പെട്ടു)",
+    "createSuccess": "Quotation Created Successfully (ക്വട്ടേഷൻ വിജയകരമായി സൃഷ്ടിച്ചു)",
+    "updateSuccess": "Quotation Updated Successfully (ക്വട്ടേഷൻ വിജയകരമായി അപ്‌ഡേറ്റ് ചെയ്തു)",
+    "createFromSurveySuccess": "Quotation Created from Survey (സർവേയിൽ നിന്ന് ക്വട്ടേഷൻ സൃഷ്ടിച്ചു)",
+    "saveError": "Something Went Wrong (എന്തോ തകരാർ സംഭവിച്ചു)",
+    "savedTitle": "Quotation Saved! (ക്വട്ടേഷൻ സംരക്ഷിച്ചു!)",
+    "savedMessage": "Quotation saved successfully. Do you want to go back to the list? (ക്വട്ടേഷൻ വിജയകരമായി രേഖപ്പെടുത്തി. ലിസ്റ്റിലേക്ക് മടങ്ങാൻ ആഗ്രഹിക്കുന്നുണ്ടോ?)"
+  },
+  "lorryReceipt": {
+    "title": "New Lorry Receipt (പുതിയ ലോറി രസീത്)",
+    "import": "Import (ഇറക്കുമതി)",
+    "saveLR": "Save LR (LR സേവ് ചെയ്യുക)",
+    "lrNo": "LR No. (LR നം.)",
+    "date": "Date (തീയതി)",
+    "filterType": "Filter type (ഫിൽറ്റർ തരം)",
+    "atOwnRisk": "AT Own Risk (സ്വന്തം അപകടത്തിൽ)"
+  },
+  "truckDetails": {
+    "title": "Truck Details (ട്രക്ക് വിവരങ്ങൾ)",
+    "vehicleNo": "Vehicle No. (വാഹന നം.)",
+    "movingUnit": "Moving Unit (മൂവിംഗ് യൂണിറ്റ്)",
+    "movingId": "Moving Id (മൂവിംഗ് ഐഡി)",
+    "selectCity": "Select City (നഗരം തിരഞ്ഞെടുക്കുക)",
+    "driverDetails": "Driver Details (ഡ്രൈവർ വിവരങ്ങൾ)",
+    "driverName": "Driver name (ഡ്രൈവറുടെ പേര്)",
+    "driverMobileNo": "Driver's mobile no. (ഡ്രൈവറുടെ മൊബൈൽ നം.)",
+    "dlNo": "Dl No. (DL നം.)",
+    "dlLicenseNo": "D.I.no license No. (ലൈസൻസ് നം.)",
+    "dlExpiry": "DL expiry (DL കാലഹരണം)",
+    "driverModelNo": "Driver's model no. (ഡ്രൈവർ മോഡൽ നം.)",
+    "dlineExpires": "D.line Expires (D.line കാലഹരണം)"
+  },
+  "invoiceEBill": {
+    "title": "Invoice & E-Bill (ഇൻവോയ്സ് & ഇ-ബിൽ)",
+    "packageBill": "Package/Bill (പാക്കേജ്/ബിൽ)",
+    "invoiceDate": "Invoice Date (ഇൻവോയ്സ് തീയതി)",
+    "eWayBillNo": "E-Way Bill No. (ഇ-വേ ബിൽ നം.)",
+    "eWayBillGenerationDate": "E-way Bill generation date (ഇ-വേ ബിൽ ജനറേഷൻ തീയതി)",
+    "eWayBillExpireDate": "E-way Bill Expire date (ഇ-വേ ബിൽ കാലഹരണ തീയതി)",
+    "eWayBillPeriod": "e-way Bill Period (ഇ-വേ ബിൽ കാലയളവ്)"
+  },
+  "consignorFrom": {
+    "title": "Consignor/Move From (അയക്കുന്നയാൾ/ഇവിടെ നിന്ന്)",
+    "consignorName": "Consignor name (അയക്കുന്നയാളുടെ പേര്)",
+    "consignorId": "Consignor Id (അയക്കുന്നയാളുടെ ഐഡി)",
+    "gstNo": "GST/No. (GST നം.)",
+    "country": "Country (രാജ്യം)",
+    "state": "State (സംസ്ഥാനം)",
+    "city": "City (നഗരം)",
+    "stateLine2": "State Line 2 (സ്റ്റേറ്റ് ലൈൻ 2)",
+    "pincode": "Pincode (പിൻ കോഡ്)",
+    "address": "Address (വിലാസം)"
+  },
+  "consigneeTo": {
+    "title": "Consignee/Move To (സ്വീകരിക്കുന്നയാൾ/ഇവിടേക്ക്)",
+    "consignorId": "Consignor Id (അയക്കുന്നയാളുടെ ഐഡി)",
+    "gstNo": "GST/No. (GST നം.)",
+    "country": "Country (രാജ്യം)",
+    "state": "State (സംസ്ഥാനം)",
+    "city": "City (നഗരം)",
+    "pincode": "Pincode (പിൻ കോഡ്)",
+    "address": "Address (വിലാസം)"
+  },
+  "packageDetails": {
+    "title": "Package Details (പാക്കേജ് വിവരങ്ങൾ)",
+    "noOfPackage": "No. of package (പാക്കേജുകളുടെ എണ്ണം)",
+    "description": "Description (വിവരണം)",
+    "freightToBeBilled": "Freight to be billed (ബിൽ ചെയ്യാനുള്ള ചരക്ക്)",
+    "actualWeight": "Actual Weight (യഥാർത്ഥ ഭാരം)",
+    "chargedWeight": "Charged Weight (ചാർജ് ചെയ്ത ഭാരം)",
+    "fromWeight": "From weight (ഭാരം മുതൽ)",
+    "toWeight": "To weight (ഭാരം വരെ)",
+    "kg": "KG (കിലോഗ്രാം)",
+    "receivedGoodsContinue": "Received Goods Continue (ലഭിച്ച ചരക്ക് തുടരുക)",
+    "remarks": "Remarks (നിരീക്ഷണങ്ങൾ)"
+  },
+  "paymentDetailsLR": {
+    "title": "Payment Details (പേമെന്റ് വിവരങ്ങൾ)",
+    "freightToBeBilled": "Freight to be billed (ബിൽ ചെയ്യാനുള്ള ചരക്ക്)",
+    "toPay": "To pay (അടക്കാനുള്ളത്)",
+    "freightPaid": "Freight paid (ചരക്ക് ചാർജ് അടച്ചത്)",
+    "freightToPay": "Freight to pay (ചരക്ക് ചാർജ് ബാക്കി)",
+    "totalBasicFreight": "Total basic freight (ആകെ അടിസ്ഥാന ചരക്ക് നിരക്ക്)",
+    "loadingCharge": "Loading charge (ലോഡിംഗ് ചാർജ്)",
+    "unloadingCharge": "S.T. charge (S.T. ചാർജ്)",
+    "otherCharge": "D.to - Charge (D.to ചാർജ്)",
+    "lrLrCharges": "LR/LR CHARGES (LR ചാർജുകൾ)",
+    "gst": "GST",
+    "gstPaidBy": "GST paid by (GST അടച്ചത്)",
+    "consignee": "Consignee (സ്വീകരിക്കുന്നയാൾ)"
+  },
+  "materialInsurance": {
+    "title": "Material Insurance (വസ്തു ഇൻഷൂറൻസ്)",
+    "materialPurposes": "Material Purposes (വസ്തുവിന്റെ ഉദ്ദേശ്യം)",
+    "insured": "Insured (ഇൻഷ്വർ ചെയ്തത്)",
+    "insuranceCompany": "Insurance Company (ഇൻഷൂറൻസ് കമ്പനി)",
+    "policyNo": "Policy no. (പോളിസി നം.)",
+    "insuredAmount": "Insured Amount (ഇൻഷ്വർ ചെയ്ത തുക)",
+    "insuranceCode": "Insurance Code (ഇൻഷൂറൻസ് കോഡ്)",
+    "fromDateRisk": "From Date Risk (അപകട ആരംഭ തീയതി)",
+    "note": "Note (കുറിപ്പ്)"
+  },
+  "demurrageCharge": {
+    "title": "Demurrage Charge (ഡെമറേജ് ചാർജ്)",
+    "demurrageDays": "Demurrage Days (ഡെമറേജ് ദിവസങ്ങൾ)",
+    "demurrageChargeApplicable": "Demurrage Charge Applicable (ഡെമറേജ് ചാർജ് ബാധകം)",
+    "perDay": "Per Day (ഒരു ദിവസം)",
+    "moreThan5Days": "More than 5 days (5 ദിവസത്തിൽ കൂടുതൽ)"
+  },
+  "receipt": {
+    "title": "New Receipt (പുതിയ രസീത്)",
+    "receiptNo": "Receipt No. (രസീത് നം.)",
+    "date": "Date (തീയതി)",
+    "branch": "Branch (ശാഖ)",
+    "name": "Name (പേര്)",
+    "phoneNo": "Phone no. (ഫോൺ നം.)",
+    "receiptAgainst": "Receipt against (രസീത് എതിരായി)",
+    "quotation": "Quotation (ഉദ്ധരണി)",
+    "billAndQuotationDate": "Bill/Quotation date (ബിൽ/ഉദ്ധരണി തീയതി)",
+    "moveTo": "Move to (ഇവിടേക്ക്)",
+    "moveFrom": "Move from (ഇവിടെ നിന്ന്)",
+    "paymentType": "Payment type (പേമെന്റ് തരം)",
+    "port": "Port (തുറമുഖം)",
+    "receiptAmount": "Receipt amount (രസീത് തുക)",
+    "paymentMode": "Payment mode (പേമെന്റ് രീതി)",
+    "cash": "Cash (പണം)",
+    "transactionNo": "Enter Transaction no. (ഇടപാട് നം. നൽകുക)",
+    "remarks": "Remarks (നിരീക്ഷണങ്ങൾ)"
+  },
+  "expenseCategory": {
+    "title": "Expense Categories (ചെലവ് വിഭാഗങ്ങൾ)",
+    "totalExpenses": "Total Expenses: ₹{{total}} (മൊത്തം ചെലവുകൾ: ₹{{total}})",
+    "addNew": "Add New (പുതിയത് ചേർക്കുക)",
+    "list": {
+      "loading": "Loading categories... (വിഭാഗങ്ങൾ ലോഡുചെയ്യുന്നു...)",
+      "empty": "No categories found. (വിഭാഗങ്ങളൊന്നും കണ്ടെത്തിയില്ല.)"
+    },
+    "modal": {
+      "editTitle": "Edit Expense Category (ചെലവ് വിഭാഗം എഡിറ്റ് ചെയ്യുക)",
+      "addTitle": "Expense Category (ചെലവ് വിഭാഗം)"
+    },
+    "fields": {
+      "nameLabel": "Category Name (വിഭാഗത്തിന്റെ പേര്)",
+      "namePlaceholder": "e.g., Fuel Expenses (ഉദാ: ഇന്ധന ചെലവുകൾ)",
+      "amountLabel": "Amount (തുക)",
+      "amountPlaceholder": "0"
+    },
+    "toast": {
+      "toggleError": "Failed to toggle status (സ്റ്റാറ്റസ് മാറ്റുന്നതിൽ പരാജയപ്പെട്ടു)",
+      "deleteSuccess": "Category deleted successfully (വിഭാഗം വിജയകരമായി ഇല്ലാതാക്കി)",
+      "deleteError": "Failed to delete category (വിഭാഗം ഇല്ലാതാക്കുന്നതിൽ പരാജയപ്പെട്ടു)",
+      "nameRequired": "Name is required (പേര് ആവശ്യമാണ്)",
+      "updateSuccess": "Category updated! (വിഭാഗം അപ്ഡേറ്റ് ചെയ്തു!)",
+      "createSuccess": "Category created! (വിഭാഗം സൃഷ്ടിച്ചു!)",
+      "saveError": "Failed to save category (വിഭാഗം സംരക്ഷിക്കുന്നതിൽ പരാജയപ്പെട്ടു)"
+    },
+    "deleteModal": {
+      "title": "Delete Category (വിഭാഗം ഇല്ലാതാക്കുക)",
+      "message": "Are you sure? (നിങ്ങൾക്ക് ഉറപ്പാണോ?)"
+    }
+  },
+  "officeExpense": {
+    "title": "Office Expenses (ഓഫീസ് ചെലവുകൾ)",
+    "totalExpenses": "Total Expenses: ₹{{total}} (മൊത്തം ചെലവുകൾ: ₹{{total}})",
+    "addExpense": "Add Expense (ചെലവ് ചേർക്കുക)",
+    "drawer": {
+      "editTitle": "Edit Expense (ചെലവ് എഡിറ്റ് ചെയ്യുക)",
+      "addTitle": "New Expense (പുതിയ ചെലവ്)"
+    },
+    "fields": {
+      "nameLabel": "Name (പേര്)",
+      "namePlaceholder": "Expense name (ചെലവിന്റെ പേര്)",
+      "categoryLabel": "Expense category (ചെലവ് വിഭാഗം)",
+      "selectCategory": "Select category (വിഭാഗം തിരഞ്ഞെടുക്കുക)",
+      "dateLabel": "Date (തീയതി)",
+      "amountLabel": "Amount (തുക)",
+      "amountPlaceholder": "₹"
+    },
+    "toast": {
+      "nameRequired": "Expense name is required (ചെലവിന്റെ പേര് ആവശ്യമാണ്)",
+      "amountRequired": "Valid amount is required (സാധുവായ തുക ആവശ്യമാണ്)",
+      "updateSuccess": "Expense updated! (ചെലവ് അപ്ഡേറ്റ് ചെയ്തു!)",
+      "createSuccess": "Expense created! (ചെലവ് സൃഷ്ടിച്ചു!)",
+      "saveError": "Failed to save expense (ചെലവ് സംരക്ഷിക്കുന്നതിൽ പരാജയപ്പെട്ടു)",
+      "deleteSuccess": "Expense deleted successfully (ചെലവ് വിജയകരമായി ഇല്ലാതാക്കി)",
+      "deleteError": "Failed to delete expense (ചെലവ് ഇല്ലാതാക്കുന്നതിൽ പരാജയപ്പെട്ടു)"
+    },
+    "deleteModal": {
+      "title": "Delete Office Expense (ഓഫീസ് ചെലവ് ഇല്ലാതാക്കുക)",
+      "message": "Are you sure you want to delete this expense record? (ഈ ചെലവ് രേഖ ഇല്ലാതാക്കണമെന്ന് നിങ്ങൾക്ക് ഉറപ്പാണോ?)"
+    }
+  },
+  "moneyReceipt": {
+    "add": {
+      "title": "Money Receipt (മണി രസീത്)",
+      "saveReceipt": "Save Receipt (രസീത് സേവ് ചെയ്യുക)",
+      "editPageTitle": "Edit Money Receipt (മണി രസീത് എഡിറ്റ് ചെയ്യുക)",
+      "addPageTitle": "Add Money Receipt (മണി രസീത് ചേർക്കുക)"
+    },
+    "fields": {
+      "receiptNo": "Receipt No. (രസീത് നം.)",
+      "orderNumber": "Order Number (ഓർഡർ നം.)",
+      "date": "Date (തീയതി)",
+      "branch": "Branch (ശാഖ)",
+      "name": "Name (പേര്)",
+      "phone": "Phone no. (ഫോൺ നം.)",
+      "billDate": "Bill/Quotation date (ബിൽ/ഉദ്ധരണി തീയതി)",
+      "moveFrom": "Move from (ഇവിടെ നിന്ന്)",
+      "moveTo": "Move to (ഇവിടേക്ക്)",
+      "paymentType": "Payment type (പേമെന്റ് തരം)",
+      "receiptAmount": "Receipt amount (രസീത് തുക)",
+      "paymentMode": "Payment Mode (പേമെന്റ് രീതി)",
+      "transactionNo": "Transaction No. (ഇടപാട് നം.)",
+      "remarks": "Remarks (നിരീക്ഷണങ്ങൾ)"
+    },
+    "placeholders": {
+      "enterNumber": "Enter number (നമ്പർ നൽകുക)",
+      "enterBranch": "Enter branch (ശാഖ നൽകുക)",
+      "enterName": "Enter name (പേര് നൽകുക)",
+      "enterPhone": "Enter ph no. (ഫോൺ നം. നൽകുക)",
+      "selectCity": "Select City (നഗരം തിരഞ്ഞെടുക്കുക)",
+      "enterTransaction": "Enter Transaction ID / Cheque No. (ഇടപാട് ഐഡി/ചെക്ക് നം. നൽകുക)",
+      "writeRemarks": "Write remarks.. (നിരീക്ഷണങ്ങൾ എഴുതുക..)"
+    },
+    "dropdowns": {
+      "Advance": "Advance (മുൻകൂർ)",
+      "Part": "Part (ഭാഗികം)",
+      "Full": "Full (പൂർണ്ണം)",
+      "Cash": "Cash (പണം)",
+      "Bank Transfer": "Bank Transfer (ബാങ്ക് ട്രാൻസ്ഫർ)",
+      "Cheque": "Cheque (ചെക്ക്)",
+      "UPI": "UPI (യുപിഐ)"
+    },
+    "toast": {
+      "dataFetched": "Data fetched from {{source}} ({{source}} ൽ നിന്ന് ഡാറ്റ ലഭിച്ചു)"
+    },
+    "modals": {
+      "discardTitle": "Discard Changes? (മാറ്റങ്ങൾ ഒഴിവാക്കണോ?)",
+      "discardMessage": "Are you sure you want to leave? Any unsaved data will be permanently lost. (നിങ്ങൾക്ക് പോകണമെന്ന് ഉറപ്പാണോ? സംരക്ഷിക്കാത്ത ഡാറ്റ ശാശ്വതമായി നഷ്ടപ്പെടും.)",
+      "yesLeave": "Yes, Leave (അതെ, പോകുക)"
+    },
+    "list": {
+      "title": "Money Receipts (മണി രസീതുകൾ)",
+      "addBtn": "Add Money Receipt (രസീത് ചേർക്കുക)",
+      "pageTitle": "Money Receipt List (മണി രസീത് പട്ടിക)",
+      "columns": {
+        "mrNo": "MR NO (രസീത് നം.)",
+        "dates": "DATES (തീയതികൾ)",
+        "customer": "CUSTOMER (ഉപഭോക്താവ്)",
+        "receiptAgainst": "RECEIPT AGAINST (രസീത് എതിരായി)",
+        "amount": "AMOUNT (തുക)"
+      },
+      "stats": {
+        "totalReceipts": "Total Receipts (ആകെ രസീതുകൾ)"
+      },
+      "toasts": {
+        "downloadingPdf": "Downloading PDF, please wait... (PDF ഡൗൺലോഡ് ചെയ്യുന്നു...)",
+        "downloadPdfSuccess": "Downloaded successfully! (വിജയകരമായി ഡൗൺലോഡ് ചെയ്തു!)",
+        "downloadPdfFail": "Failed to download PDF. (ഡൗൺലോഡ് പരാജയപ്പെട്ടു.)",
+        "exporting": "Exporting receipts, please wait... (എക്‌സ്‌പോർട്ട് ചെയ്യുന്നു...)",
+        "exportSuccess": "Exported successfully! (വിജയകരമായി എക്‌സ്‌പോർട്ട് ചെയ്തു!)",
+        "exportFail": "Failed to export receipts. (എക്‌സ്‌പോർട്ട് പരാജയപ്പെട്ടു.)",
+        "loadingPdf": "Loading PDF preview... (PDF പ്രിവ്യൂ...)",
+        "loadPdfFail": "Failed to load PDF preview. (പ്രിവ്യൂ പരാജയപ്പെട്ടു.)",
+        "deleteSuccess": "Receipt deleted successfully (രസീത് ഇല്ലാതാക്കി)",
+        "deleteFail": "Failed to delete receipt (ഇല്ലാതാക്കുന്നതിൽ പരാജയപ്പെട്ടു)"
+      },
+      "deleteModal": {
+        "title": "Delete Money Receipt (രസീത് ഇല്ലാതാക്കുക)",
+        "message": "Are you sure you want to delete this receipt? This action cannot be undone. (ഇല്ലാതാക്കണമെന്ന് ഉറപ്പാണോ?)"
+      }
+    }
+  },
+  "staff": {
+    "header": {
+      "title": "Staffs (ജീവനക്കാർ)",
+      "subtitle": "Manage your organization team (നിങ്ങളുടെ സ്ഥാപന ടീമിനെ നിയന്ത്രിക്കുക)",
+      "total": "Total (ആകെ)",
+      "addBtn": "Add Staff (സ്റ്റാഫ് ചേർക്കുക)"
+    },
+    "card": {
+      "staffId": "Staff ID (സ്റ്റാഫ് ഐഡി)",
+      "loginCode": "Login code (ലോഗിൻ കോഡ്)",
+      "active": "Active (സജീവം)",
+      "inactive": "Inactive (നിഷ്‌ക്രിയം)",
+      "stats": {
+        "survey": "Survey (സർവേ)",
+        "quotation": "Quotation (ക്വട്ടേഷൻ)",
+        "lrBilty": "LR/Bilty (LR/ബിൽറ്റി)",
+        "orders": "Orders (ഓർഡറുകൾ)"
+      }
+    },
+    "drawer": {
+      "editStaff": "Edit Staff (സ്റ്റാഫ് എഡിറ്റ് ചെയ്യുക)",
+      "newStaff": "New Staff (പുതിയ സ്റ്റാഫ്)",
+      "update": "Update (അപ്‌ഡേറ്റ് ചെയ്യുക)",
+      "saveStaff": "Save Staff (സ്റ്റാഫ് സേവ് ചെയ്യുക)",
+      "updateProfile": "Update Profile (പ്രൊഫൈൽ അപ്‌ഡേറ്റ് ചെയ്യുക)",
+      "module": "Module (മൊഡ്യൂൾ)",
+      "sections": {
+        "basicDetails": "Basic Details (അടിസ്ഥാന വിവരങ്ങൾ)",
+        "employmentDetails": "Employment Details (തൊഴിൽ വിവരങ്ങൾ)",
+        "permissionsSchema": "Permissions (അനുമതികൾ)"
+      }
+    },
+    "form": {
+      "name": "Name (പേര്)",
+      "enterName": "Enter name (പേര് നൽകുക)",
+      "mobile": "Mobile no. (മൊബൈൽ നം.)",
+      "enterMobile": "Enter mobile no. (മൊബൈൽ നം. നൽകുക)",
+      "altMobile": "Alternate mobile no. (ബദൽ മൊബൈൽ നം.)",
+      "email": "Email (ഇമെയിൽ)",
+      "enterEmail": "Enter email (ഇമെയിൽ നൽകുക)",
+      "dob": "Date of Birth (ജനനത്തീയതി)",
+      "selectDob": "Select DOB (ജനനത്തീയതി തിരഞ്ഞെടുക്കുക)",
+      "address": "Address (വിലാസം)",
+      "enterAddress": "Enter address... (വിലാസം നൽകുക...)",
+      "joiningDate": "Joining Date (ചേരുന്ന തീയതി)",
+      "advSalary": "Advance salary (അഡ്വാൻസ് ശമ്പളം)",
+      "baseSalary": "Base Salary (അടിസ്ഥാന ശമ്പളം)",
+      "role": "Role (റോൾ)",
+      "loginCode": "Login Code (ലോഗിൻ കോഡ്)",
+      "enterCode": "Enter code (കോഡ് നൽകുക)"
+    },
+    "permissions": {
+      "view": "View (കാണുക)",
+      "add": "Add (ചേർക്കുക)",
+      "edit": "Edit (എഡിറ്റ് ചെയ്യുക)",
+      "delete": "Delete (ഇല്ലാതാക്കുക)",
+      "modules": {
+        "surveyList": "Survey List (സർവേ പട്ടിക)",
+        "quotation": "Quotation (ക്വട്ടേഷൻ)",
+        "order": "Order (ഓർഡർ)",
+        "moneyReceipt": "Money Receipt (മണി രസീത്)",
+        "staff": "Staff (സ്റ്റാഫ്)",
+        "expense": "Expense Management (ചെലവ് മാനേജ്മെന്റ്)",
+        "lrBilty": "LR Bilty (LR ബിൽറ്റി)",
+        "letterHead": "Letter Head (ലെറ്റർ ഹെഡ്)"
+      }
+    },
+    "dropdowns": {
+      "Admin": "Admin (അഡ്മിൻ)",
+      "Staff": "Staff (സ്റ്റാഫ്)"
+    },
+    "toasts": {
+      "fetchError": "Error fetching staff details (സ്റ്റാഫ് വിവരങ്ങൾ എടുക്കുന്നതിൽ പിശക്)",
+      "updateSuccess": "Staff updated successfully (സ്റ്റാഫ് വിജയകരമായി അപ്‌ഡേറ്റ് ചെയ്തു)",
+      "createSuccess": "Staff created successfully (സ്റ്റാഫ് വിജയകരമായി ചേർത്തു)",
+      "saveError": "Failed to save staff (സ്റ്റാഫ് സേവ് ചെയ്യുന്നതിൽ പരാജയപ്പെട്ടു)",
+      "statusChange": "Staff marked as {{status}} (സ്റ്റാഫ് {{status}} ആയി അടയാളപ്പെടുത്തി)",
+      "statusError": "Failed to update status (സ്റ്റാറ്റസ് അപ്‌ഡേറ്റ് ചെയ്യുന്നതിൽ പരാജയപ്പെട്ടു)"
+    },
+    "profile": {
+      "pageTitle": "Staff Profile | PackNPay (സ്റ്റാഫ് പ്രൊഫൈൽ | PackNPay)",
+      "loading": "Loading profile... (പ്രൊഫൈൽ ലോഡുചെയ്യുന്നു...)",
+      "basicDetails": "Basic Details (അടിസ്ഥാന വിവരങ്ങൾ)",
+      "attendance": "Attendance (ഹാജർ)",
+      "employmentDetails": "Employment Details (തൊഴിൽ വിവരങ്ങൾ)",
+      "orderCounts": "Order Counts (ഓർഡർ എണ്ണം)",
+      "totalQuotations": "Total Quotations (ആകെ ക്വട്ടേഷനുകൾ)",
+      "totalOrders": "Total Orders (ആകെ ഓർഡറുകൾ)",
+      "totalLrBilty": "Total LR/Bilty (ആകെ LR/ബിൽറ്റി)",
+      "totalReceipts": "Total receipt (ആകെ രസീത്)"
+    }
+  },
+  "letterHead": {
+    "add": {
+      "title": "New Letter Head (പുതിയ ലെറ്റർ ഹെഡ്)",
+      "editTitle": "Edit Letter Head (ലെറ്റർ ഹെഡ് എഡിറ്റ് ചെയ്യുക)",
+      "pageTitle": "Add Letter Head | PackNPay (ലെറ്റർ ഹെഡ് ചേർക്കുക | PackNPay)",
+      "pageTitleEdit": "Edit Letter Head | PackNPay (ലെറ്റർ ഹെഡ് എഡിറ്റ് ചെയ്യുക | PackNPay)",
+      "basicDetails": "Basic Details (അടിസ്ഥാന വിവരങ്ങൾ)",
+      "letterDetails": "Letter Details (കത്തിന്റെ വിവരങ്ങൾ)",
+      "loading": "Loading letter details... (കത്തിന്റെ വിവരങ്ങൾ ലോഡുചെയ്യുന്നു...)"
+    },
+    "fields": {
+      "lhNo": "LH No. (എൽഎച്ച് നം.)",
+      "date": "Date (തീയതി)",
+      "name": "Name (പേര്)",
+      "phone": "Phone no. (ഫോൺ നം.)",
+      "email": "Email (ഇമെയിൽ)",
+      "remarks": "Remarks (നിരീക്ഷണങ്ങൾ)"
+    },
+    "placeholders": {
+      "enterName": "Enter name (പേര് നൽകുക)",
+      "enterPhone": "Enter ph no. (ഫോൺ നം. നൽകുക)",
+      "enterEmail": "Enter email (ഇമെയിൽ നൽകുക)",
+      "writeRemarks": "Write remarks.. (നിരീക്ഷണങ്ങൾ എഴുതുക..)",
+      "write": "Write.. (എഴുതുക..)"
+    },
+    "toasts": {
+      "loadError": "Failed to load letter details. (കത്തിന്റെ വിവരങ്ങൾ ലോഡുചെയ്യുന്നതിൽ പരാജയപ്പെട്ടു.)",
+      "previewComingSoon": "Preview functionality coming soon! (പ്രിവ്യൂ ഉടൻ വരുന്നു!)",
+      "nameRequired": "Name is required! (പേര് ആവശ്യമാണ്!)",
+      "createSuccess": "Letter Head created successfully! (ലെറ്റർ ഹെഡ് വിജയകരമായി സൃഷ്ടിച്ചു!)",
+      "updateSuccess": "Letter Head updated successfully! (ലെറ്റർ ഹെഡ് വിജയകരമായി അപ്‌ഡേറ്റ് ചെയ്തു!)",
+      "createFail": "Failed to create Letter Head (ലെറ്റർ ഹെഡ് സൃഷ്ടിക്കുന്നതിൽ പരാജയപ്പെട്ടു)",
+      "updateFail": "Failed to update Letter Head (ലെറ്റർ ഹെഡ് അപ്‌ഡേറ്റ് ചെയ്യുന്നതിൽ പരാജയപ്പെട്ടു)"
+    },
+    "modals": {
+      "successTitle": "Success! (വിജയം!)",
+      "updateSuccessTitle": "Update Success! (അപ്ഡേറ്റ് വിജയിച്ചു!)",
+      "successMessage": "You've successfully {{action}} letter head {{lh_no}}. Do you want to return to the list? (നിങ്ങൾ ലെറ്റർ ഹെഡ് {{lh_no}} വിജയകരമായി {{action}}. പട്ടികയിലേക്ക് മടങ്ങാൻ താൽപ്പര്യമുണ്ടോ?)",
+      "returnToList": "Yes, return to list (അതെ, പട്ടികയിലേക്ക് മടങ്ങുക)",
+      "stayHere": "No, stay here (ഇല്ല, ഇവിടെ നിൽക്കുക)"
+    },
+    "list": {
+      "title": "Letter Head (ലെറ്റർ ഹെഡ്)",
+      "addBtn": "Add Letter Head (ലെറ്റർ ഹെഡ് ചേർക്കുക)",
+      "pageTitle": "Letter Head List | PackNPay (ലെറ്റർ ഹെഡ് പട്ടിക | PackNPay)",
+      "columns": {
+        "lhNo": "LH NO (എൽഎച്ച് നം.)",
+        "dates": "DATES (തീയതികൾ)",
+        "customer": "CUSTOMER (ഉപഭോക്താവ്)",
+        "phone": "PHONE NO. (ഫോൺ നം.)",
+        "email": "EMAIL (ഇമെയിൽ)"
+      },
+      "toasts": {
+        "downloadingPdf": "Downloading PDF, please wait... (PDF ഡൗൺലോഡ് ചെയ്യുന്നു...)",
+        "downloadSuccess": "Downloaded successfully! (വിജയകരമായി ഡൗൺലോഡ് ചെയ്തു!)",
+        "downloadFail": "Failed to download PDF. (ഡൗൺലോഡ് പരാജയപ്പെട്ടു.)",
+        "exporting": "Exporting records, please wait... (എക്‌സ്‌പോർട്ട് ചെയ്യുന്നു...)",
+        "exportSuccess": "Exported successfully! (വിജയകരമായി എക്‌സ്‌പോർട്ട് ചെയ്തു!)",
+        "exportFail": "Failed to export records. (എക്‌സ്‌പോർട്ട് പരാജയപ്പെട്ടു.)",
+        "generatingPdf": "Generating PDF, please wait... (PDF തയ്യാറാക്കുന്നു...)",
+        "previewFail": "Failed to load PDF preview. (പ്രിവ്യൂ പരാജയപ്പെട്ടു.)",
+        "deleteSuccess": "Letter Head deleted successfully (ലെറ്റർ ഹെഡ് ഇല്ലാതാക്കി)",
+        "deleteFail": "Failed to delete letter head (ഇല്ലാതാക്കുന്നതിൽ പരാജയപ്പെട്ടു)"
+      },
+      "deleteModal": {
+        "title": "Delete Letter Head (ലെറ്റർ ഹെഡ് ഇല്ലാതാക്കുക)",
+        "message": "Are you sure you want to delete this letter head? This action cannot be undone. (ഇല്ലാതാക്കണമെന്ന് ഉറപ്പാണോ?)"
+      }
+    }
+  },
+  "subscription": {
+    "title": "Subscription (സബ്സ്ക്രിപ്ഷൻ)",
+    "daysLeft": "Days left to renew (പുതുക്കാൻ അവശേഷിക്കുന്ന ദിവസങ്ങൾ)",
+    "plan": "Plan (പ്ലാൻ)",
+    "noActivePlan": "No Active Plan (സജീവ പ്ലാനുകളില്ല)",
+    "purchasedOn": "Purchased On (വാങ്ങിയ തീയതി)",
+    "validTill": "Valid Till (സാധുതയുള്ളത്)",
+    "buyPlan": "Buy plan (പ്ലാൻ വാങ്ങുക)",
+    "renewPlan": "Renew plan (പ്ലാൻ പുതുക്കുക)",
+    "history": "Subscription History (സബ്സ്ക്രിപ്ഷൻ ചരിത്രം)",
+    "paid": "Paid (പണമടച്ചത്)",
+    "monthly": "Monthly (പ്രതിമാസ)",
+    "upfront": "Upfront (മുൻകൂർ)",
+    "tryForFree": "Try for free (സൗജന്യമായി പരീക്ഷിക്കുക)",
+    "subscribe": "Subscribe (സബ്സ്ക്രൈബ് ചെയ്യുക)",
+    "days": "Days (ദിവസങ്ങൾ)",
+    "months": "Months (മാസങ്ങൾ)",
+    "buy": {
+      "title": "Boost Your Current Plan (നിങ്ങളുടെ നിലവിലെ പ്ലാൻ വർദ്ധിപ്പിക്കുക)",
+      "subtitle": "Enjoy more features without losing what you love. (നിങ്ങൾക്ക് ഇഷ്ടമുള്ളത് നഷ്ടപ്പെടുത്താതെ കൂടുതൽ സവിശേഷതകൾ ആസ്വദിക്കുക.)"
+    },
+    "columns": {
+      "slNo": "SL NO (ക്രമ നമ്പർ)",
+      "purchasedOn": "PURCHASED ON (വാങ്ങിയ തീയതി)",
+      "planName": "PLAN NAME (പ്ലാനിന്റെ പേര്)",
+      "period": "PERIOD (കാലയളവ്)",
+      "duration": "DURATION (ദൈർഘ്യം)",
+      "amount": "AMOUNT (തുക)",
+      "status": "STATUS (സ്റ്റാറ്റസ്)"
+    },
+    "features": {
+      "supervisors": "Supervisors (സൂപ്പർവൈസർമാർ)",
+      "managers": "Managers (മാനേജർമാർ)",
+      "labours": "Labours (തൊഴിലാളികൾ)",
+      "prioritySupport": "Priority Support (മുൻഗണനാ പിന്തുണ)"
+    },
+    "toasts": {
+      "loadFail": "Failed to load subscription details (സബ്സ്ക്രിപ്ഷൻ വിവരങ്ങൾ ലോഡുചെയ്യുന്നതിൽ പരാജയപ്പെട്ടു)",
+      "razorpayFail": "Razorpay SDK failed to load. (റേസർപേ എസ്ഡികെ ലോഡുചെയ്യുന്നതിൽ പരാജയപ്പെട്ടു.)",
+      "paymentSuccess": "Payment Verified Successfully! (പേയ്‌മെന്റ് വിജയകരമായി പരിശോധിച്ചു!)",
+      "invalidPayment": "Invalid payment (അസാധുവായ പേയ്‌മെന്റ്)",
+      "verifyFail": "Verification failed (പരിശോധന പരാജയപ്പെട്ടു)",
+      "paymentFailed": "Payment Failed (പേയ്‌മെന്റ് പരാജയപ്പെട്ടു)",
+      "checkoutFail": "Failed to initiate checkout (ചെക്ക്ഔട്ട് ആരംഭിക്കുന്നതിൽ പരാജയപ്പെട്ടു)"
+    }
+  },
+  "lr": {
+    "add": {
+      "pageTitle": "Add LR | PackNPay (LR ചേർക്കുക | PackNPay)",
+      "pageTitleEdit": "Edit LR | PackNPay (LR എഡിറ്റ് ചെയ്യുക | PackNPay)",
+      "newTitle": "New Lorry Receipt (പുതിയ ലോറി രസീത്)",
+      "editTitle": "Edit Lorry Receipt (ലോറി രസീത് എഡിറ്റ് ചെയ്യുക)",
+      "saveBtn": "Save LR (LR സംരക്ഷിക്കുക)",
+      "loading": "Loading LR details... (LR വിവരങ്ങൾ ലോഡുചെയ്യുന്നു...)",
+      "sections": {
+        "lrDetails": "LR Details (LR വിവരങ്ങൾ)",
+        "truckDetails": "Truck Details (ട്രക്ക് വിവരങ്ങൾ)",
+        "consignorFrom": "Consignor/Move From (അയക്കുന്നയാൾ/ഇവിടെ നിന്ന്)",
+        "packageDetails": "Package Details (പാക്കേജ് വിവരങ്ങൾ)",
+        "demurrageCharge": "Demurrage Charge (ഡെമറേജ് ചാർജ്)",
+        "materialInsurance": "Material Insurance (മെറ്റീരിയൽ ഇൻഷുറൻസ്)",
+        "consignorTo": "Consignee/Move To (സ്വീകർത്താവ്/ഇവിടേക്ക്)",
+        "paymentDetails": "Payment Details (പേയ്‌മെന്റ് വിവരങ്ങൾ)",
+        "driverDetails": "Driver Details (ഡ്രൈവർ വിവരങ്ങൾ)"
+      }
+    },
+    "fields": {
+      "lrNo": "LR No. (LR നം.)",
+      "date": "Date (തീയതി)",
+      "riskType": "Risk Type (റിസ്ക് തരം)",
+      "orderId": "Order ID (ഓർഡർ ഐഡി)",
+      "vehicleNo": "Vehicle No. (വാഹന നം.)",
+      "movingFrom": "Moving from (പുറപ്പെടുന്നത്)",
+      "movingTo": "Moving to (എത്തിച്ചേരുന്നത്)",
+      "driverName": "Driver name (ഡ്രൈവറുടെ പേര്)",
+      "driverPhone": "Driver's mobile no. (ഡ്രൈവറുടെ മൊബൈൽ നം.)",
+      "driverLicense": "Driver license no. (ഡ്രൈവർ ലൈസൻസ് നം.)",
+      "consignorName": "Consignor name (അയക്കുന്നയാളുടെ പേര്)",
+      "consignorPhone": "Consignor ph no. (അയക്കുന്നയാളുടെ ഫോൺ നം.)",
+      "consigneeName": "Consignee name (സ്വീകർത്താവിന്റെ പേര്)",
+      "consigneePhone": "Consignee ph no. (സ്വീകർത്താവിന്റെ ഫോൺ നം.)",
+      "gstNo": "CGSTIN no. (CGSTIN നം.)",
+      "country": "Country (രാജ്യം)",
+      "state": "State (സംസ്ഥാനം)",
+      "city": "City (നഗരം)",
+      "pincode": "Pincode (പിൻകോഡ്)",
+      "address": "Address (വിലാസം)",
+      "noOfPackages": "No of package (പാക്കേജുകളുടെ എണ്ണം)",
+      "description": "Description (വിവരണം)",
+      "actualWeight": "Actual Weight (യഥാർത്ഥ ഭാരം)",
+      "chargedWeight": "Charged Weight (ചാർജ് ചെയ്ത ഭാരം)",
+      "conditionNote": "Received Package condition (ലഭിച്ച പാക്കേജിന്റെ അവസ്ഥ)",
+      "remarks": "Remarks (നിരീക്ഷണങ്ങൾ)",
+      "insuranceType": "Material Insurance (മെറ്റീരിയൽ ഇൻഷുറൻസ്)",
+      "companyName": "Insurance company (ഇൻഷുറൻസ് കമ്പനി)",
+      "policyNo": "Policy no. (പോളിസി നം.)",
+      "insuredAmount": "Insured amount (ഇൻഷ്വർ ചെയ്ത തുക)",
+      "insuranceDate": "Insurance Date (ഇൻഷുറൻസ് തീയതി)",
+      "riskDetails": "Insurance Risk (ഇൻഷുറൻസ് റിസ്ക്)",
+      "freightToBeBilled": "Freight to be billed (ബിൽ ചെയ്യേണ്ട ചരക്കുകൂലി)",
+      "freightPaid": "Freight Paid (അടച്ച ചരക്കുകൂലി)",
+      "freightToPay": "Freight to pay (അടയ്ക്കേണ്ട ചരക്കുകൂലി)",
+      "basicFreight": "Total Basic freight (മൊത്തം അടിസ്ഥാന ചരക്കുകൂലി)",
+      "loadingCharge": "Loading charge (ലോഡിംഗ് ചാർജ്)",
+      "unloadingCharge": "Unloading charge (അൺലോഡിംഗ് ചാർജ്)",
+      "stCharge": "S.T charge (S.T ചാർജ്)",
+      "otherCharge": "Other charge (മറ്റ് ചാർജ്)",
+      "lrCnCharge": "LR/CN CHARGES (LR/CN ചാർജുകൾ)",
+      "gstPercent": "GST % (GST %)",
+      "gstPaidBy": "GST paid by (GST അടയ്ക്കുന്നത്)",
+      "demurrageCharge": "Demurrage charge (ഡെമറേജ് ചാർജ്)",
+      "applicableRule": "Applicable Rule (ബാധകമായ നിയമം)"
+    },
+    "placeholders": {
+      "selectRisk": "Select Risk Type (റിസ്ക് തരം തിരഞ്ഞെടുക്കുക)",
+      "enterOrderId": "Enter Order ID (ഓർഡർ ഐഡി നൽകുക)",
+      "enterNo": "Enter no. (നമ്പർ നൽകുക)",
+      "selectCity": "Select City (നഗരം തിരഞ്ഞെടുക്കുക)",
+      "selectState": "Select State (സംസ്ഥാനം തിരഞ്ഞെടുക്കുക)",
+      "phoneFormat": "+91",
+      "licenseFormat": "XXXX-XXXXX-XXXX",
+      "gstFormat": "XXXXX-XXXXX",
+      "enterPincode": "Enter pincode (പിൻകോഡ് നൽകുക)",
+      "enterAddress": "Enter address (വിലാസം നൽകുക)",
+      "writeDesc": "Write description (വിവരണം എഴുതുക)",
+      "enterWeight": "Enter weight (ഭാരം നൽകുക)",
+      "enter": "Enter (നൽകുക)",
+      "write": "Write... (എഴുതുക...)",
+      "currency": "₹"
+    },
+    "dropdowns": {
+      "OWNER RISK": "OWNER RISK (ഉടമയുടെ റിസ്ക്)",
+      "CARRIER RISK": "CARRIER RISK (കാരിയറുടെ റിസ്ക്)",
+      "INDIA": "INDIA (ഇന്ത്യ)"
+    },
+    "toasts": {
+      "fetchSuccess": "Data fetched successfully (ഡാറ്റ വിജയകരമായി എടുത്തു)",
+      "loadError": "Failed to load LR data (LR ഡാറ്റ ലോഡുചെയ്യുന്നതിൽ പരാജയപ്പെട്ടു)",
+      "createSuccess": "LR created successfully! (LR വിജയകരമായി സൃഷ്ടിച്ചു!)",
+      "updateSuccess": "LR updated successfully! (LR വിജയകരമായി അപ്‌ഡേറ്റ് ചെയ്തു!)",
+      "saveError": "Failed to save LR (LR സംരക്ഷിക്കുന്നതിൽ പരാജയപ്പെട്ടു)"
+    },
+    "modals": {
+      "successTitle": "Success! (വിജയം!)",
+      "updateSuccessTitle": "Update Success! (അപ്ഡേറ്റ് വിജയിച്ചു!)",
+      "successMessage": "You've successfully {{action}} Lorry Receipt {{lr_no}}. Do you want to return to the list? (നിങ്ങൾ ലോറി രസീത് {{lr_no}} വിജയകരമായി {{action}}. നിങ്ങൾക്ക് പട്ടികയിലേക്ക് മടങ്ങണമെന്നുണ്ടോ?)",
+      "returnToList": "Yes, return to list (അതെ, പട്ടികയിലേക്ക് മടങ്ങുക)",
+      "stayHere": "No, stay here (ഇല്ല, ഇവിടെ നിൽക്കുക)"
+    },
+    "list": {
+      "title": "LR Lists (LR പട്ടികകൾ)",
+      "addBtn": "Add LR (LR ചേർക്കുക)",
+      "pageTitle": "LR List | PackNPay (LR പട്ടിക | PackNPay)",
+      "totalLr": "Total LR (ആകെ LR)",
+      "columns": {
+        "lrNo": "LR NO (LR നം.)",
+        "dates": "DATES (തീയതികൾ)",
+        "customer": "CUSTOMER (ഉപഭോക്താവ്)",
+        "location": "LOCATION (സ്ഥലം)",
+        "freight": "FREIGHT (ചരക്കുകൂലി)"
+      },
+      "toasts": {
+        "downloadingPdf": "Downloading {{copyType}} copy, please wait... ({{copyType}} പകർപ്പ് ഡൗൺലോഡ് ചെയ്യുന്നു...)",
+        "downloadSuccess": "{{copyType}} copy downloaded successfully! ({{copyType}} പകർപ്പ് വിജയകരമായി ഡൗൺലോഡ് ചെയ്തു!)",
+        "downloadFail": "Failed to download {{copyType}} copy. ({{copyType}} പകർപ്പ് ഡൗൺലോഡ് ചെയ്യുന്നതിൽ പരാജയപ്പെട്ടു.)",
+        "loadingPdf": "Loading PDF preview... (PDF പ്രിവ്യൂ ലോഡുചെയ്യുന്നു...)",
+        "previewFail": "Failed to load PDF preview. (PDF പ്രിവ്യൂ ലോഡുചെയ്യുന്നതിൽ പരാജയപ്പെട്ടു.)",
+        "missingId": "Error: Missing record identifier. (പിശക്: റെക്കോർഡ് ഐഡന്റിഫയർ കാണുന്നില്ല.)",
+        "deleteSuccess": "LR deleted successfully (LR വിജയകരമായി ഇല്ലാതാക്കി)",
+        "deleteFail": "Failed to delete LR (LR ഇല്ലാതാക്കുന്നതിൽ പരാജയപ്പെട്ടു)",
+        "exportingCsv": "Exporting CSV... (CSV എക്‌സ്‌പോർട്ട് ചെയ്യുന്നു...)"
+      },
+      "deleteModal": {
+        "title": "Delete Lorry Receipt (ലോറി രസീത് ഇല്ലാതാക്കുക)",
+        "message": "Are you sure you want to delete this LR? This action cannot be undone. (ഇല്ലാതാക്കണമെന്ന് ഉറപ്പാണോ?)"
+      },
+      "downloadModal": {
+        "title": "Select Copy (പകർപ്പ് തിരഞ്ഞെടുക്കുക)"
+      }
+    },
+    "copies": {
+      "consignor": "Consignor (അയക്കുന്നയാൾ)",
+      "consignee": "Consignee (സ്വീകർത്താവ്)",
+      "driver": "Driver (ഡ്രൈവർ)",
+      "transporter": "Transporter (ട്രാൻസ്പോർട്ടർ)"
+    }
+  }
+}

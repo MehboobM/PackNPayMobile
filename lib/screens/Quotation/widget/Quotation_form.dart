@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -93,15 +94,15 @@ class _QuotationDetailsFormState extends ConsumerState<QuotationDetailsForm> {
 
           /// TITLE
           Text(
-            "Quotation Details",
+              "quotation.quotationDetails".tr(),
             style: TextStyles.f14w600mGray9
           ),
 
           const SizedBox(height: 10),
 
-          /// QUOTATION NO
+          /// QUOTATION NO  quotationNo
 
-          formLabel("Quotation No.", isRequired: true),
+          formLabel("quotation.quotationNo".tr(), isRequired: true),
           const SizedBox(height: 6),
           CustomTextField(
             controller: quotationNoController,
@@ -119,7 +120,7 @@ class _QuotationDetailsFormState extends ConsumerState<QuotationDetailsForm> {
           const SizedBox(height: 16),
 
           /// COMPANY NAME
-          formLabel("Company Name", isRequired: true),
+          formLabel("quotation.companyName".tr(), isRequired: true),
           const SizedBox(height: 6),
           CustomTextField(
             controller: companyController,
@@ -134,7 +135,7 @@ class _QuotationDetailsFormState extends ConsumerState<QuotationDetailsForm> {
           const SizedBox(height: 16),
 
           /// PARTY NAME
-          formLabel("Party Name", isRequired: true),
+          formLabel("quotation.partyName".tr(), isRequired: true),
           const SizedBox(height: 6),
           CustomTextField(
             controller: partyController,
@@ -148,8 +149,8 @@ class _QuotationDetailsFormState extends ConsumerState<QuotationDetailsForm> {
 
           const SizedBox(height: 16),
 
-          /// GST
-          formLabel("Company or Party GST no.", isRequired: false),
+          /// GST companyGst
+          formLabel("quotation.companyGst".tr(), isRequired: false),
           const SizedBox(height: 6),
           CustomTextField(
             controller: gstController,
@@ -171,8 +172,8 @@ class _QuotationDetailsFormState extends ConsumerState<QuotationDetailsForm> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-
-                    formLabel("Phone No.", isRequired: true),
+//phoneNo
+                    formLabel("quotation.phoneNo".tr(), isRequired: true),
                     const SizedBox(height: 6),
                     CustomTextField(
                       controller: phoneController,
@@ -195,7 +196,8 @@ class _QuotationDetailsFormState extends ConsumerState<QuotationDetailsForm> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    formLabel("Email", isRequired: true),
+
+                    formLabel("quotation.email".tr(), isRequired: true),
                     const SizedBox(height: 6),
                     CustomTextField(
                       controller: emailController,
@@ -222,7 +224,7 @@ class _QuotationDetailsFormState extends ConsumerState<QuotationDetailsForm> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    formLabel("Quotation Date", isRequired: true),
+                    formLabel("quotation.quotationDate".tr(), isRequired: true),
                     const SizedBox(height: 6),
                     CustomTextField(
                       controller: quotationDateController,
@@ -245,7 +247,7 @@ class _QuotationDetailsFormState extends ConsumerState<QuotationDetailsForm> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    formLabel("Packing Date", isRequired: true),
+                    formLabel("quotation.packingDate".tr(), isRequired: true),
                     const SizedBox(height: 6),
                     CustomTextField(
                       controller: packingDateController,
@@ -273,8 +275,7 @@ class _QuotationDetailsFormState extends ConsumerState<QuotationDetailsForm> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-
-                    formLabel("Delivery Date", isRequired: true),
+                    formLabel("quotation.deliveryDate".tr(), isRequired: true),
                     const SizedBox(height: 6),
                     CustomTextField(
                       controller: deliveryDateController,
@@ -295,7 +296,7 @@ class _QuotationDetailsFormState extends ConsumerState<QuotationDetailsForm> {
 
               Expanded(
                 child: reusableDropdown(
-                  title: "Load type",
+                  title: "quotation.loadType".tr(),
                   value: loadTypeLabel,
                   items: loadTypeItem,
                   isRequired: true,
@@ -321,7 +322,7 @@ class _QuotationDetailsFormState extends ConsumerState<QuotationDetailsForm> {
             children: [
               Expanded(
                 child: reusableDropdown(
-                  title: "Vehicle type",
+                  title: "quotation.vehicleType".tr(),
                   value: vehicleTypeLabel,
                   items: vehicleTypeItem,
                   isRequired: true,
@@ -342,7 +343,7 @@ class _QuotationDetailsFormState extends ConsumerState<QuotationDetailsForm> {
 
               Expanded(
                 child: reusableDropdown(
-                  title: "Moving path",
+                  title: "quotation.movingPath".tr(),
                   isRequired: true,
                   value: movingPathLabel,
                   items: movingPathItem,

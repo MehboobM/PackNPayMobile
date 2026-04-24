@@ -307,6 +307,21 @@ class MenuScreen extends StatelessWidget {
                             ),
                           ],
                         ),
+
+                        MenuDropdown(
+                          title: "Language",
+                          icon: "assets/images/language.svg",
+                          children: [
+                            MenuItem(
+                              title: "Language",
+                              icon: "assets/images/language.svg",
+                              onTap: () {
+                                Navigator.pushNamed(context, languageRoute);
+                              },
+                            ),
+                          ],
+                        ),
+
                          MenuDropdown(
                           title: "Business Details",
                           icon: "assets/icons/buisness.svg",

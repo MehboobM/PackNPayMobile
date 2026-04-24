@@ -1,15 +1,40 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../global_widget/custom_textfield.dart';
 import '../../../global_widget/form_label_widget.dart';
+import '../../../notifier/order_detail_notifier.dart';
 import '../../../utils/app_colors.dart';
 import '../../../utils/m_font_styles.dart';
+import '../../../utils/toast_message.dart';
 
 class VehicleDetailsPopup extends StatefulWidget {
-  const VehicleDetailsPopup({super.key});
+  final int? orderId;
+  final String? quotationId;
+
+  final String? vehicleNo;
+  final String? driverName;
+  final String? driverPhone;
+  final String? driverLicense;
+
+  final List<Map<String, dynamic>>? staff;    // ✅ ADD
+  final List<Map<String, dynamic>>? labour;    // ✅ ADD
+  final List<Map<String, dynamic>>? expenses;    // ✅ ADD
+
+   VehicleDetailsPopup({
+    super.key,
+    this.orderId,
+    this.quotationId,
+    this.vehicleNo,
+    this.driverName,
+    this.driverPhone,
+    this.driverLicense,
+     this.staff,
+     this.labour,
+     this.expenses,
+  });
 
   @override
-  State<VehicleDetailsPopup> createState() =>
-      _VehicleDetailsPopupState();
+  State<VehicleDetailsPopup> createState() => _VehicleDetailsPopupState();
 }
 
 class _VehicleDetailsPopupState extends State<VehicleDetailsPopup> {
@@ -19,6 +44,17 @@ class _VehicleDetailsPopupState extends State<VehicleDetailsPopup> {
   final TextEditingController driverNameController = TextEditingController();
   final TextEditingController driverMobileController = TextEditingController();
   final TextEditingController driverLicenseController = TextEditingController();
+
+
+  @override
+  void initState() {
+    super.initState();
+
+    vehicleNoController.text = widget.vehicleNo ?? "";
+    driverNameController.text = widget.driverName ?? "";
+    driverMobileController.text = widget.driverPhone ?? "";
+    driverLicenseController.text = widget.driverLicense ?? "";
+  }
 
   @override
   void dispose() {
@@ -122,33 +158,87 @@ class _VehicleDetailsPopupState extends State<VehicleDetailsPopup> {
             const SizedBox(height: 16),
 
             /// SAVE BUTTON
-            SizedBox(
-              width: double.infinity,
-              height: 45,
-              child: ElevatedButton(
-                onPressed: () {
-                  debugPrint("Vehicle: ${vehicleNoController.text}");
-                  debugPrint("Driver: ${driverNameController.text}");
-                  debugPrint("Mobile: ${driverMobileController.text}");
-                  debugPrint("License: ${driverLicenseController.text}");
+            Consumer(
+              builder: (context, ref, child){
+                return SizedBox(
+                  width: double.infinity,
+                  height: 45,
+                  child: ElevatedButton(
 
-                  Navigator.pop(context);
-                },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFF2F3A8F),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8),
+                    onPressed: () async {
+                      final notifier = ref.read(orderDetailProvider.notifier);
+
+                      final message = await notifier.updateOrder(
+                        id: widget.orderId!,
+                        uid: widget.quotationId ?? "",
+                        vehicleNo: vehicleNoController.text,
+                        driverName: driverNameController.text,
+                        driverPhone: driverMobileController.text,
+                        driverLicense: driverLicenseController.text,
+                        staff: widget.staff,
+                        labour:widget.labour,
+                        expenses: widget.expenses
+                      );
+
+                      if (message == "Order updated successfully") {
+                        ToastHelper.showSuccess(message: message!);
+                      } else {
+                        ToastHelper.showError(message: message ?? "Error occurred");
+                      }
+
+                      Navigator.pop(context);
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: const Color(0xFF2F3A8F),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                    ),
+                    child: Text(
+                      "Save",
+                      style: TextStyles.f12w500White
+                    ),
                   ),
-                ),
-                child: Text(
-                  "Save",
-                  style: TextStyles.f12w500White
-                ),
-              ),
+                );
+              }
             ),
           ],
         ),
       ),
     );
+  }
+}
+
+
+
+class UpdateOrderRequest {
+  String? quotationId;
+  String? vehicleNo;
+  String? driverName;
+  String? driverPhone;
+  String? driverLicense;
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = {
+      "quotation_id": quotationId,
+      "staff": [],
+      "labour": [],
+      "expenses": [],
+    };
+
+    if (vehicleNo != null && vehicleNo!.isNotEmpty) {
+      data["vehicle_no"] = vehicleNo;
+    }
+    if (driverName != null && driverName!.isNotEmpty) {
+      data["driver_name"] = driverName;
+    }
+    if (driverPhone != null && driverPhone!.isNotEmpty) {
+      data["driver_phone"] = driverPhone;
+    }
+    if (driverLicense != null && driverLicense!.isNotEmpty) {
+      data["driver_license"] = driverLicense;
+    }
+
+    return data;
   }
 }

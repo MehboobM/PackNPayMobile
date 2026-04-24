@@ -16,6 +16,7 @@ class OrderListItem extends StatelessWidget {
   final String advance;
   final String surveyId;
   final String lrId;
+  final Function(TapDownDetails)? onTapMenu;
 
   const OrderListItem({
     super.key,
@@ -30,6 +31,7 @@ class OrderListItem extends StatelessWidget {
     required this.advance,
     required this.surveyId,
     required this.lrId,
+    required this.onTapMenu,
   });
 
   String formatStatus(String status) {
@@ -110,24 +112,52 @@ class OrderListItem extends StatelessWidget {
               ),
 
               /// ROUTE
-              Row(
-                children: [
-                  Text(from, style: TextStyles.f10w400Gray6),
-                  const SizedBox(width: 4),
-                  const Icon(Icons.arrow_forward, size: 14, color: Colors.orange),
-                  const SizedBox(width: 4),
-                  Text(to, style: TextStyles.f10w400Gray6),
-                ],
+              SizedBox(
+                width: 140,
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start, // ✅ important
+                  children: [
+                    Expanded(
+                      child: Text(
+                        from,
+                        style: TextStyles.f10w400Gray6,
+                        softWrap: true,
+                      ),
+                    ),
+                    const Icon(Icons.arrow_forward, size: 14, color: Colors.orange),
+                    const SizedBox(width: 4),
+                    Expanded(
+                      child: Text(
+                        to,
+                        style: TextStyles.f10w400Gray6,
+                        softWrap: true,
+                      ),
+                    ),
+                  ],
+                ),
               ),
+              // Row(
+              //   children: [
+              //     Text(from, style: TextStyles.f10w400Gray6,overflow: TextOverflow.ellipsis,),
+              //     const SizedBox(width: 4),
+              //     const Icon(Icons.arrow_forward, size: 14, color: Colors.orange),
+              //     const SizedBox(width: 4),
+              //     Text(to, style: TextStyles.f10w400Gray6,overflow: TextOverflow.ellipsis,),
+              //   ],
+              // ),
 
               /// ACTION ICONS
               Row(
-                children: const [
-                  Icon(Icons.visibility_outlined, size: 18),
-                  SizedBox(width: 8),
-                  Icon(Icons.download_outlined, size: 18),
-                  // SizedBox(width: 8),
-                  // Icon(Icons.more_vert, size: 18),
+                children: [
+                  const Icon(Icons.visibility_outlined, size: 18),
+                  const SizedBox(width: 8),
+                  const Icon(Icons.download_outlined, size: 18),
+                   const SizedBox(width: 8),
+                  GestureDetector(
+                      onTapDown: (details) {
+                        onTapMenu?.call(details);
+                      },
+                      child: const Icon(Icons.more_vert, size: 20)),
                 ],
               ),
             ],

@@ -7,8 +7,7 @@ final moneyReceiptFormProvider = StateNotifierProvider<
   return MoneyReceiptFormNotifier();
 });
 
-class MoneyReceiptFormNotifier
-    extends StateNotifier<MoneyReceiptFormState> {
+class MoneyReceiptFormNotifier extends StateNotifier<MoneyReceiptFormState> {
   MoneyReceiptFormNotifier()
       : super(const MoneyReceiptFormState());
 

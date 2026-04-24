@@ -1,0 +1,917 @@
+{
+  "common": {
+    "welcome": "Welcome (ಸ್ವಾಗತ)",
+    "enter_mobile": "Enter your mobile number to continue (ಮುಂದುವರಿಯಲು ನಿಮ್ಮ ಮೊಬೈಲ್ ನಂಬರ್ ನಮೂದಿಸಿ)",
+    "contact_us": "Contact Us (ನಮ್ಮನ್ನು ಸಂಪರ್ಕಿಸಿ)",
+    "contactDetails": "Contact Details (ಸಂಪರ್ಕ ವಿವರಗಳು)",
+    "phone": "Phone no. (ಫೋನ್ ನಂ.)",
+    "city": "City (ನಗರ)",
+    "state": "State (ರಾಜ್ಯ)",
+    "email": "Email (ಇಮೇಲ್)",
+    "address": "Address (ವಿಳಾಸ)",
+    "floor": "Floor (ಮಹಡಿ)",
+    "pincode": "Pincode (ಪಿನ್ ಕೋಡ್)",
+    "lift": "Lift (ಲಿಫ್ಟ್)",
+    "name": "Name (ಹೆಸರು)",
+    "date": "Date (ದಿನಾಂಕ)",
+    "add": "Add (ಸೇರಿಸಿ)",
+    "cancel": "Cancel (ರದ್ದುಗೊಳಿಸಿ)",
+    "save": "Save (ಉಳಿಸಿ)",
+    "submit": "Submit (ಸಲ್ಲಿಸಿ)",
+    "quantity": "Quantity (ಪ್ರಮಾಣ)",
+    "description": "Description (ವಿವರಣೆ)",
+    "actions": "Actions (ಕ್ರಿಯೆಗಳು)",
+    "remarks": "Remarks (ಟಿಪ್ಪಣಿ)",
+    "branch": "Branch (ಶಾಖೆ)",
+    "country": "Country (ದೇಶ)",
+    "edit": "Edit (ತಿದ್ದುಪಡಿ)",
+    "delete": "Delete (ಅಳಿಸಿ)",
+    "yes": "Yes (ಹೌದು)",
+    "no": "No (ಇಲ್ಲ)",
+    "downloadPdf": "Download PDF (PDF ಡೌನ್‌ಲೋಡ್ ಮಾಡಿ)",
+    "export": "Export (ರಫ್ತು)",
+    "notAvailable": "N/A (ಲಭ್ಯವಿಲ್ಲ)",
+    "view": "View (ನೋಡಿ)",
+    "status": "Status (ಸ್ಥಿತಿ)",
+    "generate": "Generate (ರಚಿಸಿ)",
+    "pleaseFixErrors": "Please fix the errors before saving. (ಸೇವ್ ಮಾಡುವ ಮೊದಲು ದೋಷಗಳನ್ನು ಸರಿಪಡಿಸಿ)",
+    "stayHere": "Stay Here (ಇಲ್ಲೇ ಇರಿ)",
+    "goToList": "Go to List (ಪಟ್ಟಿಗೆ ಹೋಗಿ)",
+    "customerSignature": "Customer Signature (ಗ್ರಾಹಕರ ಸಹಿ)",
+    "shareSurveyListLink": "Share survey list link (ಸಮೀಕ್ಷೆ ಪಟ್ಟಿಯ ಲಿಂಕ್ ಹಂಚಿಕೊಳ್ಳಿ)",
+    "generateQuotation": "Generate Quotation (ಉಲ್ಲೇಖವನ್ನು ರಚಿಸಿ)",
+    "generateOrder": "Generate Order (ಆರ್ಡರ್ ರಚಿಸಿ)",
+    "gstPercent": "GST % (ಜಿಎಸ್‌ಟಿ %)"
+  },
+
+  "order": {
+    "title": "Order (ಆರ್ಡರ್)",
+    "orderStatus": "Order Status (ಆರ್ಡರ್ ಸ್ಥಿತಿ)",
+    "shipmentStatus": "Shipment Status (ರವಾನೆ ಸ್ಥಿತಿ)",
+    "orderDetails": "Order Details (ಆರ್ಡರ್ ವಿವರಗಳು)",
+    "changeStatus": "Change Status (ಸ್ಥಿತಿ ಬದಲಿಸಿ)",
+    "staff": "Staff (ಸಿಬ್ಬಂದಿ)",
+    "addStaff": "Add Staff (ಸಿಬ್ಬಂದಿ ಸೇರಿಸಿ)",
+    "labours": "Labours (ಕಾರ್ಮಿಕರು)",
+    "addLabour": "Add Labour (ಕಾರ್ಮಿಕರನ್ನು ಸೇರಿಸಿ)",
+    "quotationDetails": "Quotation Details (ಕೋಟೇಶನ್ ವಿವರಗಳು)",
+    "vehicleDetails": "Vehicle Details (ವಾಹನ ವಿವರಗಳು)",
+    "packingDetails": "Packing Details (ಪ್ಯಾಕಿಂಗ್ ವಿವರಗಳು)",
+    "unpackingDetails": "Unpacking Details (ಅನ್‌ಪ್ಯಾಕಿಂಗ್ ವಿವರಗಳು)",
+    "addImages": "Add Images (ಚಿತ್ರಗಳನ್ನು ಸೇರಿಸಿ)",
+    "item": "Item (ಐಟಂ)",
+    "baseFare": "Base Fare (ಮೂಲ ದರ)",
+    "taxes": "Taxes & Surcharges (ತೆರಿಗೆ ಮತ್ತು ಶುಲ್ಕಗಳು)",
+    "expenses": "Expenses (ವೆಚ್ಚಗಳು)",
+    "advancePayment": "Advance Payment (ಮುಂಗಡ ಪಾವತಿ)",
+    "totalAmount": "Total Amount to pay (ಒಟ್ಟು ಪಾವತಿ)",
+    "orderNo": "Order No. (ಆರ್ಡರ್ ಸಂಖ್ಯೆ)",
+    "quotationNo": "Quotation No. (ಕೋಟೇಶನ್ ಸಂಖ್ಯೆ)"
+  },
+
+  "surveyList": {
+    "title": "Survey List (ಸರ್ವೇ ಪಟ್ಟಿಕೆ)",
+    "shareSurveyLink": "Generic Survey Link (ಸರ್ವೇ ಲಿಂಕ್ ಹಂಚಿಕೊಳ್ಳಿ)",
+    "addSurvey": "Add Survey (ಸರ್ವೇ ಸೇರಿಸಿ)",
+    "copyLink": "Copy Link (ಲಿಂಕ್ ನಕಲಿ ಮಾಡಿ)"
+  },
+  "status": {
+    "total": "Total (ಒಟ್ಟು)",
+    "pending": "Pending (ಬಾಕಿ)",
+    "inProgress": "In Progress (ಪ್ರಗತಿಯಲ್ಲಿ)",
+    "settled": "Settled (ನಿರ್ಧರಿಸಲಾಗಿದೆ)",
+    "submitted": "Submitted (ಸಲ್ಲಿಸಲಾಗಿದೆ)"
+  },
+  "messages": {
+    "exporting": "Exporting surveys, please wait... (ಸರ್ವೇಯ್ ರಫ್ತು ಮಾಡಲಾಗುತ್ತಿದೆ, ದಯವಿಟ್ಟು ಕಾಯಿರಿ...)",
+    "exportSuccess": "Exported successfully! (ಯಶಸ್ವಿಯಾಗಿ ರಫ್ತು ಮಾಡಲಾಗಿದೆ!)",
+    "exportFail": "Failed to export surveys. (ಸರ್ವೇಯ್ ರಫ್ತು ವಿಫಲವಾಗಿದೆ.)",
+    "copySuccess": "Link copied to clipboard! (ಲಿಂಕ್ ಕ್ಲಿಪ್‌ಬೋರ್ಡ್‌ಗೆ ನಕಲಾಯಿತು!)",
+    "shareFail": "Could not share link (ಲಿಂಕ್ ಹಂಚಲಾಗಲಿಲ್ಲ)",
+    "pdfLoading": "Loading PDF preview... (PDF ಪೂರ್ವದರ್ಶನ ಲೋಡ್ ಆಗುತ್ತಿದೆ...)",
+    "pdfFail": "Failed to preview PDF (PDF ಪೂರ್ವದರ್ಶನ ವಿಫಲ)",
+    "loading": "Loading data... (ಡೇಟಾ ಲೋಡ್ ಆಗುತ್ತಿದೆ...)",
+    "noRecords": "No records found. (ಯಾವ ದಾಖಲೆಗಳು ಕಂಡುಬಂದಿಲ್ಲ.)"
+  },
+  "basicDetails": {
+    "title": "Basic Details (ಮೂಲ ವಿವರಗಳು)",
+    "name": "Name (ಹೆಸರು)",
+    "phone": "Phone no. (ಫೋನ್ ನಂ.)",
+    "gst": "Company GST No. (ಕಂಪನಿ GST ನಂ.)",
+    "companyName": "Company Name of Party (ಕಂಪನಿ ಹೆಸರು)",
+    "slDate": "SL Generation Date (SL ರಚನೆ ದಿನಾಂಕ)",
+    "from": "From (ಇಂದ)",
+    "to": "To (ವರೆಗೆ)"
+  },
+  "tableHeader": {
+    "searchPlaceholder": "Search (ಹುಡುಕಿ)",
+    "sortBy": "Sort By (ಕ್ರಮಬದ್ಧಗೊಳಿಸಿ)",
+    "clearSort": "Clear sort (ಕ್ರಮವನ್ನು ತೆರವುಗೊಳಿಸಿ)",
+    "selectDateRange": "Select date range (ದಿನಾಂಕ ಶ್ರೇಣಿಯನ್ನು ಆಯ್ಕೆಮಾಡಿ)",
+    "byOwner": "By Owner (ಮಾಲೀಕನಿಂದ)",
+    "byStaff": "Staff Wise (ಸಿಬ್ಬಂದಿ ಆಧಾರಿತ)"
+  },
+  "movingDetails": {
+    "title": "Moving Details (ಸ್ಥಳಾಂತರ ವಿವರಗಳು)",
+    "shiftingMovingDate": "Shifting / Moving Date (ಸ್ಥಳಾಂತರ ದಿನಾಂಕ)",
+    "email": "Email (ಇಮೇಲ್)",
+    "additionalPhoneNo": "Additional phone no. (ಹೆಚ್ಚುವರಿ ಫೋನ್ ನಂ.)",
+    "state": "State (ರಾಜ್ಯ)",
+    "city": "City (ನಗರ)",
+    "floor": "Floor (ಮಹಡಿ)",
+    "pincode": "Pincode (ಪಿನ್ ಕೋಡ್)",
+    "lift": "Lift (ಲಿಫ್ಟ್)",
+    "address": "Address (ವಿಳಾಸ)"
+  },
+  "deliveryDetails": {
+    "title": "Delivery Details (ವಿತರಣೆ ವಿವರಗಳು)",
+    "email": "Email (ಇಮೇಲ್)",
+    "additionalPhoneNo": "Additional phone no. (ಹೆಚ್ಚುವರಿ ಫೋನ್ ನಂ.)",
+    "state": "State (ರಾಜ್ಯ)",
+    "city": "City (ನಗರ)",
+    "floor": "Floor (ಮಹಡಿ)",
+    "pincode": "Pincode (ಪಿನ್ ಕೋಡ್)",
+    "lift": "Lift (ಲಿಫ್ಟ್)",
+    "address": "Address (ವಿಳಾಸ)"
+  },
+  "dynamicItemsSection": {
+    "addedItems": "Added Items (ಸೇರಿಸಲಾದ ಐಟಂಗಳು)",
+    "installation": "Installation (ಸ್ಥಾಪನೆ)",
+    "uninstallation": "Uninstallation (ಅನ್‌ಇನ್‌ಸ್ಟಾಲೇಶನ್)"
+  },
+  "otherItems": {
+    "title": "Other Items (ಇತರ ವಸ್ತುಗಳು)",
+    "serviceOrScaler": "Service Or Scaler (ಸೇವೆ ಅಥವಾ ಸ್ಕೇಲರ್)",
+    "quantity": "Quantity (ಪ್ರಮಾಣ)",
+    "slNo": "Sl No. (ಕ್ರಮ ಸಂ.)",
+    "addItem": "Add Item (ವಸ್ತು ಸೇರಿಸಿ)",
+    "itemsName": "Items/particular name (ಐಟಂ / ವಿವರದ ಹೆಸರು)",
+    "itemsList": "Items List (ಐಟಂಗಳ ಪಟ್ಟಿಯನ್ನು)",
+    "items": "Items (ಐಟಂಗಳು)"
+  },
+  "surveyForm": {
+    "title": "Survey Form (ಸರ್ವೇ ಫಾರ್ಮ್)",
+    "summary": "Survey Summary (ಸರ್ವೇ ಸಾರಾಂಶ)",
+    "fillInfo": "Fill Out All Required Information Below (ಕೆಳಗಿನ ಎಲ್ಲಾ ಅಗತ್ಯ ಮಾಹಿತಿಯನ್ನು ಭರ್ತಿ ಮಾಡಿ)",
+    "updateSurvey": "Update Survey (ಸರ್ವೇ ನವೀಕರಿಸಿ)",
+    "submitSurveyForm": "Submit Survey Form (ಸರ್ವೇ ಫಾರ್ಮ್ ಸಲ್ಲಿಸಿ)",
+    "downloading": "Downloading PDF, please wait... (PDF ಡೌನ್‌ಲೋಡ್ ಆಗುತ್ತಿದೆ, ದಯವಿಟ್ಟು ಕಾಯಿರಿ...)",
+    "downloadSuccess": "Downloaded successfully! (ಯಶಸ್ವಿಯಾಗಿ ಡೌನ್‌ಲೋಡ್ ಆಯಿತು!)",
+    "downloadFailed": "Failed to generate PDF (PDF ರಚಿಸಲು ವಿಫಲ)",
+    "downloadNotAvailable": "Cannot download PDF: Survey not created yet (ಡೌನ್‌ಲೋಡ್ ಸಾಧ್ಯವಿಲ್ಲ: ಸರ್ವೇ ಇನ್ನೂ ರಚಿಸಲ್ಪಟ್ಟಿಲ್ಲ)",
+    "surveyNo": "Survey No (ಸರ್ವೇ ಸಂಖ್ಯೆ)",
+    "surveySavedSuccess": "Your survey has been saved successfully. Would you like to go back to the list? (ನಿಮ್ಮ ಸಮೀಕ್ಷೆ ಯಶಸ್ವಿಯಾಗಿ ಉಳಿಸಲಾಗಿದೆ. ನೀವು ಪಟ್ಟಿಗೆ ಹಿಂತಿರುಗಲು ಬಯಸುವಿರಾ?)",
+    "surveySubmitted": "Survey Submitted! (ಸಮೀಕ್ಷೆ ಸಲ್ಲಿಸಲಾಗಿದೆ!)"
+  },
+  "quotation": {
+    "title": "Quotation (ಉದ್ಧರಣ)",
+    "export": "Export (ರಫ್ತು)",
+    "creditMoneyReceipt": "Credit Money Receipt (ಕ್ರೆಡಿಟ್ ಹಣ ರಸೀದಿ)",
+    "saveQuotation": "Save Quotation (ಉದ್ಧರಣ ಉಳಿಸಿ)",
+    "quotationNo": "Quotation No. (ಉದ್ಧರಣ ನಂ.)",
+    "companyOrPartyName": "Company or Party Name (ಕಂಪನಿ ಅಥವಾ ಪಕ್ಷದ ಹೆಸರು)",
+    "partyName": "Party Name (ಪಕ್ಷದ ಹೆಸರು)",
+    "companyGst": "Company or Party GST No. (ಕಂಪನಿ ಅಥವಾ ಪಕ್ಷ GST ನಂ.)",
+    "phoneNo": "Phone No. (ಫೋನ್ ನಂ.)",
+    "email": "Email (ಇಮೇಲ್)",
+    "quotationDate": "Quotation Date (ಉದ್ಧರಣ ದಿನಾಂಕ)",
+    "openingDate": "Opening Date (ಆರಂಭ ದಿನಾಂಕ)",
+    "deliveryDate": "Delivery date (ವಿತರಣೆ ದಿನಾಂಕ)",
+    "loadNight": "Load Night (ರಾತ್ರಿ ಲೋಡಿಂಗ್)",
+    "closingDate": "Closing date (ಮುಕ್ತಾಯ ದಿನಾಂಕ)",
+    "fullTruck": "Full Truck (ಪೂರ್ಣ ಟ್ರಕ್)",
+    "vehicleType": "Vehicle type (ವಾಹನ ಪ್ರಕಾರ)",
+    "movingPath": "Moving path (ಸ್ಥಳಾಂತರ ಮಾರ್ಗ)",
+    "movingKm": "Moving km (ಸ್ಥಳಾಂತರ ಕಿಮೀ)",
+    "byRoad": "By Road (ರಸ್ತೆ ಮೂಲಕ)",
+    "wideMovements": "Wide movements (ವಿಶಾಲ ಚಲನೆಗಳು)",
+    "newQuotation": "New Quotation (ಹೊಸ ಕೋಟೇಶನ್)",
+    "customerName": "Customer Name (ಗ್ರಾಹಕರ ಹೆಸರು)",
+    "enterName": "Enter name (ಹೆಸರು ನಮೂದಿಸಿ)",
+    "enterNo": "Enter no. (ಸಂಖ್ಯೆ ನಮೂದಿಸಿ)",
+    "enterMobile": "Enter mobile no. (ಮೊಬೈಲ್ ಸಂಖ್ಯೆ ನಮೂದಿಸಿ)",
+    "enterEmail": "Enter email (ಇಮೇಲ್ ನಮೂದಿಸಿ)",
+    "packingDate": "Packing Date (ಪ್ಯಾಕಿಂಗ್ ದಿನಾಂಕ)",
+    "loadType": "Load Type (ಲೋಡ್ ಪ್ರಕಾರ)",
+    "movingPathRemarks": "Moving Path Remarks (ಮಾರ್ಗ ಟಿಪ್ಪಣಿ)",
+    "quotationDetails": "Quotation Details (ಕೋಟೇಶನ್ ವಿವರಗಳು)",
+    "saveNext": "ಉಳಿಸಿ & ಮುಂದೆ",
+    "companyName": "Company Name (ಕಂಪನಿಯ ಹೆಸರು)",
+    "partyName": "Party Name (ಪಕ್ಷದ ಹೆಸರು)"
+  },
+  "insurance": {
+    "title": "Insurance details (ವಿಮಾ ವಿವರಗಳು)",
+    "insuranceType": "Insurance Type (ವಿಮಾ ಪ್ರಕಾರ)",
+    "optional": "Optional (ಐಚ್ಛಿಕ)",
+    "insuranceCharges": "Insurance charge(s) (ವಿಮಾ ಶುಲ್ಕ)",
+    "declarationOfGoods": "Declaration of goods (ಸರಕು ಘೋಷಣೆ)",
+    "enterDescription": "Enter a description... (ವಿವರಣೆ ನಮೂದಿಸಿ...)",
+    "vehicleInsuranceDetails": "Vehicle Insurance details (ವಾಹನ ವಿಮಾ ವಿವರಗಳು)",
+    "insuranceChargesVehicle": "Insurance Charge(s) (ವಿಮಾ ಶುಲ್ಕ)",
+    "declarationOfVehicle": "Declaration of vehicle (ವಾಹನ ಘೋಷಣೆ)"
+  },
+  "pickupDelivery": {
+    "title": "Pickup & Delivery Details (ಪಿಕಪ್ ಮತ್ತು ವಿತರಣೆ ವಿವರಗಳು)",
+    "pickupAddress": "Pickup Address (ಪಿಕಪ್ ವಿಳಾಸ)",
+    "shiftingMovingDate": "Shifting Moving Date (ಸ್ಥಳಾಂತರ ದಿನಾಂಕ)",
+    "email": "Email (ಇಮೇಲ್)",
+    "additionalPhoneNo": "Additional phone no. (ಹೆಚ್ಚುವರಿ ಫೋನ್ ನಂ.)",
+    "city": "City (ನಗರ)",
+    "state": "State (ರಾಜ್ಯ)",
+    "floor": "Floor (ಮಹಡಿ)",
+    "pincode": "Pincode (ಪಿನ್ ಕೋಡ್)",
+    "lift": "Lift (ಲಿಫ್ಟ್)",
+    "address": "Address (ವಿಳಾಸ)",
+    "deliveryAddress": "Delivery Address (ವಿತರಣೆ ವಿಳಾಸ)"
+  },
+  "otherDetails": {
+    "title": "Other details (ಇತರ ವಿವರಗಳು)",
+    "easyAccess": "Is there easy access for load & unloading? (ಲೋಡಿಂಗ್ ಮತ್ತು ಅನ್‌ಲೋಡಿಂಗ್‌ಗೆ ಸುಲಭ ಪ್ರವೇಶವಿದೆಯೇ?)",
+    "balconyItems": "Should any items be got down through balcony? (ಯಾವುದಾದರೂ ವಸ್ತುಗಳನ್ನು ಬಾಲ್ಕನಿ ಮೂಲಕ ಇಳಿಸಬೇಕೇ?)",
+    "loadingRestrictions": "Are there any restrictions for loading/unloading? (ಲೋಡಿಂಗ್/ಅನ್‌ಲೋಡಿಂಗ್‌ಗೆ ಯಾವುದಾದರೂ ನಿರ್ಬಂಧಗಳಿವೆಯೇ?)",
+    "specialNeeds": "Do you have any special needs or concerns? (ಯಾವುದಾದರೂ ವಿಶೇಷ ಅಗತ್ಯಗಳಿವೆಯೇ?)"
+  },
+  "payment": {
+    "title": "Payment Details (ಪಾವತಿ ವಿವರಗಳು)",
+    "charges": "Charges (ಶುಲ್ಕಗಳು)",
+    "advancePaid": "Advance Paid (ಮುಂಗಡ ಪಾವತಿ)",
+    "packingCharge": "Packing Charge (ಪ್ಯಾಕಿಂಗ್ ಶುಲ್ಕ)",
+    "unpackingCharge": "Unpacking Charge (ಅನ್‌ಪ್ಯಾಕಿಂಗ್ ಶುಲ್ಕ)",
+    "includedInHeight": "Included in Height (ಎತ್ತರದಲ್ಲಿ ಸೇರಿದೆ)",
+    "loadingCharge": "Loading Charge (ಲೋಡಿಂಗ್ ಶುಲ್ಕ)",
+    "unloadingCharge": "Unloading Charge (ಅನ್‌ಲೋಡಿಂಗ್ ಶುಲ್ಕ)",
+    "adjustedInHeight": "Adjusted in Height (ಎತ್ತರದಲ್ಲಿ ಸರಿಹೊಂದಿಸಲಾಗಿದೆ)",
+    "handlingOrStorage": "Handling or storage (ನಿರ್ವಹಣೆ ಅಥವಾ ಸಂಗ್ರಹ)",
+    "storageCharge": "Storage charge (ಸಂಗ್ರಹ ಶುಲ್ಕ)",
+    "includedInFreight": "Included in freight (ಸರಕು ದರದಲ್ಲಿ ಸೇರಿದೆ)",
+    "codCharges": "CodCharges (COD ಶುಲ್ಕ)",
+    "ft": "FT",
+    "interMilestone": "InterMilestone charges (ಇಂಟರ್‌ಮೈಲ್‌ಸ್ಟೋನ್ ಶುಲ್ಕ)",
+    "otherCharges": "Other charges (ಇತರ ಶುಲ್ಕಗಳು)",
+    "stCharge": "ST Charge (ST ಶುಲ್ಕ)",
+    "surcharge": "Surcharge (ಹೆಚ್ಚುವರಿ ಶುಲ್ಕ)",
+    "notApplicable": "Not applicable (ಅನ್ವಯಿಸುವುದಿಲ್ಲ)",
+    "sst": "SST follow or little gst (in Quotation) (SST / GST ಉದ್ಧರಣದಲ್ಲಿ)",
+    "gst": "GST",
+    "gstPercentAmt": "GST percent/Amt (GST ಶೇಕಡಾ/ಮೊತ್ತ)",
+    "currentTotal": "Current Total (ಪ್ರಸ್ತುತ ಒಟ್ಟು)",
+    "freightCharge": "Freight Charge (ಸರಕು ಶುಲ್ಕ)",
+    "packingMaterialCharge": "Packing Material Charge (ಪ್ಯಾಕಿಂಗ್ ಸಾಮಗ್ರಿ ಶುಲ್ಕ)",
+    "carBikeTpt": "Car/Bike TPT (ಕಾರ್/ಬೈಕ್ ಟಿಪಿಟಿ)",
+    "miscCharges": "Miscellaneous Charges (ವಿವಿಧ ಶುಲ್ಕಗಳು)",
+    "gstType": "GST Type (ಜಿಎಸ್‌ಟಿ ಪ್ರಕಾರ)",
+    "gstAmount": "GST Amount (ಜಿಎಸ್‌ಟಿ ಮೊತ್ತ)"
+  },
+  "paymentSummary": {
+    "title": "Payment Summary (ಪಾವತಿ ಸಾರಾಂಶ)",
+    "advancePayment": "Advance Payment (ಮುಂಗಡ ಪಾವತಿ)",
+    "amount": "Amount (ಮೊತ್ತ)",
+    "add": "Add (ಸೇರಿಸಿ)",
+    "paymentStatus": "Payment Status (ಪಾವತಿ ಸ್ಥಿತಿ)",
+    "applyDiscount": "Apply Discount (ರಿಯಾಯಿತಿ ಅನ್ವಯಿಸಿ)",
+    "discountAmount": "Discount Amount (ರಿಯಾಯಿತಿ ಮೊತ್ತ)",
+    "applyOnTotal": "Applicable on total amount (ಒಟ್ಟು ಮೊತ್ತದ ಮೇಲೆ ಅನ್ವಯ)",
+    "apply": "Apply (ಅನ್ವಯಿಸಿ)",
+    "totalAmount": "Total Amount (ಒಟ್ಟು ಮೊತ್ತ)",
+    "termsAndConditions": "Terms and Conditions (ನಿಯಮ ಮತ್ತು ಷರತ್ತುಗಳು)",
+    "totalAmountToPay": "Total Amount to pay (ಪಾವತಿಸಬೇಕಾದ ಒಟ್ಟು ಮೊತ್ತ)",
+    "baseFare": "Base Fare (ಮೂಲ ದರ)",
+    "taxesAndSurcharges": "Taxes & Surcharges (ತೆರಿಗೆ ಮತ್ತು ಹೆಚ್ಚುವರಿ ಶುಲ್ಕ)",
+    "enterAdvanceAmount": "Enter Advance Amount (ಮುಂಗಡ ಮೊತ್ತ ನಮೂದಿಸಿ)",
+    "enterDiscountAmount": "Enter Discount Amount (ರಿಯಾಯಿತಿ ಮೊತ್ತ ನಮೂದಿಸಿ)",
+    "selectStatus": "Select Status (ಸ್ಥಿತಿ ಆಯ್ಕೆಮಾಡಿ)"
+  },
+  "paymentExpenses": {
+    "paymentsReceived": "Payments Received (ಸ್ವೀಕರಿಸಿದ ಪಾವತಿಗಳು)",
+    "expenses": "Expenses (ವೆಚ್ಚಗಳು)",
+    "totalExpense": "Total Expense (ಒಟ್ಟು ವೆಚ್ಚ)",
+    "totalExpenses": "Total Expenses (ಒಟ್ಟು ವೆಚ್ಚಗಳು)",
+    "searchExpense": "Search Expense Category (ವೆಚ್ಚ ವರ್ಗ ಹುಡುಕಿ)",
+    "noExpenseCategories": "No Expense Categories (ಯಾವುದೇ ವೆಚ್ಚ ವರ್ಗಗಳಿಲ್ಲ)",
+    "noExpensesEntered": "No Expenses Entered (ಯಾವುದೇ ವೆಚ್ಚ ನಮೂದಿಸಲಾಗಿಲ್ಲ)",
+    "expenseSummary": "Expense Summary (ವೆಚ್ಚ ಸಾರಾಂಶ)"
+  },
+  "addQuotation": {
+    "loadError": "Failed to Load Data (ಡೇಟಾ ಲೋಡ್ ಆಗಲಿಲ್ಲ)",
+    "createSuccess": "Quotation Created Successfully (ಕೋಟೇಶನ್ ಯಶಸ್ವಿಯಾಗಿ ರಚಿಸಲಾಗಿದೆ)",
+    "updateSuccess": "Quotation Updated Successfully (ಕೋಟೇಶನ್ ಯಶಸ್ವಿಯಾಗಿ ಅಪ್‌ಡೇಟ್ ಆಗಿದೆ)",
+    "createFromSurveySuccess": "Quotation Created from Survey (ಸಮೀಕ್ಷೆಯಿಂದ ಕೋಟೇಶನ್ ರಚಿಸಲಾಗಿದೆ)",
+    "saveError": "Something Went Wrong (ಏನೋ ತಪ್ಪಾಗಿದೆ)",
+    "savedTitle": "Quotation Saved! (ಕೋಟೇಶನ್ ಉಳಿಸಲಾಗಿದೆ!)",
+    "savedMessage": "Quotation saved successfully. Do you want to go back to the list? (ಕೋಟೇಶನ್ ಯಶಸ್ವಿಯಾಗಿ ದಾಖಲಾಗಿದೆ. ಪಟ್ಟಿಗೆ ಹಿಂದಿರುಗಲು ಬಯಸುವಿರಾ?)"
+  },
+  "lorryReceipt": {
+    "title": "New Lorry Receipt (ಹೊಸ ಲಾರಿ ರಸೀದಿ)",
+    "import": "Import (ಆಮದು)",
+    "saveLR": "Save LR (LR ಉಳಿಸಿ)",
+    "lrNo": "LR No. (LR ನಂ.)",
+    "date": "Date (ದಿನಾಂಕ)",
+    "filterType": "Filter type (ಫಿಲ್ಟರ್ ಪ್ರಕಾರ)",
+    "atOwnRisk": "AT Own Risk (ಸ್ವಂತ ಅಪಾಯದಲ್ಲಿ)"
+  },
+  "truckDetails": {
+    "title": "Truck Details (ಟ್ರಕ್ ವಿವರಗಳು)",
+    "vehicleNo": "Vehicle No. (ವಾಹನ ನಂ.)",
+    "movingUnit": "Moving Unit (ಮೂವಿಂಗ್ ಯೂನಿಟ್)",
+    "movingId": "Moving Id (ಮೂವಿಂಗ್ ಐಡಿ)",
+    "selectCity": "Select City (ನಗರ ಆಯ್ಕೆ ಮಾಡಿ)",
+    "driverDetails": "Driver Details (ಚಾಲಕ ವಿವರಗಳು)",
+    "driverName": "Driver name (ಚಾಲಕ ಹೆಸರು)",
+    "driverMobileNo": "Driver's mobile no. (ಚಾಲಕನ ಮೊಬೈಲ್ ನಂ.)",
+    "dlNo": "Dl No. (DL ನಂ.)",
+    "dlLicenseNo": "D.I.no license No. (ಲೈಸೆನ್ಸ್ ನಂ.)",
+    "dlExpiry": "DL expiry (DL ಮುಕ್ತಾಯ)",
+    "driverModelNo": "Driver's model no. (ಚಾಲಕ ಮಾದರಿ ನಂ.)",
+    "dlineExpires": "D.line Expires (D.line ಮುಕ್ತಾಯ)"
+  },
+  "invoiceEBill": {
+    "title": "Invoice & E-Bill (ಇನ್‌ವಾಯ್ಸ್ ಮತ್ತು ಇ-ಬಿಲ್)",
+    "packageBill": "Package/Bill (ಪ್ಯಾಕೇಜ್/ಬಿಲ್)",
+    "invoiceDate": "Invoice Date (ಇನ್‌ವಾಯ್ಸ್ ದಿನಾಂಕ)",
+    "eWayBillNo": "E-Way Bill No. (ಇ-ವೇ ಬಿಲ್ ನಂ.)",
+    "eWayBillGenerationDate": "E-way Bill generation date (ಇ-ವೇ ಬಿಲ್ ರಚನೆ ದಿನಾಂಕ)",
+    "eWayBillExpireDate": "E-way Bill Expire date (ಇ-ವೇ ಬಿಲ್ ಮುಕ್ತಾಯ ದಿನಾಂಕ)",
+    "eWayBillPeriod": "e-way Bill Period (ಇ-ವೇ ಬಿಲ್ ಅವಧಿ)"
+  },
+  "consignorFrom": {
+    "title": "Consignor/Move From (ಕಳುಹಿಸುವವರು/ಇಲ್ಲಿಂದ)",
+    "consignorName": "Consignor name (ಕಳುಹಿಸುವವರ ಹೆಸರು)",
+    "consignorId": "Consignor Id (ಕಳುಹಿಸುವವರ ಐಡಿ)",
+    "gstNo": "GST/No. (GST ನಂ.)",
+    "country": "Country (ದೇಶ)",
+    "state": "State (ರಾಜ್ಯ)",
+    "city": "City (ನಗರ)",
+    "stateLine2": "State Line 2 (ರಾಜ್ಯ ಸಾಲು 2)",
+    "pincode": "Pincode (ಪಿನ್ ಕೋಡ್)",
+    "address": "Address (ವಿಳಾಸ)"
+  },
+  "consigneeTo": {
+    "title": "Consignee/Move To (ಸ್ವೀಕರಿಸುವವರು/ಇಲ್ಲಿಗೆ)",
+    "consignorId": "Consignor Id (ಕಳುಹಿಸುವವರ ಐಡಿ)",
+    "gstNo": "GST/No. (GST ನಂ.)",
+    "country": "Country (ದೇಶ)",
+    "state": "State (ರಾಜ್ಯ)",
+    "city": "City (ನಗರ)",
+    "pincode": "Pincode (ಪಿನ್ ಕೋಡ್)",
+    "address": "Address (ವಿಳಾಸ)"
+  },
+  "packageDetails": {
+    "title": "Package Details (ಪ್ಯಾಕೇಜ್ ವಿವರಗಳು)",
+    "noOfPackage": "No. of package (ಪ್ಯಾಕೇಜ್ ಸಂಖ್ಯೆ)",
+    "description": "Description (ವಿವರಣೆ)",
+    "freightToBeBilled": "Freight to be billed (ಬಿಲ್ ಮಾಡಬೇಕಾದ ಸರಕು)",
+    "actualWeight": "Actual Weight (ನಿಜವಾದ ತೂಕ)",
+    "chargedWeight": "Charged Weight (ಚಾರ್ಜ್ ಮಾಡಿದ ತೂಕ)",
+    "fromWeight": "From weight (ತೂಕದಿಂದ)",
+    "toWeight": "To weight (ತೂಕಕ್ಕೆ)",
+    "kg": "KG (ಕಿಲೋಗ್ರಾಂ)",
+    "receivedGoodsContinue": "Received Goods Continue (ಸ್ವೀಕರಿಸಿದ ಸರಕು ಮುಂದುವರಿ)",
+    "remarks": "Remarks (ಟಿಪ್ಪಣಿ)"
+  },
+  "paymentDetailsLR": {
+    "title": "Payment Details (ಪಾವತಿ ವಿವರಗಳು)",
+    "freightToBeBilled": "Freight to be billed (ಬಿಲ್ ಮಾಡಬೇಕಾದ ಸರಕು)",
+    "toPay": "To pay (ಪಾವತಿಸಬೇಕು)",
+    "freightPaid": "Freight paid (ಸರಕು ಪಾವತಿ)",
+    "freightToPay": "Freight to pay (ಸರಕು ಪಾವತಿ ಬಾಕಿ)",
+    "totalBasicFreight": "Total basic freight (ಒಟ್ಟು ಮೂಲ ಸರಕು ದರ)",
+    "loadingCharge": "Loading charge (ಲೋಡಿಂಗ್ ಶುಲ್ಕ)",
+    "unloadingCharge": "S.T. charge (S.T. ಶುಲ್ಕ)",
+    "otherCharge": "D.to - Charge (D.to ಶುಲ್ಕ)",
+    "lrLrCharges": "LR/LR CHARGES (LR ಶುಲ್ಕ)",
+    "gst": "GST",
+    "gstPaidBy": "GST paid by (GST ಪಾವತಿಸಿದವರು)",
+    "consignee": "Consignee (ಸ್ವೀಕರಿಸುವವರು)"
+  },
+  "materialInsurance": {
+    "title": "Material Insurance (ವಸ್ತು ವಿಮೆ)",
+    "materialPurposes": "Material Purposes (ವಸ್ತು ಉದ್ದೇಶ)",
+    "insured": "Insured (ವಿಮಾ ಮಾಡಲಾಗಿದೆ)",
+    "insuranceCompany": "Insurance Company (ವಿಮಾ ಕಂಪನಿ)",
+    "policyNo": "Policy no. (ಪಾಲಿಸಿ ನಂ.)",
+    "insuredAmount": "Insured Amount (ವಿಮಾ ಮೊತ್ತ)",
+    "insuranceCode": "Insurance Code (ವಿಮಾ ಕೋಡ್)",
+    "fromDateRisk": "From Date Risk (ಅಪಾಯ ಆರಂಭ ದಿನಾಂಕ)",
+    "note": "Note (ಟಿಪ್ಪಣಿ)"
+  },
+  "demurrageCharge": {
+    "title": "Demurrage Charge (ಡೆಮರೇಜ್ ಶುಲ್ಕ)",
+    "demurrageDays": "Demurrage Days (ಡೆಮರೇಜ್ ದಿನಗಳು)",
+    "demurrageChargeApplicable": "Demurrage Charge Applicable (ಡೆಮರೇಜ್ ಶುಲ್ಕ ಅನ್ವಯ)",
+    "perDay": "Per Day (ಪ್ರತಿ ದಿನ)",
+    "moreThan5Days": "More than 5 days (5 ದಿನಗಳಿಗಿಂತ ಹೆಚ್ಚು)"
+  },
+  "receipt": {
+    "title": "New Receipt (ಹೊಸ ರಸೀದಿ)",
+    "receiptNo": "Receipt No. (ರಸೀದಿ ನಂ.)",
+    "date": "Date (ದಿನಾಂಕ)",
+    "branch": "Branch (ಶಾಖೆ)",
+    "name": "Name (ಹೆಸರು)",
+    "phoneNo": "Phone no. (ಫೋನ್ ನಂ.)",
+    "receiptAgainst": "Receipt against (ರಸೀದಿ ವಿರುದ್ಧ)",
+    "quotation": "Quotation (ಉದ್ಧರಣ)",
+    "billAndQuotationDate": "Bill/Quotation date (ಬಿಲ್/ಉದ್ಧರಣ ದಿನಾಂಕ)",
+    "moveTo": "Move to (ಇಲ್ಲಿಗೆ)",
+    "moveFrom": "Move from (ಇಲ್ಲಿಂದ)",
+    "paymentType": "Payment type (ಪಾವತಿ ಪ್ರಕಾರ)",
+    "port": "Port (ಬಂದರು)",
+    "receiptAmount": "Receipt amount (ರಸೀದಿ ಮೊತ್ತ)",
+    "paymentMode": "Payment mode (ಪಾವತಿ ವಿಧಾನ)",
+    "cash": "Cash (ನಗದು)",
+    "transactionNo": "Enter Transaction no. (ವ್ಯವಹಾರ ನಂ. ನಮೂದಿಸಿ)",
+    "remarks": "Remarks (ಟಿಪ್ಪಣಿ)"
+  },
+  "expenseCategory": {
+    "title": "Expense Categories (ವೆಚ್ಚದ ವರ್ಗಗಳು)",
+    "totalExpenses": "Total Expenses: ₹{{total}} (ಒಟ್ಟು ವೆಚ್ಚಗಳು: ₹{{total}})",
+    "addNew": "Add New (ಹೊಸದನ್ನು ಸೇರಿಸಿ)",
+    "list": {
+      "loading": "Loading categories... (ವರ್ಗಗಳನ್ನು ಲೋಡ್ ಮಾಡಲಾಗುತ್ತಿದೆ...)",
+      "empty": "No categories found. (ಯಾವುದೇ ವರ್ಗಗಳು ಕಂಡುಬಂದಿಲ್ಲ.)"
+    },
+    "modal": {
+      "editTitle": "Edit Expense Category (ವೆಚ್ಚದ ವರ್ಗವನ್ನು ಸಂಪಾದಿಸಿ)",
+      "addTitle": "Expense Category (ವೆಚ್ಚದ ವರ್ಗ)"
+    },
+    "fields": {
+      "nameLabel": "Category Name (ವರ್ಗದ ಹೆಸರು)",
+      "namePlaceholder": "e.g., Fuel Expenses (ಉದಾಹರಣೆಗೆ, ಇಂಧನ ವೆಚ್ಚಗಳು)",
+      "amountLabel": "Amount (ಮೊತ್ತ)",
+      "amountPlaceholder": "0"
+    },
+    "toast": {
+      "toggleError": "Failed to toggle status (ಸ್ಥಿತಿಯನ್ನು ಬದಲಾಯಿಸಲು ವಿಫಲವಾಗಿದೆ)",
+      "deleteSuccess": "Category deleted successfully (ವರ್ಗವನ್ನು ಯಶಸ್ವಿಯಾಗಿ ಅಳಿಸಲಾಗಿದೆ)",
+      "deleteError": "Failed to delete category (ವರ್ಗವನ್ನು ಅಳಿಸಲು ವಿಫಲವಾಗಿದೆ)",
+      "nameRequired": "Name is required (ಹೆಸರು ಕಡ್ಡಾಯವಾಗಿದೆ)",
+      "updateSuccess": "Category updated! (ವರ್ಗವನ್ನು ನವೀಕರಿಸಲಾಗಿದೆ!)",
+      "createSuccess": "Category created! (ವರ್ಗವನ್ನು ರಚಿಸಲಾಗಿದೆ!)",
+      "saveError": "Failed to save category (ವರ್ಗವನ್ನು ಉಳಿಸಲು ವಿಫಲವಾಗಿದೆ)"
+    },
+    "deleteModal": {
+      "title": "Delete Category (ವರ್ಗವನ್ನು ಅಳಿಸಿ)",
+      "message": "Are you sure? (ನೀವು ಖಚಿತವಾಗಿರುವಿರಾ?)"
+    }
+  },
+  "officeExpense": {
+    "title": "Office Expenses (ಕಚೇರಿ ವೆಚ್ಚಗಳು)",
+    "totalExpenses": "Total Expenses: ₹{{total}} (ಒಟ್ಟು ವೆಚ್ಚಗಳು: ₹{{total}})",
+    "addExpense": "Add Expense (ವೆಚ್ಚವನ್ನು ಸೇರಿಸಿ)",
+    "drawer": {
+      "editTitle": "Edit Expense (ವೆಚ್ಚವನ್ನು ಸಂಪಾದಿಸಿ)",
+      "addTitle": "New Expense (ಹೊಸ ವೆಚ್ಚ)"
+    },
+    "fields": {
+      "nameLabel": "Name (ಹೆಸರು)",
+      "namePlaceholder": "Expense name (ವೆಚ್ಚದ ಹೆಸರು)",
+      "categoryLabel": "Expense category (ವೆಚ್ಚದ ವರ್ಗ)",
+      "selectCategory": "Select category (ವರ್ಗವನ್ನು ಆಯ್ಕೆಮಾಡಿ)",
+      "dateLabel": "Date (ದಿನಾಂಕ)",
+      "amountLabel": "Amount (ಮೊತ್ತ)",
+      "amountPlaceholder": "₹"
+    },
+    "toast": {
+      "nameRequired": "Expense name is required (ವೆಚ್ಚದ ಹೆಸರು ಕಡ್ಡಾಯವಾಗಿದೆ)",
+      "amountRequired": "Valid amount is required (ಮಾನ್ಯವಾದ ಮೊತ್ತ ಕಡ್ಡಾಯವಾಗಿದೆ)",
+      "updateSuccess": "Expense updated! (ವೆಚ್ಚವನ್ನು ನವೀಕರಿಸಲಾಗಿದೆ!)",
+      "createSuccess": "Expense created! (ವೆಚ್ಚವನ್ನು ರಚಿಸಲಾಗಿದೆ!)",
+      "saveError": "Failed to save expense (ವೆಚ್ಚವನ್ನು ಉಳಿಸಲು ವಿಫಲವಾಗಿದೆ)",
+      "deleteSuccess": "Expense deleted successfully (ವೆಚ್ಚವನ್ನು ಯಶಸ್ವಿಯಾಗಿ ಅಳಿಸಲಾಗಿದೆ)",
+      "deleteError": "Failed to delete expense (ವೆಚ್ಚವನ್ನು ಅಳಿಸಲು ವಿಫಲವಾಗಿದೆ)"
+    },
+    "deleteModal": {
+      "title": "Delete Office Expense (ಕಚೇರಿ ವೆಚ್ಚವನ್ನು ಅಳಿಸಿ)",
+      "message": "Are you sure you want to delete this expense record? (ನೀವು ಖಚಿತವಾಗಿ ಈ ವೆಚ್ಚದ ದಾಖಲೆಯನ್ನು ಅಳಿಸಲು ಬಯಸುವಿರಾ?)"
+    }
+  },
+  "moneyReceipt": {
+    "add": {
+      "title": "Money Receipt (ಹಣ ರಸೀದಿ)",
+      "saveReceipt": "Save Receipt (ರಸೀದಿ ಉಳಿಸಿ)",
+      "editPageTitle": "Edit Money Receipt (ಹಣ ರಸೀದಿ ಸಂಪಾದಿಸಿ)",
+      "addPageTitle": "Add Money Receipt (ಹಣ ರಸೀದಿ ಸೇರಿಸಿ)"
+    },
+    "fields": {
+      "receiptNo": "Receipt No. (ರಸೀದಿ ನಂ.)",
+      "orderNumber": "Order Number (ಆರ್ಡರ್ ನಂ.)",
+      "date": "Date (ದಿನಾಂಕ)",
+      "branch": "Branch (ಶಾಖೆ)",
+      "name": "Name (ಹೆಸರು)",
+      "phone": "Phone no. (ಫೋನ್ ನಂ.)",
+      "billDate": "Bill/Quotation date (ಬಿಲ್/ಉದ್ಧರಣ ದಿನಾಂಕ)",
+      "moveFrom": "Move from (ಇಲ್ಲಿಂದ)",
+      "moveTo": "Move to (ಇಲ್ಲಿಗೆ)",
+      "paymentType": "Payment type (ಪಾವತಿ ಪ್ರಕಾರ)",
+      "receiptAmount": "Receipt amount (ರಸೀದಿ ಮೊತ್ತ)",
+      "paymentMode": "Payment Mode (ಪಾವತಿ ವಿಧಾನ)",
+      "transactionNo": "Transaction No. (ವ್ಯವಹಾರ ನಂ.)",
+      "remarks": "Remarks (ಟಿಪ್ಪಣಿ)"
+    },
+    "placeholders": {
+      "enterNumber": "Enter number (ಸಂಖ್ಯೆ ನಮೂದಿಸಿ)",
+      "enterBranch": "Enter branch (ಶಾಖೆ ನಮೂದಿಸಿ)",
+      "enterName": "Enter name (ಹೆಸರು ನಮೂದಿಸಿ)",
+      "enterPhone": "Enter ph no. (ಫೋನ್ ನಂ. ನಮೂದಿಸಿ)",
+      "selectCity": "Select City (ನಗರ ಆಯ್ಕೆ ಮಾಡಿ)",
+      "enterTransaction": "Enter Transaction ID / Cheque No. (ವ್ಯವಹಾರ ಐಡಿ/ಚೆಕ್ ನಂ. ನಮೂದಿಸಿ)",
+      "writeRemarks": "Write remarks.. (ಟಿಪ್ಪಣಿ ಬರೆಯಿರಿ..)"
+    },
+    "dropdowns": {
+      "Advance": "Advance (ಮುಂಗಡ)",
+      "Part": "Part (ಭಾಗಶಃ)",
+      "Full": "Full (ಪೂರ್ಣ)",
+      "Cash": "Cash (ನಗದು)",
+      "Bank Transfer": "Bank Transfer (ಬ್ಯಾಂಕ್ ವರ್ಗಾವಣೆ)",
+      "Cheque": "Cheque (ಚೆಕ್)",
+      "UPI": "UPI (ಯುಪಿಐ)"
+    },
+    "toast": {
+      "dataFetched": "Data fetched from {{source}} ({{source}} ನಿಂದ ಡೇಟಾ ಪಡೆಯಲಾಗಿದೆ)"
+    },
+    "modals": {
+      "discardTitle": "Discard Changes? (ಬದಲಾವಣೆಗಳನ್ನು ರದ್ದುಗೊಳಿಸಬೇಕೆ?)",
+      "discardMessage": "Are you sure you want to leave? Any unsaved data will be permanently lost. (ನೀವು ಖಂಡಿತವಾಗಿ ನಿರ್ಗಮಿಸಲು ಬಯಸುವಿರಾ? ಉಳಿಸದ ಯಾವುದೇ ಡೇಟಾ ಶಾಶ್ವತವಾಗಿ ಕಳೆದುಹೋಗುತ್ತದೆ.)",
+      "yesLeave": "Yes, Leave (ಹೌದು, ನಿರ್ಗಮಿಸಿ)"
+    },
+    "list": {
+      "title": "Money Receipts (ಹಣ ರಸೀದಿಗಳು)",
+      "addBtn": "Add Money Receipt (ರಸೀದಿ ಸೇರಿಸಿ)",
+      "pageTitle": "Money Receipt List (ಹಣ ರಸೀದಿ ಪಟ್ಟಿ)",
+      "columns": {
+        "mrNo": "MR NO (ರಸೀದಿ ನಂ.)",
+        "dates": "DATES (ದಿನಾಂಕಗಳು)",
+        "customer": "CUSTOMER (ಗ್ರಾಹಕ)",
+        "receiptAgainst": "RECEIPT AGAINST (ರಸೀದಿ ವಿರುದ್ಧ)",
+        "amount": "AMOUNT (ಮೊತ್ತ)"
+      },
+      "stats": {
+        "totalReceipts": "Total Receipts (ಒಟ್ಟು ರಸೀದಿಗಳು)"
+      },
+      "toasts": {
+        "downloadingPdf": "Downloading PDF, please wait... (PDF ಡೌನ್‌ಲೋಡ್ ಆಗುತ್ತಿದೆ...)",
+        "downloadPdfSuccess": "Downloaded successfully! (ಯಶಸ್ವಿಯಾಗಿ ಡೌನ್‌ಲೋಡ್ ಆಯಿತು!)",
+        "downloadPdfFail": "Failed to download PDF. (ಡೌನ್‌ಲೋಡ್ ವಿಫಲವಾಗಿದೆ.)",
+        "exporting": "Exporting receipts, please wait... (ರಫ್ತು ಮಾಡಲಾಗುತ್ತಿದೆ...)",
+        "exportSuccess": "Exported successfully! (ಯಶಸ್ವಿಯಾಗಿ ರಫ್ತು ಮಾಡಲಾಗಿದೆ!)",
+        "exportFail": "Failed to export receipts. (ರಫ್ತು ವಿಫಲವಾಗಿದೆ.)",
+        "loadingPdf": "Loading PDF preview... (PDF ಪೂರ್ವದರ್ಶನ...)",
+        "loadPdfFail": "Failed to load PDF preview. (ಪೂರ್ವದರ್ಶನ ವಿಫಲ.)",
+        "deleteSuccess": "Receipt deleted successfully (ರಸೀದಿ ಯಶಸ್ವಿಯಾಗಿ ಅಳಿಸಲಾಗಿದೆ)",
+        "deleteFail": "Failed to delete receipt (ಅಳಿಸಲು ವಿಫಲವಾಗಿದೆ)"
+      },
+      "deleteModal": {
+        "title": "Delete Money Receipt (ರಸೀದಿ ಅಳಿಸಿ)",
+        "message": "Are you sure you want to delete this receipt? This action cannot be undone. (ನೀವು ಖಂಡಿತವಾಗಿ ಅಳಿಸಲು ಬಯಸುವಿರಾ?)"
+      }
+    }
+  },
+  "staff": {
+    "header": {
+      "title": "Staffs (ಸಿಬ್ಬಂದಿಗಳು)",
+      "subtitle": "Manage your organization team (ನಿಮ್ಮ ಸಂಸ್ಥೆಯ ತಂಡವನ್ನು ನಿರ್ವಹಿಸಿ)",
+      "total": "Total (ಒಟ್ಟು)",
+      "addBtn": "Add Staff (ಸಿಬ್ಬಂದಿ ಸೇರಿಸಿ)"
+    },
+    "card": {
+      "staffId": "Staff ID (ಸಿಬ್ಬಂದಿ ಐಡಿ)",
+      "loginCode": "Login code (ಲಾಗಿನ್ ಕೋಡ್)",
+      "active": "Active (ಸಕ್ರಿಯ)",
+      "inactive": "Inactive (ನಿಷ್ಕ್ರಿಯ)",
+      "stats": {
+        "survey": "Survey (ಸರ್ವೇ)",
+        "quotation": "Quotation (ಉದ್ಧರಣ)",
+        "lrBilty": "LR/Bilty (LR/ಬಿಲ್ಟಿ)",
+        "orders": "Orders (ಆರ್ಡರ್‌ಗಳು)"
+      }
+    },
+    "drawer": {
+      "editStaff": "Edit Staff (ಸಿಬ್ಬಂದಿ ಸಂಪಾದಿಸಿ)",
+      "newStaff": "New Staff (ಹೊಸ ಸಿಬ್ಬಂದಿ)",
+      "update": "Update (ನವೀಕರಿಸಿ)",
+      "saveStaff": "Save Staff (ಸಿಬ್ಬಂದಿ ಉಳಿಸಿ)",
+      "updateProfile": "Update Profile (ಪ್ರೊಫೈಲ್ ನವೀಕರಿಸಿ)",
+      "module": "Module (ಮಾಡ್ಯೂಲ್)",
+      "sections": {
+        "basicDetails": "Basic Details (ಮೂಲ ವಿವರಗಳು)",
+        "employmentDetails": "Employment Details (ಉದ್ಯೋಗ ವಿವರಗಳು)",
+        "permissionsSchema": "Permissions (ಅನುಮತಿಗಳು)"
+      }
+    },
+    "form": {
+      "name": "Name (ಹೆಸರು)",
+      "enterName": "Enter name (ಹೆಸರು ನಮೂದಿಸಿ)",
+      "mobile": "Mobile no. (ಮೊಬೈಲ್ ನಂ.)",
+      "enterMobile": "Enter mobile no. (ಮೊಬೈಲ್ ನಂ. ನಮೂದಿಸಿ)",
+      "altMobile": "Alternate mobile no. (ಪರ್ಯಾಯ ಮೊಬೈಲ್ ನಂ.)",
+      "email": "Email (ಇಮೇಲ್)",
+      "enterEmail": "Enter email (ಇಮೇಲ್ ನಮೂದಿಸಿ)",
+      "dob": "Date of Birth (ಜನ್ಮ ದಿನಾಂಕ)",
+      "selectDob": "Select DOB (ಜನ್ಮ ದಿನಾಂಕ ಆಯ್ಕೆಮಾಡಿ)",
+      "address": "Address (ವಿಳಾಸ)",
+      "enterAddress": "Enter address... (ವಿಳಾಸ ನಮೂದಿಸಿ...)",
+      "joiningDate": "Joining Date (ಸೇರುವ ದಿನಾಂಕ)",
+      "advSalary": "Advance salary (ಮುಂಗಡ ವೇತನ)",
+      "baseSalary": "Base Salary (ಮೂಲ ವೇತನ)",
+      "role": "Role (ಪಾತ್ರ)",
+      "loginCode": "Login Code (ಲಾಗಿನ್ ಕೋಡ್)",
+      "enterCode": "Enter code (ಕೋಡ್ ನಮೂದಿಸಿ)"
+    },
+    "permissions": {
+      "view": "View (ವೀಕ್ಷಿಸಿ)",
+      "add": "Add (ಸೇರಿಸಿ)",
+      "edit": "Edit (ಸಂಪಾದಿಸಿ)",
+      "delete": "Delete (ಅಳಿಸಿ)",
+      "modules": {
+        "surveyList": "Survey List (ಸರ್ವೇ ಪಟ್ಟಿ)",
+        "quotation": "Quotation (ಉದ್ಧರಣ)",
+        "order": "Order (ಆರ್ಡರ್)",
+        "moneyReceipt": "Money Receipt (ಹಣ ರಸೀದಿ)",
+        "staff": "Staff (ಸಿಬ್ಬಂದಿ)",
+        "expense": "Expense Management (ವೆಚ್ಚ ನಿರ್ವಹಣೆ)",
+        "lrBilty": "LR Bilty (LR ಬಿಲ್ಟಿ)",
+        "letterHead": "Letter Head (ಲೆಟರ್ ಹೆಡ್)"
+      }
+    },
+    "dropdowns": {
+      "Admin": "Admin (ನಿರ್ವಾಹಕ)",
+      "Staff": "Staff (ಸಿಬ್ಬಂದಿ)"
+    },
+    "toasts": {
+      "fetchError": "Error fetching staff details (ಸಿಬ್ಬಂದಿ ವಿವರಗಳನ್ನು ಪಡೆಯುವಲ್ಲಿ ದೋಷ)",
+      "updateSuccess": "Staff updated successfully (ಸಿಬ್ಬಂದಿಯನ್ನು ಯಶಸ್ವಿಯಾಗಿ ನವೀಕರಿಸಲಾಗಿದೆ)",
+      "createSuccess": "Staff created successfully (ಸಿಬ್ಬಂದಿಯನ್ನು ಯಶಸ್ವಿಯಾಗಿ ರಚಿಸಲಾಗಿದೆ)",
+      "saveError": "Failed to save staff (ಸಿಬ್ಬಂದಿಯನ್ನು ಉಳಿಸಲು ವಿಫಲವಾಗಿದೆ)",
+      "statusChange": "Staff marked as {{status}} (ಸಿಬ್ಬಂದಿಯನ್ನು {{status}} ಎಂದು ಗುರುತಿಸಲಾಗಿದೆ)",
+      "statusError": "Failed to update status (ಸ್ಥಿತಿಯನ್ನು ನವೀಕರಿಸಲು ವಿಫಲವಾಗಿದೆ)"
+    },
+    "profile": {
+      "pageTitle": "Staff Profile | PackNPay (ಸಿಬ್ಬಂದಿ ಪ್ರೊಫೈಲ್ | PackNPay)",
+      "loading": "Loading profile... (ಪ್ರೊಫೈಲ್ ಲೋಡ್ ಆಗುತ್ತಿದೆ...)",
+      "basicDetails": "Basic Details (ಮೂಲ ವಿವರಗಳು)",
+      "attendance": "Attendance (ಹಾಜರಾತಿ)",
+      "employmentDetails": "Employment Details (ಉದ್ಯೋಗ ವಿವರಗಳು)",
+      "orderCounts": "Order Counts (ಆರ್ಡರ್ ಎಣಿಕೆಗಳು)",
+      "totalQuotations": "Total Quotations (ಒಟ್ಟು ಉದ್ಧರಣಗಳು)",
+      "totalOrders": "Total Orders (ಒಟ್ಟು ಆರ್ಡರ್‌ಗಳು)",
+      "totalLrBilty": "Total LR/Bilty (ಒಟ್ಟು LR/ಬಿಲ್ಟಿ)",
+      "totalReceipts": "Total receipt (ಒಟ್ಟು ರಸೀದಿ)"
+    }
+  },
+  "letterHead": {
+    "add": {
+      "title": "New Letter Head (ಹೊಸ ಲೆಟರ್ ಹೆಡ್)",
+      "editTitle": "Edit Letter Head (ಲೆಟರ್ ಹೆಡ್ ಸಂಪಾದಿಸಿ)",
+      "pageTitle": "Add Letter Head | PackNPay (ಲೆಟರ್ ಹೆಡ್ ಸೇರಿಸಿ | PackNPay)",
+      "pageTitleEdit": "Edit Letter Head | PackNPay (ಲೆಟರ್ ಹೆಡ್ ಸಂಪಾದಿಸಿ | PackNPay)",
+      "basicDetails": "Basic Details (ಮೂಲ ವಿವರಗಳು)",
+      "letterDetails": "Letter Details (ಪತ್ರದ ವಿವರಗಳು)",
+      "loading": "Loading letter details... (ಪತ್ರದ ವಿವರಗಳನ್ನು ಲೋಡ್ ಮಾಡಲಾಗುತ್ತಿದೆ...)"
+    },
+    "fields": {
+      "lhNo": "LH No. (ಎಲ್ಎಚ್ ನಂ.)",
+      "date": "Date (ದಿನಾಂಕ)",
+      "name": "Name (ಹೆಸರು)",
+      "phone": "Phone no. (ಫೋನ್ ನಂ.)",
+      "email": "Email (ಇಮೇಲ್)",
+      "remarks": "Remarks (ಟಿಪ್ಪಣಿಗಳು)"
+    },
+    "placeholders": {
+      "enterName": "Enter name (ಹೆಸರು ನಮೂದಿಸಿ)",
+      "enterPhone": "Enter ph no. (ಫೋನ್ ನಂ. ನಮೂದಿಸಿ)",
+      "enterEmail": "Enter email (ಇಮೇಲ್ ನಮೂದಿಸಿ)",
+      "writeRemarks": "Write remarks.. (ಟಿಪ್ಪಣಿಗಳನ್ನು ಬರೆಯಿರಿ..)",
+      "write": "Write.. (ಬರೆಯಿರಿ..)"
+    },
+    "toasts": {
+      "loadError": "Failed to load letter details. (ಪತ್ರದ ವಿವರಗಳನ್ನು ಲೋಡ್ ಮಾಡಲು ವಿಫಲವಾಗಿದೆ.)",
+      "previewComingSoon": "Preview functionality coming soon! (ಮುನ್ನೋಟ ಕಾರ್ಯ ಶೀಘ್ರದಲ್ಲೇ ಬರಲಿದೆ!)",
+      "nameRequired": "Name is required! (ಹೆಸರು ಕಡ್ಡಾಯವಾಗಿದೆ!)",
+      "createSuccess": "Letter Head created successfully! (ಲೆಟರ್ ಹೆಡ್ ಯಶಸ್ವಿಯಾಗಿ ರಚಿಸಲಾಗಿದೆ!)",
+      "updateSuccess": "Letter Head updated successfully! (ಲೆಟರ್ ಹೆಡ್ ಯಶಸ್ವಿಯಾಗಿ ನವೀಕರಿಸಲಾಗಿದೆ!)",
+      "createFail": "Failed to create Letter Head (ಲೆಟರ್ ಹೆಡ್ ರಚಿಸಲು ವಿಫಲವಾಗಿದೆ)",
+      "updateFail": "Failed to update Letter Head (ಲೆಟರ್ ಹೆಡ್ ನವೀಕರಿಸಲು ವಿಫಲವಾಗಿದೆ)"
+    },
+    "modals": {
+      "successTitle": "Success! (ಯಶಸ್ಸು!)",
+      "updateSuccessTitle": "Update Success! (ನವೀಕರಣ ಯಶಸ್ಸು!)",
+      "successMessage": "You've successfully {{action}} letter head {{lh_no}}. Do you want to return to the list? (ನೀವು ಲೆಟರ್ ಹೆಡ್ {{lh_no}} ಅನ್ನು ಯಶಸ್ವಿಯಾಗಿ {{action}}. ನೀವು ಪಟ್ಟಿಗೆ ಹಿಂತಿರುಗಲು ಬಯಸುವಿರಾ?)",
+      "returnToList": "Yes, return to list (ಹೌದು, ಪಟ್ಟಿಗೆ ಹಿಂತಿರುಗಿ)",
+      "stayHere": "No, stay here (ಇಲ್ಲ, ಇಲ್ಲೇ ಇರಿ)"
+    },
+    "list": {
+      "title": "Letter Head (ಲೆಟರ್ ಹೆಡ್)",
+      "addBtn": "Add Letter Head (ಲೆಟರ್ ಹೆಡ್ ಸೇರಿಸಿ)",
+      "pageTitle": "Letter Head List | PackNPay (ಲೆಟರ್ ಹೆಡ್ ಪಟ್ಟಿ | PackNPay)",
+      "columns": {
+        "lhNo": "LH NO (ಎಲ್ಎಚ್ ನಂ.)",
+        "dates": "DATES (ದಿನಾಂಕಗಳು)",
+        "customer": "CUSTOMER (ಗ್ರಾಹಕ)",
+        "phone": "PHONE NO. (ಫೋನ್ ನಂ.)",
+        "email": "EMAIL (ಇಮೇಲ್)"
+      },
+      "toasts": {
+        "downloadingPdf": "Downloading PDF, please wait... (PDF ಡೌನ್‌ಲೋಡ್ ಆಗುತ್ತಿದೆ...)",
+        "downloadSuccess": "Downloaded successfully! (ಯಶಸ್ವಿಯಾಗಿ ಡೌನ್‌ಲೋಡ್ ಆಯಿತು!)",
+        "downloadFail": "Failed to download PDF. (ಡೌನ್‌ಲೋಡ್ ವಿಫಲವಾಗಿದೆ.)",
+        "exporting": "Exporting records, please wait... (ರಫ್ತು ಮಾಡಲಾಗುತ್ತಿದೆ...)",
+        "exportSuccess": "Exported successfully! (ಯಶಸ್ವಿಯಾಗಿ ರಫ್ತು ಮಾಡಲಾಗಿದೆ!)",
+        "exportFail": "Failed to export records. (ರಫ್ತು ವಿಫಲವಾಗಿದೆ.)",
+        "generatingPdf": "Generating PDF, please wait... (PDF ರಚಿಸಲಾಗುತ್ತಿದೆ...)",
+        "previewFail": "Failed to load PDF preview. (ಪೂರ್ವದರ್ಶನ ವಿಫಲ.)",
+        "deleteSuccess": "Letter Head deleted successfully (ಲೆಟರ್ ಹೆಡ್ ಯಶಸ್ವಿಯಾಗಿ ಅಳಿಸಲಾಗಿದೆ)",
+        "deleteFail": "Failed to delete letter head (ಅಳಿಸಲು ವಿಫಲವಾಗಿದೆ)"
+      },
+      "deleteModal": {
+        "title": "Delete Letter Head (ಲೆಟರ್ ಹೆಡ್ ಅಳಿಸಿ)",
+        "message": "Are you sure you want to delete this letter head? This action cannot be undone. (ನೀವು ಖಂಡಿತವಾಗಿ ಅಳಿಸಲು ಬಯಸುವಿರಾ?)"
+      }
+    }
+  },
+  "subscription": {
+    "title": "Subscription (ಚಂದಾದಾರಿಕೆ)",
+    "daysLeft": "Days left to renew (ನವೀಕರಿಸಲು ಉಳಿದಿರುವ ದಿನಗಳು)",
+    "plan": "Plan (ಯೋಜನೆ)",
+    "noActivePlan": "No Active Plan (ಯಾವುದೇ ಸಕ್ರಿಯ ಯೋಜನೆ ಇಲ್ಲ)",
+    "purchasedOn": "Purchased On (ಖರೀದಿಸಿದ ದಿನಾಂಕ)",
+    "validTill": "Valid Till (ಮಾನ್ಯವಾಗಿರುವ ದಿನಾಂಕ)",
+    "buyPlan": "Buy plan (ಯೋಜನೆ ಖರೀದಿಸಿ)",
+    "renewPlan": "Renew plan (ಯೋಜನೆ ನವೀಕರಿಸಿ)",
+    "history": "Subscription History (ಚಂದಾದಾರಿಕೆ ಇತಿಹಾಸ)",
+    "paid": "Paid (ಪಾವತಿಸಲಾಗಿದೆ)",
+    "monthly": "Monthly (ಮಾಸಿಕ)",
+    "upfront": "Upfront (ಮುಂಗಡ)",
+    "tryForFree": "Try for free (ಉಚಿತವಾಗಿ ಪ್ರಯತ್ನಿಸಿ)",
+    "subscribe": "Subscribe (ಚಂದಾದಾರರಾಗಿ)",
+    "days": "Days (ದಿನಗಳು)",
+    "months": "Months (ತಿಂಗಳುಗಳು)",
+    "buy": {
+      "title": "Boost Your Current Plan (ನಿಮ್ಮ ಪ್ರಸ್ತುತ ಯೋಜನೆಯನ್ನು ಹೆಚ್ಚಿಸಿ)",
+      "subtitle": "Enjoy more features without losing what you love. (ನೀವು ಇಷ್ಟಪಡುವುದನ್ನು ಕಳೆದುಕೊಳ್ಳದೆ ಹೆಚ್ಚಿನ ವೈಶಿಷ್ಟ್ಯಗಳನ್ನು ಆನಂದಿಸಿ.)"
+    },
+    "columns": {
+      "slNo": "SL NO (ಕ್ರಮ ಸಂಖ್ಯೆ)",
+      "purchasedOn": "PURCHASED ON (ಖರೀದಿಸಿದ ದಿನಾಂಕ)",
+      "planName": "PLAN NAME (ಯೋಜನೆಯ ಹೆಸರು)",
+      "period": "PERIOD (ಅವಧಿ)",
+      "duration": "DURATION (ಕಾಲಾವಧಿ)",
+      "amount": "AMOUNT (ಮೊತ್ತ)",
+      "status": "STATUS (ಸ್ಥಿತಿ)"
+    },
+    "features": {
+      "supervisors": "Supervisors (ಮೇಲ್ವಿಚಾರಕರು)",
+      "managers": "Managers (ವ್ಯವಸ್ಥಾಪಕರು)",
+      "labours": "Labours (ಕಾರ್ಮಿಕರು)",
+      "prioritySupport": "Priority Support (ಆದ್ಯತೆಯ ಬೆಂಬಲ)"
+    },
+    "toasts": {
+      "loadFail": "Failed to load subscription details (ಚಂದಾದಾರಿಕೆ ವಿವರಗಳನ್ನು ಲೋಡ್ ಮಾಡಲು ವಿಫಲವಾಗಿದೆ)",
+      "razorpayFail": "Razorpay SDK failed to load. (ರೇಜರ್‌ಪೇ SDK ಲೋಡ್ ಮಾಡಲು ವಿಫಲವಾಗಿದೆ.)",
+      "paymentSuccess": "Payment Verified Successfully! (ಪಾವತಿಯನ್ನು ಯಶಸ್ವಿಯಾಗಿ ಪರಿಶೀಲಿಸಲಾಗಿದೆ!)",
+      "invalidPayment": "Invalid payment (ಅಮಾನ್ಯ ಪಾವತಿ)",
+      "verifyFail": "Verification failed (ಪರಿಶೀಲನೆ ವಿಫಲವಾಗಿದೆ)",
+      "paymentFailed": "Payment Failed (ಪಾವತಿ ವಿಫಲವಾಗಿದೆ)",
+      "checkoutFail": "Failed to initiate checkout (ಚೆಕ್‌ಔಟ್ ಪ್ರಾರಂಭಿಸಲು ವಿಫಲವಾಗಿದೆ)"
+    }
+  },
+  "lr": {
+    "add": {
+      "pageTitle": "Add LR | PackNPay (LR ಸೇರಿಸಿ | PackNPay)",
+      "pageTitleEdit": "Edit LR | PackNPay (LR ಸಂಪಾದಿಸಿ | PackNPay)",
+      "newTitle": "New Lorry Receipt (ಹೊಸ ಲಾರಿ ರಸೀದಿ)",
+      "editTitle": "Edit Lorry Receipt (ಲಾರಿ ರಸೀದಿ ಸಂಪಾದಿಸಿ)",
+      "saveBtn": "Save LR (LR ಉಳಿಸಿ)",
+      "loading": "Loading LR details... (LR ವಿವರಗಳನ್ನು ಲೋಡ್ ಮಾಡಲಾಗುತ್ತಿದೆ...)",
+      "sections": {
+        "lrDetails": "LR Details (LR ವಿವರಗಳು)",
+        "truckDetails": "Truck Details (ಟ್ರಕ್ ವಿವರಗಳು)",
+        "consignorFrom": "Consignor/Move From (ರವಾನೆದಾರ/ಇಲ್ಲಿಂದ)",
+        "packageDetails": "Package Details (ಪ್ಯಾಕೇಜ್ ವಿವರಗಳು)",
+        "demurrageCharge": "Demurrage Charge (ವಿಳಂಬ ಶುಲ್ಕ)",
+        "materialInsurance": "Material Insurance (ವಸ್ತು ವಿಮೆ)",
+        "consignorTo": "Consignee/Move To (ಸ್ವೀಕರಿಸುವವರು/ಇಲ್ಲಿಗೆ)",
+        "paymentDetails": "Payment Details (ಪಾವತಿ ವಿವರಗಳು)",
+        "driverDetails": "Driver Details (ಚಾಲಕನ ವಿವರಗಳು)"
+      }
+    },
+    "fields": {
+      "lrNo": "LR No. (LR ನಂ.)",
+      "date": "Date (ದಿನಾಂಕ)",
+      "riskType": "Risk Type (ಅಪಾಯದ ಪ್ರಕಾರ)",
+      "orderId": "Order ID (ಆರ್ಡರ್ ಐಡಿ)",
+      "vehicleNo": "Vehicle No. (ವಾಹನ ನಂ.)",
+      "movingFrom": "Moving from (ಇಲ್ಲಿಂದ ಹೊರಡುವುದು)",
+      "movingTo": "Moving to (ಇಲ್ಲಿಗೆ ತಲುಪುವುದು)",
+      "driverName": "Driver name (ಚಾಲಕನ ಹೆಸರು)",
+      "driverPhone": "Driver's mobile no. (ಚಾಲಕನ ಮೊಬೈಲ್ ನಂ.)",
+      "driverLicense": "Driver license no. (ಚಾಲಕನ ಲೈಸೆನ್ಸ್ ನಂ.)",
+      "consignorName": "Consignor name (ರವಾನೆದಾರರ ಹೆಸರು)",
+      "consignorPhone": "Consignor ph no. (ರವಾನೆದಾರರ ಫೋನ್ ನಂ.)",
+      "consigneeName": "Consignee name (ಸ್ವೀಕರಿಸುವವರ ಹೆಸರು)",
+      "consigneePhone": "Consignee ph no. (ಸ್ವೀಕರಿಸುವವರ ಫೋನ್ ನಂ.)",
+      "gstNo": "CGSTIN no. (CGSTIN ನಂ.)",
+      "country": "Country (ದೇಶ)",
+      "state": "State (ರಾಜ್ಯ)",
+      "city": "City (ನಗರ)",
+      "pincode": "Pincode (ಪಿನ್ ಕೋಡ್)",
+      "address": "Address (ವಿಳಾಸ)",
+      "noOfPackages": "No of package (ಪ್ಯಾಕೇಜ್‌ಗಳ ಸಂಖ್ಯೆ)",
+      "description": "Description (ವಿವರಣೆ)",
+      "actualWeight": "Actual Weight (ನೈಜ ತೂಕ)",
+      "chargedWeight": "Charged Weight (ಶುಲ್ಕದ ತೂಕ)",
+      "conditionNote": "Received Package condition (ಸ್ವೀಕರಿಸಿದ ಪ್ಯಾಕೇಜ್ ಸ್ಥಿತಿ)",
+      "remarks": "Remarks (ಟಿಪ್ಪಣಿಗಳು)",
+      "insuranceType": "Material Insurance (ವಸ್ತು ವಿಮೆ)",
+      "companyName": "Insurance company (ವಿಮಾ ಕಂಪನಿ)",
+      "policyNo": "Policy no. (ಪಾಲಿಸಿ ನಂ.)",
+      "insuredAmount": "Insured amount (ವಿಮಾ ಮೊತ್ತ)",
+      "insuranceDate": "Insurance Date (ವಿಮಾ ದಿನಾಂಕ)",
+      "riskDetails": "Insurance Risk (ವಿಮಾ ಅಪಾಯ)",
+      "freightToBeBilled": "Freight to be billed (ಬಿಲ್ ಮಾಡಬೇಕಾದ ಸರಕು ಸಾಗಣೆ ಶುಲ್ಕ)",
+      "freightPaid": "Freight Paid (ಪಾವತಿಸಿದ ಸರಕು ಸಾಗಣೆ ಶುಲ್ಕ)",
+      "freightToPay": "Freight to pay (ಪಾವತಿಸಬೇಕಾದ ಸರಕು ಸಾಗಣೆ ಶುಲ್ಕ)",
+      "basicFreight": "Total Basic freight (ಒಟ್ಟು ಮೂಲ ಸಾಗಣೆ ಶುಲ್ಕ)",
+      "loadingCharge": "Loading charge (ಲೋಡಿಂಗ್ ಶುಲ್ಕ)",
+      "unloadingCharge": "Unloading charge (ಅನ್‌ಲೋಡಿಂಗ್ ಶುಲ್ಕ)",
+      "stCharge": "S.T charge (S.T ಶುಲ್ಕ)",
+      "otherCharge": "Other charge (ಇತರ ಶುಲ್ಕ)",
+      "lrCnCharge": "LR/CN CHARGES (LR/CN ಶುಲ್ಕಗಳು)",
+      "gstPercent": "GST % (GST %)",
+      "gstPaidBy": "GST paid by (GST ಪಾವತಿಸುವವರು)",
+      "demurrageCharge": "Demurrage charge (ವಿಳಂಬ ಶುಲ್ಕ)",
+      "applicableRule": "Applicable Rule (ಅನ್ವಯಿಸುವ ನಿಯಮ)"
+    },
+    "placeholders": {
+      "selectRisk": "Select Risk Type (ಅಪಾಯದ ಪ್ರಕಾರವನ್ನು ಆಯ್ಕೆಮಾಡಿ)",
+      "enterOrderId": "Enter Order ID (ಆರ್ಡರ್ ಐಡಿ ನಮೂದಿಸಿ)",
+      "enterNo": "Enter no. (ಸಂಖ್ಯೆ ನಮೂದಿಸಿ)",
+      "selectCity": "Select City (ನಗರ ಆಯ್ಕೆಮಾಡಿ)",
+      "selectState": "Select State (ರಾಜ್ಯ ಆಯ್ಕೆಮಾಡಿ)",
+      "phoneFormat": "+91",
+      "licenseFormat": "XXXX-XXXXX-XXXX",
+      "gstFormat": "XXXXX-XXXXX",
+      "enterPincode": "Enter pincode (ಪಿನ್‌ಕೋಡ್ ನಮೂದಿಸಿ)",
+      "enterAddress": "Enter address (ವಿಳಾಸ ನಮೂದಿಸಿ)",
+      "writeDesc": "Write description (ವಿವರಣೆ ಬರೆಯಿರಿ)",
+      "enterWeight": "Enter weight (ತೂಕ ನಮೂದಿಸಿ)",
+      "enter": "Enter (ನಮೂದಿಸಿ)",
+      "write": "Write... (ಬರೆಯಿರಿ...)",
+      "currency": "₹"
+    },
+    "dropdowns": {
+      "OWNER RISK": "OWNER RISK (ಮಾಲೀಕರ ಅಪಾಯ)",
+      "CARRIER RISK": "CARRIER RISK (ವಾಹಕದ ಅಪಾಯ)",
+      "INDIA": "INDIA (ಭಾರತ)"
+    },
+    "toasts": {
+      "fetchSuccess": "Data fetched successfully (ಡೇಟಾವನ್ನು ಯಶಸ್ವಿಯಾಗಿ ಪಡೆಯಲಾಗಿದೆ)",
+      "loadError": "Failed to load LR data (LR ಡೇಟಾವನ್ನು ಲೋಡ್ ಮಾಡಲು ವಿಫಲವಾಗಿದೆ)",
+      "createSuccess": "LR created successfully! (LR ಯಶಸ್ವಿಯಾಗಿ ರಚಿಸಲಾಗಿದೆ!)",
+      "updateSuccess": "LR updated successfully! (LR ಯಶಸ್ವಿಯಾಗಿ ನವೀಕರಿಸಲಾಗಿದೆ!)",
+      "saveError": "Failed to save LR (LR ಉಳಿಸಲು ವಿಫಲವಾಗಿದೆ)"
+    },
+    "modals": {
+      "successTitle": "Success! (ಯಶಸ್ಸು!)",
+      "updateSuccessTitle": "Update Success! (ನವೀಕರಣ ಯಶಸ್ಸು!)",
+      "successMessage": "You've successfully {{action}} Lorry Receipt {{lr_no}}. Do you want to return to the list? (ನೀವು ಲಾರಿ ರಸೀದಿ {{lr_no}} ಅನ್ನು ಯಶಸ್ವಿಯಾಗಿ {{action}}. ನೀವು ಪಟ್ಟಿಗೆ ಹಿಂತಿರುಗಲು ಬಯಸುವಿರಾ?)",
+      "returnToList": "Yes, return to list (ಹೌದು, ಪಟ್ಟಿಗೆ ಹಿಂತಿರುಗಿ)",
+      "stayHere": "No, stay here (ಇಲ್ಲ, ಇಲ್ಲೇ ಇರಿ)"
+    },
+    "list": {
+      "title": "LR Lists (LR ಪಟ್ಟಿಗಳು)",
+      "addBtn": "Add LR (LR ಸೇರಿಸಿ)",
+      "pageTitle": "LR List | PackNPay (LR ಪಟ್ಟಿ | PackNPay)",
+      "totalLr": "Total LR (ಒಟ್ಟು LR)",
+      "columns": {
+        "lrNo": "LR NO (LR ನಂ.)",
+        "dates": "DATES (ದಿನಾಂಕಗಳು)",
+        "customer": "CUSTOMER (ಗ್ರಾಹಕ)",
+        "location": "LOCATION (ಸ್ಥಳ)",
+        "freight": "FREIGHT (ಸರಕು ಸಾಗಣೆ ಶುಲ್ಕ)"
+      },
+      "toasts": {
+        "downloadingPdf": "Downloading {{copyType}} copy, please wait... ({{copyType}} ಪ್ರತಿಯನ್ನು ಡೌನ್‌ಲೋಡ್ ಮಾಡಲಾಗುತ್ತಿದೆ...)",
+        "downloadSuccess": "{{copyType}} copy downloaded successfully! ({{copyType}} ಪ್ರತಿಯು ಯಶಸ್ವಿಯಾಗಿ ಡೌನ್‌ಲೋಡ್ ಆಗಿದೆ!)",
+        "downloadFail": "Failed to download {{copyType}} copy. ({{copyType}} ಪ್ರತಿಯನ್ನು ಡೌನ್‌ಲೋಡ್ ಮಾಡಲು ವಿಫಲವಾಗಿದೆ.)",
+        "loadingPdf": "Loading PDF preview... (PDF ಪೂರ್ವದರ್ಶನ ಲೋಡ್ ಮಾಡಲಾಗುತ್ತಿದೆ...)",
+        "previewFail": "Failed to load PDF preview. (PDF ಪೂರ್ವದರ್ಶನ ಲೋಡ್ ಮಾಡಲು ವಿಫಲವಾಗಿದೆ.)",
+        "missingId": "Error: Missing record identifier. (ದೋಷ: ದಾಖಲೆ ಗುರುತಿಸುವಿಕೆ ಕಾಣೆಯಾಗಿದೆ.)",
+        "deleteSuccess": "LR deleted successfully (LR ಯಶಸ್ವಿಯಾಗಿ ಅಳಿಸಲಾಗಿದೆ)",
+        "deleteFail": "Failed to delete LR (LR ಅಳಿಸಲು ವಿಫಲವಾಗಿದೆ)",
+        "exportingCsv": "Exporting CSV... (CSV ರಫ್ತು ಮಾಡಲಾಗುತ್ತಿದೆ...)"
+      },
+      "deleteModal": {
+        "title": "Delete Lorry Receipt (ಲಾರಿ ರಸೀದಿ ಅಳಿಸಿ)",
+        "message": "Are you sure you want to delete this LR? This action cannot be undone. (ನೀವು ಖಂಡಿತವಾಗಿ ಅಳಿಸಲು ಬಯಸುವಿರಾ?)"
+      },
+      "downloadModal": {
+        "title": "Select Copy (ಪ್ರತಿಯನ್ನು ಆಯ್ಕೆಮಾಡಿ)"
+      }
+    },
+    "copies": {
+      "consignor": "Consignor (ರವಾನೆದಾರ)",
+      "consignee": "Consignee (ಸ್ವೀಕರಿಸುವವರು)",
+      "driver": "Driver (ಚಾಲಕ)",
+      "transporter": "Transporter (ಸಾರಿಗೆದಾರ)"
+    }
+  }
+}

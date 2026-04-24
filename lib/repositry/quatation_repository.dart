@@ -130,16 +130,22 @@ class QuatationRepository {
     }
   }
 
-  Future<bool> updateQuotation(String uid, Map<String, dynamic> body) async {
+  Future<bool> updateQuotation(String uid, Map<String, dynamic> body,String? keyType) async {
     try {
-      final response = await network.put(
-        "${ApiEndPoints.updateQuotationApi}/$uid", body,
-      );
+      final response;
+      if(keyType== "edit_click_from_survey") {
+         response = await network.post("${ApiEndPoints.createQuotationApi}/$uid", body,);
+      }else{
+         response = await network.put("${ApiEndPoints.updateQuotationApi}/$uid", body,);
+      }
 
-      if (response.statusCode == 200 &&
-          response.data['success'] == true) {
+      if (response.statusCode == 200 && response.data['success'] == true) {
         return true;
-      } else {
+      }
+      else if(keyType== "edit_click_from_survey" && response.statusCode == 201){
+        return true;
+      }
+      else {
         return false;
       }
     } catch (e) {

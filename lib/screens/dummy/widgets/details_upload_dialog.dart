@@ -129,7 +129,7 @@ class _DetailsUploadPopupState extends State<DetailsUploadPopup> {
             ),
 
             /// Description Label
-            Text("Description",
+            /*Text("Description",
                 style: TextStyles.f12w500Gray7),
             const SizedBox(height: 6),
 
@@ -175,7 +175,7 @@ class _DetailsUploadPopupState extends State<DetailsUploadPopup> {
               ),
             ),
 
-            const SizedBox(height: 16),
+            const SizedBox(height: 16),*/
 
             /// Attach Images Label
             Text("Attach images",

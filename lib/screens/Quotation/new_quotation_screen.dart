@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -88,6 +89,7 @@ class _NewQuotationScreenState extends ConsumerState<NewQuotationScreen> {
       appBar: AppBar(
         backgroundColor: Colors.white,
         elevation: 2,
+        titleSpacing: 0,
         automaticallyImplyLeading: true,
         surfaceTintColor: Colors.white,
         leading: IconButton(
@@ -96,7 +98,7 @@ class _NewQuotationScreenState extends ConsumerState<NewQuotationScreen> {
         ),
 
         title: Text(
-          "New Quotation",
+          "quotation.newQuotation".tr(),
           style: TextStyles.f16w600mGray9,
         ),
 
@@ -186,7 +188,7 @@ class _NewQuotationScreenState extends ConsumerState<NewQuotationScreen> {
                 /// NEXT
                 Expanded(
                   child: CustomButton(
-                    text: currentStep == 3 ? "Submit" : "Save & Next",
+                    text: currentStep == 3 ?   "common.submit".tr() : "quotation.saveNext".tr(),
                     icon: Icons.keyboard_double_arrow_right,
                     iconRight: true,
                     onPressed: handleSaveQuotation,
@@ -236,7 +238,9 @@ class _NewQuotationScreenState extends ConsumerState<NewQuotationScreen> {
 
         /// 🔥 EDIT FLOW
         if (widget.keyType == "edit_click") {
-          success = await ref.read(quotationProvider.notifier).updateQuotation(widget.uid ?? "", data);
+          success = await ref.read(quotationProvider.notifier).updateQuotation(widget.uid ?? "", data,widget.keyType);
+        }else if(widget.keyType == "edit_click_from_survey"){
+          success = await ref.read(quotationProvider.notifier).updateQuotation(widget.uid ?? "", data,widget.keyType);
         }
 
         /// 🔥 CREATE FLOW

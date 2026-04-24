@@ -1,4 +1,5 @@
 
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -136,7 +137,7 @@ class _PaymentDetailFormState extends ConsumerState<PaymentDetailForm> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text("Payment Details", style: TextStyles.f14w600mGray9),
+            Text("payment.title".tr(), style: TextStyles.f14w600mGray9),
             const SizedBox(height: 10),
 
             /// Freight + Advance
@@ -149,7 +150,7 @@ class _PaymentDetailFormState extends ConsumerState<PaymentDetailForm> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
 
-                          formLabel("Freight Charge", isRequired: true),
+                          formLabel("payment.freightCharge".tr(), isRequired: true),
                           const SizedBox(height: 6),
                           CustomTextField(
                             controller: freightController,
@@ -173,8 +174,7 @@ class _PaymentDetailFormState extends ConsumerState<PaymentDetailForm> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-
-                          formLabel("Advance Paid", isRequired: false),
+                          formLabel("payment.advancePaid".tr(), isRequired: false),
                           const SizedBox(height: 6),
                           CustomTextField(
                             controller: advanceController,
@@ -197,7 +197,7 @@ class _PaymentDetailFormState extends ConsumerState<PaymentDetailForm> {
             /// Packing
             if (visibleFields.isPackingVisible)
               buildChargeField(
-                title: "Packing Charge",
+                title: "payment.packingCharge".tr(),
                 isRequired: true,
                 items: includeForPackingItem,
                 selectedValue: selectedIncludeForPackingLabel,
@@ -221,7 +221,8 @@ class _PaymentDetailFormState extends ConsumerState<PaymentDetailForm> {
             /// Unpacking
             if (visibleFields.isUnpackingVisible)
               buildChargeField(
-                title: "Unpacking Charge",
+
+                title: "payment.unpackingCharge".tr(),
                 isRequired: true,
                 items: includeForUnpackingItem,
                 selectedValue: selectedForUnpackingLabel,
@@ -246,7 +247,7 @@ class _PaymentDetailFormState extends ConsumerState<PaymentDetailForm> {
             /// Loading
             // if (visibleFields.isUnpackingVisible)
             buildChargeField(
-              title: "Loading Charge",
+              title: "payment.loadingCharge".tr(),
               isRequired: true,
               items: loadingChargeItem,
               selectedValue: loadingChargeLabel,
@@ -269,7 +270,7 @@ class _PaymentDetailFormState extends ConsumerState<PaymentDetailForm> {
 
 
             buildChargeField(
-              title: "Unloading Charge",
+              title: "payment.unloadingCharge".tr(),
               isRequired: true,
               items: unLoadingChargeItem,
               selectedValue: unLoadingChargeLabel,
@@ -291,7 +292,7 @@ class _PaymentDetailFormState extends ConsumerState<PaymentDetailForm> {
             ),
 
             buildChargeField(
-              title: "Packing material charge",
+              title: "payment.packingMaterialCharge".tr(),
               isRequired: true,
               items: packingMaterialItem,
               selectedValue: packingMaterialLabel,
@@ -321,7 +322,7 @@ class _PaymentDetailFormState extends ConsumerState<PaymentDetailForm> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
 
-                        formLabel("Storage charge", isRequired: true),
+                        formLabel("payment.storageCharge".tr(), isRequired: true),
                         const SizedBox(height: 6),
                         CustomTextField(
                           controller: storageController,
@@ -341,8 +342,7 @@ class _PaymentDetailFormState extends ConsumerState<PaymentDetailForm> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-
-                        formLabel("Car/Bike TPT", isRequired: true),
+                        formLabel("payment.carBikeTpt".tr(), isRequired: true),
                         const SizedBox(height: 6),
                         CustomTextField(
                           controller: tptController,
@@ -368,8 +368,7 @@ class _PaymentDetailFormState extends ConsumerState<PaymentDetailForm> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-
-                      formLabel("Miscellaneous charges", isRequired: true),
+                      formLabel("payment.miscCharges".tr(), isRequired: true),
                       const SizedBox(height: 6),
                       CustomTextField(
                         controller: miscController,
@@ -389,8 +388,7 @@ class _PaymentDetailFormState extends ConsumerState<PaymentDetailForm> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-
-                      formLabel("Other charges", isRequired: true),
+                      formLabel("payment.otherCharges".tr(), isRequired: true),
                       const SizedBox(height: 6),
                       CustomTextField(
                         controller: otherController,
@@ -416,7 +414,7 @@ class _PaymentDetailFormState extends ConsumerState<PaymentDetailForm> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      formLabel("St Charges", isRequired: true),
+                      formLabel("payment.stCharge".tr(), isRequired: true),
                       const SizedBox(height: 6),
                       CustomTextField(
                         controller: stChargesController,
@@ -433,7 +431,7 @@ class _PaymentDetailFormState extends ConsumerState<PaymentDetailForm> {
                 ),
                 const SizedBox(width: 12),
                 buildCommonDropdown(
-                  title: "Gst",
+                  title: "payment.gst".tr(),
                   isRequired: true,
                   value: selectedGstPercentLabel,
                   items: gstPercentItems,
@@ -456,7 +454,7 @@ class _PaymentDetailFormState extends ConsumerState<PaymentDetailForm> {
             Row(
               children: [
                 buildCommonDropdown(
-                  title: "Gst type",
+                  title:  "payment.gstType".tr(),
                   isRequired: true,
                   value: selectedGstLabel,
                   items: gstTypeItems,
@@ -477,7 +475,7 @@ class _PaymentDetailFormState extends ConsumerState<PaymentDetailForm> {
            //selectedSurcharges
             SizedBox(height: 16,),
             buildChargeField(
-              title: "Surcharge",
+              title:  "payment.surcharge".tr(),
               isRequired: true,
               items: surchargeItem,
               selectedValue: surchargeItemLabel,

@@ -350,6 +350,90 @@ class QuotationFormNotifier extends StateNotifier<QuotationFormModel> {
     final calc = calculateSummary();
     state = state..totalAmount = calc["total"]!.toStringAsFixed(0);
   }
+
+  Map<String, double> calculateSummary() {
+    double numVal(String? v) => double.tryParse(v ?? '') ?? 0;
+
+    // 1. BASE FARE
+    final freight = numVal(state.freightCharge);
+
+    double splitTotal = 0;
+
+    final charges = [
+      {"type": state.packingChargeType, "amount": state.packingCharge},
+      {"type": state.unpackingChargeType, "amount": state.unpackingCharge},
+      {"type": state.loadingChargeType, "amount": state.loadingCharge},
+      {"type": state.unloadingChargeType, "amount": state.unloadingCharge},
+      {"type": state.packingMaterialChargeType, "amount": state.packingMaterialCharge},
+    ];
+
+    for (var item in charges) {
+      if (item["type"] == "extra") {
+        splitTotal += numVal(item["amount"]);
+      }
+    }
+
+    final otherTotal =
+        numVal(state.storageCharge) +
+            numVal(state.tptCharge) +
+            numVal(state.miscCharge) +
+            numVal(state.otherCharges) +
+            numVal(state.stCharges);
+
+    final baseFare = freight + splitTotal + otherTotal;
+
+    // 2. SURCHARGE
+    double surcharge = 0;
+    if (state.surchargeType == "extra") {
+      surcharge = numVal(state.surchargeAmount);
+    }
+
+    final subTotal = baseFare + surcharge;
+
+    // 3. GST ✅ UPDATED LOGIC
+
+    final gstEnabled = state.gstType == "CGST/SGST" || state.gstType == "IGST";
+
+    final gstPct = gstEnabled
+        ? double.tryParse(state.gstPercent ?? "0") ?? 0
+        : 0;
+
+    final gstAmount = (subTotal * gstPct) / 100;
+
+    final taxes = surcharge + gstAmount;
+
+
+    // 4. ADVANCE & DISCOUNT
+    final advance = numVal(state.advancePaid);
+    final discount = numVal(state.summaryDiscount);
+
+    // 5. TOTAL
+    final total = subTotal + gstAmount - advance - discount;
+
+    return {
+      "baseFare": baseFare,
+      "taxes": taxes,
+      "advance": advance,
+      "discount": discount,
+      "total": total < 0 ? 0 : total,
+    };
+
+    // return {
+    //   "baseFare": baseFare,
+    //   "taxes": taxes,
+    //   "advance": advance,
+    //   "discount": discount,
+    //   "total": total < 0 ? 0 : total,
+    //
+    //   // 🔥 BONUS (if you want to use later in UI)
+    //   "cgst": cgst,
+    //   "sgst": sgst,
+    //   "igst": igst,
+    // };
+  }
+
+
+
 /*
   Map<String, double> calculateSummary() {
     double numVal(String? v) => double.tryParse(v ?? '') ?? 0;
@@ -417,84 +501,6 @@ class QuotationFormNotifier extends StateNotifier<QuotationFormModel> {
   }
 */
 
-  Map<String, double> calculateSummary() {
-    double numVal(String? v) => double.tryParse(v ?? '') ?? 0;
-
-    // 1. BASE FARE
-    final freight = numVal(state.freightCharge);
-
-    double splitTotal = 0;
-
-    final charges = [
-      {"type": state.packingChargeType, "amount": state.packingCharge},
-      {"type": state.unpackingChargeType, "amount": state.unpackingCharge},
-      {"type": state.loadingChargeType, "amount": state.loadingCharge},
-      {"type": state.unloadingChargeType, "amount": state.unloadingCharge},
-      {"type": state.packingMaterialChargeType, "amount": state.packingMaterialCharge},
-    ];
-
-    for (var item in charges) {
-      if (item["type"] == "extra") {
-        splitTotal += numVal(item["amount"]);
-      }
-    }
-
-    final otherTotal =
-        numVal(state.storageCharge) +
-            numVal(state.tptCharge) +
-            numVal(state.miscCharge) +
-            numVal(state.otherCharges) +
-            numVal(state.stCharges);
-
-    final baseFare = freight + splitTotal + otherTotal;
-
-    // 2. SURCHARGE
-    double surcharge = 0;
-    if (state.surchargeType == "extra") {
-      surcharge = numVal(state.surchargeAmount);
-    }
-
-    final subTotal = baseFare + surcharge;
-
-    // 3. GST ✅ UPDATED LOGIC
-
-    final gstEnabled = state.gstType == "CGST/SGST" || state.gstType == "IGST";
-
-    final gstPct = gstEnabled ? (state.gstPercent ?? 0).toDouble() : 0;
-
-    final gstAmount = (subTotal * gstPct) / 100;
-
-    final taxes = surcharge + gstAmount;
-
-
-    // 4. ADVANCE & DISCOUNT
-    final advance = numVal(state.advancePaid);
-    final discount = numVal(state.summaryDiscount);
-
-    // 5. TOTAL
-    final total = subTotal + gstAmount - advance - discount;
-
-    return {
-      "baseFare": baseFare,
-      "taxes": taxes,
-      "advance": advance,
-      "discount": discount,
-      "total": total < 0 ? 0 : total,
-    };
-
-    // return {
-    //   "baseFare": baseFare,
-    //   "taxes": taxes,
-    //   "advance": advance,
-    //   "discount": discount,
-    //   "total": total < 0 ? 0 : total,
-    //
-    //   // 🔥 BONUS (if you want to use later in UI)
-    //   "cgst": cgst,
-    //   "sgst": sgst,
-    //   "igst": igst,
-    // };
-  }
 
 
 

@@ -5,10 +5,12 @@ class SurveyDataState {
   final bool isPageLoading;
   final int? loadingItemId;
   final SurveyData? surveyListData;
-  final List<SurveyList>? filteredList; // ✅ NEW
+  final List<SurveyList>? filteredList;
   final String? error;
   final String? successMessage;
-  final bool isInitialLoading; // 👈 NEW
+  final bool isInitialLoading;
+
+  final String? sortOrder; // ✅ ADD THIS
 
   SurveyDataState({
     this.isPageLoading = false,
@@ -17,8 +19,8 @@ class SurveyDataState {
     this.filteredList,
     this.error,
     this.successMessage,
-    this.isInitialLoading = true, // 👈 default true
-
+    this.isInitialLoading = true,
+    this.sortOrder, // ✅ ADD
   });
 
   SurveyDataState copyWith({
@@ -29,6 +31,8 @@ class SurveyDataState {
     String? error,
     String? successMessage,
     bool? isInitialLoading,
+    String? sortOrder, // ✅ ADD
+    bool clearSort = false, // ✅ ADD FLAG
   }) {
     return SurveyDataState(
       isPageLoading: isPageLoading ?? this.isPageLoading,
@@ -38,6 +42,8 @@ class SurveyDataState {
       error: error,
       successMessage: successMessage,
       isInitialLoading: isInitialLoading ?? this.isInitialLoading,
+      sortOrder: clearSort ? null : (sortOrder ?? this.sortOrder),
     );
   }
+
 }

@@ -8,6 +8,7 @@ import 'package:pack_n_pay/screens/subscription/subscription_page.dart';
 
 import '../models/setting_modal.dart';
 import '../models/staff_user_model.dart';
+import '../models/survey_list_data.dart';
 import '../screens/Expenses/expenses_category.dart';
 import '../screens/Expenses/office_expence.dart';
 import '../screens/Lorry_receipt/Lorry_receipt_screen.dart';
@@ -17,6 +18,7 @@ import '../screens/Money_receipt/new_receipt.dart';
 import '../screens/Quotation/Quotation_screen.dart';
 import '../screens/Quotation/new_quotation_screen.dart';
 import '../screens/basic_detail/basic_detail_screen.dart';
+import '../screens/chnage_langauge/change_laguage_screen.dart';
 import '../screens/dashboard/dashboard_screen.dart';
 import '../screens/login/login_screen.dart';
 import '../screens/new_survey/survey_link_screen.dart';
@@ -63,11 +65,18 @@ class NavigationRouter {
      case newSurveyRoute:
         return MaterialPageRoute(builder: (_) => const NewSurveyScreen());
 
-     case surveyLinkRoute:
-        return MaterialPageRoute(builder: (_) => const SurveyLinkScreen());
+     // case surveyLinkRoute:
+     //    final args = settings.arguments as SurveyList?;
+     //    return MaterialPageRoute(builder: (_) => const SurveyLinkScreen());
+
+      case surveyLinkRoute:
+        final args = settings.arguments as SurveyList?;
+        return MaterialPageRoute(
+          builder: (_) => SurveyLinkScreen(item: args), // ✅ PASS HERE
+        );
 
      case surveyScreenRoute:
-        return MaterialPageRoute(builder: (_) => const SurveyListScreen());
+        return MaterialPageRoute(builder: (_) =>  SurveyListScreen(isHideLeading: true,));
 
       case quotationScreenRoute:
         return MaterialPageRoute(builder: (_) => const QuotationScreen());
@@ -133,6 +142,12 @@ class NavigationRouter {
         return MaterialPageRoute(
           builder: (_) => const SubscriptionPage(),
         );
+
+      case languageRoute:
+        return MaterialPageRoute(
+          builder: (_) => const ChangeLanguageScreen(),
+        );
+
       case staffDetailsScreenRoute:
         final user = settings.arguments as UserModel;
 

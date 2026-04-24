@@ -1,11 +1,917 @@
-
 {
-  "welcome": "Welcome",
-  "welcome_hi": "स्वागत है",
+  "common": {
+    "welcome": "Welcome (स्वागत है)",
+    "enter_mobile": "Enter your mobile number to continue (जारी रखने के लिए अपना मोबाइल नंबर दर्ज करें)",
+    "contact_us": "Contact Us (संपर्क करें)",
+    "phone": "Phone no. (फ़ोन नंबर)",
+    "contactDetails": "Contact Details (संपर्क विवरण)",
+    "city": "City (शहर)",
+    "state": "State (राज्य)",
+    "email": "Email (ईमेल)",
+    "address": "Address (पता)",
+    "floor": "Floor (मंज़िल)",
+    "pincode": "Pincode (पिन कोड)",
+    "lift": "Lift (लिफ्ट)",
+    "name": "Name (नाम)",
+    "date": "Date (तारीख)",
+    "add": "Add (जोड़ें)",
+    "cancel": "Cancel (रद्द करें)",
+    "save": "Save (सहेजें)",
+    "submit": "Submit (सबमिट करें)",
+    "quantity": "Quantity (मात्रा)",
+    "description": "Description (विवरण)",
+    "actions": "Actions (क्रियाएं)",
+    "remarks": "Remarks (टिप्पणी)",
+    "branch": "Branch (शाखा)",
+    "country": "Country (देश)",
+    "edit": "Edit (संपादित करें)",
+    "delete": "Delete (हटाएं)",
+    "yes": "Yes (हाँ)",
+    "no": "No (नहीं)",
+    "downloadPdf": "Download PDF (पीडीएफ डाउनलोड करें)",
+    "export": "Export (निर्यात)",
+    "notAvailable": "N/A (उपलब्ध नहीं)",
+    "view": "View (देखें)",
+    "status": "Status (स्थिति)",
+    "generate": "Generate (उत्पन्न करें)",
+    "pleaseFixErrors": "Please fix the errors before saving. (सहेजने से पहले कृपया त्रुटियों को ठीक करें)",
+    "stayHere": "Stay Here (यहीं रहें)",
+    "goToList": "Go to List (सूची पर जाएं)",
+    "customerSignature": "Customer Signature (ग्राहक हस्ताक्षर)",
+    "shareSurveyListLink": "Share survey list link (सर्वेक्षण सूची लिंक साझा करें)",
+    "generateQuotation": "Generate Quotation (कोटेशन बनाएं)",
+    "generateOrder": "Generate Order (ऑर्डर बनाएं)",
+    "gstPercent": "GST % (जीएसटी %)"
+  },
+  "order": {
+    "title": "Order (ऑर्डर)",
+    "orderStatus": "Order Status (ऑर्डर स्थिति)",
+    "shipmentStatus": "Shipment Status (शिपमेंट स्थिति)",
+    "orderDetails": "Order Details (ऑर्डर विवरण)",
+    "changeStatus": "Change Status (स्थिति बदलें)",
+    "staff": "Staff (स्टाफ)",
+    "addStaff": "Add Staff (स्टाफ जोड़ें)",
+    "labours": "Labours (मज़दूर)",
+    "addLabour": "Add Labour (मज़दूर जोड़ें)",
+    "quotationDetails": "Quotation Details (कोटेशन विवरण)",
+    "vehicleDetails": "Vehicle Details (वाहन विवरण)",
+    "packingDetails": "Packing Details (पैकिंग विवरण)",
+    "unpackingDetails": "Unpacking Details (अनपैकिंग विवरण)",
+    "addImages": "Add Images (इमेज जोड़ें)",
+    "item": "Item (आइटम)",
+    "baseFare": "Base Fare (मूल किराया)",
+    "taxes": "Taxes & Surcharges (कर और शुल्क)",
+    "expenses": "Expenses (खर्च)",
+    "advancePayment": "Advance Payment (अग्रिम भुगतान)",
+    "totalAmount": "Total Amount to pay (कुल भुगतान राशि)",
+    "orderNo": "Order No. (ऑर्डर नंबर)",
+    "quotationNo": "Quotation No. (कोटेशन नंबर)"
+  },
 
-  "enter_mobile": "Enter your mobile number to continue",
-  "enter_mobile_hi": "जारी रखने के लिए अपना मोबाइल नंबर दर्ज करें",
+  "surveyList": {
+    "title": "Survey List (सर्वेक्षण सूची)",
+    "shareSurveyLink": "Genric Survey Link (सर्वेक्षण लिंक साझा करें)",
+    "addSurvey": "Add Survey (सर्वेक्षण जोड़ें)",
+    "copyLink": "Copy Link (लिंक कॉपी करें)"
+  },
+  "status": {
+    "total": "Total (कुल)",
+    "pending": "Pending (लंबित)",
+    "inProgress": "In Progress (प्रगति में)",
+    "settled": "Settled (निपटाया गया)",
+    "submitted": "Submitted (जमा किया गया)"
+  },
+  "messages": {
+    "exporting": "Exporting surveys, please wait... (सर्वेक्षण निर्यात हो रहा है, कृपया प्रतीक्षा करें...)",
+    "exportSuccess": "Exported successfully! (सफलतापूर्वक निर्यात किया गया!)",
+    "exportFail": "Failed to export surveys. (सर्वेक्षण निर्यात करने में विफल रहा।)",
+    "copySuccess": "Link copied to clipboard! (लिंक क्लिपबोर्ड में कॉपी किया गया!)",
+    "shareFail": "Could not share link (लिंक साझा नहीं किया जा सका)",
+    "pdfLoading": "Loading PDF preview... (PDF पूर्वावलोकन लोड हो रहा है...)",
+    "pdfFail": "Failed to preview PDF (PDF पूर्वावलोकन विफल)",
+    "loading": "Loading data... (डेटा लोड हो रहा है...)",
+    "noRecords": "No records found. (कोई रिकॉर्ड नहीं मिला।)"
+  },
+  "basicDetails": {
+    "title": "Basic Details (बुनियादी विवरण)",
+    "name": "Name (नाम)",
+    "phone": "Phone no. (फ़ोन नंबर)",
+    "gst": "Company GST No. (कंपनी GST No.)",
+    "companyName": "Company Name of Party (कंपनी नाम)",
+    "slDate": "SL Generation Date (SL जनरेशन तिथि)",
+    "from": "From (से)",
+    "to": "To (तक)"
+  },
+  "tableHeader": {
+    "searchPlaceholder": "Search (खोजें)",
+    "sortBy": "Sort By (क्रमबद्ध करें)",
+    "clearSort": "Clear sort (क्रम साफ़ करें)",
+    "selectDateRange": "Select date range (तारीख सीमा चुनें)",
+    "byOwner": "By Owner (स्वामी द्वारा)",
+    "byStaff": "Staff Wise (कर्मचारी अनुसार)"
+  },
+  "movingDetails": {
+    "title": "Moving Details (स्थानांतरण विवरण)",
+    "shiftingMovingDate": "Shifting / Moving Date (स्थानांतरण / शिफ्टिंग तिथि)",
+    "email": "Email (ईमेल)",
+    "additionalPhoneNo": "Additional phone no. (अतिरिक्त फ़ोन नंबर)",
+    "state": "State (राज्य)",
+    "city": "City (शहर)",
+    "floor": "Floor (मंज़िल)",
+    "pincode": "Pincode (पिन कोड)",
+    "lift": "Lift (लिफ्ट)",
+    "address": "Address (पता)"
+  },
+  "deliveryDetails": {
+    "title": "Delivery Details (डिलीवरी विवरण)",
+    "email": "Email (ईमेल)",
+    "additionalPhoneNo": "Additional phone no. (अतिरिक्त फ़ोन नंबर)",
+    "state": "State (राज्य)",
+    "city": "City (शहर)",
+    "floor": "Floor (मंज़िल)",
+    "pincode": "Pincode (पिन कोड)",
+    "lift": "Lift (लिफ्ट)",
+    "address": "Address (पता)"
+  },
+  "dynamicItemsSection": {
+    "addedItems": "Added Items (जोड़े गए आइटम)",
+    "installation": "Installation (स्थापना)",
+    "uninstallation": "Uninstallation (अनइंस्टॉलेशन)"
+  },
+  "otherItems": {
+    "title": "Other Items (अन्य वस्तुएं)",
+    "serviceOrScaler": "Service Or Scaler (सेवा या स्केलर)",
+    "quantity": "Quantity (मात्रा)",
+    "slNo": "Sl No. (क्रम संख्या)",
+    "addItem": "Add Item (वस्तु जोड़ें)",
+    "itemsName": "Items/particular name (आइटम / विवरण नाम)",
+    "itemsList": "Items List (आइटम सूची)",
+    "items": "Items (आइटम)"
+  },
+  "surveyForm": {
+    "title": "Survey Form (सर्वेक्षण फ़ॉर्म)",
+    "summary": "Survey Summary (सर्वेक्षण सारांश)",
+    "fillInfo": "Fill Out All Required Information Below (नीचे सभी आवश्यक जानकारी भरें)",
+    "updateSurvey": "Update Survey (सर्वेक्षण अपडेट करें)",
+    "submitSurveyForm": "Submit Survey Form (सर्वेक्षण फ़ॉर्म सबमिट करें)",
+    "downloading": "Downloading PDF, please wait... (पीडीएफ डाउनलोड हो रहा है, कृपया प्रतीक्षा करें...)",
+    "downloadSuccess": "Downloaded successfully! (सफलतापूर्वक डाउनलोड हो गया!)",
+    "downloadFailed": "Failed to generate PDF (पीडीएफ बनाने में विफल)",
+    "downloadNotAvailable": "Cannot download PDF: Survey not created yet (डाउनलोड संभव नहीं: सर्वेक्षण अभी तक नहीं बनाया गया)",
+    "surveyNo": "Survey No (सर्वेक्षण नंबर)",
+    "surveySavedSuccess": "Your survey has been saved successfully. Would you like to go back to the list? (आपका सर्वेक्षण सफलतापूर्वक सेव हो गया है। क्या आप सूची पर वापस जाना चाहते हैं?)",
+    "surveySubmitted": "Survey Submitted! (सर्वेक्षण सबमिट किया गया!)"
+  },
+  "quotation": {
+    "title": "Quotation (कोटेशन)",
+    "export": "Export (निर्यात)",
+    "creditMoneyReceipt": "Credit Money Receipt (क्रेडिट मनी रसीद)",
+    "saveQuotation": "Save Quotation (कोटेशन सहेजें)",
+    "quotationNo": "Quotation No. (कोटेशन नंबर)",
+    "companyOrPartyName": "Company or Party Name (कंपनी या पार्टी का नाम)",
+    "partyName": "Party Name (पार्टी का नाम)",
+    "companyGst": "Company or Party GST No. (कंपनी या पार्टी GST नंबर)",
+    "phoneNo": "Phone No. (फ़ोन नंबर)",
+    "email": "Email (ईमेल)",
+    "quotationDate": "Quotation Date (कोटेशन तिथि)",
+    "openingDate": "Opening Date (शुरुआत तिथि)",
+    "deliveryDate": "Delivery date (डिलीवरी तिथि)",
+    "loadNight": "Load Night (रात की लोडिंग)",
+    "closingDate": "Closing date (समापन तिथि)",
+    "fullTruck": "Full Truck (पूरा ट्रक)",
+    "vehicleType": "Vehicle type (वाहन प्रकार)",
+    "movingPath": "Moving path (स्थानांतरण मार्ग)",
+    "movingKm": "Moving km (स्थानांतरण किमी)",
+    "byRoad": "By Road (सड़क मार्ग से)",
+    "wideMovements": "Wide movements (व्यापक आवाजाही)",
+    "newQuotation": "New Quotation (नया कोटेशन)",
+    "customerName": "Customer Name (ग्राहक का नाम)",
+    "enterName": "Enter name (नाम दर्ज करें)",
+    "enterNo": "Enter no. (नंबर दर्ज करें)",
+    "enterMobile": "Enter mobile no. (मोबाइल नंबर दर्ज करें)",
+    "enterEmail": "Enter email (ईमेल दर्ज करें)",
+    "packingDate": "Packing Date (पैकिंग तिथि)",
+    "loadType": "Load Type (लोड प्रकार)",
+    "movingPathRemarks": "Moving Path Remarks (मार्ग टिप्पणी)",
+    "quotationDetails": "Quotation Details (कोटेशन विवरण)",
+    "saveNext": "सहेजें & आगे बढ़ें",
+    "companyName": "Company Name (कंपनी का नाम)",
+    "partyName": "Party Name (पार्टी का नाम)"
+  },
+  "insurance": {
+    "title": "Insurance details (बीमा विवरण)",
+    "insuranceType": "Insurance Type (बीमा प्रकार)",
+    "optional": "Optional (वैकल्पिक)",
+    "insuranceCharges": "Insurance charge(s) (बीमा शुल्क)",
+    "declarationOfGoods": "Declaration of goods (सामान की घोषणा)",
+    "enterDescription": "Enter a description... (विवरण दर्ज करें...)",
+    "vehicleInsuranceDetails": "Vehicle Insurance details (वाहन बीमा विवरण)",
+    "insuranceChargesVehicle": "Insurance Charge(s) (बीमा शुल्क)",
+    "declarationOfVehicle": "Declaration of vehicle (वाहन की घोषणा)"
+  },
+  "pickupDelivery": {
+    "title": "Pickup & Delivery Details (पिकअप और डिलीवरी विवरण)",
+    "pickupAddress": "Pickup Address (पिकअप पता)",
+    "shiftingMovingDate": "Shifting Moving Date (स्थानांतरण तिथि)",
+    "email": "Email (ईमेल)",
+    "additionalPhoneNo": "Additional phone no. (अतिरिक्त फ़ोन नंबर)",
+    "city": "City (शहर)",
+    "state": "State (राज्य)",
+    "floor": "Floor (मंज़िल)",
+    "pincode": "Pincode (पिन कोड)",
+    "lift": "Lift (लिफ्ट)",
+    "address": "Address (पता)",
+    "deliveryAddress": "Delivery Address (डिलीवरी पता)"
+  },
+  "otherDetails": {
+    "title": "Other details (अन्य विवरण)",
+    "easyAccess": "Is there easy access for load & unloading? (क्या लोड और अनलोडिंग आसान है?)",
+    "balconyItems": "Should any items be got down through balcony? (क्या किसी सामान को बालकनी से नीचे उतारना है?)",
+    "loadingRestrictions": "Are there any restrictions for loading/unloading? (क्या लोडिंग/अनलोडिंग पर कोई रोकटोक है?)",
+    "specialNeeds": "Do you have any special needs or concerns? (अन्य जरूरी आवश्यकताएं?)"
+  },
+  "payment": {
+    "title": "Payment Details (भुगतान विवरण)",
+    "charges": "Charges (शुल्क)",
+    "advancePaid": "Advance Paid (अग्रिम भुगतान)",
+    "packingCharge": "Packing Charge (पैकिंग शुल्क)",
+    "unpackingCharge": "Unpacking Charge (अनपैकिंग शुल्क)",
+    "includedInHeight": "Included in Height (ऊंचाई में शामिल)",
+    "loadingCharge": "Loading Charge (लोडिंग शुल्क)",
+    "unloadingCharge": "Unloading Charge (अनलोडिंग शुल्क)",
+    "adjustedInHeight": "Adjusted in Height (ऊंचाई में समायोजित)",
+    "handlingOrStorage": "Handling or storage (संचालन या भंडारण)",
+    "storageCharge": "Storage charge (भंडारण शुल्क)",
+    "includedInFreight": "Included in freight (माल ढुलाई में शामिल)",
+    "codCharges": "CodCharges (COD शुल्क)",
+    "ft": "FT",
+    "interMilestone": "InterMilestone charges (इंटरमाइलस्टोन शुल्क)",
+    "otherCharges": "Other charges (अन्य शुल्क)",
+    "stCharge": "ST Charge (ST शुल्क)",
+    "surcharge": "Surcharge (अधिभार)",
+    "notApplicable": "Not applicable (लागू नहीं)",
+    "sst": "SST follow or little gst (in Quotation) (SST / GST कोटेशन में)",
+    "gst": "GST",
+    "gstPercentAmt": "GST percent/Amt (GST प्रतिशत/राशि)",
+    "currentTotal": "Current Total (वर्तमान कुल)",
+    "freightCharge": "Freight Charge (माल भाड़ा शुल्क)",
+    "packingMaterialCharge": "Packing Material Charge (पैकिंग सामग्री शुल्क)",
+    "carBikeTpt": "Car/Bike TPT (कार/बाइक टीपीटी)",
+    "miscCharges": "Miscellaneous Charges (विविध शुल्क)",
+    "gstType": "GST Type (जीएसटी प्रकार)",
+    "gstAmount": "GST Amount (GST राशि)"
+  },
+  "paymentSummary": {
+    "title": "Payment Summary (भुगतान सारांश)",
+    "advancePayment": "Advance Payment (अग्रिम भुगतान)",
+    "amount": "Amount (राशि)",
+    "add": "Add (जोड़ें)",
+    "paymentStatus": "Payment Status (भुगतान स्थिति)",
+    "applyDiscount": "Apply Discount (छूट लागू करें)",
+    "discountAmount": "Discount Amount (छूट राशि)",
+    "applyOnTotal": "Applicable on total amount (कुल राशि पर लागू)",
+    "apply": "Apply (लागू करें)",
+    "totalAmount": "Total Amount (कुल राशि)",
+    "termsAndConditions": "Terms and Conditions (नियम और शर्तें)",
+    "totalAmountToPay": "Total Amount to pay (भुगतान योग्य कुल राशि)",
+    "baseFare": "Base Fare (आधार किराया)",
+    "taxesAndSurcharges": "Taxes & Surcharges (कर और अधिभार)",
+    "enterAdvanceAmount": "Enter Advance Amount (अग्रिम राशि दर्ज करें)",
+    "enterDiscountAmount": "Enter Discount Amount (छूट राशि दर्ज करें)",
+    "selectStatus": "Select Status (स्थिति चुनें)"
+  },
+  "paymentExpenses": {
+    "paymentsReceived": "Payments Received (प्राप्त भुगतान)",
+    "expenses": "Expenses (व्यय)",
+    "totalExpense": "Total Expense (कुल व्यय)",
+    "totalExpenses": "Total Expenses (कुल व्यय)",
+    "searchExpense": "Search Expense Category (व्यय श्रेणी खोजें)",
+    "noExpenseCategories": "No Expense Categories (कोई व्यय श्रेणी नहीं)",
+    "noExpensesEntered": "No Expenses Entered (कोई व्यय दर्ज नहीं)",
+    "expenseSummary": "Expense Summary (व्यय सारांश)"
+  },
+  "addQuotation": {
+    "loadError": "Failed to Load Data (डेटा लोड करने में विफल)",
+    "createSuccess": "Quotation Created Successfully (कोटेशन सफलतापूर्वक बनाया गया)",
+    "updateSuccess": "Quotation Updated Successfully (कोटेशन सफलतापूर्वक अपडेट किया गया)",
+    "createFromSurveySuccess": "Quotation Created from Survey (सर्वेक्षण से कोटेशन बनाया गया)",
+    "saveError": "Something Went Wrong (कुछ गलत हो गया)",
+    "savedTitle": "Quotation Saved! (कोटेशन सहेजा गया!)",
+    "savedMessage": "Quotation saved successfully. Do you want to go back to the list? (कोटेशन सफलतापूर्वक दर्ज किया गया है। क्या आप सूची पर वापस जाना चाहते हैं?)"
+  },
+  "lorryReceipt": {
+    "title": "New Lorry Receipt (नई लॉरी रसीद)",
+    "import": "Import (आयात करें)",
+    "saveLR": "Save LR (LR सहेजें)",
+    "lrNo": "LR No. (LR नंबर)",
+    "date": "Date (तारीख)",
+    "filterType": "Filter type (फ़िल्टर प्रकार)",
+    "atOwnRisk": "AT Own Risk (अपने जोखिम पर)"
+  },
+  "truckDetails": {
+    "title": "Truck Details (ट्रक विवरण)",
+    "vehicleNo": "Vehicle No. (वाहन नंबर)",
+    "movingUnit": "Moving Unit (मूविंग यूनिट)",
+    "movingId": "Moving Id (मूविंग आईडी)",
+    "selectCity": "Select City (शहर चुनें)",
+    "driverDetails": "Driver Details (चालक विवरण)",
+    "driverName": "Driver name (चालक का नाम)",
+    "driverMobileNo": "Driver's mobile no. (चालक का मोबाइल नंबर)",
+    "dlNo": "Dl No. (DL नंबर)",
+    "dlLicenseNo": "D.I.no license No. (लाइसेंस नंबर)",
+    "dlExpiry": "DL expiry (DL समाप्ति)",
+    "driverModelNo": "Driver's model no. (चालक मॉडल नंबर)",
+    "dlineExpires": "D.line Expires (D.line समाप्ति)"
+  },
+  "invoiceEBill": {
+    "title": "Invoice & E-Bill (चालान और ई-बिल)",
+    "packageBill": "Package/Bill (पैकेज/बिल)",
+    "invoiceDate": "Invoice Date (चालान तिथि)",
+    "eWayBillNo": "E-Way Bill No. (ई-वे बिल नंबर)",
+    "eWayBillGenerationDate": "E-way Bill generation date (ई-वे बिल जनरेशन तिथि)",
+    "eWayBillExpireDate": "E-way Bill Expire date (ई-वे बिल समाप्ति तिथि)",
+    "eWayBillPeriod": "e-way Bill Period (ई-वे बिल अवधि)"
+  },
+  "consignorFrom": {
+    "title": "Consignor/Move From (प्रेषक/यहाँ से)",
+    "consignorName": "Consignor name (प्रेषक का नाम)",
+    "consignorId": "Consignor Id (प्रेषक आईडी)",
+    "gstNo": "GST/No. (GST नंबर)",
+    "country": "Country (देश)",
+    "state": "State (राज्य)",
+    "city": "City (शहर)",
+    "stateLine2": "State Line 2 (राज्य पंक्ति 2)",
+    "pincode": "Pincode (पिन कोड)",
+    "address": "Address (पता)"
+  },
+  "consigneeTo": {
+    "title": "Consignee/Move To (प्राप्तकर्ता/यहाँ तक)",
+    "consignorId": "Consignor Id (प्रेषक आईडी)",
+    "gstNo": "GST/No. (GST नंबर)",
+    "country": "Country (देश)",
+    "state": "State (राज्य)",
+    "city": "City (शहर)",
+    "pincode": "Pincode (पिन कोड)",
+    "address": "Address (पता)"
+  },
+  "packageDetails": {
+    "title": "Package Details (पैकेज विवरण)",
+    "noOfPackage": "No. of package (पैकेज की संख्या)",
+    "description": "Description (विवरण)",
+    "freightToBeBilled": "Freight to be billed (बिल योग्य माल ढुलाई)",
+    "actualWeight": "Actual Weight (वास्तविक वजन)",
+    "chargedWeight": "Charged Weight (चार्ज किया गया वजन)",
+    "fromWeight": "From weight (वजन से)",
+    "toWeight": "To weight (वजन तक)",
+    "kg": "KG (किलोग्राम)",
+    "receivedGoodsContinue": "Received Goods Continue (प्राप्त माल जारी)",
+    "remarks": "Remarks (टिप्पणी)"
+  },
+  "paymentDetailsLR": {
+    "title": "Payment Details (भुगतान विवरण)",
+    "freightToBeBilled": "Freight to be billed (बिल योग्य माल ढुलाई)",
+    "toPay": "To pay (भुगतान करना है)",
+    "freightPaid": "Freight paid (माल ढुलाई भुगतान)",
+    "freightToPay": "Freight to pay (माल ढुलाई देय)",
+    "totalBasicFreight": "Total basic freight (कुल मूल माल ढुलाई)",
+    "loadingCharge": "Loading charge (लोडिंग शुल्क)",
+    "unloadingCharge": "S.T. charge (S.T. शुल्क)",
+    "otherCharge": "D.to - Charge (D.to शुल्क)",
+    "lrLrCharges": "LR/LR CHARGES (LR शुल्क)",
+    "gst": "GST",
+    "gstPaidBy": "GST paid by (GST का भुगतान किसके द्वारा)",
+    "consignee": "Consignee (प्राप्तकर्ता)"
+  },
+  "materialInsurance": {
+    "title": "Material Insurance (सामग्री बीमा)",
+    "materialPurposes": "Material Purposes (सामग्री प्रयोजन)",
+    "insured": "Insured (बीमित)",
+    "insuranceCompany": "Insurance Company (बीमा कंपनी)",
+    "policyNo": "Policy no. (पॉलिसी नंबर)",
+    "insuredAmount": "Insured Amount (बीमित राशि)",
+    "insuranceCode": "Insurance Code (बीमा कोड)",
+    "fromDateRisk": "From Date Risk (जोखिम प्रारंभ तिथि)",
+    "note": "Note (नोट)"
+  },
+  "demurrageCharge": {
+    "title": "Demurrage Charge (डेमरेज शुल्क)",
+    "demurrageDays": "Demurrage Days (डेमरेज दिन)",
+    "demurrageChargeApplicable": "Demurrage Charge Applicable (डेमरेज शुल्क लागू)",
+    "perDay": "Per Day (प्रति दिन)",
+    "moreThan5Days": "More than 5 days (5 दिन से अधिक)"
+  },
+  "receipt": {
+    "title": "New Receipt (नई रसीद)",
+    "receiptNo": "Receipt No. (रसीद नंबर)",
+    "date": "Date (तारीख)",
+    "branch": "Branch (शाखा)",
+    "name": "Name (नाम)",
+    "phoneNo": "Phone no. (फ़ोन नंबर)",
+    "receiptAgainst": "Receipt against (रसीद के विरुद्ध)",
+    "quotation": "Quotation (कोटेशन)",
+    "billAndQuotationDate": "Bill/Quotation date (बिल/कोटेशन तिथि)",
+    "moveTo": "Move to (यहाँ तक)",
+    "moveFrom": "Move from (यहाँ से)",
+    "paymentType": "Payment type (भुगतान प्रकार)",
+    "port": "Port (पोर्ट)",
+    "receiptAmount": "Receipt amount (रसीद राशि)",
+    "paymentMode": "Payment mode (भुगतान माध्यम)",
+    "cash": "Cash (नकद)",
+    "transactionNo": "Enter Transaction no. (लेनदेन नंबर दर्ज करें)",
+    "remarks": "Remarks (टिप्पणी)"
+  },
 
-  "contact_us": "Contact Us",
-  "contact_us_hi": "संपर्क करें"
+  "expenseCategory": {
+    "title": "Expense Categories (व्यय श्रेणियां)",
+    "totalExpenses": "Total Expenses: ₹{{total}} (कुल व्यय: ₹{{total}})",
+    "addNew": "Add New (नया जोड़ें)",
+    "list": {
+      "loading": "Loading categories... (श्रेणियां लोड हो रही हैं...)",
+      "empty": "No categories found. (कोई श्रेणी नहीं मिली।)"
+    },
+    "modal": {
+      "editTitle": "Edit Expense Category (व्यय श्रेणी संपादित करें)",
+      "addTitle": "Expense Category (व्यय श्रेणी)"
+    },
+    "fields": {
+      "nameLabel": "Category Name (श्रेणी का नाम)",
+      "namePlaceholder": "e.g., Fuel Expenses (उदा. ईंधन व्यय)",
+      "amountLabel": "Amount (राशि)",
+      "amountPlaceholder": "0"
+    },
+    "toast": {
+      "toggleError": "Failed to toggle status (स्थिति बदलने में विफल)",
+      "deleteSuccess": "Category deleted successfully (श्रेणी सफलतापूर्वक हटा दी गई)",
+      "deleteError": "Failed to delete category (श्रेणी हटाने में विफल)",
+      "nameRequired": "Name is required (नाम आवश्यक है)",
+      "updateSuccess": "Category updated! (श्रेणी अपडेट की गई!)",
+      "createSuccess": "Category created! (श्रेणी बनाई गई!)",
+      "saveError": "Failed to save category (श्रेणी सहेजने में विफल)"
+    },
+    "deleteModal": {
+      "title": "Delete Category (श्रेणी हटाएं)",
+      "message": "Are you sure? (क्या आप सुनिश्चित हैं?)"
+    }
+  },
+  "officeExpense": {
+    "title": "Office Expenses (कार्यालय व्यय)",
+    "totalExpenses": "Total Expenses: ₹{{total}} (कुल व्यय: ₹{{total}})",
+    "addExpense": "Add Expense (व्यय जोड़ें)",
+    "drawer": {
+      "editTitle": "Edit Expense (व्यय संपादित करें)",
+      "addTitle": "New Expense (नया व्यय)"
+    },
+    "fields": {
+      "nameLabel": "Name (नाम)",
+      "namePlaceholder": "Expense name (व्यय का नाम)",
+      "categoryLabel": "Expense category (व्यय श्रेणी)",
+      "selectCategory": "Select category (श्रेणी चुनें)",
+      "dateLabel": "Date (तारीख)",
+      "amountLabel": "Amount (राशि)",
+      "amountPlaceholder": "₹"
+    },
+    "toast": {
+      "nameRequired": "Expense name is required (व्यय का नाम आवश्यक है)",
+      "amountRequired": "Valid amount is required (वैध राशि आवश्यक है)",
+      "updateSuccess": "Expense updated! (व्यय अपडेट किया गया!)",
+      "createSuccess": "Expense created! (व्यय बनाया गया!)",
+      "saveError": "Failed to save expense (व्यय सहेजने में विफल)",
+      "deleteSuccess": "Expense deleted successfully (व्यय सफलतापूर्वक हटा दिया गया)",
+      "deleteError": "Failed to delete expense (व्यय हटाने में विफल)"
+    },
+    "deleteModal": {
+      "title": "Delete Office Expense (कार्यालय व्यय हटाएं)",
+      "message": "Are you sure you want to delete this expense record? (क्या आप वाकई इस व्यय रिकॉर्ड को हटाना चाहते हैं?)"
+    }
+  },
+  "moneyReceipt": {
+    "add": {
+      "title": "Money Receipt",
+      "saveReceipt": "Save Receipt",
+      "editPageTitle": "Edit Money Receipt | PackNPay",
+      "addPageTitle": "Add Money Receipt | PackNPay"
+    },
+    "fields": {
+      "receiptNo": "Receipt No.",
+      "orderNumber": "Order Number",
+      "date": "Date",
+      "branch": "Branch",
+      "name": "Name",
+      "phone": "Phone no.",
+      "billDate": "Bill/Quotation date",
+      "moveFrom": "Move from",
+      "moveTo": "Move to",
+      "paymentType": "Payment type",
+      "receiptAmount": "Receipt amount",
+      "paymentMode": "Payment Mode",
+      "transactionNo": "Transaction No.",
+      "remarks": "Remarks"
+    },
+    "placeholders": {
+      "enterNumber": "Enter number",
+      "enterBranch": "Enter branch",
+      "enterName": "Enter name",
+      "enterPhone": "Enter ph no.",
+      "selectCity": "Select City",
+      "enterTransaction": "Enter Transaction ID / Cheque No.",
+      "writeRemarks": "Write remarks.."
+    },
+    "dropdowns": {
+      "Advance": "Advance",
+      "Part": "Part",
+      "Full": "Full",
+      "Cash": "Cash",
+      "Bank Transfer": "Bank Transfer",
+      "Cheque": "Cheque",
+      "UPI": "UPI"
+    },
+    "toast": {
+      "dataFetched": "Data fetched from {{source}}"
+    },
+    "modals": {
+      "discardTitle": "Discard Changes?",
+      "discardMessage": "Are you sure you want to leave? Any unsaved data will be permanently lost.",
+      "yesLeave": "Yes, Leave"
+    },
+    "list": {
+      "title": "Money Receipts (धन रसीदें)",
+      "addBtn": "Add Money Receipt (धन रसीद जोड़ें)",
+      "pageTitle": "Money Receipt List (धन रसीद सूची)",
+      "columns": {
+        "mrNo": "MR NO (रसीद नंबर)",
+        "dates": "DATES (तारीखें)",
+        "customer": "CUSTOMER (ग्राहक)",
+        "receiptAgainst": "RECEIPT AGAINST (के विरुद्ध रसीद)",
+        "amount": "AMOUNT (राशि)"
+      },
+      "stats": {
+        "totalReceipts": "Total Receipts (कुल रसीदें)"
+      },
+      "toasts": {
+        "downloadingPdf": "Downloading PDF, please wait... (PDF डाउनलोड हो रहा है...)",
+        "downloadPdfSuccess": "Downloaded successfully! (सफलतापूर्वक डाउनलोड हो गया!)",
+        "downloadPdfFail": "Failed to download PDF. (PDF डाउनलोड करने में विफल।)",
+        "exporting": "Exporting receipts, please wait... (रसीदें निर्यात हो रही हैं...)",
+        "exportSuccess": "Exported successfully! (सफलतापूर्वक निर्यात किया गया!)",
+        "exportFail": "Failed to export receipts. (निर्यात करने में विफल।)",
+        "loadingPdf": "Loading PDF preview... (PDF पूर्वावलोकन लोड हो रहा है...)",
+        "loadPdfFail": "Failed to load PDF preview. (पूर्वावलोकन विफल।)",
+        "deleteSuccess": "Receipt deleted successfully (रसीद सफलतापूर्वक हटा दी गई)",
+        "deleteFail": "Failed to delete receipt (रसीद हटाने में विफल)"
+      },
+      "deleteModal": {
+        "title": "Delete Money Receipt (रसीद हटाएं)",
+        "message": "Are you sure you want to delete this receipt? This action cannot be undone. (क्या आप वाकई इसे हटाना चाहते हैं?)"
+      }
+    }
+  },
+  "staff": {
+    "header": {
+      "title": "Staffs (कर्मचारी)",
+      "subtitle": "Manage your organization team (अपनी संगठन टीम का प्रबंधन करें)",
+      "total": "Total (कुल)",
+      "addBtn": "Add Staff (कर्मचारी जोड़ें)"
+    },
+    "card": {
+      "staffId": "Staff ID (कर्मचारी आईडी)",
+      "loginCode": "Login code (लॉगिन कोड)",
+      "active": "Active (सक्रिय)",
+      "inactive": "Inactive (निष्क्रिय)",
+      "stats": {
+        "survey": "Survey (सर्वेक्षण)",
+        "quotation": "Quotation (कोटेशन)",
+        "lrBilty": "LR/Bilty (LR/बिल्टी)",
+        "orders": "Orders (ऑर्डर)"
+      }
+    },
+    "drawer": {
+      "editStaff": "Edit Staff (कर्मचारी संपादित करें)",
+      "newStaff": "New Staff (नया कर्मचारी)",
+      "update": "Update (अपडेट करें)",
+      "saveStaff": "Save Staff (कर्मचारी सहेजें)",
+      "updateProfile": "Update Profile (प्रोफ़ाइल अपडेट करें)",
+      "module": "Module (मॉड्यूल)",
+      "sections": {
+        "basicDetails": "Basic Details (बुनियादी विवरण)",
+        "employmentDetails": "Employment Details (रोजगार विवरण)",
+        "permissionsSchema": "Permissions (अनुमतियां)"
+      }
+    },
+    "form": {
+      "name": "Name (नाम)",
+      "enterName": "Enter name (नाम दर्ज करें)",
+      "mobile": "Mobile no. (मोबाइल नंबर)",
+      "enterMobile": "Enter mobile no. (मोबाइल नंबर दर्ज करें)",
+      "altMobile": "Alternate mobile no. (वैकल्पिक मोबाइल नंबर)",
+      "email": "Email (ईमेल)",
+      "enterEmail": "Enter email (ईमेल दर्ज करें)",
+      "dob": "Date of Birth (जन्म तिथि)",
+      "selectDob": "Select DOB (जन्म तिथि चुनें)",
+      "address": "Address (पता)",
+      "enterAddress": "Enter address... (पता दर्ज करें...)",
+      "joiningDate": "Joining Date (कार्यग्रहण तिथि)",
+      "advSalary": "Advance salary (अग्रिम वेतन)",
+      "baseSalary": "Base Salary (मूल वेतन)",
+      "role": "Role (भूमिका)",
+      "loginCode": "Login Code (लॉगिन कोड)",
+      "enterCode": "Enter code (कोड दर्ज करें)"
+    },
+    "permissions": {
+      "view": "View (देखें)",
+      "add": "Add (जोड़ें)",
+      "edit": "Edit (संपादित करें)",
+      "delete": "Delete (हटाएं)",
+      "modules": {
+        "surveyList": "Survey List (सर्वेक्षण सूची)",
+        "quotation": "Quotation (कोटेशन)",
+        "order": "Order (ऑर्डर)",
+        "moneyReceipt": "Money Receipt (धन रसीद)",
+        "staff": "Staff (कर्मचारी)",
+        "expense": "Expense Management (व्यय प्रबंधन)",
+        "lrBilty": "LR Bilty (LR बिल्टी)",
+        "letterHead": "Letter Head (लेटर हेड)"
+      }
+    },
+    "dropdowns": {
+      "Admin": "Admin (एडमिन)",
+      "Staff": "Staff (कर्मचारी)"
+    },
+    "toasts": {
+      "fetchError": "Error fetching staff details (कर्मचारी विवरण प्राप्त करने में त्रुटि)",
+      "updateSuccess": "Staff updated successfully (कर्मचारी सफलतापूर्वक अपडेट किया गया)",
+      "createSuccess": "Staff created successfully (कर्मचारी सफलतापूर्वक बनाया गया)",
+      "saveError": "Failed to save staff (कर्मचारी सहेजने में विफल)",
+      "statusChange": "Staff marked as {{status}} (कर्मचारी को {{status}} चिह्नित किया गया)",
+      "statusError": "Failed to update status (स्थिति अपडेट करने में विफल)"
+    },
+    "profile": {
+      "pageTitle": "Staff Profile | PackNPay (कर्मचारी प्रोफ़ाइल | PackNPay)",
+      "loading": "Loading profile... (प्रोफ़ाइल लोड हो रही है...)",
+      "basicDetails": "Basic Details (बुनियादी विवरण)",
+      "attendance": "Attendance (उपस्थिति)",
+      "employmentDetails": "Employment Details (रोजगार विवरण)",
+      "orderCounts": "Order Counts (ऑर्डर की संख्या)",
+      "totalQuotations": "Total Quotations (कुल कोटेशन)",
+      "totalOrders": "Total Orders (कुल ऑर्डर)",
+      "totalLrBilty": "Total LR/Bilty (कुल LR/बिल्टी)",
+      "totalReceipts": "Total receipt (कुल रसीद)"
+    }
+  },
+  "letterHead": {
+    "add": {
+      "title": "New Letter Head (नया लेटर हेड)",
+      "editTitle": "Edit Letter Head (लेटर हेड संपादित करें)",
+      "pageTitle": "Add Letter Head | PackNPay (लेटर हेड जोड़ें | PackNPay)",
+      "pageTitleEdit": "Edit Letter Head | PackNPay (लेटर हेड संपादित करें | PackNPay)",
+      "basicDetails": "Basic Details (बुनियादी विवरण)",
+      "letterDetails": "Letter Details (पत्र विवरण)",
+      "loading": "Loading letter details... (पत्र विवरण लोड हो रहा है...)"
+    },
+    "fields": {
+      "lhNo": "LH No. (एलएच नंबर)",
+      "date": "Date (तारीख)",
+      "name": "Name (नाम)",
+      "phone": "Phone no. (फ़ोन नंबर)",
+      "email": "Email (ईमेल)",
+      "remarks": "Remarks (टिप्पणी)"
+    },
+    "placeholders": {
+      "enterName": "Enter name (नाम दर्ज करें)",
+      "enterPhone": "Enter ph no. (फ़ोन नंबर दर्ज करें)",
+      "enterEmail": "Enter email (ईमेल दर्ज करें)",
+      "writeRemarks": "Write remarks.. (टिप्पणी लिखें..)",
+      "write": "Write.. (लिखें..)"
+    },
+    "toasts": {
+      "loadError": "Failed to load letter details. (पत्र विवरण लोड करने में विफल।)",
+      "previewComingSoon": "Preview functionality coming soon! (पूर्वावलोकन कार्यक्षमता जल्द आ रही है!)",
+      "nameRequired": "Name is required! (नाम आवश्यक है!)",
+      "createSuccess": "Letter Head created successfully! (लेटर हेड सफलतापूर्वक बनाया गया!)",
+      "updateSuccess": "Letter Head updated successfully! (लेटर हेड सफलतापूर्वक अपडेट किया गया!)",
+      "createFail": "Failed to create Letter Head (लेटर हेड बनाने में विफल)",
+      "updateFail": "Failed to update Letter Head (लेटर हेड अपडेट करने में विफल)"
+    },
+    "modals": {
+      "successTitle": "Success! (सफलता!)",
+      "updateSuccessTitle": "Update Success! (अपडेट सफल!)",
+      "successMessage": "You've successfully {{action}} letter head {{lh_no}}. Do you want to return to the list? (आपने सफलतापूर्वक लेटर हेड {{lh_no}} को {{action}} है। क्या आप सूची में वापस जाना चाहते हैं?)",
+      "returnToList": "Yes, return to list (हाँ, सूची में वापस जाएँ)",
+      "stayHere": "No, stay here (नहीं, यहीं रहें)"
+    },
+    "list": {
+      "title": "Letter Head (लेटर हेड)",
+      "addBtn": "Add Letter Head (लेटर हेड जोड़ें)",
+      "pageTitle": "Letter Head List | PackNPay (लेटर हेड सूची | PackNPay)",
+      "columns": {
+        "lhNo": "LH NO (एलएच नंबर)",
+        "dates": "DATES (तारीखें)",
+        "customer": "CUSTOMER (ग्राहक)",
+        "phone": "PHONE NO. (फ़ोन नंबर)",
+        "email": "EMAIL (ईमेल)"
+      },
+      "toasts": {
+        "downloadingPdf": "Downloading PDF, please wait... (PDF डाउनलोड हो रहा है...)",
+        "downloadSuccess": "Downloaded successfully! (सफलतापूर्वक डाउनलोड हो गया!)",
+        "downloadFail": "Failed to download PDF. (PDF डाउनलोड करने में विफल।)",
+        "exporting": "Exporting records, please wait... (रिकॉर्ड निर्यात हो रहे हैं...)",
+        "exportSuccess": "Exported successfully! (सफलतापूर्वक निर्यात किया गया!)",
+        "exportFail": "Failed to export records. (निर्यात करने में विफल।)",
+        "generatingPdf": "Generating PDF, please wait... (PDF उत्पन्न हो रहा है...)",
+        "previewFail": "Failed to load PDF preview. (पूर्वावलोकन विफल।)",
+        "deleteSuccess": "Letter Head deleted successfully (लेटर हेड सफलतापूर्वक हटा दिया गया)",
+        "deleteFail": "Failed to delete letter head (लेटर हेड हटाने में विफल)"
+      },
+      "deleteModal": {
+        "title": "Delete Letter Head (लेटर हेड हटाएं)",
+        "message": "Are you sure you want to delete this letter head? This action cannot be undone. (क्या आप वाकई इसे हटाना चाहते हैं?)"
+      }
+    }
+  },
+  "subscription": {
+    "title": "Subscription (सदस्यता)",
+    "daysLeft": "Days left to renew (नवीनीकरण के लिए शेष दिन)",
+    "plan": "Plan (योजना)",
+    "noActivePlan": "No Active Plan (कोई सक्रिय योजना नहीं)",
+    "purchasedOn": "Purchased On (खरीद की तारीख)",
+    "validTill": "Valid Till (वैधता की तारीख)",
+    "buyPlan": "Buy plan (योजना खरीदें)",
+    "renewPlan": "Renew plan (योजना का नवीनीकरण करें)",
+    "history": "Subscription History (सदस्यता इतिहास)",
+    "paid": "Paid (भुगतान)",
+    "monthly": "Monthly (मासिक)",
+    "upfront": "Upfront (अग्रिम)",
+    "tryForFree": "Try for free (मुफ्त में आज़माएं)",
+    "subscribe": "Subscribe (सदस्यता लें)",
+    "days": "Days (दिन)",
+    "months": "Months (महीने)",
+    "buy": {
+      "title": "Boost Your Current Plan (अपनी वर्तमान योजना को बढ़ावा दें)",
+      "subtitle": "Enjoy more features without losing what you love. (जो आपको पसंद है उसे खोए बिना अधिक सुविधाओं का आनंद लें।)"
+    },
+    "columns": {
+      "slNo": "SL NO (क्रमांक)",
+      "purchasedOn": "PURCHASED ON (खरीद की तारीख)",
+      "planName": "PLAN NAME (योजना का नाम)",
+      "period": "PERIOD (अवधि)",
+      "duration": "DURATION (समयावधि)",
+      "amount": "AMOUNT (राशि)",
+      "status": "STATUS (स्थिति)"
+    },
+    "features": {
+      "supervisors": "Supervisors (पर्यवेक्षक)",
+      "managers": "Managers (प्रबंधक)",
+      "labours": "Labours (मजदूर)",
+      "prioritySupport": "Priority Support (प्राथमिकता समर्थन)"
+    },
+    "toasts": {
+      "loadFail": "Failed to load subscription details (सदस्यता विवरण लोड करने में विफल)",
+      "razorpayFail": "Razorpay SDK failed to load. (रेजरपे एसडीके लोड होने में विफल।)",
+      "paymentSuccess": "Payment Verified Successfully! (भुगतान सफलतापूर्वक सत्यापित!)",
+      "invalidPayment": "Invalid payment (अमान्य भुगतान)",
+      "verifyFail": "Verification failed (सत्यापन विफल)",
+      "paymentFailed": "Payment Failed (भुगतान विफल)",
+      "checkoutFail": "Failed to initiate checkout (चेकआउट शुरू करने में विफल)"
+    }
+  },
+  "lr": {
+    "add": {
+      "pageTitle": "Add LR | PackNPay (एलआर जोड़ें | PackNPay)",
+      "pageTitleEdit": "Edit LR | PackNPay (एलआर संपादित करें | PackNPay)",
+      "newTitle": "New Lorry Receipt (नई लॉरी रसीद)",
+      "editTitle": "Edit Lorry Receipt (लॉरी रसीद संपादित करें)",
+      "saveBtn": "Save LR (एलआर सहेजें)",
+      "loading": "Loading LR details... (एलआर विवरण लोड हो रहा है...)",
+      "sections": {
+        "lrDetails": "LR Details (एलआर विवरण)",
+        "truckDetails": "Truck Details (ट्रक विवरण)",
+        "consignorFrom": "Consignor/Move From (प्रेषक/यहां से ले जाएं)",
+        "packageDetails": "Package Details (पैकेज विवरण)",
+        "demurrageCharge": "Demurrage Charge (विलंब शुल्क)",
+        "materialInsurance": "Material Insurance (सामग्री बीमा)",
+        "consignorTo": "Consignee/Move To (पाने वाला/यहां ले जाएं)",
+        "paymentDetails": "Payment Details (भुगतान विवरण)",
+        "driverDetails": "Driver Details (ड्राइवर विवरण)"
+      }
+    },
+    "fields": {
+      "lrNo": "LR No. (एलआर नंबर)",
+      "date": "Date (तारीख)",
+      "riskType": "Risk Type (जोखिम प्रकार)",
+      "orderId": "Order ID (ऑर्डर आईडी)",
+      "vehicleNo": "Vehicle No. (वाहन नंबर)",
+      "movingFrom": "Moving from (यहां से ले जाएं)",
+      "movingTo": "Moving to (यहां ले जाएं)",
+      "driverName": "Driver name (ड्राइवर का नाम)",
+      "driverPhone": "Driver's mobile no. (ड्राइवर का मोबाइल नंबर)",
+      "driverLicense": "Driver license no. (ड्राइवर लाइसेंस नंबर)",
+      "consignorName": "Consignor name (प्रेषक का नाम)",
+      "consignorPhone": "Consignor ph no. (प्रेषक का फोन नंबर)",
+      "consigneeName": "Consignee name (पाने वाले का नाम)",
+      "consigneePhone": "Consignee ph no. (पाने वाले का फोन नंबर)",
+      "gstNo": "CGSTIN no. (CGSTIN नंबर)",
+      "country": "Country (देश)",
+      "state": "State (राज्य)",
+      "city": "City (शहर)",
+      "pincode": "Pincode (पिनकोड)",
+      "address": "Address (पता)",
+      "noOfPackages": "No of package (पैकेजों की संख्या)",
+      "description": "Description (विवरण)",
+      "actualWeight": "Actual Weight (वास्तविक वजन)",
+      "chargedWeight": "Charged Weight (प्रभारित वजन)",
+      "conditionNote": "Received Package condition (प्राप्त पैकेज की स्थिति)",
+      "remarks": "Remarks (टिप्पणी)",
+      "insuranceType": "Material Insurance (सामग्री बीमा)",
+      "companyName": "Insurance company (बीमा कंपनी)",
+      "policyNo": "Policy no. (पॉलिसी नंबर)",
+      "insuredAmount": "Insured amount (बीमित राशि)",
+      "insuranceDate": "Insurance Date (बीमा तिथि)",
+      "riskDetails": "Insurance Risk (बीमा जोखिम)",
+      "freightToBeBilled": "Freight to be billed (बिल किया जाने वाला भाड़ा)",
+      "freightPaid": "Freight Paid (भुगतान किया गया भाड़ा)",
+      "freightToPay": "Freight to pay (भुगतान किया जाने वाला भाड़ा)",
+      "basicFreight": "Total Basic freight (कुल मूल भाड़ा)",
+      "loadingCharge": "Loading charge (लोडिंग शुल्क)",
+      "unloadingCharge": "Unloading charge (अनलोडिंग शुल्क)",
+      "stCharge": "S.T charge (एस.टी शुल्क)",
+      "otherCharge": "Other charge (अन्य शुल्क)",
+      "lrCnCharge": "LR/CN CHARGES (एलआर/सीएन शुल्क)",
+      "gstPercent": "GST % (जीएसटी %)",
+      "gstPaidBy": "GST paid by (जीएसटी का भुगतान)",
+      "demurrageCharge": "Demurrage charge (विलंब शुल्क)",
+      "applicableRule": "Applicable Rule (लागू नियम)"
+    },
+    "placeholders": {
+      "selectRisk": "Select Risk Type (जोखिम प्रकार चुनें)",
+      "enterOrderId": "Enter Order ID (ऑर्डर आईडी दर्ज करें)",
+      "enterNo": "Enter no. (नंबर दर्ज करें)",
+      "selectCity": "Select City (शहर चुनें)",
+      "selectState": "Select State (राज्य चुनें)",
+      "phoneFormat": "+91",
+      "licenseFormat": "XXXX-XXXXX-XXXX",
+      "gstFormat": "XXXXX-XXXXX",
+      "enterPincode": "Enter pincode (पिनकोड दर्ज करें)",
+      "enterAddress": "Enter address (पता दर्ज करें)",
+      "writeDesc": "Write description (विवरण लिखें)",
+      "enterWeight": "Enter weight (वजन दर्ज करें)",
+      "enter": "Enter (दर्ज करें)",
+      "write": "Write... (लिखें...)",
+      "currency": "₹"
+    },
+    "dropdowns": {
+      "OWNER RISK": "OWNER RISK (मालिक का जोखिम)",
+      "CARRIER RISK": "CARRIER RISK (वाहक का जोखिम)",
+      "INDIA": "INDIA (भारत)"
+    },
+    "toasts": {
+      "fetchSuccess": "Data fetched successfully (डेटा सफलतापूर्वक प्राप्त किया गया)",
+      "loadError": "Failed to load LR data (एलआर डेटा लोड करने में विफल)",
+      "createSuccess": "LR created successfully! (एलआर सफलतापूर्वक बनाया गया!)",
+      "updateSuccess": "LR updated successfully! (एलआर सफलतापूर्वक अपडेट किया गया!)",
+      "saveError": "Failed to save LR (एलआर सहेजने में विफल)"
+    },
+    "modals": {
+      "successTitle": "Success! (सफलता!)",
+      "updateSuccessTitle": "Update Success! (अपडेट सफल!)",
+      "successMessage": "You've successfully {{action}} Lorry Receipt {{lr_no}}. Do you want to return to the list? (आपने सफलतापूर्वक लॉरी रसीद {{lr_no}} को {{action}} है। क्या आप सूची में वापस जाना चाहते हैं?)",
+      "returnToList": "Yes, return to list (हाँ, सूची में वापस जाएँ)",
+      "stayHere": "No, stay here (नहीं, यहीं रहें)"
+    },
+    "list": {
+      "title": "LR Lists (एलआर सूची)",
+      "addBtn": "Add LR (एलआर जोड़ें)",
+      "pageTitle": "LR List | PackNPay (एलआर सूची | PackNPay)",
+      "totalLr": "Total LR (कुल एलआर)",
+      "columns": {
+        "lrNo": "LR NO (एलआर नंबर)",
+        "dates": "DATES (तारीखें)",
+        "customer": "CUSTOMER (ग्राहक)",
+        "location": "LOCATION (स्थान)",
+        "freight": "FREIGHT (भाड़ा)"
+      },
+      "toasts": {
+        "downloadingPdf": "Downloading {{copyType}} copy, please wait... ({{copyType}} कॉपी डाउनलोड हो रही है...)",
+        "downloadSuccess": "{{copyType}} copy downloaded successfully! ({{copyType}} कॉपी सफलतापूर्वक डाउनलोड हो गई!)",
+        "downloadFail": "Failed to download {{copyType}} copy. ({{copyType}} कॉपी डाउनलोड करने में विफल।)",
+        "loadingPdf": "Loading PDF preview... (PDF पूर्वावलोकन लोड हो रहा है...)",
+        "previewFail": "Failed to load PDF preview. (PDF पूर्वावलोकन लोड करने में विफल।)",
+        "missingId": "Error: Missing record identifier. (त्रुटि: रिकॉर्ड पहचानकर्ता गायब है।)",
+        "deleteSuccess": "LR deleted successfully (एलआर सफलतापूर्वक हटा दिया गया)",
+        "deleteFail": "Failed to delete LR (एलआर हटाने में विफल)",
+        "exportingCsv": "Exporting CSV... (CSV निर्यात हो रहा है...)"
+      },
+      "deleteModal": {
+        "title": "Delete Lorry Receipt (लॉरी रसीद हटाएं)",
+        "message": "Are you sure you want to delete this LR? This action cannot be undone. (क्या आप वाकई इसे हटाना चाहते हैं?)"
+      },
+      "downloadModal": {
+        "title": "Select Copy (कॉपी चुनें)"
+      }
+    },
+    "copies": {
+      "consignor": "Consignor (प्रेषक)",
+      "consignee": "Consignee (पाने वाला)",
+      "driver": "Driver (ड्राइवर)",
+      "transporter": "Transporter (ट्रांसपोर्टर)"
+    }
+  }
 }

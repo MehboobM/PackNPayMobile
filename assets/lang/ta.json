@@ -1,0 +1,918 @@
+{
+  "common": {
+    "welcome": "Welcome (வரவேற்கிறோம்)",
+    "enter_mobile": "Enter your mobile number to continue (தொடர உங்கள் மொபைல் எண்ணை உள்ளிடவும்)",
+    "contact_us": "Contact Us (எங்களை தொடர்பு கொள்ளுங்கள்)",
+    "phone": "Phone no. (தொலைபேசி எண்.)",
+    "contactDetails": "Contact Details (தொடர்பு விவரங்கள்)",
+    "city": "City (நகரம்)",
+    "state": "State (மாநிலம்)",
+    "email": "Email (மின்னஞ்சல்)",
+    "address": "Address (முகவரி)",
+    "floor": "Floor (தளம்)",
+    "pincode": "Pincode (பின் குறியீடு)",
+    "lift": "Lift (லிப்ட்)",
+    "name": "Name (பெயர்)",
+    "date": "Date (தேதி)",
+    "add": "Add (சேர்க்கவும்)",
+    "cancel": "Cancel (ரத்துசெய்)",
+    "save": "Save (சேமி)",
+    "submit": "Submit (சமர்ப்பி)",
+    "quantity": "Quantity (அளவு)",
+    "description": "Description (விவரம்)",
+    "actions": "Actions (செயல்கள்)",
+    "remarks": "Remarks (குறிப்புகள்)",
+    "branch": "Branch (கிளை)",
+    "country": "Country (நாடு)",
+    "edit": "Edit (திருத்து)",
+    "delete": "Delete (அழி)",
+    "yes": "Yes (ஆம்)",
+    "no": "No (இல்லை)",
+    "downloadPdf": "Download PDF (PDF பதிவிறக்கவும்)",
+    "export": "Export (ஏற்றுமதி)",
+    "notAvailable": "N/A (கிடைக்கவில்லை)",
+    "view": "View (பார்க்க)",
+    "status": "Status (நிலை)",
+    "generate": "Generate (உருவாக்கு)",
+    "pleaseFixErrors": "Please fix the errors before saving. (சேமிப்பதற்கு முன் பிழைகளை சரிசெய்யவும்)",
+    "stayHere": "Stay Here (இங்கே இருங்கள்)",
+    "goToList": "Go to List (பட்டியலுக்கு செல்லவும்)",
+    "customerSignature": "Customer Signature (வாடிக்கையாளர் கையொப்பம்)",
+    "shareSurveyListLink": "Share survey list link (கணக்கெடுப்பு பட்டியல் இணைப்பைப் பகிரவும்)",
+    "generateQuotation": "Generate Quotation (கோட்டேஷன் உருவாக்கவும்)",
+    "generateOrder": "Generate Order (ஆர்டர் உருவாக்கவும்)",
+    "gstPercent": "GST % (ஜிஎஸ்டி %)"
+  },
+
+  "order": {
+    "title": "Order (ஆர்டர்)",
+    "orderStatus": "Order Status (ஆர்டர் நிலை)",
+    "shipmentStatus": "Shipment Status (அனுப்பும் நிலை)",
+    "orderDetails": "Order Details (ஆர்டர் விவரங்கள்)",
+    "changeStatus": "Change Status (நிலையை மாற்று)",
+    "staff": "Staff (பணியாளர்கள்)",
+    "addStaff": "Add Staff (பணியாளர் சேர்க்கவும்)",
+    "labours": "Labours (தொழிலாளர்கள்)",
+    "addLabour": "Add Labour (தொழிலாளர் சேர்க்கவும்)",
+    "quotationDetails": "Quotation Details (கோட்டேஷன் விவரங்கள்)",
+    "vehicleDetails": "Vehicle Details (வாகன விவரங்கள்)",
+    "packingDetails": "Packing Details (பேக்கிங் விவரங்கள்)",
+    "unpackingDetails": "Unpacking Details (அன்பேக்கிங் விவரங்கள்)",
+    "addImages": "Add Images (படங்கள் சேர்க்கவும்)",
+    "item": "Item (உருப்பு)",
+    "baseFare": "Base Fare (அடிப்படை கட்டணம்)",
+    "taxes": "Taxes & Surcharges (வரி மற்றும் கட்டணங்கள்)",
+    "expenses": "Expenses (செலவுகள்)",
+    "advancePayment": "Advance Payment (முன்பணம்)",
+    "totalAmount": "Total Amount to pay (மொத்த தொகை)",
+    "orderNo": "Order No. (ஆர்டர் எண்)",
+    "quotationNo": "Quotation No. (கோட்டேஷன் எண்)"
+  },
+
+  "surveyList": {
+    "title": "Survey List (சர்வேய் பட்டியல்)",
+    "shareSurveyLink": "Generic Survey Link (சர்வேய் இணைப்பை பகிரவும்)",
+    "addSurvey": "Add Survey (சர்வேய் சேர்க்கவும்)",
+    "copyLink": "Copy Link (இணைப்பை நகலெடுக்கவும்)"
+  },
+  "status": {
+    "total": "Total (மொத்தம்)",
+    "pending": "Pending (முடிக்கப்படாதது)",
+    "inProgress": "In Progress (முயற்சி நிலையில்)",
+    "settled": "Settled (தீர்க்கப்பட்டது)",
+    "submitted": "Submitted (சமர்ப்பிக்கப்பட்டது)"
+  },
+  "messages": {
+    "exporting": "Exporting surveys, please wait... (சர்வேகளை ஏற்றுமதி செய்யப்படுகிறது, காத்திருங்கள்...)",
+    "exportSuccess": "Exported successfully! (ஏற்றுமதி வெற்றிகரமாக நிறைவு பெற்றது!)",
+    "exportFail": "Failed to export surveys. (சர்வேகளை ஏற்றுமதி செய்ய முடியவில்லை.)",
+    "copySuccess": "Link copied to clipboard! (இணைப்பு கிளிப்போர்டுக்கு நகலெடுக்கப்பட்டது!)",
+    "shareFail": "Could not share link (இணைப்பை பகிர முடியவில்லை)",
+    "pdfLoading": "Loading PDF preview... (PDF முன்னோட்டம் ஏற்றுகிறது...)",
+    "pdfFail": "Failed to preview PDF (PDF முன்னோட்டம் தோல்வியடைந்தது)",
+    "loading": "Loading data... (தரவு ஏற்றப்படுகிறது...)",
+    "noRecords": "No records found. (பதிவுகள் எதுவும் கிடைக்கவில்லை.)"
+  },
+  "basicDetails": {
+    "title": "Basic Details (அடிப்படை விவரங்கள்)",
+    "name": "Name (பெயர்)",
+    "phone": "Phone no. (தொலைபேசி எண்.)",
+    "gst": "Company GST No. (நிறுவன GST எண்.)",
+    "companyName": "Company Name of Party (நிறுவனத்தின் பெயர்)",
+    "slDate": "SL Generation Date (SL உருவாக்கும் தேதி)",
+    "from": "From (இருந்து)",
+    "to": "To (வரை)"
+  },
+  "tableHeader": {
+    "searchPlaceholder": "Search (தேடு)",
+    "sortBy": "Sort By (வரிசைப்படுத்தவும்)",
+    "clearSort": "Clear sort (வரிசை அழிக்கவும்)",
+    "selectDateRange": "Select date range (தேதி வரம்பை தேர்ந்தெடுக்கவும்)",
+    "byOwner": "By Owner (உரிமையாளர் மூலம்)",
+    "byStaff": "Staff Wise (பணியாளர் அடிப்படையில்)"
+  },
+  "movingDetails": {
+    "title": "Moving Details (இடமாற்ற விவரங்கள்)",
+    "shiftingMovingDate": "Shifting / Moving Date (இடமாற்ற தேதி)",
+    "email": "Email (மின்னஞ்சல்)",
+    "additionalPhoneNo": "Additional phone no. (கூடுதல் தொலைபேசி எண்.)",
+    "state": "State (மாநிலம்)",
+    "city": "City (நகரம்)",
+    "floor": "Floor (தளம்)",
+    "pincode": "Pincode (பின் குறியீடு)",
+    "lift": "Lift (லிப்ட்)",
+    "address": "Address (முகவரி)"
+  },
+  "deliveryDetails": {
+    "title": "Delivery Details (விநியோக விவரங்கள்)",
+    "email": "Email (மின்னஞ்சல்)",
+    "additionalPhoneNo": "Additional phone no. (கூடுதல் தொலைபேசி எண்.)",
+    "state": "State (மாநிலம்)",
+    "city": "City (நகரம்)",
+    "floor": "Floor (தளம்)",
+    "pincode": "Pincode (பின் குறியீடு)",
+    "lift": "Lift (லிப்ட்)",
+    "address": "Address (முகவரி)"
+  },
+  "dynamicItemsSection": {
+    "addedItems": "Added Items (சேர்க்கப்பட்ட பொருட்கள்)",
+    "installation": "Installation (நிறுவல்)",
+    "uninstallation": "Uninstallation (நிறுவல் நீக்கம்)"
+  },
+  "otherItems": {
+    "title": "Other Items (மற்ற பொருட்கள்)",
+    "serviceOrScaler": "Service Or Scaler (சேவை அல்லது ஸ்கேலர்)",
+    "quantity": "Quantity (அளவு)",
+    "slNo": "Sl No. (வ.எண்.)",
+    "addItem": "Add Item (பொருள் சேர்க்கவும்)",
+    "itemsName": "Items/particular name (பொருள் / விவரத்தின் பெயர்)",
+    "itemsList": "Items List (பொருட்களின் பட்டியல்)",
+    "items": "Items (பொருட்கள்)"
+  },
+  "surveyForm": {
+    "title": "Survey Form (சர்வேய் பாண்)",
+    "summary": "Survey Summary (சர்வேய் சுருக்கம்)",
+    "fillInfo": "Fill Out All Required Information Below (கீழே அனைத்து தேவையான தகவல்களையும் நிரப்பவும்)",
+    "updateSurvey": "Update Survey (சர்வேயை புதுப்பிக்கவும்)",
+    "submitSurveyForm": "Submit Survey Form (சர்வேய் பாண் சமர்ப்பிக்கவும்)",
+    "downloading": "Downloading PDF, please wait... (PDF பதிவிறக்கப்படுகிறது, தயவுசெய்து காத்திருங்கள்...)",
+    "downloadSuccess": "Downloaded successfully! (வெற்றிகரமாக பதிவிறக்கம் செய்யப்பட்டது!)",
+    "downloadFailed": "Failed to generate PDF (PDF உருவாக்க முடியவில்லை)",
+    "downloadNotAvailable": "Cannot download PDF: Survey not created yet (PDF பதிவிறக்க முடியாது: சர்வேய் இன்னும் உருவாக்கப்படவில்லை)",
+    "surveyNo": "Survey No (சர்வேய் எண்)",
+    "surveySavedSuccess": "Your survey has been saved successfully. Would you like to go back to the list? (உங்கள் கணக்கெடுப்பு வெற்றிகரமாக சேமிக்கப்பட்டது. நீங்கள் பட்டியலுக்கு திரும்ப விரும்புகிறீர்களா?)",
+    "surveySubmitted": "Survey Submitted! (கணக்கெடுப்பு சமர்ப்பிக்கப்பட்டது!)"
+  },
+  "quotation": {
+    "title": "Quotation (மேற்கோள்)",
+    "export": "Export (ஏற்றுமதி)",
+    "creditMoneyReceipt": "Credit Money Receipt (கடன் பண ரசீது)",
+    "saveQuotation": "Save Quotation (மேற்கோளை சேமி)",
+    "quotationNo": "Quotation No. (மேற்கோள் எண்.)",
+    "companyOrPartyName": "Company or Party Name (நிறுவனம் அல்லது தரப்பு பெயர்)",
+    "partyName": "Party Name (தரப்பு பெயர்)",
+    "companyGst": "Company or Party GST No. (நிறுவனம் அல்லது தரப்பு GST எண்.)",
+    "phoneNo": "Phone No. (தொலைபேசி எண்.)",
+    "email": "Email (மின்னஞ்சல்)",
+    "quotationDate": "Quotation Date (மேற்கோள் தேதி)",
+    "openingDate": "Opening Date (தொடக்க தேதி)",
+    "deliveryDate": "Delivery date (விநியோக தேதி)",
+    "loadNight": "Load Night (இரவு ஏற்றுதல்)",
+    "closingDate": "Closing date (முடிவு தேதி)",
+    "fullTruck": "Full Truck (முழு லாரி)",
+    "vehicleType": "Vehicle type (வாகன வகை)",
+    "movingPath": "Moving path (இடமாற்ற பாதை)",
+    "movingKm": "Moving km (இடமாற்ற கி.மீ)",
+    "byRoad": "By Road (சாலை வழியாக)",
+    "wideMovements": "Wide movements (பரந்த இயக்கங்கள்)",
+    "newQuotation": "New Quotation (புதிய மேற்கோள்)",
+    "customerName": "Customer Name (வாடிக்கையாளர் பெயர்)",
+    "enterName": "Enter name (பெயரை உள்ளிடவும்)",
+    "enterNo": "Enter no. (எண்ணை உள்ளிடவும்)",
+    "enterMobile": "Enter mobile no. (மொபைல் எண் உள்ளிடவும்)",
+    "enterEmail": "Enter email (மின்னஞ்சல் உள்ளிடவும்)",
+    "packingDate": "Packing Date (பேக்கிங் தேதி)",
+    "loadType": "Load Type (சுமை வகை)",
+    "movingPathRemarks": "Moving Path Remarks (பாதை குறிப்புகள்)",
+    "quotationDetails": "Quotation Details (மேற்கோள் விவரங்கள்)",
+    "saveNext": "சேமித்து & அடுத்தது",
+    "companyName": "Company Name (நிறுவனத்தின் பெயர்)",
+    "partyName": "Party Name (கட்சியின் பெயர்)"
+  },
+  "insurance": {
+    "title": "Insurance details (காப்பீட்டு விவரங்கள்)",
+    "insuranceType": "Insurance Type (காப்பீட்டு வகை)",
+    "optional": "Optional (விருப்பமானது)",
+    "insuranceCharges": "Insurance charge(s) (காப்பீட்டு கட்டணம்)",
+    "declarationOfGoods": "Declaration of goods (சரக்கு அறிவிப்பு)",
+    "enterDescription": "Enter a description... (விவரம் உள்ளிடவும்...)",
+    "vehicleInsuranceDetails": "Vehicle Insurance details (வாகன காப்பீட்டு விவரங்கள்)",
+    "insuranceChargesVehicle": "Insurance Charge(s) (காப்பீட்டு கட்டணம்)",
+    "declarationOfVehicle": "Declaration of vehicle (வாகன அறிவிப்பு)"
+  },
+  "pickupDelivery": {
+    "title": "Pickup & Delivery Details (எடுத்துச்செல்லல் மற்றும் விநியோக விவரங்கள்)",
+    "pickupAddress": "Pickup Address (எடுத்துச்செல்லும் முகவரி)",
+    "shiftingMovingDate": "Shifting Moving Date (இடமாற்ற தேதி)",
+    "email": "Email (மின்னஞ்சல்)",
+    "additionalPhoneNo": "Additional phone no. (கூடுதல் தொலைபேசி எண்.)",
+    "city": "City (நகரம்)",
+    "state": "State (மாநிலம்)",
+    "floor": "Floor (தளம்)",
+    "pincode": "Pincode (பின் குறியீடு)",
+    "lift": "Lift (லிப்ட்)",
+    "address": "Address (முகவரி)",
+    "deliveryAddress": "Delivery Address (விநியோக முகவரி)"
+  },
+  "otherDetails": {
+    "title": "Other details (மற்ற விவரங்கள்)",
+    "easyAccess": "Is there easy access for load & unloading? (ஏற்றி இறக்குவதற்கு எளிதான அணுகல் உள்ளதா?)",
+    "balconyItems": "Should any items be got down through balcony? (பால்கனி வழியாக எந்த பொருட்களையும் இறக்க வேண்டுமா?)",
+    "loadingRestrictions": "Are there any restrictions for loading/unloading? (ஏற்றி இறக்குவதற்கு ஏதேனும் கட்டுப்பாடுகள் உள்ளனவா?)",
+    "specialNeeds": "Do you have any special needs or concerns? (ஏதேனும் சிறப்பு தேவைகள் உள்ளனவா?)"
+  },
+  "payment": {
+    "title": "Payment Details (கட்டண விவரங்கள்)",
+    "charges": "Charges (கட்டணங்கள்)",
+    "advancePaid": "Advance Paid (முன்பணம் செலுத்தப்பட்டது)",
+    "packingCharge": "Packing Charge (பொதிகட்டு கட்டணம்)",
+    "unpackingCharge": "Unpacking Charge (பொதி அவிழ்க்கும் கட்டணம்)",
+    "includedInHeight": "Included in Height (உயரத்தில் சேர்க்கப்பட்டது)",
+    "loadingCharge": "Loading Charge (ஏற்றுதல் கட்டணம்)",
+    "unloadingCharge": "Unloading Charge (இறக்குதல் கட்டணம்)",
+    "adjustedInHeight": "Adjusted in Height (உயரத்தில் சரிசெய்யப்பட்டது)",
+    "handlingOrStorage": "Handling or storage (கையாளுதல் அல்லது சேமிப்பு)",
+    "storageCharge": "Storage charge (சேமிப்பு கட்டணம்)",
+    "includedInFreight": "Included in freight (சரக்கு கட்டணத்தில் சேர்க்கப்பட்டது)",
+    "codCharges": "CodCharges (COD கட்டணம்)",
+    "ft": "FT",
+    "interMilestone": "InterMilestone charges (இடைமைல்கல் கட்டணங்கள்)",
+    "otherCharges": "Other charges (மற்ற கட்டணங்கள்)",
+    "stCharge": "ST Charge (ST கட்டணம்)",
+    "surcharge": "Surcharge (கூடுதல் கட்டணம்)",
+    "notApplicable": "Not applicable (பொருந்தாது)",
+    "sst": "SST follow or little gst (in Quotation) (SST / GST மேற்கோளில்)",
+    "gst": "GST",
+    "gstPercentAmt": "GST percent/Amt (GST சதவீதம்/தொகை)",
+    "currentTotal": "Current Total (தற்போதைய மொத்தம்)",
+    "freightCharge": "Freight Charge (சரக்கு கட்டணம்)",
+    "packingMaterialCharge": "Packing Material Charge (பேக்கிங் பொருள் கட்டணம்)",
+    "carBikeTpt": "Car/Bike TPT (கார்/பைக் டிபிடி)",
+    "miscCharges": "Miscellaneous Charges (இதர கட்டணங்கள்)",
+    "gstType": "GST Type (ஜிஎஸ்டி வகை)",
+    "gstAmount": "GST Amount (ஜிஎஸ்டி தொகை)"
+  },
+  "paymentSummary": {
+    "title": "Payment Summary (கட்டண சுருக்கம்)",
+    "advancePayment": "Advance Payment (முன்பணம்)",
+    "amount": "Amount (தொகை)",
+    "add": "Add (சேர்க்கவும்)",
+    "paymentStatus": "Payment Status (கட்டண நிலை)",
+    "applyDiscount": "Apply Discount (தள்ளுபடி பயன்படுத்து)",
+    "discountAmount": "Discount Amount (தள்ளுபடி தொகை)",
+    "applyOnTotal": "Applicable on total amount (மொத்த தொகைக்கு பொருந்தும்)",
+    "apply": "Apply (பயன்படுத்து)",
+    "totalAmount": "Total Amount (மொத்த தொகை)",
+    "termsAndConditions": "Terms and Conditions (விதிமுறைகள் மற்றும் நிபந்தனைகள்)",
+    "totalAmountToPay": "Total Amount to pay (செலுத்த வேண்டிய மொத்த தொகை)",
+    "baseFare": "Base Fare (அடிப்படை கட்டணம்)",
+    "taxesAndSurcharges": "Taxes & Surcharges (வரிகள் மற்றும் கூடுதல் கட்டணம்)",
+    "enterAdvanceAmount": "Enter Advance Amount (முன்பணம் தொகையை உள்ளிடவும்)",
+    "enterDiscountAmount": "Enter Discount Amount (தள்ளுபடி தொகையை உள்ளிடவும்)",
+    "selectStatus": "Select Status (நிலையை தேர்ந்தெடுக்கவும்)"
+  },
+  "paymentExpenses": {
+    "paymentsReceived": "Payments Received (பெறப்பட்ட கொடுப்பனவுகள்)",
+    "expenses": "Expenses (செலவுகள்)",
+    "totalExpense": "Total Expense (மொத்த செலவு)",
+    "totalExpenses": "Total Expenses (மொத்த செலவுகள்)",
+    "searchExpense": "Search Expense Category (செலவு வகையை தேடுக)",
+    "noExpenseCategories": "No Expense Categories (செலவு வகைகள் இல்லை)",
+    "noExpensesEntered": "No Expenses Entered (செலவுகள் உள்ளிடப்படவில்லை)",
+    "expenseSummary": "Expense Summary (செலவு சுருக்கம்)"
+  },
+  "addQuotation": {
+    "loadError": "Failed to Load Data (தரவை ஏற்ற முடியவில்லை)",
+    "createSuccess": "Quotation Created Successfully (மேற்கோள் வெற்றிகரமாக உருவாக்கப்பட்டது)",
+    "updateSuccess": "Quotation Updated Successfully (மேற்கோள் வெற்றிகரமாக புதுப்பிக்கப்பட்டது)",
+    "createFromSurveySuccess": "Quotation Created from Survey (கணக்கெடுப்பிலிருந்து மேற்கோள் உருவாக்கப்பட்டது)",
+    "saveError": "Something Went Wrong (ஏதோ தவறு நடந்தது)",
+    "savedTitle": "Quotation Saved! (மேற்கோள் சேமிக்கப்பட்டது!)",
+    "savedMessage": "Quotation saved successfully. Do you want to go back to the list? (மேற்கோள் வெற்றிகரமாக பதிவு செய்யப்பட்டது. பட்டியலுக்கு திரும்ப விரும்புகிறீர்களா?)"
+  },
+  "lorryReceipt": {
+    "title": "New Lorry Receipt (புதிய லாரி ரசீது)",
+    "import": "Import (இறக்குமதி)",
+    "saveLR": "Save LR (LR சேமி)",
+    "lrNo": "LR No. (LR எண்.)",
+    "date": "Date (தேதி)",
+    "filterType": "Filter type (வடிகட்டி வகை)",
+    "atOwnRisk": "AT Own Risk (சொந்த ஆபத்தில்)"
+  },
+  "truckDetails": {
+    "title": "Truck Details (லாரி விவரங்கள்)",
+    "vehicleNo": "Vehicle No. (வாகன எண்.)",
+    "movingUnit": "Moving Unit (நகரும் அலகு)",
+    "movingId": "Moving Id (நகரும் ஐடி)",
+    "selectCity": "Select City (நகரத்தை தேர்ந்தெடுக்கவும்)",
+    "driverDetails": "Driver Details (ஓட்டுநர் விவரங்கள்)",
+    "driverName": "Driver name (ஓட்டுநரின் பெயர்)",
+    "driverMobileNo": "Driver's mobile no. (ஓட்டுநரின் மொபைல் எண்.)",
+    "dlNo": "Dl No. (DL எண்.)",
+    "dlLicenseNo": "D.I.no license No. (உரிம எண்.)",
+    "dlExpiry": "DL expiry (DL காலாவதி)",
+    "driverModelNo": "Driver's model no. (ஓட்டுநர் மாடல் எண்.)",
+    "dlineExpires": "D.line Expires (D.line காலாவதி)"
+  },
+  "invoiceEBill": {
+    "title": "Invoice & E-Bill (விலைப்பட்டியல் மற்றும் இ-பில்)",
+    "packageBill": "Package/Bill (தொகுப்பு/பில்)",
+    "invoiceDate": "Invoice Date (விலைப்பட்டியல் தேதி)",
+    "eWayBillNo": "E-Way Bill No. (இ-வே பில் எண்.)",
+    "eWayBillGenerationDate": "E-way Bill generation date (இ-வே பில் உருவாக்கும் தேதி)",
+    "eWayBillExpireDate": "E-way Bill Expire date (இ-வே பில் காலாவதி தேதி)",
+    "eWayBillPeriod": "e-way Bill Period (இ-வே பில் காலம்)"
+  },
+  "consignorFrom": {
+    "title": "Consignor/Move From (அனுப்புநர்/இங்கிருந்து)",
+    "consignorName": "Consignor name (அனுப்புநரின் பெயர்)",
+    "consignorId": "Consignor Id (அனுப்புநர் ஐடி)",
+    "gstNo": "GST/No. (GST எண்.)",
+    "country": "Country (நாடு)",
+    "state": "State (மாநிலம்)",
+    "city": "City (நகரம்)",
+    "stateLine2": "State Line 2 (மாநில வரி 2)",
+    "pincode": "Pincode (பின் குறியீடு)",
+    "address": "Address (முகவரி)"
+  },
+  "consigneeTo": {
+    "title": "Consignee/Move To (பெறுநர்/இங்கே)",
+    "consignorId": "Consignor Id (அனுப்புநர் ஐடி)",
+    "gstNo": "GST/No. (GST எண்.)",
+    "country": "Country (நாடு)",
+    "state": "State (மாநிலம்)",
+    "city": "City (நகரம்)",
+    "pincode": "Pincode (பின் குறியீடு)",
+    "address": "Address (முகவரி)"
+  },
+  "packageDetails": {
+    "title": "Package Details (தொகுப்பு விவரங்கள்)",
+    "noOfPackage": "No. of package (தொகுப்புகளின் எண்ணிக்கை)",
+    "description": "Description (விவரம்)",
+    "freightToBeBilled": "Freight to be billed (பில் செய்யப்படும் சரக்கு)",
+    "actualWeight": "Actual Weight (உண்மையான எடை)",
+    "chargedWeight": "Charged Weight (கட்டணமிடப்பட்ட எடை)",
+    "fromWeight": "From weight (எடையிலிருந்து)",
+    "toWeight": "To weight (எடை வரை)",
+    "kg": "KG (கிலோகிராம்)",
+    "receivedGoodsContinue": "Received Goods Continue (பெற்ற சரக்கு தொடரும்)",
+    "remarks": "Remarks (குறிப்புகள்)"
+  },
+  "paymentDetailsLR": {
+    "title": "Payment Details (கட்டண விவரங்கள்)",
+    "freightToBeBilled": "Freight to be billed (பில் செய்யப்படும் சரக்கு)",
+    "toPay": "To pay (செலுத்த வேண்டியது)",
+    "freightPaid": "Freight paid (சரக்கு கட்டணம் செலுத்தப்பட்டது)",
+    "freightToPay": "Freight to pay (சரக்கு கட்டணம் நிலுவை)",
+    "totalBasicFreight": "Total basic freight (மொத்த அடிப்படை சரக்கு கட்டணம்)",
+    "loadingCharge": "Loading charge (ஏற்றுதல் கட்டணம்)",
+    "unloadingCharge": "S.T. charge (S.T. கட்டணம்)",
+    "otherCharge": "D.to - Charge (D.to கட்டணம்)",
+    "lrLrCharges": "LR/LR CHARGES (LR கட்டணங்கள்)",
+    "gst": "GST",
+    "gstPaidBy": "GST paid by (GST செலுத்தியவர்)",
+    "consignee": "Consignee (பெறுநர்)"
+  },
+  "materialInsurance": {
+    "title": "Material Insurance (பொருள் காப்பீடு)",
+    "materialPurposes": "Material Purposes (பொருளின் நோக்கம்)",
+    "insured": "Insured (காப்பீடு செய்யப்பட்டது)",
+    "insuranceCompany": "Insurance Company (காப்பீட்டு நிறுவனம்)",
+    "policyNo": "Policy no. (பாலிசி எண்.)",
+    "insuredAmount": "Insured Amount (காப்பீட்டு தொகை)",
+    "insuranceCode": "Insurance Code (காப்பீட்டு குறியீடு)",
+    "fromDateRisk": "From Date Risk (ஆபத்து தொடக்க தேதி)",
+    "note": "Note (குறிப்பு)"
+  },
+  "demurrageCharge": {
+    "title": "Demurrage Charge (தாமத கட்டணம்)",
+    "demurrageDays": "Demurrage Days (தாமத நாட்கள்)",
+    "demurrageChargeApplicable": "Demurrage Charge Applicable (தாமத கட்டணம் பொருந்தும்)",
+    "perDay": "Per Day (ஒரு நாளுக்கு)",
+    "moreThan5Days": "More than 5 days (5 நாட்களுக்கு மேல்)"
+  },
+  "receipt": {
+    "title": "New Receipt (புதிய ரசீது)",
+    "receiptNo": "Receipt No. (ரசீது எண்.)",
+    "date": "Date (தேதி)",
+    "branch": "Branch (கிளை)",
+    "name": "Name (பெயர்)",
+    "phoneNo": "Phone no. (தொலைபேசி எண்.)",
+    "receiptAgainst": "Receipt against (ரசீது எதிராக)",
+    "quotation": "Quotation (மேற்கோள்)",
+    "billAndQuotationDate": "Bill/Quotation date (பில்/மேற்கோள் தேதி)",
+    "moveTo": "Move to (இங்கே செல்)",
+    "moveFrom": "Move from (இங்கிருந்து வா)",
+    "paymentType": "Payment type (கட்டண வகை)",
+    "port": "Port (துறைமுகம்)",
+    "receiptAmount": "Receipt amount (ரசீது தொகை)",
+    "paymentMode": "Payment mode (கட்டண முறை)",
+    "cash": "Cash (பணம்)",
+    "transactionNo": "Enter Transaction no. (பரிவர்த்தனை எண். உள்ளிடவும்)",
+    "remarks": "Remarks (குறிப்புகள்)"
+  },
+
+  "expenseCategory": {
+    "title": "Expense Categories (செலவு பிரிவுகள்)",
+    "totalExpenses": "Total Expenses: ₹{{total}} (மொத்த செலவுகள்: ₹{{total}})",
+    "addNew": "Add New (புதியதைச் சேர்)",
+    "list": {
+      "loading": "Loading categories... (பிரிவுகள் ஏற்றப்படுகின்றன...)",
+      "empty": "No categories found. (பிரிவுகள் எதுவும் கிடைக்கவில்லை.)"
+    },
+    "modal": {
+      "editTitle": "Edit Expense Category (செலவு பிரிவைத் திருத்து)",
+      "addTitle": "Expense Category (செலவு பிரிவு)"
+    },
+    "fields": {
+      "nameLabel": "Category Name (பிரிவின் பெயர்)",
+      "namePlaceholder": "e.g., Fuel Expenses (உதாரணம்: எரிபொருள் செலவுகள்)",
+      "amountLabel": "Amount (தொகை)",
+      "amountPlaceholder": "0"
+    },
+    "toast": {
+      "toggleError": "Failed to toggle status (நிலையை மாற்ற முடியவில்லை)",
+      "deleteSuccess": "Category deleted successfully (பிரிவு வெற்றிகரமாக நீக்கப்பட்டது)",
+      "deleteError": "Failed to delete category (பிரிவை நீக்க முடியவில்லை)",
+      "nameRequired": "Name is required (பெயர் அவசியம்)",
+      "updateSuccess": "Category updated! (பிரிவு புதுப்பிக்கப்பட்டது!)",
+      "createSuccess": "Category created! (பிரிவு உருவாக்கப்பட்டது!)",
+      "saveError": "Failed to save category (பிரிவை சேமிக்க முடியவில்லை)"
+    },
+    "deleteModal": {
+      "title": "Delete Category (பிரிவை நீக்கு)",
+      "message": "Are you sure? (நீங்கள் உறுதியாக உள்ளீர்களா?)"
+    }
+  },
+  "officeExpense": {
+    "title": "Office Expenses (அலுவலக செலவுகள்)",
+    "totalExpenses": "Total Expenses: ₹{{total}} (மொத்த செலவுகள்: ₹{{total}})",
+    "addExpense": "Add Expense (செலவைச் சேர்)",
+    "drawer": {
+      "editTitle": "Edit Expense (செலவைத் திருத்து)",
+      "addTitle": "New Expense (புதிய செலவு)"
+    },
+    "fields": {
+      "nameLabel": "Name (பெயர்)",
+      "namePlaceholder": "Expense name (செலவின் பெயர்)",
+      "categoryLabel": "Expense category (செலவு பிரிவு)",
+      "selectCategory": "Select category (பிரிவைத் தேர்ந்தெடுக்கவும்)",
+      "dateLabel": "Date (தேதி)",
+      "amountLabel": "Amount (தொகை)",
+      "amountPlaceholder": "₹"
+    },
+    "toast": {
+      "nameRequired": "Expense name is required (செலவின் பெயர் அவசியம்)",
+      "amountRequired": "Valid amount is required (சரியான தொகை அவசியம்)",
+      "updateSuccess": "Expense updated! (செலவு புதுப்பிக்கப்பட்டது!)",
+      "createSuccess": "Expense created! (செலவு உருவாக்கப்பட்டது!)",
+      "saveError": "Failed to save expense (செலவை சேமிக்க முடியவில்லை)",
+      "deleteSuccess": "Expense deleted successfully (செலவு வெற்றிகரமாக நீக்கப்பட்டது)",
+      "deleteError": "Failed to delete expense (செலவை நீக்க முடியவில்லை)"
+    },
+    "deleteModal": {
+      "title": "Delete Office Expense (அலுவலக செலவை நீக்கு)",
+      "message": "Are you sure you want to delete this expense record? (இந்த செலவுப் பதிவை நீக்க உறுதியாக உள்ளீர்களா?)"
+    }
+  },
+  "moneyReceipt": {
+    "add": {
+      "title": "Money Receipt (பண ரசீது)",
+      "saveReceipt": "Save Receipt (ரசீதை சேமி)",
+      "editPageTitle": "Edit Money Receipt (பண ரசீதை திருத்து)",
+      "addPageTitle": "Add Money Receipt (பண ரசீதை சேர்)"
+    },
+    "fields": {
+      "receiptNo": "Receipt No. (ரசீது எண்.)",
+      "orderNumber": "Order Number (ஆர்டா் எண்.)",
+      "date": "Date (தேதி)",
+      "branch": "Branch (கிளை)",
+      "name": "Name (பெயர்)",
+      "phone": "Phone no. (தொலைபேசி எண்.)",
+      "billDate": "Bill/Quotation date (பில்/மேற்கோள் தேதி)",
+      "moveFrom": "Move from (இங்கிருந்து)",
+      "moveTo": "Move to (இங்கு)",
+      "paymentType": "Payment type (கட்டண வகை)",
+      "receiptAmount": "Receipt amount (ரசீது தொகை)",
+      "paymentMode": "Payment Mode (கட்டண முறை)",
+      "transactionNo": "Transaction No. (பரிவர்த்தனை எண்.)",
+      "remarks": "Remarks (குறிப்புகள்)"
+    },
+    "placeholders": {
+      "enterNumber": "Enter number (எண்ணை உள்ளிடவும்)",
+      "enterBranch": "Enter branch (கிளையை உள்ளிடவும்)",
+      "enterName": "Enter name (பெயரை உள்ளிடவும்)",
+      "enterPhone": "Enter ph no. (தொலைபேசி எண்ணை உள்ளிடவும்)",
+      "selectCity": "Select City (நகரத்தை தேர்ந்தெடுக்கவும்)",
+      "enterTransaction": "Enter Transaction ID / Cheque No. (பரிவர்த்தனை ஐடி/காசோலை எண் உள்ளிடவும்)",
+      "writeRemarks": "Write remarks.. (குறிப்புகளை எழுதவும்..)"
+    },
+    "dropdowns": {
+      "Advance": "Advance (முன்பணம்)",
+      "Part": "Part (பகுதி)",
+      "Full": "Full (முழு)",
+      "Cash": "Cash (பணம்)",
+      "Bank Transfer": "Bank Transfer (வங்கி பரிமாற்றம்)",
+      "Cheque": "Cheque (காசோலை)",
+      "UPI": "UPI (யுபிஐ)"
+    },
+    "toast": {
+      "dataFetched": "Data fetched from {{source}} ({{source}} இலிருந்து தரவு பெறப்பட்டது)"
+    },
+    "modals": {
+      "discardTitle": "Discard Changes? (மாற்றங்களை நிராகரிக்கவா?)",
+      "discardMessage": "Are you sure you want to leave? Any unsaved data will be permanently lost. (நீங்கள் வெளியேற விரும்புகிறீர்களா? சேமிக்கப்படாத தரவுகள் நிரந்தரமாக இழக்கப்படும்.)",
+      "yesLeave": "Yes, Leave (ஆம், வெளியேறு)"
+    },
+    "list": {
+      "title": "Money Receipts (பண ரசீதுகள்)",
+      "addBtn": "Add Money Receipt (ரசீதை சேர்)",
+      "pageTitle": "Money Receipt List (பண ரசீது பட்டியல்)",
+      "columns": {
+        "mrNo": "MR NO (ரசீது எண்.)",
+        "dates": "DATES (தேதிகள்)",
+        "customer": "CUSTOMER (வாடிக்கையாளர்)",
+        "receiptAgainst": "RECEIPT AGAINST (எதிரான ரசீது)",
+        "amount": "AMOUNT (தொகை)"
+      },
+      "stats": {
+        "totalReceipts": "Total Receipts (மொத்த ரசீதுகள்)"
+      },
+      "toasts": {
+        "downloadingPdf": "Downloading PDF, please wait... (PDF பதிவிறக்கப்படுகிறது...)",
+        "downloadPdfSuccess": "Downloaded successfully! (வெற்றிகரமாக பதிவிறக்கப்பட்டது!)",
+        "downloadPdfFail": "Failed to download PDF. (பதிவிறக்க முடியவில்லை.)",
+        "exporting": "Exporting receipts, please wait... (ஏற்றுமதி செய்யப்படுகிறது...)",
+        "exportSuccess": "Exported successfully! (ஏற்றுமதி வெற்றி!)",
+        "exportFail": "Failed to export receipts. (ஏற்றுமதி தோல்வி.)",
+        "loadingPdf": "Loading PDF preview... (PDF முன்னோட்டம்...)",
+        "loadPdfFail": "Failed to load PDF preview. (முன்னோட்டம் தோல்வி.)",
+        "deleteSuccess": "Receipt deleted successfully (ரசீது நீக்கப்பட்டது)",
+        "deleteFail": "Failed to delete receipt (நீக்க முடியவில்லை)"
+      },
+      "deleteModal": {
+        "title": "Delete Money Receipt (ரசீதை நீக்கு)",
+        "message": "Are you sure you want to delete this receipt? This action cannot be undone. (நிச்சயமாக நீக்க வேண்டுமா?)"
+      }
+    }
+  },
+  "staff": {
+    "header": {
+      "title": "Staffs (பணியாளர்கள்)",
+      "subtitle": "Manage your organization team (உங்கள் நிறுவனக் குழுவை நிர்வகிக்கவும்)",
+      "total": "Total (மொத்தம்)",
+      "addBtn": "Add Staff (பணியாளரைச் சேர்)"
+    },
+    "card": {
+      "staffId": "Staff ID (பணியாளர் ஐடி)",
+      "loginCode": "Login code (உள்நுழைவு குறியீடு)",
+      "active": "Active (செயலில்)",
+      "inactive": "Inactive (செயலற்றது)",
+      "stats": {
+        "survey": "Survey (கணக்கெடுப்பு)",
+        "quotation": "Quotation (மேற்கோள்)",
+        "lrBilty": "LR/Bilty (எல்ஆர்/பில்டி)",
+        "orders": "Orders (ஆர்டர்கள்)"
+      }
+    },
+    "drawer": {
+      "editStaff": "Edit Staff (பணியாளரைத் திருத்து)",
+      "newStaff": "New Staff (புதிய பணியாளர்)",
+      "update": "Update (புதுப்பி)",
+      "saveStaff": "Save Staff (பணியாளரை சேமி)",
+      "updateProfile": "Update Profile (சுயவிவரத்தைப் புதுப்பி)",
+      "module": "Module (தொகுதி)",
+      "sections": {
+        "basicDetails": "Basic Details (அடிப்படை விவரங்கள்)",
+        "employmentDetails": "Employment Details (வேலைவாய்ப்பு விவரங்கள்)",
+        "permissionsSchema": "Permissions (அனுமதிகள்)"
+      }
+    },
+    "form": {
+      "name": "Name (பெயர்)",
+      "enterName": "Enter name (பெயரை உள்ளிடவும்)",
+      "mobile": "Mobile no. (மொபைல் எண்.)",
+      "enterMobile": "Enter mobile no. (மொபைல் எண்ணை உள்ளிடவும்)",
+      "altMobile": "Alternate mobile no. (மாற்று மொபைல் எண்.)",
+      "email": "Email (மின்னஞ்சல்)",
+      "enterEmail": "Enter email (மின்னஞ்சலை உள்ளிடவும்)",
+      "dob": "Date of Birth (பிறந்த தேதி)",
+      "selectDob": "Select DOB (பிறந்த தேதியைத் தேர்ந்தெடுக்கவும்)",
+      "address": "Address (முகவரி)",
+      "enterAddress": "Enter address... (முகவரியை உள்ளிடவும்...)",
+      "joiningDate": "Joining Date (சேரும் தேதி)",
+      "advSalary": "Advance salary (முன்பண சம்பளம்)",
+      "baseSalary": "Base Salary (அடிப்படை சம்பளம்)",
+      "role": "Role (பங்கு)",
+      "loginCode": "Login Code (உள்நுழைவு குறியீடு)",
+      "enterCode": "Enter code (குறியீட்டை உள்ளிடவும்)"
+    },
+    "permissions": {
+      "view": "View (பார்க்க)",
+      "add": "Add (சேர்)",
+      "edit": "Edit (திருத்து)",
+      "delete": "Delete (நீக்கு)",
+      "modules": {
+        "surveyList": "Survey List (கணக்கெடுப்பு பட்டியல்)",
+        "quotation": "Quotation (மேற்கோள்)",
+        "order": "Order (ஆர்டர்)",
+        "moneyReceipt": "Money Receipt (பண ரசீது)",
+        "staff": "Staff (பணியாளர்)",
+        "expense": "Expense Management (செலவு மேலாண்மை)",
+        "lrBilty": "LR Bilty (எல்ஆர் பில்டி)",
+        "letterHead": "Letter Head (கடிதத் தலைப்பு)"
+      }
+    },
+    "dropdowns": {
+      "Admin": "Admin (நிர்வாகி)",
+      "Staff": "Staff (பணியாளர்)"
+    },
+    "toasts": {
+      "fetchError": "Error fetching staff details (பணியாளர் விவரங்களைப் பெறுவதில் பிழை)",
+      "updateSuccess": "Staff updated successfully (பணியாளர் வெற்றிகரமாக புதுப்பிக்கப்பட்டார்)",
+      "createSuccess": "Staff created successfully (பணியாளர் வெற்றிகரமாக உருவாக்கப்பட்டார்)",
+      "saveError": "Failed to save staff (பணியாளரைச் சேமிக்க முடியவில்லை)",
+      "statusChange": "Staff marked as {{status}} (பணியாளர் {{status}} எனக் குறிக்கப்பட்டுள்ளார்)",
+      "statusError": "Failed to update status (நிலையைப் புதுப்பிக்க முடியவில்லை)"
+    },
+    "profile": {
+      "pageTitle": "Staff Profile | PackNPay (பணியாளர் சுயவிவரம் | PackNPay)",
+      "loading": "Loading profile... (சுயவிவரம் ஏற்றப்படுகிறது...)",
+      "basicDetails": "Basic Details (அடிப்படை விவரங்கள்)",
+      "attendance": "Attendance (வருகை)",
+      "employmentDetails": "Employment Details (வேலைவாய்ப்பு விவரங்கள்)",
+      "orderCounts": "Order Counts (ஆர்டர் எண்ணிக்கை)",
+      "totalQuotations": "Total Quotations (மொத்த மேற்கோள்கள்)",
+      "totalOrders": "Total Orders (மொத்த ஆர்டர்கள்)",
+      "totalLrBilty": "Total LR/Bilty (மொத்த எல்ஆர்/பில்டி)",
+      "totalReceipts": "Total receipt (மொத்த ரசீது)"
+    }
+  },
+  "letterHead": {
+    "add": {
+      "title": "New Letter Head (புதிய கடிதத் தலைப்பு)",
+      "editTitle": "Edit Letter Head (கடிதத் தலைப்பைத் திருத்து)",
+      "pageTitle": "Add Letter Head | PackNPay (கடிதத் தலைப்பைச் சேர் | PackNPay)",
+      "pageTitleEdit": "Edit Letter Head | PackNPay (கடிதத் தலைப்பைத் திருத்து | PackNPay)",
+      "basicDetails": "Basic Details (அடிப்படை விவரங்கள்)",
+      "letterDetails": "Letter Details (கடித விவரங்கள்)",
+      "loading": "Loading letter details... (கடித விவரங்கள் ஏற்றப்படுகின்றன...)"
+    },
+    "fields": {
+      "lhNo": "LH No. (எல்எச் எண்.)",
+      "date": "Date (தேதி)",
+      "name": "Name (பெயர்)",
+      "phone": "Phone no. (தொலைபேசி எண்.)",
+      "email": "Email (மின்னஞ்சல்)",
+      "remarks": "Remarks (குறிப்புகள்)"
+    },
+    "placeholders": {
+      "enterName": "Enter name (பெயரை உள்ளிடவும்)",
+      "enterPhone": "Enter ph no. (தொலைபேசி எண்ணை உள்ளிடவும்)",
+      "enterEmail": "Enter email (மின்னஞ்சலை உள்ளிடவும்)",
+      "writeRemarks": "Write remarks.. (குறிப்புகளை எழுதவும்..)",
+      "write": "Write.. (எழுதவும்..)"
+    },
+    "toasts": {
+      "loadError": "Failed to load letter details. (கடித விவரங்களை ஏற்றுவதில் தோல்வி.)",
+      "previewComingSoon": "Preview functionality coming soon! (முன்னோட்ட அம்சம் விரைவில் வரும்!)",
+      "nameRequired": "Name is required! (பெயர் அவசியம்!)",
+      "createSuccess": "Letter Head created successfully! (கடிதத் தலைப்பு வெற்றிகரமாக உருவாக்கப்பட்டது!)",
+      "updateSuccess": "Letter Head updated successfully! (கடிதத் தலைப்பு வெற்றிகரமாக புதுப்பிக்கப்பட்டது!)",
+      "createFail": "Failed to create Letter Head (கடிதத் தலைப்பை உருவாக்குவதில் தோல்வி)",
+      "updateFail": "Failed to update Letter Head (கடிதத் தலைப்பைப் புதுப்பிப்பதில் தோல்வி)"
+    },
+    "modals": {
+      "successTitle": "Success! (வெற்றி!)",
+      "updateSuccessTitle": "Update Success! (புதுப்பிப்பு வெற்றி!)",
+      "successMessage": "You've successfully {{action}} letter head {{lh_no}}. Do you want to return to the list? (நீங்கள் வெற்றிகரமாக கடிதத் தலைப்பு {{lh_no}}-ஐ {{action}}. பட்டியலுக்குத் திரும்ப விரும்புகிறீர்களா?)",
+      "returnToList": "Yes, return to list (ஆம், பட்டியலுக்குத் திரும்பு)",
+      "stayHere": "No, stay here (இல்லை, இங்கேயே இரு)"
+    },
+    "list": {
+      "title": "Letter Head (கடிதத் தலைப்பு)",
+      "addBtn": "Add Letter Head (கடிதத் தலைப்பைச் சேர்)",
+      "pageTitle": "Letter Head List | PackNPay (கடிதத் தலைப்பு பட்டியல் | PackNPay)",
+      "columns": {
+        "lhNo": "LH NO (எல்எச் எண்.)",
+        "dates": "DATES (தேதிகள்)",
+        "customer": "CUSTOMER (வாடிக்கையாளர்)",
+        "phone": "PHONE NO. (தொலைபேசி எண்.)",
+        "email": "EMAIL (மின்னஞ்சல்)"
+      },
+      "toasts": {
+        "downloadingPdf": "Downloading PDF, please wait... (PDF பதிவிறக்கப்படுகிறது...)",
+        "downloadSuccess": "Downloaded successfully! (வெற்றிகரமாக பதிவிறக்கப்பட்டது!)",
+        "downloadFail": "Failed to download PDF. (பதிவிறக்க முடியவில்லை.)",
+        "exporting": "Exporting records, please wait... (ஏற்றுமதி செய்யப்படுகிறது...)",
+        "exportSuccess": "Exported successfully! (ஏற்றுமதி வெற்றி!)",
+        "exportFail": "Failed to export records. (ஏற்றுமதி தோல்வி.)",
+        "generatingPdf": "Generating PDF, please wait... (PDF உருவாக்கப்படுகிறது...)",
+        "previewFail": "Failed to load PDF preview. (முன்னோட்டம் தோல்வி.)",
+        "deleteSuccess": "Letter Head deleted successfully (கடிதத் தலைப்பு நீக்கப்பட்டது)",
+        "deleteFail": "Failed to delete letter head (நீக்க முடியவில்லை)"
+      },
+      "deleteModal": {
+        "title": "Delete Letter Head (கடிதத் தலைப்பை நீக்கு)",
+        "message": "Are you sure you want to delete this letter head? This action cannot be undone. (நிச்சயமாக நீக்க வேண்டுமா?)"
+      }
+    }
+  },
+  "subscription": {
+    "title": "Subscription (சந்தா)",
+    "daysLeft": "Days left to renew (புதுப்பிக்க மீதமுள்ள நாட்கள்)",
+    "plan": "Plan (திட்டம்)",
+    "noActivePlan": "No Active Plan (செயலில் உள்ள திட்டம் இல்லை)",
+    "purchasedOn": "Purchased On (வாங்கிய தேதி)",
+    "validTill": "Valid Till (செல்லுபடியாகும் தேதி)",
+    "buyPlan": "Buy plan (திட்டத்தை வாங்கு)",
+    "renewPlan": "Renew plan (திட்டத்தை புதுப்பி)",
+    "history": "Subscription History (சந்தா வரலாறு)",
+    "paid": "Paid (செலுத்தப்பட்டது)",
+    "monthly": "Monthly (மாதாந்திரம்)",
+    "upfront": "Upfront (முன்பணம்)",
+    "tryForFree": "Try for free (இலவசமாக முயற்சிக்கவும்)",
+    "subscribe": "Subscribe (சந்தா செலுத்து)",
+    "days": "Days (நாட்கள்)",
+    "months": "Months (மாதங்கள்)",
+    "buy": {
+      "title": "Boost Your Current Plan (உங்கள் தற்போதைய திட்டத்தை அதிகரிக்கவும்)",
+      "subtitle": "Enjoy more features without losing what you love. (நீங்கள் விரும்புவதை இழக்காமல் மேலும் பல அம்சங்களை அனுபவிக்கவும்.)"
+    },
+    "columns": {
+      "slNo": "SL NO (வரிசை எண்)",
+      "purchasedOn": "PURCHASED ON (வாங்கிய தேதி)",
+      "planName": "PLAN NAME (திட்டத்தின் பெயர்)",
+      "period": "PERIOD (காலம்)",
+      "duration": "DURATION (கால அளவு)",
+      "amount": "AMOUNT (தொகை)",
+      "status": "STATUS (நிலை)"
+    },
+    "features": {
+      "supervisors": "Supervisors (மேற்பார்வையாளர்கள்)",
+      "managers": "Managers (மேலாளர்கள்)",
+      "labours": "Labours (தொழிலாளர்கள்)",
+      "prioritySupport": "Priority Support (முன்னுரிமை ஆதரவு)"
+    },
+    "toasts": {
+      "loadFail": "Failed to load subscription details (சந்தா விவரங்களை ஏற்றுவதில் தோல்வி)",
+      "razorpayFail": "Razorpay SDK failed to load. (ரேஸர்பே எஸ்டிகே ஏற்ற முடியவில்லை.)",
+      "paymentSuccess": "Payment Verified Successfully! (பணம் செலுத்துதல் வெற்றிகரமாக சரிபார்க்கப்பட்டது!)",
+      "invalidPayment": "Invalid payment (தவறான பணம் செலுத்துதல்)",
+      "verifyFail": "Verification failed (சரிபார்ப்பு தோல்வி)",
+      "paymentFailed": "Payment Failed (பணம் செலுத்துதல் தோல்வி)",
+      "checkoutFail": "Failed to initiate checkout (செக் அவுட்டைத் தொடங்க முடியவில்லை)"
+    }
+  },
+  "lr": {
+    "add": {
+      "pageTitle": "Add LR | PackNPay (LR ஐச் சேர் | PackNPay)",
+      "pageTitleEdit": "Edit LR | PackNPay (LR ஐத் திருத்து | PackNPay)",
+      "newTitle": "New Lorry Receipt (புதிய லாரி ரசீது)",
+      "editTitle": "Edit Lorry Receipt (லாரி ரசீதைத் திருத்து)",
+      "saveBtn": "Save LR (LR ஐ சேமி)",
+      "loading": "Loading LR details... (LR விவரங்கள் ஏற்றப்படுகின்றன...)",
+      "sections": {
+        "lrDetails": "LR Details (LR விவரங்கள்)",
+        "truckDetails": "Truck Details (டிரக் விவரங்கள்)",
+        "consignorFrom": "Consignor/Move From (அனுப்புநர்/இங்கிருந்து)",
+        "packageDetails": "Package Details (தொகுப்பு விவரங்கள்)",
+        "demurrageCharge": "Demurrage Charge (தாமதக் கட்டணம்)",
+        "materialInsurance": "Material Insurance (பொருள் காப்பீடு)",
+        "consignorTo": "Consignee/Move To (பெறுநர்/இங்கே செல்ல)",
+        "paymentDetails": "Payment Details (கட்டண விவரங்கள்)",
+        "driverDetails": "Driver Details (ஓட்டுநர் விவரங்கள்)"
+      }
+    },
+    "fields": {
+      "lrNo": "LR No. (LR எண்.)",
+      "date": "Date (தேதி)",
+      "riskType": "Risk Type (ஆபத்து வகை)",
+      "orderId": "Order ID (ஆர்டர் ஐடி)",
+      "vehicleNo": "Vehicle No. (வாகன எண்.)",
+      "movingFrom": "Moving from (இங்கிருந்து நகர்கிறது)",
+      "movingTo": "Moving to (இங்கு நகர்கிறது)",
+      "driverName": "Driver name (ஓட்டுநர் பெயர்)",
+      "driverPhone": "Driver's mobile no. (ஓட்டுநரின் மொபைல் எண்.)",
+      "driverLicense": "Driver license no. (ஓட்டுநர் உரிம எண்.)",
+      "consignorName": "Consignor name (அனுப்புநர் பெயர்)",
+      "consignorPhone": "Consignor ph no. (அனுப்புநர் தொலைபேசி எண்.)",
+      "consigneeName": "Consignee name (பெறுநர் பெயர்)",
+      "consigneePhone": "Consignee ph no. (பெறுநர் தொலைபேசி எண்.)",
+      "gstNo": "CGSTIN no. (CGSTIN எண்.)",
+      "country": "Country (நாடு)",
+      "state": "State (மாநிலம்)",
+      "city": "City (நகரம்)",
+      "pincode": "Pincode (பின்கோடு)",
+      "address": "Address (முகவரி)",
+      "noOfPackages": "No of package (தொகுப்புகளின் எண்ணிக்கை)",
+      "description": "Description (விளக்கம்)",
+      "actualWeight": "Actual Weight (உண்மையான எடை)",
+      "chargedWeight": "Charged Weight (கட்டணம் வசூலிக்கப்படும் எடை)",
+      "conditionNote": "Received Package condition (பெறப்பட்ட தொகுப்பின் நிலை)",
+      "remarks": "Remarks (குறிப்புகள்)",
+      "insuranceType": "Material Insurance (பொருள் காப்பீடு)",
+      "companyName": "Insurance company (காப்பீட்டு நிறுவனம்)",
+      "policyNo": "Policy no. (பாலிசி எண்.)",
+      "insuredAmount": "Insured amount (காப்பீடு செய்யப்பட்ட தொகை)",
+      "insuranceDate": "Insurance Date (காப்பீட்டுத் தேதி)",
+      "riskDetails": "Insurance Risk (காப்பீட்டு ஆபத்து)",
+      "freightToBeBilled": "Freight to be billed (கட்டணம் விதிக்கப்பட வேண்டிய சரக்கு)",
+      "freightPaid": "Freight Paid (செலுத்தப்பட்ட சரக்குக் கட்டணம்)",
+      "freightToPay": "Freight to pay (செலுத்த வேண்டிய சரக்குக் கட்டணம்)",
+      "basicFreight": "Total Basic freight (மொத்த அடிப்படை சரக்குக் கட்டணம்)",
+      "loadingCharge": "Loading charge (ஏற்றும் கட்டணம்)",
+      "unloadingCharge": "Unloading charge (இறக்கும் கட்டணம்)",
+      "stCharge": "S.T charge (S.T கட்டணம்)",
+      "otherCharge": "Other charge (மற்ற கட்டணங்கள்)",
+      "lrCnCharge": "LR/CN CHARGES (LR/CN கட்டணங்கள்)",
+      "gstPercent": "GST % (ஜிஎஸ்டி %)",
+      "gstPaidBy": "GST paid by (ஜிஎஸ்டி செலுத்துபவர்)",
+      "demurrageCharge": "Demurrage charge (தாமதக் கட்டணம்)",
+      "applicableRule": "Applicable Rule (பொருந்தக்கூடிய விதி)"
+    },
+    "placeholders": {
+      "selectRisk": "Select Risk Type (ஆபத்து வகையைத் தேர்ந்தெடுக்கவும்)",
+      "enterOrderId": "Enter Order ID (ஆர்டர் ஐடியை உள்ளிடவும்)",
+      "enterNo": "Enter no. (எண்ணை உள்ளிடவும்)",
+      "selectCity": "Select City (நகரத்தைத் தேர்ந்தெடுக்கவும்)",
+      "selectState": "Select State (மாநிலத்தைத் தேர்ந்தெடுக்கவும்)",
+      "phoneFormat": "+91",
+      "licenseFormat": "XXXX-XXXXX-XXXX",
+      "gstFormat": "XXXXX-XXXXX",
+      "enterPincode": "Enter pincode (பின்கோடை உள்ளிடவும்)",
+      "enterAddress": "Enter address (முகவரியை உள்ளிடவும்)",
+      "writeDesc": "Write description (விளக்கத்தை எழுதவும்)",
+      "enterWeight": "Enter weight (எடையை உள்ளிடவும்)",
+      "enter": "Enter (உள்ளிடவும்)",
+      "write": "Write... (எழுதவும்...)",
+      "currency": "₹"
+    },
+    "dropdowns": {
+      "OWNER RISK": "OWNER RISK (உரிமையாளர் ஆபத்து)",
+      "CARRIER RISK": "CARRIER RISK (கொண்டு செல்பவர் ஆபத்து)",
+      "INDIA": "INDIA (இந்தியா)"
+    },
+    "toasts": {
+      "fetchSuccess": "Data fetched successfully (தரவு வெற்றிகரமாக பெறப்பட்டது)",
+      "loadError": "Failed to load LR data (LR தரவை ஏற்றுவதில் தோல்வி)",
+      "createSuccess": "LR created successfully! (LR வெற்றிகரமாக உருவாக்கப்பட்டது!)",
+      "updateSuccess": "LR updated successfully! (LR வெற்றிகரமாக புதுப்பிக்கப்பட்டது!)",
+      "saveError": "Failed to save LR (LR ஐ சேமிக்க முடியவில்லை)"
+    },
+    "modals": {
+      "successTitle": "Success! (வெற்றி!)",
+      "updateSuccessTitle": "Update Success! (புதுப்பிப்பு வெற்றி!)",
+      "successMessage": "You've successfully {{action}} Lorry Receipt {{lr_no}}. Do you want to return to the list? (நீங்கள் லாரி ரசீது {{lr_no}} ஐ வெற்றிகரமாக {{action}}. பட்டியலுக்குத் திரும்ப விரும்புகிறீர்களா?)",
+      "returnToList": "Yes, return to list (ஆம், பட்டியலுக்குத் திரும்பு)",
+      "stayHere": "No, stay here (இல்லை, இங்கேயே இரு)"
+    },
+    "list": {
+      "title": "LR Lists (LR பட்டியல்கள்)",
+      "addBtn": "Add LR (LR ஐச் சேர்)",
+      "pageTitle": "LR List | PackNPay (LR பட்டியல் | PackNPay)",
+      "totalLr": "Total LR (மொத்த LR)",
+      "columns": {
+        "lrNo": "LR NO (LR எண்.)",
+        "dates": "DATES (தேதிகள்)",
+        "customer": "CUSTOMER (வாடிக்கையாளர்)",
+        "location": "LOCATION (இடம்)",
+        "freight": "FREIGHT (சரக்குக் கட்டணம்)"
+      },
+      "toasts": {
+        "downloadingPdf": "Downloading {{copyType}} copy, please wait... ({{copyType}} நகல் பதிவிறக்கப்படுகிறது...)",
+        "downloadSuccess": "{{copyType}} copy downloaded successfully! ({{copyType}} நகல் வெற்றிகரமாக பதிவிறக்கப்பட்டது!)",
+        "downloadFail": "Failed to download {{copyType}} copy. ({{copyType}} நகலை பதிவிறக்க முடியவில்லை.)",
+        "loadingPdf": "Loading PDF preview... (PDF முன்னோட்டம் ஏற்றப்படுகிறது...)",
+        "previewFail": "Failed to load PDF preview. (PDF முன்னோட்டத்தை ஏற்ற முடியவில்லை.)",
+        "missingId": "Error: Missing record identifier. (பிழை: பதிவு அடையாளங்காட்டி இல்லை.)",
+        "deleteSuccess": "LR deleted successfully (LR வெற்றிகரமாக நீக்கப்பட்டது)",
+        "deleteFail": "Failed to delete LR (LR ஐ நீக்க முடியவில்லை)",
+        "exportingCsv": "Exporting CSV... (CSV ஏற்றுமதி செய்யப்படுகிறது...)"
+      },
+      "deleteModal": {
+        "title": "Delete Lorry Receipt (லாரி ரசீதை நீக்கு)",
+        "message": "Are you sure you want to delete this LR? This action cannot be undone. (நிச்சயமாக நீக்க வேண்டுமா?)"
+      },
+      "downloadModal": {
+        "title": "Select Copy (நகலைத் தேர்ந்தெடுக்கவும்)"
+      }
+    },
+    "copies": {
+      "consignor": "Consignor (அனுப்புநர்)",
+      "consignee": "Consignee (பெறுநர்)",
+      "driver": "Driver (ஓட்டுநர்)",
+      "transporter": "Transporter (கொண்டு செல்பவர்)"
+    }
+  }
+}

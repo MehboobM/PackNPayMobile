@@ -35,7 +35,7 @@ class _HomeScreenState extends State<HomeScreen> {
         return _homeDashboard();
 
       case 1:
-        return const SurveyListScreen();
+        return  SurveyListScreen(isHideLeading: false,);
 
 
       case 2:

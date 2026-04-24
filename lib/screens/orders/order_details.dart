@@ -1,4 +1,6 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:pack_n_pay/screens/orders/widgets/change_status_dialog.dart';
 import 'package:pack_n_pay/screens/orders/widgets/expansion_section.dart';
@@ -8,14 +10,120 @@ import 'package:pack_n_pay/screens/orders/widgets/shipment_staus.dart';
 import 'package:pack_n_pay/utils/app_colors.dart';
 import 'package:pack_n_pay/utils/m_font_styles.dart';
 
+import '../../global_widget/custom_button.dart';
+import '../../notifier/order_detail_notifier.dart';
+import '../../utils/toast_message.dart';
 import '../Quotation/widget/gradient_title_widget.dart';
-import '../Quotation/widget/orange_devider.dart';  // <-- make sure this path is correct
+import '../dummy/widgets/details_upload_dialog.dart';
+import '../dummy/widgets/expense_popup.dart';
+import '../dummy/widgets/staff_labour_popup.dart';
+import '../dummy/widgets/vehicle_details.dart';  // <-- make sure this path is correct
 
-class OrderDetailsScreen extends StatelessWidget {
+class OrderDetailsScreen extends ConsumerStatefulWidget {
   const OrderDetailsScreen({super.key});
 
   @override
+  ConsumerState<OrderDetailsScreen> createState() => _OrderDetailsScreenState();
+}
+
+class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    orderCreate();
+  }
+
+  String formatDate(String? date) {
+    if (date == null || date.isEmpty) return '-';
+
+    try {
+      final d = DateTime.parse(date);
+      return "${d.day.toString().padLeft(2, '0')}-"
+          "${d.month.toString().padLeft(2, '0')}-"
+          "${d.year}";
+    } catch (e) {
+      return date; // fallback if parsing fails
+    }
+  }
+
+
+  String getStatus(String? status) {
+    switch (status) {
+      case "SHIFTING_STARTED":
+        return "SHIFTING STARTED";
+      case "SHIFTING_COMPLETED":
+        return "SHIFTING COMPLETED";
+      default:
+        return status ?? "-";
+    }
+  }
+
+  List<Map<String, dynamic>> mapExpenses(List<dynamic> expenses) {
+    return expenses.map((e) {
+      return {
+        "category_id": e.categoryId,
+        "amount": int.tryParse(e.amount ?? "0") ?? 0,
+      };
+    }).toList();
+  }
+
+  orderCreate() async {
+    final state = ref.watch(orderDetailProvider);
+    final data = state.orderData?.data;
+    if(data?.id==null) {
+      final message = await ref
+          .read(orderDetailProvider.notifier)
+          .createOrderAndRefresh(data?.quotationId ?? "");
+      if (message == "Order created successfully") {
+        ToastHelper.showSuccess(message: message!);
+      } else {
+        ToastHelper.showError(message: message ?? "Error occurred");
+      }
+    }
+  }
+
+
+  @override
   Widget build(BuildContext context) {
+    final state = ref.watch(orderDetailProvider);
+
+    final data = state.orderData?.data;
+    final pickup = data?.quotationAddresses?.pickup;
+    final delivery = data?.quotationAddresses?.delivery;
+    final items = data?.surveyItems ?? [];
+    final logs = data?.statusLogs ?? [];
+
+    final expenses = data?.expenses ?? [];
+    final staffList = data?.staff ?? []; // if result null then pass data?.staff because reslut
+    final labourList = data?.labour ?? []; // if result null then pass data?.labour
+
+    final media = data?.media;
+    final paymentSummary = data?.paymentSummary;
+
+
+    final packingList = media?.packing ?? [];
+    final unpackingList = media?.unpacking ?? [];
+
+    String imageBaseUrl = "https://packnpay.in/uploads/";
+
+    final int baseFare = paymentSummary?.baseFare ?? 0;
+    final int gstAmount = paymentSummary?.taxesAndSurcharges ?? 0;
+
+    final int totalAmount = baseFare + gstAmount;
+
+    final int expense = paymentSummary?.expenses ?? 0;
+    final int advance = paymentSummary?.advancePayment ?? 0;
+
+    final int totalPayable = totalAmount + expense - advance;
+    double totalExpense = 0;
+
+    for (var e in expenses) {
+      totalExpense += double.tryParse(e.amount ?? "0") ?? 0;
+    }
+
+
     return Scaffold(
       backgroundColor: AppColors.bodysecondry,
 
@@ -23,12 +131,13 @@ class OrderDetailsScreen extends StatelessWidget {
         surfaceTintColor: AppColors.mWhite,
         backgroundColor: Colors.white,
         elevation: 0,
+        titleSpacing: 0,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back, color: Colors.black),
           onPressed: () => Navigator.pop(context),
         ),
         title: Text(
-          "Orders",
+          "order.title".tr(),
           style: TextStyles.f16w600mGray9,
         ),
         actions: [
@@ -57,741 +166,1160 @@ class OrderDetailsScreen extends StatelessWidget {
           ),
         ],
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(12),
-        child: SingleChildScrollView(
-          child: Column(
-            children: [
-              OrderStatusStepper(currentStep: 0),
-              const SizedBox(height: 16),
-              ShipmentStatusStepper(currentStep: 1),
-              const SizedBox(height: 10),
-
-              CustomExpansionSection(
-                title: "Order Details",
+      body: Stack(
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(12),
+            child: SingleChildScrollView(
+              child: Column(
                 children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
+                  //hide if null
+                 // OrderStatusStepper(currentStep: 0),
+
+                  OrderStatusStepper(logs: logs),
+                  const SizedBox(height: 16),
+                  //ShipmentStatusStepper(currentStep: 1),
+                  ShipmentStatusStepper(logs: logs),
+                  const SizedBox(height: 10),
+
+                  //Order details
+                  CustomExpansionSection(
+                    title: "order.orderDetails".tr(),
                     children: [
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children:  [
-                          Text(
-                            "Order No.",
-                            style: TextStyles.f10w400Gray6,
-                          ),
-                          SizedBox(height: 4),
-                          Text(
-                            "#PNP0001",
-                            style: TextStyles.f12w600Gray5,
-                          ),
-                        ],
-                      ),
-                      const SizedBox(width: 24), // spacing between columns
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children:  [
-                          Text(
-                            "Quotation No.",
-                            style: TextStyles.f10w400Gray6,
-                          ),
-                          SizedBox(height: 4),
-                          Text(
-                            "#PNP0001",
-                            style: TextStyles.f12w600Gray5,
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-
-              CustomExpansionSection(
-                title: "Order Status",
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                       Text(
-                        "Shifting Started",
-                        style: TextStyles.f12w700pinkish
-                      ),
-                      TextButton(
-                        onPressed: () {
-                          showDialog(
-                            context: context,
-                            builder: (_) => const ChangeStatusDialog(),
-                          );
-                        },
-                        style: TextButton.styleFrom(
-                          padding: EdgeInsets.zero,
-                          minimumSize: Size(50, 30),
-                          tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                          alignment: Alignment.centerRight,
-                        ),
-                        child:  Text(
-                          "Change Status",
-                          style: TextStyles.f12w600Gray9.copyWith(
-                            color: AppColors.primary, // Primary color
-                            decoration: TextDecoration.underline, // Underline
-
-
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-
-              CustomExpansionSection(
-                title: "Staff",
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      // Staff info
-                      Expanded(
-                        child: RichText(
-                          text: TextSpan(
-                            text: "Rakesh singh\n",
-                            style: TextStyles.f12w700primary,
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children:  [
-                              TextSpan(
-                                text: "Staff ID: ",
-                                style: TextStyles.f9w400mGray5
+                              Text(
+                                "order.orderNo".tr(),
+                                style: TextStyles.f10w400Gray6,
                               ),
-                              TextSpan(
-                                text: "Manager",
-                                style: TextStyles.f9w400mGray5.copyWith(
-                                  color: AppColors.mGray9
-                                )
+                              SizedBox(height: 4),
+                              Text(
+                                "${data?.existingOrderNo ?? "-"}",
+                                style: TextStyles.f12w600Gray5,
                               ),
                             ],
                           ),
-                        ),
-                      ),
-
-                      // Remove button
-                      Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                        decoration: BoxDecoration(
-                          color: const Color(0xFFFFC6C6), // reddish background
-                          borderRadius: BorderRadius.circular(6),
-                        ),
-                        child: const Text(
-                          "Remove",
-                          style: TextStyle(
-                            color: Color(0xFFD92E2E), // red text
-                            fontWeight: FontWeight.bold,
+                          const SizedBox(width: 24), // spacing between columns
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children:  [
+                              Text(
+                                "order.quotationNo".tr(),
+                                style: TextStyles.f10w400Gray6,
+                              ),
+                              SizedBox(height: 4),
+                              Text(
+                                "${data?.linkedQuotation?.quotationNo ?? "-"}",
+                                style: TextStyles.f12w600Gray5,
+                              ),
+                            ],
                           ),
-                        ),
+                        ],
                       ),
                     ],
                   ),
-                ],
-              ),
 
-              CustomExpansionSection(
-                title: "Labours",
-                children: [
-                  _labourItem(1, "Rakesh Singh"),
-                  _labourItem(2, "David Elson", addDivider: false), // last item, no divider
-                ],
-              ),
-
-              CustomExpansionSection(
-            title: "Vehicle Details",
-            children: [
-
-              /// ROW 1
-              Row(
-                children: [
-                  Expanded(
-                    child: _vehicleItem(
-                      "Vehicle No.",
-                      "XXX-XXXX-XXXXX",
-                    ),
-                  ),
-                  Expanded(
-                    child: _vehicleItem(
-                      "Driver's mobile no.",
-                      "+91 0000000000",
-                    ),
-                  ),
-                ],
-              ),
-
-              const SizedBox(height: 10),
-
-              /// ROW 2
-              Row(
-                children: [
-                  Expanded(
-                    child: _vehicleItem(
-                      "Driver name",
-                      "Rakesh Singh",
-                    ),
-                  ),
-                  Expanded(
-                    child: _vehicleItem(
-                      "Driver license no.",
-                      "XXX-XXXX-XXXXX",
-                    ),
-                  ),
-                ],
-              ),
-            ],
-          ),
-
-              CustomExpansionSection(
-                title: "Packing Details",
-                children: [
-                   Text(
-                    "Remarks",
-                    style: TextStyles.f12w500Gray7,
-                  ),
-                  const SizedBox(height: 6),
-                   Text(
-                    "Lorem ipsum dolor sit amet consectetur. In phasellus sollicitudin nulla pretium porttitor vel pulvinar eget. Erat orci donec iaculis morbi nam id ipsum. Tempor a sit facilisi in. At ac sit tincidunt tincidunt sapien imperdiet ac elit viverra.",
-                    style: TextStyles.f11w400Gray9,
-                  ),
-                  const SizedBox(height: 12),
-                  SizedBox(
-                    height: 70,
-                    child: ListView.separated(
-                      scrollDirection: Axis.horizontal,
-                      itemCount: 5,
-                      separatorBuilder: (_, __) => const SizedBox(width: 8),
-                      itemBuilder: (_, __) => ClipRRect(
-                        borderRadius: BorderRadius.circular(8),
-                        child: Image.network(
-                          "https://images.unsplash.com/photo-1519681393784-d120267933ba?auto=format&fit=crop&w=70&q=80",
-                          width: 70,
-                          height: 70,
-                          fit: BoxFit.cover,
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-
-              CustomExpansionSection(
-                title: "Unpacking Details",
-                children: [
-                   Text(
-                    "Remarks",
-                    style: TextStyles.f12w500Gray7,
-                  ),
-                  const SizedBox(height: 6),
-                   Text(
-                    "Lorem ipsum dolor sit amet consectetur. In phasellus sollicitudin nulla pretium porttitor vel pulvinar eget. Erat orci donec iaculis morbi nam id ipsum. Tempor a sit facilisi in. At ac sit tincidunt tincidunt sapien imperdiet ac elit viverra.",
-                    style: TextStyles.f11w400Gray9,
-                  ),
-                  const SizedBox(height: 12),
-                  SizedBox(
-                    height: 70,
-                    child: ListView.separated(
-                      scrollDirection: Axis.horizontal,
-                      itemCount: 5,
-                      separatorBuilder: (_, __) => const SizedBox(width: 8),
-                      itemBuilder: (_, __) => ClipRRect(
-                        borderRadius: BorderRadius.circular(8),
-                        child: Image.network(
-                          "https://images.unsplash.com/photo-1519681393784-d120267933ba?auto=format&fit=crop&w=70&q=80",
-                          width: 70,
-                          height: 70,
-                          fit: BoxFit.cover,
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-
-              //Quotation Details
-              CustomExpansionSection(
-                title: "Quotation Details",
-                children: [
-                  LayoutBuilder(
-                    builder: (context, constraints) {
-                      double itemWidth = (constraints.maxWidth - 12) / 2; // 2 columns
-
-                      return Wrap(
-                        spacing: 12,
-                        runSpacing: 12,
-                        children: [
-                          _itemWrapper(itemWidth, _quotationItem("Quotation No.", "#PNP0001")),
-                          _itemWrapper(itemWidth, _quotationItem("Company or Party Name", "Abc organization")),
-                          _itemWrapper(itemWidth, _quotationItem("Party Name", "Abc organization")),
-                          _itemWrapper(itemWidth, _quotationItem("Company or Party GST No.", "Asxdtrfdsuu")),
-
-                          const SizedBox(
-                            width: double.infinity,
-                            child: Divider(thickness: 1),
-                          ),
-
-                          _itemWrapper(itemWidth, _quotationItem("Party Name", "Abc organization")),
-                          _itemWrapper(itemWidth, _quotationItem("Quotation date", "00/00/0000")),
-                          _itemWrapper(itemWidth, _quotationItem("Load type", "Full Load")),
-
-                          _itemWrapper(itemWidth, _quotationItem("Phone No.", "+91 00000000")),
-                          _itemWrapper(itemWidth, _quotationItem("Packaging Date", "00/00/0000")),
-                          _itemWrapper(itemWidth, _quotationItem("Vehicle type", "Vehicle type")),
-
-                          _itemWrapper(itemWidth, _quotationItem("Email", "abc@email.com")),
-                          _itemWrapper(itemWidth, _quotationItem("Delivery date", "00/00/0000")),
-                          _itemWrapper(itemWidth, _quotationItem("Moving Path", "By Road")),
-                        ],
-                      );
-                    },
-                  ),
-                ],
-              ),
-
-              CustomExpansionSection(
-                 title:"",
-                titleWidget: Row(
-                  children: [
-                    GradientTitleWidget(title: 'Pickup Details                  '),
-                    Expanded( // ✅ NOW safe (because parent is bounded)
-                      child: Container(
-                        height: 1,
-                        color: Colors.orange,
-                      ),
-                    ),
-                    SizedBox(width: 10,)
-                  ],
-                ),
-                children: [
-                  LayoutBuilder(
-                    builder: (context, constraints) {
-                      double maxWidth = constraints.maxWidth;
-
-                      int columns = 3;
-
-
-                      double spacing = 14;
-                      double itemWidth = (maxWidth - (spacing * (columns - 1))) / columns;
-
-                      return Wrap(
-                        spacing: 12,
-                        runSpacing: 12,
-                        children: [
-                          _itemWrapper(itemWidth, _quotationItem("Shifting/Moving Date", "00/00/00")),
-                          _itemWrapper(itemWidth, _quotationItem("State", "Karnataka")),
-                          _itemWrapper(itemWidth, _quotationItem("Lift", "Service lift")),
-                          _itemWrapper(itemWidth, _quotationItem("Contact Details", "9918881974")),
-                          _itemWrapper(itemWidth, _quotationItem("City", "Hsr")),
-                          _itemWrapper(itemWidth, _quotationItem("Address", "Asxdtrfdsuu jekr fweuf ewf sd sjdf ")),
-
-                        ],
-                      );
-                    },
-                  ),
-                ],
-              ),
-
-
-              CustomExpansionSection(
-                title:"",
-                titleWidget: Row(
-                  children: [
-                    GradientTitleWidget(title: 'Delivery Details                  '),
-                    Expanded( // ✅ NOW safe (because parent is bounded)
-                      child: Container(
-                        height: 1,
-                        color: Colors.orange,
-                      ),
-                    ),
-                    SizedBox(width: 10,)
-                  ],
-                ),
-                children: [
-                  LayoutBuilder(
-                    builder: (context, constraints) {
-                      double maxWidth = constraints.maxWidth;
-
-                      int columns = 3;
-
-
-                      double spacing = 14;
-                      double itemWidth = (maxWidth - (spacing * (columns - 1))) / columns;
-
-                      return Wrap(
-                        spacing: 12,
-                        runSpacing: 12,
-                        children: [
-                          _itemWrapper(itemWidth, _quotationItem("Shifting/Moving Date", "00/00/00")),
-                          _itemWrapper(itemWidth, _quotationItem("State", "Karnataka")),
-                          _itemWrapper(itemWidth, _quotationItem("Lift", "Yes")),
-                          _itemWrapper(itemWidth, _quotationItem("Contact Details", "9918881974")),
-                          _itemWrapper(itemWidth, _quotationItem("City", "Hsr")),
-                          _itemWrapper(itemWidth, _quotationItem("Company or Party GST No.", "Asxdtrfdsuu")),
-
-                        ],
-                      );
-                    },
-                  ),
-                ],
-              ),
-
-              CustomExpansionSection(
-                title:"",
-                titleWidget: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text("Item 03",style: TextStyles.f12w600Gray9),
-
-                    Text("Edit Item",style: TextStyles.f12w600Gray9.copyWith(// this should button but ui same
-                      color: AppColors.primary,
-                      decoration: TextDecoration.underline,
-                      decorationColor: AppColors.primary, // 👈 match color
-                      decorationThickness: 1.5, // 👈 control thickness
-                    ),),
-
-                  ],
-                ),
-                children: [
-                  _ItemsHeaderRow(),
-                  const SizedBox(height: 4),
-
-                  // Items list
-                  ListView.separated(
-                    itemCount: 3,
-                    shrinkWrap: true,
-                    padding: EdgeInsets.zero,
-                    physics: const NeverScrollableScrollPhysics(),
-                    separatorBuilder: (_, __) => Container(height: 1,color: AppColors.mGray4,),
-                    itemBuilder: (_, index) => _ItemRow(index: index),
-                  ),
-                  //  const SizedBox(height: 24),
-                ],
-              ),
-
-              CustomExpansionSection(
-                title:"",
-                titleWidget: Row(
-                  children: [
-                    GradientTitleWidget(title: 'Insurance Details                '),
-                    Expanded( // ✅ NOW safe (because parent is bounded)
-                      child: Container(
-                        height: 1,
-                        color: Colors.orange,
-                      ),
-                    ),
-                    SizedBox(width: 10,)
-                  ],
-                ),
-                children: [
-                  LayoutBuilder(
-                    builder: (context, constraints) {
-                      double maxWidth = constraints.maxWidth;
-                      int columns = 3;
-                      double spacing = 14;
-                      double itemWidth = (maxWidth - (spacing * (columns - 1))) / columns;
-
-                      return Wrap(
-                        spacing: 12,
-                        runSpacing: 12,
-                        children: [
-                          _itemWrapper(itemWidth, _quotationItem("Insurance type", "Optional")),
-                          _itemWrapper(itemWidth, _quotationItem("Insurance charge(%)", "3%(GST)")),
-                          SizedBox(
-                            width: maxWidth,
-                            child: _quotationItem(
-                              "Declaration of goods",
-                              "Lorem ipsum dolor sit ametconsectetur. Id a morbi euismod odio id viverra morbi vitae sed.",
-                               3,
+                  //Order Status
+                  CustomExpansionSection(
+                    title: "",
+                    titleWidget: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text("order.orderStatus".tr(), style: TextStyles.f12w600Gray9),
+                        InkWell(
+                          onTap: () async {
+                            showDialog(
+                              context: context,
+                              builder: (_) => ChangeStatusDialog(
+                                uid: data?.existingOrderUid ?? "",
+                                logs: logs,
+                              ),
+                            );
+                          },
+                          child: Padding(
+                            padding: const EdgeInsets.only(right: 10),
+                            child: Text(
+                              "Change Status",
+                              style: TextStyles.f12w600Gray9.copyWith(
+                                color: AppColors.primary,
+                                decoration: TextDecoration.underline,
+                              ),
                             ),
                           ),
-                        //why is not going in three line automaticlly
-                        ],
-                      );
-                    },
-                  ),
-                ],
-              ),
-
-              CustomExpansionSection(
-                title:"",
-                titleWidget: Row(
-                  children: [
-                    GradientTitleWidget(title: 'Other Details                    '),
-                    Expanded( // ✅ NOW safe (because parent is bounded)
-                      child: Container(
-                        height: 1,
-                        color: Colors.orange,
-                      ),
+                        ),
+                      ],
                     ),
-                    SizedBox(width: 10,)
-                  ],
-                ),
-                children: [
-                  SizedBox(
-                    width: double.infinity,
-                    child: _quotationItem(
-                      "IS THERE EASY ACCESS FOR LOAD & UNLOADING AT ORIGIN & DESTINATION(क्या लोड और अनलोडिंग आसान है?",
-                      "Available",
-                      3,
-                      2
-                    ),
-                  ),
-                  SizedBox(height: 10,),
-                  SizedBox(
-                    width: double.infinity,
-                    child: _quotationItem(
-                        "SHOULD ANY ITEMS BE GOT DOWN THROUGH BALCONY ETC.(क्या किसी सामान को बालकनी से नीचे उतारना है?)",
-                        "Almirah",
-                        3,
-                        2
-                    ),
-                  ),
-                  SizedBox(height: 10,),
-                  SizedBox(
-                    width: double.infinity,
-                    child: _quotationItem(
-                        "ARE THERE ANY RESTRICTIONS FOR LOADING/UNLOADING AT ORIGIN/DESTINATION (क्या लोडिंग/अनलोडिंग वाले स्थान पर कोई रोकेटोक है?)",
-                        "Yes",
-                        1,
-                        2
-                    ),
-                  ),
-                  SizedBox(height: 10,),
-                  SizedBox(
-                    width: double.infinity,
-                    child: _quotationItem(
-                        "ARE THERE ANY RESTRICTIONS FOR LOADING/UNLOADING AT ORIGIN/DESTINATION (क्या लोडिंग/अनलोडिंग वाले स्थान पर कोई रोकेटोक है?)",
-                        "No",
-                        1,
-                        2
-                    ),
-                  ),
-
-                  SizedBox(height: 10,),
-                  SizedBox(
-                    width: double.infinity,
-                    child: _quotationItem(
-                        "DO YOU HAVE ANY SPECIAL NEEDS OR CONCERNT(अन्य जरूरी आवश्यकताएं?)",
-                        "No",
-                        1,
-                        2
-                    ),
-                  ),
-                ],
-              ),
-
-              CustomExpansionSection(
-                title:"",
-                titleWidget: Row(
-                  children: [
-
-                    GradientTitleRowWidget(
-                      titleWidget: Row(
-                       children: [
-                         Text(
-                           "Payment Details",
-                           style: TextStyles.f10w500mWhite,
-                         ),
-                         SizedBox(width: 10,),
-                         Text(
-                           "Total Amount: ₹34000",
-                           style: TextStyles.f10w700mBlack,
-                         ),
-                       ],
-                      ),),
-                    Expanded( // ✅ NOW safe (because parent is bounded)
-                      child: Container(
-                        height: 1,
-                        color: Colors.orange,
-                      ),
-                    ),
-                    SizedBox(width: 10,)
-                  ],
-                ),
-                children: [
-                  PaymentRowItem(title: "Freight Charge", amount: "2000"),
-                  PaymentRowItem(title: "Advance Paid", amount: "2000"),
-                  PaymentRowItem(title: "Packing Charge", amount: "2000"),
-                  PaymentRowItem(title: "Unpacking Charge", amount: "2000"),
-                  PaymentRowItem(title: "Loading Charge", amount: "2000"),
-                  PaymentRowItem(title: "Unloading Charge", amount: "2000"),
-                  PaymentRowItem(title: "Packing material charge", amount: "2000"),
-                ],
-              ),
-
-              CustomExpansionSection(
-                title:"",
-                titleWidget: Row(
-                  children: [
-
-                    GradientTitleRowWidget(
-                      titleWidget: Row(
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text(
-                            "Expenses",
-                            style: TextStyles.f10w500mWhite,
+                            // "${data.shipmenStatus}",
+                              getStatus(data?.shipmenStatus),
+                              style: TextStyles.f12w700pinkish
                           ),
-                          SizedBox(width: 10,),
-                          Text(
-                            "Total Amount: ₹34000",
-                            style: TextStyles.f10w700mBlack,
+                          // TextButton(
+                          //   onPressed: () {
+                          //     showDialog(
+                          //       context: context,
+                          //       builder: (_) => ChangeStatusDialog(
+                          //         uid: data?.existingOrderUid ?? "",
+                          //         logs: logs,
+                          //       ),
+                          //     );
+                          //   },
+                          //   style: TextButton.styleFrom(
+                          //     padding: EdgeInsets.zero,
+                          //     minimumSize: Size(50, 30),
+                          //     tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                          //     alignment: Alignment.centerRight,
+                          //   ),
+                          //   child:  Text(
+                          //     "Change Status",
+                          //     style: TextStyles.f12w600Gray9.copyWith(
+                          //       color: AppColors.primary, // Primary color
+                          //       decoration: TextDecoration.underline, // Underline
+                          //
+                          //
+                          //     ),
+                          //   ),
+                          // ),
+                        ],
+                      ),
+                    ],
+                  ),
+
+                  //Staff
+                  CustomExpansionSection(
+                    title: "",
+                    titleWidget: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text("order.staff".tr(), style: TextStyles.f12w600Gray9),
+
+                        InkWell(
+                          onTap: () async {
+                            final result = await showDialog(
+                              context: context,
+                              builder: (_) => ManagePeoplePopup(
+                                title: "Manage Staff",
+                                people: staffList.map((e) {
+                                  return {
+                                    "name": e.name ?? "",
+                                    "role": "Staff",
+                                    "id": e.userId?.toString() ?? "",
+                                  };
+                                }).toList(),
+                              ),
+                            );
+                            print("Staff   >>>>>>>>>>>>>>$result");
+
+                            if (result != null) {
+                              final message = await ref.read(orderDetailProvider.notifier).updateOrder(
+                                id: pickup?.quotationId ?? -1,
+                                uid: data?.existingOrderUid ?? "",
+                                vehicleNo: data?.vehicleNo,
+                                driverName: data?.driverName,
+                                driverPhone: data?.driverPhone,
+                                driverLicense: data?.driverLicense,
+
+
+                                staff: result, // ✅ PASS STAFF
+                                labour: labourList.map((e) => {
+                                  "user_id": e.userId,
+                                  "role_label": e.roleLabel ?? "Labour",
+                                }).toList(),
+                                expenses: expenses.map((e) {
+                                  final parsedAmount = double.tryParse(e.amount ?? "0")?.toInt() ?? 0;
+                                  return {
+                                    "category_id": e.categoryId,
+                                    "amount": parsedAmount,
+                                  };
+                                }).toList(),
+
+                              );
+
+                              if (message == "Order updated successfully") {
+                                ToastHelper.showSuccess(message: message!);
+                              } else {
+                                ToastHelper.showError(message: message ?? "Error");
+                              }
+                            }
+                          },
+                          child: Padding(
+                            padding: const EdgeInsets.only(right: 10),
+                            child: Text(
+                              "Edit",
+                              style: TextStyles.f12w600Gray9.copyWith(
+                                color: AppColors.primary,
+                                decoration: TextDecoration.underline,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+
+                    /// ✅ SHOW ALL STAFF (NOT ONLY FIRST)
+                    children: staffList.isEmpty
+                        ? [
+                      Text("order.addStaff".tr(), style: TextStyles.f12w500Gray7),
+                    ]
+                        : staffList.map((e) {
+                      return Padding(
+                        padding:  EdgeInsets.only(bottom: 4),
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Expanded(
+                              child: RichText(
+                                text: TextSpan(
+                                  text: "${e.name ?? "-"}\n",
+                                  style: TextStyles.f12w700primary,
+                                  children: [
+                                    TextSpan(
+                                      text: "Staff ID: ",
+                                      style: TextStyles.f9w400mGray5,
+                                    ),
+                                    TextSpan(
+                                      text: "${e.userId ?? "-"}",
+                                      style: TextStyles.f9w400mGray5.copyWith(
+                                        color: AppColors.mGray9,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      );
+                    }).toList(),
+                  ),
+
+                  //LAbour
+                  CustomExpansionSection(
+                    title: "",
+                    titleWidget: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text("order.labours".tr(), style: TextStyles.f12w600Gray9),
+
+                        InkWell(
+                          onTap: () async {
+                            final result = await showDialog(
+                              context: context,
+                              builder: (_) => ManagePeoplePopup(
+                                title: "Manage Labours",
+                                people: labourList.map((e) {
+                                  return {
+                                    "name": e.name ?? "",
+                                    "role": "Labour",
+                                    "id": e.userId?.toString() ?? "",
+                                  };
+                                }).toList(),
+                              ),
+                            );
+                            print("Labours   >>>>>>>>>>>>>>$result");
+                            if (result != null) {
+                              final message = await ref.read(orderDetailProvider.notifier).updateOrder(
+                                id: pickup?.quotationId ?? -1,
+                                uid: data?.existingOrderUid ?? "",
+                                vehicleNo: data?.vehicleNo,
+                                driverName: data?.driverName,
+                                driverPhone: data?.driverPhone,
+                                driverLicense: data?.driverLicense,
+                                labour: result, // ✅ PASS LABOUR
+                                staff: staffList.map((e) => {
+                                  "user_id": e.userId,
+                                  "role_label": e.roleLabel ?? "Staff",
+                                }).toList(),
+                                expenses: expenses.map((e) {
+                                  final parsedAmount = double.tryParse(e.amount ?? "0")?.toInt() ?? 0;
+                                  return {
+                                    "category_id": e.categoryId,
+                                    "amount": parsedAmount,
+                                  };
+                                }).toList(),
+                              );
+
+                              if (message == "Order updated successfully") {
+                                ToastHelper.showSuccess(message: message!);
+                              } else {
+                                ToastHelper.showError(message: message ?? "Error");
+                              }
+                            }
+                          },
+
+                          child: Padding(
+                            padding: const EdgeInsets.only(right: 10),
+                            child: Text(
+                              "Edit",
+                              style: TextStyles.f12w600Gray9.copyWith(
+                                color: AppColors.primary,
+                                decoration: TextDecoration.underline,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+
+                    /// ✅ SHOW ALL LABOURS
+                    children: labourList.isEmpty
+                        ? [
+                      Text("order.addLabour".tr(), style: TextStyles.f12w500Gray7),
+                    ]
+                        : labourList.map((e) {
+                      return Padding(
+                        padding:  EdgeInsets.only(bottom: 4),
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Expanded(
+                              child: RichText(
+                                text: TextSpan(
+                                  text: "${e.name ?? "-"}\n",
+                                  style: TextStyles.f12w700primary,
+                                  children: [
+                                    TextSpan(
+                                      text: "Labour ID: ",
+                                      style: TextStyles.f9w400mGray5,
+                                    ),
+                                    TextSpan(
+                                      text: "${e.userId ?? "-"}",
+                                      style: TextStyles.f9w400mGray5.copyWith(
+                                        color: AppColors.mGray9,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      );
+                    }).toList(),
+                  ),
+
+                  /// ================= Quotation DETAILS =================
+                  CustomExpansionSection(
+                    title: "order.quotationDetails".tr(),
+                    children: [
+                      Wrap(
+                        spacing: 80,
+                        runSpacing: 16,
+                        children: [
+                          _quotationItem("order.quotationNo".tr(), data?.quotationNo ?? "-"),
+
+                          _quotationItem("quotation.companyOrPartyName".tr(), data?.companyOrPartyName ?? "-"),
+
+                          _quotationItem("quotation.partyName".tr(), data?.partyName ?? "-"),
+
+                          _quotationItem("quotation.companyGst".tr(), data?.gstNo ?? "-"),
+
+                          _quotationItem("quotation.phoneNo".tr(), data?.phone ?? "-"),
+
+                          _quotationItem("quotation.email".tr(), data?.email ?? "-"),
+
+                          _quotationItem("quotation.quotationDate".tr(), formatDate(data?.quotationDate)),
+
+                          _quotationItem("quotation.packingDate".tr(), formatDate(data?.packingDate)),
+
+                          _quotationItem("quotation.deliveryDate".tr(), formatDate(data?.deliveryDate)),
+
+                          _quotationItem("quotation.loadType".tr(),  data?.loadType ?? "-"),
+
+                          _quotationItem("quotation.vehicleType".tr(), data?.vehicleType ?? "-"),
+
+                          _quotationItem("quotation.movingPath".tr(), data?.movingPath ?? "-"),
+
+                          _quotationItem("packageDetails.remarks".tr(), data?.remarks ?? "-"),
+                        ],
+                      ),
+                    ],
+                  ),
+
+                  //Vehicle Details
+                  CustomExpansionSection(
+                    title: "",
+                    titleWidget: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text("order.vehicleDetails".tr(), style: TextStyles.f12w600Gray9),
+
+                        InkWell(
+                          onTap: (){
+                            showDialog(
+                              context: context,
+                              barrierDismissible: false,
+                              barrierColor: Colors.black.withOpacity(0.5),
+                              // builder: (context) => const VehicleDetailsPopup(),
+                              builder: (context) => VehicleDetailsPopup(
+                                orderId: pickup?.quotationId ?? -1,
+                                quotationId: data?.existingOrderUid ?? "",
+
+                                vehicleNo: data?.vehicleNo,
+                                driverName: data?.driverName,
+                                driverPhone: data?.driverPhone,
+                                driverLicense: data?.driverLicense,
+                                staff: staffList.map((e) => {
+                                  "user_id": e.userId,
+                                  "role_label": e.roleLabel ?? "Staff",
+                                }).toList(),
+                                labour: labourList.map((e) => {
+                                  "user_id": e.userId,
+                                  "role_label": e.roleLabel ?? "Labour",
+                                }).toList(),
+                                expenses: expenses.map((e) {
+                                  return {
+                                    "category_id": e.categoryId,
+                                    "amount":  double.tryParse(e.amount ?? "0")?.toInt() ?? 0,
+                                  };
+                                }).toList(),
+                              ),
+                            );
+                          },
+                          child: Padding(
+                            padding: const EdgeInsets.only(right: 10),
+                            child: Text("Edit",
+                                style: TextStyles.f12w600Gray9.copyWith(
+                                  color: AppColors.primary,
+                                  decoration: TextDecoration.underline,
+                                )),
+                          ),
+                        ),
+                      ],
+                    ),
+                    children: [
+
+                      /// ROW 1
+                      Row(
+                        children: [
+                          Expanded(
+                            child: _vehicleItem(
+                              "lr.fields.vehicleNo".tr(),
+                              "${data?.vehicleNo ?? "-"}",
+                            ),
+                          ),
+                          Expanded(
+                            child: _vehicleItem(
+                              "lr.fields.driverPhone".tr(),
+                              "${data?.driverPhone ?? "-"}",
+                            ),
                           ),
                         ],
-                      ),),
-                    Expanded( // ✅ NOW safe (because parent is bounded)
-                      child: Container(
-                        height: 1,
-                        color: Colors.orange,
                       ),
+
+                      const SizedBox(height: 10),
+
+                      /// ROW 2
+                      Row(
+                        children: [
+                          Expanded(
+                            child: _vehicleItem(
+                              "lr.fields.driverName".tr(),
+                              "${data?.driverName ?? "-"}",
+                            ),
+                          ),
+                          Expanded(
+                            child: _vehicleItem(
+                              "lr.fields.driverLicense".tr(),
+                              data?.driverLicense ?? "-",
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+
+                  ),
+
+
+                  //Packing Details
+                  CustomExpansionSection(
+                    title: "",
+                    titleWidget: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text("order.packingDetails".tr(), style: TextStyles.f12w600Gray9),
+
+                        InkWell(
+                          onTap: (){
+                            showDialog(
+                              context: context,
+                              barrierDismissible: false,
+                              barrierColor: Colors.black.withOpacity(0.5),
+                              builder: (context) => DetailsUploadPopup(
+                                title: "order.packingDetails".tr(),
+                                hintText: "Enter a description...",
+                                onSave: (description, images) async {
+                                  final notifier = ref.read(orderDetailProvider.notifier);
+
+                                  final result = await notifier.updatePackingAndUnpackingOrder(
+                                    uid: data?.existingOrderUid ?? "",
+                                    mediaType: "PACKING",
+                                    // description: description,
+                                    images: images,
+                                  );
+
+                                  /// ✅ SUCCESS / ERROR handling
+                                  if (result != null && result.contains("success")) {
+                                    ToastHelper.showSuccess(message: result);
+                                  } else {
+                                    ToastHelper.showError(message: result ?? "Error occurred");
+                                  }
+
+
+                                },
+                              ),
+                            );
+                          },
+                          child: Padding(
+                            padding: const EdgeInsets.only(right: 10),
+                            child: Text("Add Images",
+                                style: TextStyles.f12w600Gray9.copyWith(
+                                  color: AppColors.primary,
+                                  decoration: TextDecoration.underline,
+                                )),
+                          ),
+                        ),
+                      ],
                     ),
-                    SizedBox(width: 10,)
-                  ],
-                ),
-                children: [
-                  PaymentRowItem(title: "Freight Charge", amount: "2000",onPressed: (){
+                    children: [
+                      // Text(
+                      //   "Remarks",
+                      //   style: TextStyles.f12w500Gray7,
+                      // ),
+                      // const SizedBox(height: 6),
+                      // Text(
+                      //   "Lorem ipsum dolor sit amet consectetur. In phasellus sollicitudin nulla pretium porttitor vel pulvinar eget. Erat orci donec iaculis morbi nam id ipsum. Tempor a sit facilisi in. At ac sit tincidunt tincidunt sapien imperdiet ac elit viverra.",
+                      //   style: TextStyles.f11w400Gray9,
+                      // ),
+                      // const SizedBox(height: 12),
+                      SizedBox(
+                        height: 70,
+                        child: packingList.isEmpty
+                            ? const Text("No images uploaded")
+                            : ListView.separated(
+                          scrollDirection: Axis.horizontal,
+                          itemCount: packingList.length,
+                          separatorBuilder: (_, __) => const SizedBox(width: 8),
+                          itemBuilder: (_, index) {
+                            final item = packingList[index];
+                            final imageUrl = "$imageBaseUrl${item.filePath}";
 
-                  },),
+                            return ClipRRect(
+                              borderRadius: BorderRadius.circular(8),
+                              child: Image.network(
+                                imageUrl,
+                                width: 70,
+                                height: 70,
+                                fit: BoxFit.cover,
+                              ),
+                            );
+                          },
+                        ),
+                      ),
+                    ],
+                  ),
 
-                  PaymentRowItem(title: "Advance Paid", amount: "2000",onPressed: (){},),
-                  PaymentRowItem(title: "Packing Charge", amount: "2000",onPressed: (){},),
-                  PaymentRowItem(title: "Unpacking Charge", amount: "2000",onPressed: (){},),
+                  //Unpacking Details
+                  CustomExpansionSection(
+                    title: "",
+                    titleWidget: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text("order.unpackingDetails".tr(), style: TextStyles.f12w600Gray9),
+
+                        InkWell(
+                          onTap: (){
+                            showDialog(
+                              context: context,
+                              barrierDismissible: false,
+                              barrierColor: Colors.black.withOpacity(0.5),
+                              builder: (context) => DetailsUploadPopup(
+                                title: "order.unpackingDetails".tr(),
+                                hintText: "Enter a description...",
+                                onSave: (description, images) async {
+                                  final notifier = ref.read(orderDetailProvider.notifier);
+
+                                  final result = await notifier.updatePackingAndUnpackingOrder(
+                                    uid: data?.existingOrderUid ?? "",
+                                    mediaType: "UNPACKING",
+                                    // description: description,
+                                    images: images,
+                                  );
+
+                                  /// ✅ SUCCESS / ERROR handling
+                                  if (result != null && result.contains("success")) {
+                                    ToastHelper.showSuccess(message: result);
+                                  } else {
+                                    ToastHelper.showError(message: result ?? "Error occurred");
+                                  }
+                                },
+                              ),
+                            );
+                          },
+                          child: Padding(
+                            padding: const EdgeInsets.only(right: 10),
+                            child: Text("Add Images",
+                                style: TextStyles.f12w600Gray9.copyWith(
+                                  color: AppColors.primary,
+                                  decoration: TextDecoration.underline,
+                                )),
+                          ),
+                        ),
+                      ],
+                    ),
+                    children: [
+                      // Text(
+                      //   "Remarks",
+                      //   style: TextStyles.f12w500Gray7,
+                      // ),
+                      // const SizedBox(height: 6),
+                      // Text(
+                      //   "Lorem ipsum dolor sit amet consectetur. In phasellus sollicitudin nulla pretium porttitor vel pulvinar eget. Erat orci donec iaculis morbi nam id ipsum. Tempor a sit facilisi in. At ac sit tincidunt tincidunt sapien imperdiet ac elit viverra.",
+                      //   style: TextStyles.f11w400Gray9,
+                      //),
+                      const SizedBox(height: 12),
+                      SizedBox(
+                        height: 70,
+                        child: unpackingList.isEmpty
+                            ? const Text("No images uploaded")
+                            : ListView.separated(
+                          scrollDirection: Axis.horizontal,
+                          itemCount: unpackingList.length,
+                          separatorBuilder: (_, __) => const SizedBox(width: 8),
+                          itemBuilder: (_, index) {
+                            final item = unpackingList[index];
+                            final imageUrl = "$imageBaseUrl${item.filePath}";
+
+                            return ClipRRect(
+                              borderRadius: BorderRadius.circular(8),
+                              child: Image.network(
+                                imageUrl,
+                                width: 70,
+                                height: 70,
+                                fit: BoxFit.cover,
+                              ),
+                            );
+                          },
+                        ),
+                      ),
+                    ],
+                  ),
+
+                  /// ================= PICKUP =================
+                  CustomExpansionSection(
+                    title: "",
+                    titleWidget: Row(
+                      children: [
+                        GradientTitleWidget(title: 'Pickup Details                  '),
+                        Expanded(child: Container(height: 1, color: Colors.orange)),
+                      ],
+                    ),
+                    children: [
+                      Wrap(
+                        spacing: 80,
+                        runSpacing: 12,
+                        children: [
+                          _quotationItem("movingDetails.shiftingMovingDate".tr(), formatDate(pickup?.movingDate)),
+
+                          _quotationItem("movingDetails.state".tr(),
+                              pickup?.stateName ?? "-"),
+
+                          _quotationItem("movingDetails.lift".tr(),
+                              pickup?.liftAvailable ?? "-"),
+
+                          _quotationItem("common.contactDetails".tr(),
+                              "${pickup?.phone ?? '-'}\n${pickup?.email ?? ''}"),
+
+                          _quotationItem("movingDetails.city".tr(),
+                              pickup?.cityName ?? "-"),
+
+                          _quotationItem("movingDetails.address".tr(),
+                              pickup?.address ?? "-"),
+                        ],
+                      ),
+                    ],
+                  ),
+
+                  /// ================= DELIVERY =================
+                  CustomExpansionSection(
+                    title: "",
+                    titleWidget: Row(
+                      children: [
+                        GradientTitleWidget(title: 'Delivery Details                  '),
+                        Expanded(child: Container(height: 1, color: Colors.orange)),
+                      ],
+                    ),
+                    children: [
+                      Wrap(
+                        spacing: 80,
+                        runSpacing: 12,
+                        children: [
+                          _quotationItem("movingDetails.shiftingMovingDate".tr(), formatDate(delivery?.movingDate)),
+
+                          _quotationItem("movingDetails.state".tr(),
+                              delivery?.stateName ?? "-"),
+
+                          _quotationItem("movingDetails.lift".tr(),
+                              delivery?.liftAvailable ?? "-"),
+
+                          _quotationItem("common.contactDetails".tr(),
+                              "${delivery?.phone ?? '-'}\n${delivery?.email ?? ''}"),
+
+                          _quotationItem("movingDetails.city".tr(),
+                              delivery?.cityName ?? "-"),
+
+                          _quotationItem("movingDetails.address".tr(),
+                              delivery?.address ?? "-"),
+                        ],
+                      ),
+                    ],
+                  ),
+
+                  /// ================= ITEMS =================
+                  CustomExpansionSection(
+                    title: "${"order.item".tr()}(${items.length})",
+                    children: [
+                      _ItemsHeaderRow(),
+                      const SizedBox(height: 4),
+
+                      items.isEmpty
+                          ? const Padding(
+                        padding: EdgeInsets.all(12),
+                        child: Text("No items added"),
+                      )
+                          : ListView.separated(
+                        itemCount: items.length,
+                        shrinkWrap: true,
+                        physics: const NeverScrollableScrollPhysics(),
+                        separatorBuilder: (_, __) =>
+                            Container(height: 1, color: AppColors.mGray4),
+                        itemBuilder: (_, index) {
+                          final item = items[index];
+
+                          return _ItemRow(
+                            index: index,
+                            name: item.itemName ?? "-",
+                            qty: item.quantity ?? 0,
+                            price: item.shiftingCharge ?? 0,
+                            category: item.categoryName ?? "-",
+                          );
+                        },
+                      ),
+                    ],
+                  ),
+
+                  /// ================= INSURANCE =================
+                  CustomExpansionSection(
+                    title: "",
+                    titleWidget: Row(
+                      children: [
+                        GradientTitleWidget(title: 'Insurance Details                '),
+                        Expanded(child: Container(height: 1, color: Colors.orange)),
+                      ],
+                    ),
+                    children: [
+                      Wrap(
+                        spacing: 80,
+                        runSpacing: 12,
+                        children: [
+                          _quotationItem("Insurance type", data?.insuranceType ?? "-"),
+
+                          _quotationItem("Insurance charge(%)", "${data?.insuranceCharge ?? '0'}%"),
+                          _quotationItem("Insurance gst", "${data?.insuranceGst ?? '0'}%"),
+
+                          SizedBox(
+                            width: double.infinity,
+                            child: _quotationItem(
+                              "Declaration of goods",
+                              data?.declarationOfGoods ?? "-",
+                              3,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+
+
+                  CustomExpansionSection(
+                    title: "",
+                    titleWidget: Row(
+                      children: [
+                        GradientTitleWidget(title: 'Vehicle Insurance                '),
+                        Expanded(child: Container(height: 1, color: Colors.orange)),
+                      ],
+                    ),
+                    children: [
+                      Wrap(
+                        spacing: 80,
+                        runSpacing: 12,
+                        children: [
+                          _quotationItem("Insurance type", data?.vehicleInsuranceType ?? "-"),
+
+                          _quotationItem("Insurance charge(%)", "${data?.vehicleInsuranceCharge ?? '0'}%"),
+                          _quotationItem("Insurance gst", "${data?.vehicleInsuranceGst ?? '0'}%"),
+
+                          SizedBox(
+                            width: double.infinity,
+                            child: _quotationItem(
+                              "Declaration of goods",
+                              data?.declarationOfVehicle ?? "-",
+                              3,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+
+                  ///Other Details
+                  CustomExpansionSection(
+                    title:"",
+                    titleWidget: Row(
+                      children: [
+                        GradientTitleWidget(title: 'Other Details                    '),
+                        Expanded( // ✅ NOW safe (because parent is bounded)
+                          child: Container(
+                            height: 1,
+                            color: Colors.orange,
+                          ),
+                        ),
+                        SizedBox(width: 10,)
+                      ],
+                    ),
+                    children: [
+                      SizedBox(
+                        width: double.infinity,
+                        child: _quotationItem(
+                          "IS THERE EASY ACCESS FOR LOAD & UNLOADING AT ORIGIN & DESTINATION(क्या लोड और अनलोडिंग आसान है?",
+                          data?.easyAccess ?? "-",
+                          3,
+                          2
+                        ),
+                      ),
+                      SizedBox(height: 10,),
+                      SizedBox(
+                        width: double.infinity,
+                        child: _quotationItem(
+                            "SHOULD ANY ITEMS BE GOT DOWN THROUGH BALCONY ETC.(क्या किसी सामान को बालकनी से नीचे उतारना है?)",
+                            data?.balconyItems ?? "-",
+                            3,
+                            2
+                        ),
+                      ),
+                      SizedBox(height: 10,),
+                      SizedBox(
+                        width: double.infinity,
+                        child: _quotationItem(
+                            "ARE THERE ANY RESTRICTIONS FOR LOADING AT ORIGIN/DESTINATION (क्या लोडिंग/अनलोडिंग वाले स्थान पर कोई रोकेटोक है?)",
+                            data?.loadingRestrictions ?? "-",
+                            1,
+                            2
+                        ),
+                      ),
+                      SizedBox(height: 10,),
+                      SizedBox(
+                        width: double.infinity,
+                        child: _quotationItem(
+                            "ARE THERE ANY RESTRICTIONS FOR UNLOADING AT ORIGIN/DESTINATION (क्या लोडिंग/अनलोडिंग वाले स्थान पर कोई रोकेटोक है?)",
+                            data?.unloadingRestrictions ?? "-",
+                            1,
+                            2
+                        ),
+                      ),
+
+                      SizedBox(height: 10,),
+                      SizedBox(
+                        width: double.infinity,
+                        child: _quotationItem(
+                            "DO YOU HAVE ANY SPECIAL NEEDS OR CONCERNT(अन्य जरूरी आवश्यकताएं?)",
+                            data?.specialNeeds ?? "-",
+                            1,
+                            2
+                        ),
+                      ),
+                    ],
+                  ),
+
+                  ///Payment Details
+                  CustomExpansionSection(
+                    title:"",
+                    titleWidget: Row(
+                      children: [
+
+                        GradientTitleRowWidget(
+                          titleWidget: Row(
+                           children: [
+                             Text(
+                               "Payment Details",
+                               style: TextStyles.f10w500mWhite,
+                             ),
+                             SizedBox(width: 6,),
+                             Text(
+                               "Total Amount: ₹$totalAmount",
+                               style: TextStyles.f10w700mBlack,
+                             ),
+                           ],
+                          ),),
+                        Expanded( // ✅ NOW safe (because parent is bounded)
+                          child: Container(
+                            height: 1,
+                            color: Colors.orange,
+                          ),
+                        ),
+                        SizedBox(width: 10,)
+                      ],
+                    ),
+                    children: [
+                      PaymentRowItem(title: "Freight Charge", amount: "₹ ${paymentSummary?.baseFare ?? "-"}"),
+                      PaymentRowItem(title: "GST Amount", amount: "₹ ${paymentSummary?.taxesAndSurcharges ?? "-"}"),
+                      PaymentRowItem(title: "GST %", amount: "${data?.gstPercent ?? "-"}"),
+                      PaymentRowItem(title: "GST Type", amount: "${data?.gstType ?? "-"}"),
+                      // PaymentRowItem(title: "Packing Charge", amount: "${paymentSummary?.advancePayment ?? "-"}"),
+                      // PaymentRowItem(title: "Unpacking Charge", amount: "2000"),
+                      // PaymentRowItem(title: "Loading Charge", amount: "2000"),
+                      // PaymentRowItem(title: "Unloading Charge", amount: "2000"),
+                      // PaymentRowItem(title: "Packing material charge", amount: "2000"),
+                    ],
+                  ),
+
+                  ///Expenses
+                  CustomExpansionSection(
+                    title:"",
+                    titleWidget: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+
+                        GradientTitleRowWidget(
+                          titleWidget: Row(
+                            children: [
+                              Text(
+                                "Expenses",
+                                style: TextStyles.f10w500mWhite,
+                              ),
+                              SizedBox(width: 6,),
+                              Text(
+                                "Total Amount: ₹$totalExpense",
+                                style: TextStyles.f10w700mBlack,
+                              ),
+                            ],
+                          ),),
+
+                        InkWell(
+                          onTap: () async {
+
+                            showDialog(
+                              context: context,
+                              barrierDismissible: false,
+                              builder: (_) => const Center(child: CircularProgressIndicator()),
+                            );
+
+                            /// ✅ API CALL
+                            final categories = await ref
+                                .read(orderDetailProvider.notifier)
+                                .fetchExpenseCategories();
+
+                            Navigator.pop(context); // ❌ remove loader
+
+                            /// ✅ OPEN POPUP WITH DATA
+                            showDialog(
+                              context: context,
+                              barrierDismissible: false,
+                              barrierColor: Colors.black.withOpacity(0.5),
+                              builder: (context) => ExpensesPopup(
+                                id: pickup?.quotationId ?? -1,
+                                uid: data?.existingOrderUid ?? "",
+                                vehicleNo: data?.vehicleNo,
+                                driverName: data?.driverName,
+                                driverPhone: data?.driverPhone,
+                                driverLicense: data?.driverLicense,
+                                existingExpenses: expenses,
+                                categories: categories,
+                                staff: staffList.map((e) => {
+                                  "user_id": e.userId,
+                                  "role_label": e.roleLabel ?? "Staff",
+                                }).toList(),
+                                labour: labourList.map((e) => {
+                                  "user_id": e.userId,
+                                  "role_label": e.roleLabel ?? "Labour",
+                                }).toList(),
+                              ),
+                            );
+                          },
+                          child: Padding(
+                            padding: const EdgeInsets.only(right: 4.0),
+                            child: Text("Edit",
+                                style: TextStyles.f12w600Gray9.copyWith(
+                                  color: AppColors.primary,
+                                  decoration: TextDecoration.underline,
+                                )),
+                          ),
+                        ),
+
+                      ],
+                    ),
+                    children: expenses.map((e) {
+                      return PaymentRowItem(
+                        title: e.categoryName ?? "-",
+                        amount: "₹ ${e.amount ?? "0"}",
+                      );
+                    }).toList(),
+                  ),
+
+
+                  ///Payment Summary
+                  CustomExpansionSection(
+                    title:"",
+                    titleWidget: Row(
+                      children: [
+                        GradientTitleWidget(title: 'Payment Summary                    '),
+                        Expanded( // ✅ NOW safe (because parent is bounded)
+                          child: Container(
+                            height: 1,
+                            color: Colors.orange,
+                          ),
+                        ),
+                        SizedBox(width: 10,)
+                      ],
+                    ),
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text("order.baseFare".tr(),style: TextStyles.f10w400Gray9),
+                          Text("₹ ${paymentSummary?.baseFare ?? "-"}",style: TextStyles.f12w700pinkish.copyWith(color: AppColors.mBlack)),
+                        ],
+                      ),
+                      SizedBox(height: 4,),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text("order.taxes".tr(),style: TextStyles.f10w400Gray9),
+                          Text("₹ ${paymentSummary?.taxesAndSurcharges ?? "-"}",style: TextStyles.f12w700pinkish.copyWith(color: AppColors.mBlack)),
+                        ],
+                      ),
+                      SizedBox(height: 4,),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text("order.expenses".tr(),style: TextStyles.f10w400Gray9),
+                          Text("₹ ${paymentSummary?.expenses ?? "-"}",style: TextStyles.f12w700pinkish.copyWith(color: AppColors.darkOrange)),
+                        ],
+                      ),
+                      SizedBox(height: 4,),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text("order.advancePayment".tr(),style: TextStyles.f10w400Gray9),
+                          Text("- ₹${paymentSummary?.advancePayment ?? "-"}",style: TextStyles.f12w700pinkish.copyWith(color: AppColors.darkOrange)),
+                        ],
+                      ),
+                      Container(height: 1,color: AppColors.mGray4,
+                        margin: EdgeInsets.symmetric(vertical: 8),
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text("order.totalAmount".tr(),style: TextStyles.f12w600Gray9),
+                          Text("₹ ${totalPayable}",style: TextStyles.f12w700pinkish.copyWith(color: AppColors.primary)),
+                        ],
+                      ),
+                    ],
+                  ),
+
+                  CustomButton2(
+                    onPressed: () async {
+                      final quotationId = data?.quotationId;
+                      if (quotationId == null) return;
+
+                      print(">>>>>>>>>>>>>>${data?.existingOrderUid}");
+
+                      if(data?.id !=null){
+                        expenses.forEach((e) {
+                          print("Category: ${e.categoryId}, Amount: ${e.amount}");
+                        });
+
+                        final message = await ref.read(orderDetailProvider.notifier).updateOrder(
+                          id: pickup?.quotationId ?? -1,
+                          uid: data?.existingOrderUid ?? "",
+                          vehicleNo: data?.vehicleNo,
+                          driverName: data?.driverName,
+                          driverPhone: data?.driverPhone,
+                          driverLicense: data?.driverLicense,
+                          staff: staffList.map((e) => {
+                            "user_id": e.userId,
+                            "role_label": e.roleLabel ?? "Staff",
+                          }).toList(),
+                          labour: labourList.map((e) => {
+                            "user_id": e.userId,
+                            "role_label": e.roleLabel ?? "Labour",
+                          }).toList(),
+                          expenses: expenses.map((e) {
+                            final parsedAmount = double.tryParse(e.amount ?? "0")?.toInt() ?? 0;
+                            return {
+                              "category_id": e.categoryId,
+                              "amount": parsedAmount,
+                            };
+                          }).toList(),
+                        );
+
+                        if (message == "Order updated successfully") {
+                          ToastHelper.showSuccess(message: message!);
+                        } else {
+                          ToastHelper.showError(message: message ?? "Error occurred");
+                        }
+
+                      }else{
+
+                        final message = await ref.read(orderDetailProvider.notifier).createOrderAndRefresh(quotationId);
+                        if (message == "Order created successfully") {
+                          ToastHelper.showSuccess(message: message!);
+                        } else {
+                          ToastHelper.showError(message: message ?? "Error occurred");
+                        }
+
+                      }
+
+
+                    },
+                    width:220,
+                    borderRadius: 6,
+                    backgroundColor: AppColors.primary,
+                    textWidget:  Text(
+                      "Update Order",
+                      style: TextStyles.f14w600Primary.copyWith(color: AppColors.mWhite),
+                    ),
+
+                    textStyle: TextStyles.f14w600Primary.copyWith(
+                      color: AppColors.mWhite,
+                    ),
+                  ),
+
 
                 ],
               ),
-
-
-              CustomExpansionSection(
-                title:"",
-                titleWidget: Row(
-                  children: [
-                    GradientTitleWidget(title: 'Payment Summary                    '),
-                    Expanded( // ✅ NOW safe (because parent is bounded)
-                      child: Container(
-                        height: 1,
-                        color: Colors.orange,
-                      ),
-                    ),
-                    SizedBox(width: 10,)
-                  ],
-                ),
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text("Base Fare",style: TextStyles.f10w400Gray9),
-                      Text("₹ 5,000",style: TextStyles.f12w700pinkish.copyWith(color: AppColors.mBlack)),
-                    ],
-                  ),
-                  SizedBox(height: 4,),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text("Base Fare",style: TextStyles.f10w400Gray9),
-                      Text("₹ 1,000",style: TextStyles.f12w700pinkish.copyWith(color: AppColors.mBlack)),
-                    ],
-                  ),
-                  SizedBox(height: 4,),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text("Base Fare",style: TextStyles.f10w400Gray9),
-                      Text("₹ -2,000",style: TextStyles.f12w700pinkish.copyWith(color: AppColors.darkOrange)),
-                    ],
-                  ),
-                  SizedBox(height: 4,),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text("Base Fare",style: TextStyles.f10w400Gray9),
-                      Text("₹ -2,000",style: TextStyles.f12w700pinkish.copyWith(color: AppColors.darkOrange)),
-                    ],
-                  ),
-                  Container(height: 1,color: AppColors.mGray4,
-                    margin: EdgeInsets.symmetric(vertical: 8),
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text("Total Amount to pay",style: TextStyles.f12w600Gray9),
-                      Text("₹ 2,000",style: TextStyles.f12w700pinkish.copyWith(color: AppColors.primary)),
-                    ],
-                  ),
-                ],
-              ),
-
-
-
-            ],
+            ),
           ),
-        ),
+
+          if (state.isPageLoading)
+            Container(
+              color: Colors.black.withOpacity(0.2),
+              child: const Center(
+                child: CircularProgressIndicator(),
+              ),
+            ),
+        ],
       ),
     );
   }
-
-  Widget _labourItem(int number, String name, {bool addDivider = true}) {
-    return Column(
-      children: [
-        Padding(
-          padding: const EdgeInsets.symmetric(vertical: 6),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Expanded(
-                child: RichText(
-                  text: TextSpan(
-                    text: "$number  ",
-                    style: TextStyles.f14w600mGray9
-                        .copyWith(fontWeight: FontWeight.bold),
-                    children: [
-                      TextSpan(
-                        text: name,
-                        style: TextStyles.f12w700primary,
-                      ),
-                       TextSpan(
-                        text: "\nStaff ID: ",
-                        style: TextStyles.f10w400Gray6
-                      ),
-                       TextSpan(
-                        text: "Labour",
-                        style: TextStyles.f10w400Gray6.copyWith(
-                          color: AppColors.mGray9
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-              Container(
-                padding: const EdgeInsets.all(6),
-                decoration: BoxDecoration(
-                  color: const Color(0xFFFFC6C6),
-                  borderRadius: BorderRadius.circular(20),
-                ),
-                child: SvgPicture.asset(
-                  "assets/icons/Trash.svg", // 🔥 your SVG path here
-                  height: 20,
-                  width: 20,
-                   // optional (if SVG supports color)
-                ),
-              ),
-            ],
-          ),
-        ),
-        // Divider line
-        if (addDivider)
-          const Divider(
-            color: Color(0xFFE0E0E0),
-            thickness: 1,
-            height: 1,
-          ),
-      ],
-    );
-  }
-
 
   Widget _vehicleItem(String label, String value) {
     return Column(
@@ -809,14 +1337,6 @@ class OrderDetailsScreen extends StatelessWidget {
       ],
     );
   }
-
-  Widget _itemWrapper(double width, Widget child) {
-    return SizedBox(
-      width: width,
-      child: child,
-    );
-  }
-
 
   Widget _quotationItem(String label, String value,[int? maxLine,int? maxTitleLine]) {
     if (label.isEmpty) return const SizedBox();
@@ -881,7 +1401,7 @@ class PaymentRowItem extends StatelessWidget {
 
           // Amount
           Text(
-            "₹$amount",
+            "$amount",
             style: TextStyles.f11w400Gray5,
           ),
           if(onPressed!=null)
@@ -943,61 +1463,65 @@ class _ItemsHeaderRow extends StatelessWidget {
   }
 }
 
+
 class _ItemRow extends StatelessWidget {
   final int index;
-  const _ItemRow({required this.index});
+  final String name;
+  final int qty;
+  final num price;
+  final String category;
+
+  const _ItemRow({
+    required this.index,
+    required this.name,
+    required this.qty,
+    required this.price,
+    required this.category,
+  });
 
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 3,horizontal: 4),
+      padding: const EdgeInsets.symmetric(vertical: 3, horizontal: 4),
       child: Row(
-        crossAxisAlignment: CrossAxisAlignment.center, // ✅ FIX
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
+
+          /// ITEM NAME
           Expanded(
             flex: 3,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'Smart TV',
-                  style: TextStyles.f10w400Gray6,
-                ),
-              ],
+            child: Text(
+              name,
+              style: TextStyles.f10w400Gray6,
             ),
           ),
 
+          /// QUANTITY
           Expanded(
             flex: 3,
-            child: Padding(
-              padding: const EdgeInsets.only(top: 2),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    '01',
-                    style: TextStyles.f10w700mGray9,
-                  ),
-                ],
-              ),
+            child: Text(
+              qty.toString().padLeft(2, '0'),
+              style: TextStyles.f10w700mGray9,
             ),
           ),
 
+          /// PRICE
           Expanded(
             flex: 3,
             child: Center(
               child: Text(
-                '₹500',
+                '₹$price',
                 style: TextStyles.f10w400Gray6,
               ),
             ),
           ),
 
+          /// CATEGORY
           Expanded(
             flex: 2,
-            child:  Center(
+            child: Center(
               child: Text(
-                'Electronic Accesories',
+                category,
                 style: TextStyles.f10w400Gray6,
               ),
             ),
@@ -1007,3 +1531,4 @@ class _ItemRow extends StatelessWidget {
     );
   }
 }
+

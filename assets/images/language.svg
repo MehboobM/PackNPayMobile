@@ -1,0 +1,10 @@
+<svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- A -->
+  <path d="M4 14L7 6L10 14M5.2 11H8.8" stroke="#535862" stroke-linecap="round" stroke-linejoin="round"></path>
+  
+  <!-- Divider -->
+  <path d="M11 6H16" stroke="#535862" stroke-linecap="round"></path>
+  
+  <!-- Chinese style glyph -->
+  <path d="M12 8H15M12 10H15M13.5 8V12" stroke="#535862" stroke-linecap="round"></path>
+</svg>

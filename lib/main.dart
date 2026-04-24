@@ -40,6 +40,10 @@ void main() async {
       supportedLocales: const [
         Locale('en'),
         Locale('hi'),
+
+        Locale('kn'),
+        Locale('ml'),
+        Locale('ta'),
       ],
       path: 'assets/lang',
       startLocale: initialLocale,

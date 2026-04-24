@@ -3,23 +3,32 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:pinput/pinput.dart';
 
 import '../../../global_widget/build_common_dropdown.dart';
 import '../../../global_widget/custom_button.dart';
+import '../../../notifier/order_detail_notifier.dart';
 import '../../../utils/app_colors.dart';
 import '../../../utils/m_font_styles.dart';
 import '../../../utils/toast_message.dart';
 
-class ChangeStatusDialog extends StatefulWidget {
-  const ChangeStatusDialog({super.key});
+class ChangeStatusDialog extends ConsumerStatefulWidget {
+  final String uid;
+  final List logs;
+
+  const ChangeStatusDialog({
+    super.key,
+    required this.uid,
+    required this.logs,
+  });
 
   @override
-  State<ChangeStatusDialog> createState() => _ChangeStatusDialogState();
+  ConsumerState<ChangeStatusDialog> createState() => _ChangeStatusDialogState();
 }
 
-class _ChangeStatusDialogState extends State<ChangeStatusDialog> {
+class _ChangeStatusDialogState extends ConsumerState<ChangeStatusDialog> {
 
   final List<String> statusList = [
     "Shifting Started",
@@ -28,11 +37,63 @@ class _ChangeStatusDialogState extends State<ChangeStatusDialog> {
     "Settled",
   ];
 
-  String? selectedStatus = "Shifting Started";
+
 
   final TextEditingController _otpController = TextEditingController();
 
   bool get isOtpRequired => selectedStatus == "Shifting Started";
+
+  late String selectedStatus;
+
+  String mapApiToUiStatus(String? apiStatus) {
+    switch (apiStatus) {
+      case "SHIFTING_STARTED":
+        return "Shifting Started";
+      case "PICKUP_COMPLETED":
+        return "Pickup Completed";
+      case "SHIFTING_COMPLETED":
+        return "Shifting Completed";
+      case "SETTLED":
+        return "Settled";
+      default:
+        return "Shifting Started";
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+
+    /// 👉 Get latest SHIPMENT status
+    final shipmentLogs = widget.logs
+        .where((e) => e.statusType == "SHIPMENT")
+        .toList();
+
+    shipmentLogs.sort(
+            (a, b) => b.changedAt.compareTo(a.changedAt));
+
+    final latestStatus =
+    shipmentLogs.isNotEmpty ? shipmentLogs.first.status : null;
+
+    selectedStatus = mapApiToUiStatus(latestStatus);
+  }
+
+  String mapUiToApiStatus(String uiStatus) {
+    switch (uiStatus) {
+      case "Shifting Started":
+        return "SHIFTING_STARTED";
+      case "Pickup Completed":
+        return "PICKUP_COMPLETED";
+      case "Shifting Completed":
+        return "SHIFTING_COMPLETED";
+      case "Settled":
+        return "SETTLED";
+      default:
+        return "SHIFTING_STARTED";
+    }
+  }
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -79,7 +140,7 @@ class _ChangeStatusDialogState extends State<ChangeStatusDialog> {
                   items: statusList,
                   onChanged: (val) {
                     setState(() {
-                      selectedStatus = val;
+                      selectedStatus = val ?? selectedStatus;
                       _otpController.clear();
                     });
                   },
@@ -191,7 +252,19 @@ class _ChangeStatusDialogState extends State<ChangeStatusDialog> {
             Padding(
               padding: const EdgeInsets.only(top: 12.0,bottom: 10),
               child: CustomButton(
-                onPressed: () {
+                onPressed: () async {
+
+                  /// ✅ VALIDATION
+                  // if (isOtpRequired && _otpController.text.length != 4) {
+                  //   ToastHelper.showError(message: "Enter valid OTP");
+                  //   return;
+                  // }
+                  //
+                  // /// 👉 API CALL HERE
+                  // print("Status: $selectedStatus");
+                  // print("OTP: ${_otpController.text}");
+
+                  final notifier = ref.read(orderDetailProvider.notifier);
 
                   /// ✅ VALIDATION
                   if (isOtpRequired && _otpController.text.length != 4) {
@@ -199,11 +272,20 @@ class _ChangeStatusDialogState extends State<ChangeStatusDialog> {
                     return;
                   }
 
-                  /// 👉 API CALL HERE
-                  print("Status: $selectedStatus");
-                  print("OTP: ${_otpController.text}");
+                  final result = await notifier.updateOrderStatus(
+                    uid: widget.uid,
+                    status: mapUiToApiStatus(selectedStatus),
+                    otp: isOtpRequired ? _otpController.text : null,
+                  );
 
-                  Navigator.pop(context);
+                  if (result != null) {
+                    ToastHelper.showSuccess(message: result);
+                    Navigator.pop(context);
+                  } else {
+                    ToastHelper.showError(message: "Failed to update status");
+                  }
+
+
                 },
                 borderRadius: 6,
                 backgroundColor: AppColors.primary,

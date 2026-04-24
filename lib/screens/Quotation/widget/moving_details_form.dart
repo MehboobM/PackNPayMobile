@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../global_widget/common_state_city_dropdown.dart';
@@ -193,7 +194,7 @@ class _MovingDetailsFormState extends ConsumerState<MovingDetailsForm> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text("Moving Details", style: TextStyles.f14w600mGray9),
+            Text("movingDetails.title".tr(), style: TextStyles.f14w600mGray9),//movingDetails
             const SizedBox(height: 10),
             Row(
               children: [
@@ -209,7 +210,7 @@ class _MovingDetailsFormState extends ConsumerState<MovingDetailsForm> {
 
             /// Shifting DATE + Moving DATE
 
-            formLabel("Shifting/Moving Date", isRequired: true),
+            formLabel("movingDetails.shiftingMovingDate".tr(), isRequired: true),
             const SizedBox(height: 6),
             CustomTextField(
               controller: _shiftDateController,
@@ -234,7 +235,7 @@ class _MovingDetailsFormState extends ConsumerState<MovingDetailsForm> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
 
-                      formLabel("Additional phone no.", isRequired: true),
+                      formLabel("movingDetails.additionalPhoneNo".tr(), isRequired: true),
                       const SizedBox(height: 6),
                       CustomTextField(
                         controller: _pickupPhoneNoController,
@@ -255,7 +256,8 @@ class _MovingDetailsFormState extends ConsumerState<MovingDetailsForm> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
 
-                      formLabel("Email", isRequired: true),
+                      formLabel("movingDetails.email".tr(), isRequired: true),
+
                       const SizedBox(height: 6),
                       CustomTextField(
                         controller: _pickupEmailController,
@@ -282,7 +284,7 @@ class _MovingDetailsFormState extends ConsumerState<MovingDetailsForm> {
                 /// STATE
                 Expanded(
                   child: commonStateCityDropdowns(
-                    title: "State",
+                    title: "movingDetails.state".tr(),
                     isRequired: true,
                     value: selectedPickupState?.id.toString(),
                     items: stateItems,
@@ -313,7 +315,7 @@ class _MovingDetailsFormState extends ConsumerState<MovingDetailsForm> {
                 /// CITY
                 Expanded(
                   child: commonStateCityDropdowns(
-                    title: "City",
+                      title: "movingDetails.city".tr(),
                       isRequired: true,
                     value: selectedPickupCity?.id.toString(),
                     items: pickupCityItems,
@@ -348,7 +350,7 @@ class _MovingDetailsFormState extends ConsumerState<MovingDetailsForm> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      formLabel("Pincode", isRequired: true),
+                      formLabel("movingDetails.pincode".tr(), isRequired: true),
                       const SizedBox(height: 6),
                       CustomTextField(
                         controller: _pickupPincodeController,
@@ -366,7 +368,7 @@ class _MovingDetailsFormState extends ConsumerState<MovingDetailsForm> {
                 const SizedBox(width: 12),
                 Expanded(
                   child: reusableDropdown(
-                    title: "Lift",
+                    title: "movingDetails.lift".tr(),
                     isRequired: true,
                     value: liftAvailableLabel,
                     items: liftAvailableItem,
@@ -411,7 +413,7 @@ class _MovingDetailsFormState extends ConsumerState<MovingDetailsForm> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
 
-                      formLabel("Additional phone no.", isRequired: true),
+                      formLabel("movingDetails.additionalPhoneNo".tr(), isRequired: true),
                       const SizedBox(height: 6),
                       CustomTextField(
                         controller: _deliveryPhoneNoController,
@@ -431,7 +433,7 @@ class _MovingDetailsFormState extends ConsumerState<MovingDetailsForm> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      formLabel("Email", isRequired: true),
+                      formLabel("movingDetails.email".tr(), isRequired: true),
                       const SizedBox(height: 6),
                       CustomTextField(
                         controller: _deliveryEmailController,
@@ -458,7 +460,7 @@ class _MovingDetailsFormState extends ConsumerState<MovingDetailsForm> {
                 /// STATE
                 Expanded(
                   child: commonStateCityDropdowns(
-                    title: "State",
+                    title: "movingDetails.state".tr(),
                     isRequired: true,
                     value: selectedDeliveryState?.id.toString(),
                     items: stateItems,
@@ -498,7 +500,7 @@ class _MovingDetailsFormState extends ConsumerState<MovingDetailsForm> {
                 /// CITY
                 Expanded(
                   child: commonStateCityDropdowns(
-                    title: "City",
+                    title: "movingDetails.city".tr(),
                     isRequired: true,
                     value: selectedDeliveryCity?.id.toString(),
                     items: deliveryCityItems,
@@ -532,7 +534,7 @@ class _MovingDetailsFormState extends ConsumerState<MovingDetailsForm> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
 
-                      formLabel("Pincode", isRequired: true),
+                      formLabel("movingDetails.pincode".tr(), isRequired: true),
                       const SizedBox(height: 6),
                       CustomTextField(
                         controller: _deliveryPincodeController,
@@ -550,7 +552,7 @@ class _MovingDetailsFormState extends ConsumerState<MovingDetailsForm> {
                 const SizedBox(width: 12),
                 Expanded(
                   child: reusableDropdown(
-                    title: "Lift",
+                    title: "movingDetails.lift".tr(),
                     isRequired: true,
                     value: liftDeliveryLabel,
                     items: liftDeliveryItem,

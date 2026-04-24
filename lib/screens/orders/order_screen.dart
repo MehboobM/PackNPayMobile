@@ -5,8 +5,12 @@ import 'package:pack_n_pay/notifier/order_notifier.dart';
 import 'package:pack_n_pay/screens/orders/widgets/order_list.dart';
 import 'package:pack_n_pay/utils/app_colors.dart';
 import 'package:pack_n_pay/utils/m_font_styles.dart';
+import '../../global_widget/confirmation_dialog.dart';
 import '../../global_widget/custom_textfield.dart';
+import '../../global_widget/menu_widget.dart';
+import '../../notifier/order_detail_notifier.dart';
 import '../../routes/route_names_const.dart';
+import '../../utils/toast_message.dart';
 import '../Quotation/widget/Quotation_items.dart';
 import '../survey/widget/filter_bottom_sheet.dart';
 import '../survey/widget/status_chip.dart';
@@ -70,13 +74,16 @@ class _OrdersScreenState extends ConsumerState<OrdersScreen> {
     final list = state.filteredList ?? [];
     return Scaffold(
       backgroundColor: AppColors.bodysecondry,
-
       appBar: AppBar(
+        surfaceTintColor: Colors.white,
         backgroundColor: Colors.white,
         elevation: 0,
         titleSpacing: 0,
 
-        leading: const Icon(Icons.arrow_back, color: Colors.black),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back, color: Colors.black),
+          onPressed: () => Navigator.pop(context),
+        ),
 
         title: Text(
           "Orders",
@@ -98,7 +105,7 @@ class _OrdersScreenState extends ConsumerState<OrdersScreen> {
           /// EXPORT TEXT
           InkWell(
             onTap: (){
-             Navigator.pushNamed(context, orderDetailsScreenRoute);
+           //  Navigator.pushNamed(context, orderDetailsScreenRoute);
             },
             child: Padding(
               padding: const EdgeInsets.only(right: 16),
@@ -128,7 +135,7 @@ class _OrdersScreenState extends ConsumerState<OrdersScreen> {
                 children: [
 
                   StatusChip(
-                    text: "All : ${state.orderData?.counts?.total??0}",
+                    text: "Total : ${state.orderData?.pagination?.total??0}",
                     isActive: selectedIndex == 0,
                     onTap: () => setState(() => selectedIndex = 0),
                   ),
@@ -358,29 +365,101 @@ class _OrdersScreenState extends ConsumerState<OrdersScreen> {
                     surveyId:"",
                     lrId: "#2365",
                     status: item.orderStatus ??"",
-
+                    onTapMenu: (detail) {
+                      _onTapMenu(context, detail.globalPosition,item.uid);
+                    },
                   );
                 },
               ),
             )
 
-            // OrderListItem(
-            //         orderNo: "#3066",
-            //         date: "JAN 9, 2026",
-            //         name: "RAKESH SINGH",
-            //         phone: "+91 0000000000",
-            //         from: "BENGALURU",
-            //         to: "DELHI",
-            //         amount: "₹2000/4000",
-            //         advance: "₹2000",
-            //         surveyId: "#2365",
-            //         lrId: "#2365", status: 'pending',
-            //
-            //       ),
+
 
           ],
         ),
       ),
     );
   }
+
+
+  void _onTapMenu(BuildContext context, Offset position,String? quotationNo) {
+    showGlobalPopupMenu(
+      context: context,
+      tapPosition: position,
+      items: [
+        PopupMenuModel(
+          value: 'edit',
+          title: 'Edit',
+          icon: "assets/images/edit.svg",
+        ),
+        PopupMenuModel(
+          value: 'delete',
+          title: 'Delete',
+          icon: "assets/images/delete.svg",
+        ),
+
+      ],
+      onSelected: (value) {
+        switch (value) {
+          case 'edit':
+            _handleEdit(context, quotationNo);
+            break;
+
+          case 'delete':
+            showDialog(
+              context: context,
+              barrierDismissible: false,
+              builder: (_) {
+                return CommonConfirmDialog(
+                  description:
+                  "Are you sure you want to delete this order?",
+                  iconData: Icons.delete_outline,
+                  onNo: () {
+                    Navigator.pop(context);
+                  },
+                  onYes: () async {
+                    Navigator.pop(context);
+
+                    final success = await ref.read(orderDataProvider.notifier).deleteOrder(quotationNo ?? "");
+
+                    if (success) {
+                      ToastHelper.showSuccess(message: "Order deleted successfully");
+                      ref.read(orderDataProvider.notifier).fetchOrderList();
+                    } else {
+                      ToastHelper.showError(message: "Order deletion failed");
+                    }
+
+                  },
+                );
+              },
+            );
+            break;
+        }
+      },
+    );
+  }
+
+
+  Future<void> _handleEdit(BuildContext context, String? uid) async {
+    if (uid == null || uid.isEmpty) return;
+
+    final isSuccess = await ref.read(orderDetailProvider.notifier).fetchOrderByUid(uid);
+
+    if (!isSuccess) {
+      ToastHelper.showError(message:  'Failed to load order details',);
+      return;
+    }
+
+    /// ✅ API SUCCESS → NAVIGATE
+    final result = await Navigator.pushNamed(
+      context,
+      orderDetailsScreenRoute,
+    );
+
+    if (result == true) {
+      ref.read(orderDataProvider.notifier).fetchOrderList();
+    }
+  }
+
+
 }

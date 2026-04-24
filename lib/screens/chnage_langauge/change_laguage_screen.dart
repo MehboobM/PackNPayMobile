@@ -4,6 +4,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:pack_n_pay/global_widget/custom_button.dart';
 import 'package:pack_n_pay/routes/route_names_const.dart';
 import 'package:pack_n_pay/utils/app_colors.dart';
 
@@ -48,76 +49,72 @@ class _ChangeLanguageScreenState extends State<ChangeLanguageScreen> {
       // Update the app's locale
       context.setLocale(Locale(_selectedLanguage!));
       // Navigate to the next screen
-      Navigator.pushNamed(context, loginScreenRoute);
+      Navigator.pop(context);
+      //Navigator.pushNamed(context, loginScreenRoute);
     }
   }
 
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
-      onWillPop: () async {
 
-        Navigator.pushReplacementNamed(context, loginScreenRoute);
+      onWillPop: () async {
+        Navigator.pop(context);
+       // Navigator.pushReplacementNamed(context, loginScreenRoute);
 
         return true;
       },
 
-      child: Container(
-        color: AppColors.mWhite,
-        child: SafeArea(
+      child: Scaffold(
+        backgroundColor: Colors.white,
+        appBar: AppBar(
+          backgroundColor: Colors.white,
+          automaticallyImplyLeading: false,
+          titleSpacing: 0, // 🔥 THIS removes gap
 
-          child: Scaffold(
-            appBar: AppBar(
-
-              leading: IconButton(
-                icon: Icon(Icons.arrow_back),
-                onPressed: () async {
-                  Navigator.pushReplacementNamed(context, loginScreenRoute);
-                },
-              ),
-            ),        body: Padding(
-            padding: const EdgeInsets.only(left: 20,right: 20,bottom: 20,top: 20),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'Select Language',
-                  style: Theme.of(context).textTheme.headlineMedium,
-                ),
-                const SizedBox(height: 20),
-                Expanded(
-                  child: ListView(
-                    children: [
-                      _buildLanguageTile('English', 'en'),
-                      _buildLanguageTile('Hindi', 'hi'),
-                    ],
-                  ),
-                ),
-                const SizedBox(height: 20),
-                ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Color(0xff181D27),
-                    foregroundColor: Colors.white,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(46),
-                    ),
-                    minimumSize: const Size(double.infinity, 56),
-                    textStyle: GoogleFonts.inter(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w600,
-                      color: Colors.white,
-                    ),
-                  ),
-                  onPressed:
-                  _selectedLanguage != null ? _saveAndContinue : null,
-                  child: const Text('Continue'),
-                ),
-                const SizedBox(height: 20),
-              ],
-            ),
+          leading: IconButton(
+            padding: EdgeInsets.zero,
+            constraints: const BoxConstraints(),
+            icon: const Icon(Icons.arrow_back),
+            onPressed: () {
+              Navigator.pop(context);
+             // Navigator.pushReplacementNamed(context, loginScreenRoute);
+            },
           ),
+
+          title: Text(
+            'Select Language',
+            style: Theme.of(context).textTheme.headlineMedium,
           ),
         ),
+        body: Padding(
+        padding: const EdgeInsets.only(left: 20,right: 20,bottom: 20,top: 20),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+
+            Expanded(
+              child: ListView(
+                children: [
+                  _buildLanguageTile('English', 'en'),
+                  _buildLanguageTile('Hindi', 'hi'),
+                  _buildLanguageTile('Kannada', 'kn'),
+                  _buildLanguageTile('Tamil', 'ta'),
+                  _buildLanguageTile('Malayalam', 'ml'),
+                ],
+              ),
+            ),
+            const SizedBox(height: 20),
+            CustomButton(
+              onPressed: _selectedLanguage != null ? _saveAndContinue : null,
+              text: 'Change',
+              backgroundColor: AppColors.primary,
+            ),
+
+            const SizedBox(height: 20),
+          ],
+        ),
+      ),
       ),
     );
   }
@@ -154,9 +151,9 @@ class _ChangeLanguageScreenState extends State<ChangeLanguageScreen> {
                 height: 24,
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(5),
-                  color: isSelected ? const Color(0xff49C1B7) : Colors.transparent, // Fill when selected
+                  color: isSelected ? AppColors.primary : Colors.transparent, // Fill when selected
                   border: Border.all(
-                    color: isSelected ? const Color(0xff49C1B7) : Colors.grey.shade400, // Border color
+                    color: isSelected ? AppColors.primary : Colors.grey.shade400, // Border color
                     width: 2,
                   ),
                 ),
