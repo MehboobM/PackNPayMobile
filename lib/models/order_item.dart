@@ -7,6 +7,7 @@ class OrderItemModel {
   final String phone;
   final String from;
   final String to;
+  final String? uid; // ✅ ADD THIS
 
   OrderItemModel({
     required this.orderNo,
@@ -15,5 +16,6 @@ class OrderItemModel {
     required this.phone,
     required this.from,
     required this.to,
+    this.uid,
   });
 }

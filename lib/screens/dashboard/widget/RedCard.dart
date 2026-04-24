@@ -20,19 +20,15 @@ class _AutoScrollBannerState extends State<AutoScrollBanner> {
   void initState() {
     super.initState();
 
-    _timer = Timer.periodic(const Duration(milliseconds: 50), (timer) {
+    _timer = Timer.periodic(const Duration(milliseconds: 20), (timer) {
       if (_controller.hasClients) {
         double max = _controller.position.maxScrollExtent;
-        double offset = _controller.offset + 1;
+        double offset = _controller.offset + 2.5;
 
         if (offset >= max) {
           _controller.jumpTo(0);
         } else {
-          _controller.animateTo(
-            offset,
-            duration: const Duration(milliseconds: 50),
-            curve: Curves.linear,
-          );
+          _controller.jumpTo(offset);
         }
       }
     });

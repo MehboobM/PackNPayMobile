@@ -7,12 +7,15 @@ import 'package:pack_n_pay/utils/m_font_styles.dart';
 
 import '../../global_widget/custom_textfield.dart';
 import '../../global_widget/menu_widget.dart';
+import '../../global_widget/view_download_service.dart';
 import '../../models/create_lorry_receipt.dart';
 import '../../models/lorry_receipt.dart';
 import '../../notifier/lorry_receiptnotifier.dart';
 import '../../notifier/lr_provider.dart';
 import '../../screens/Money_receipt/widgets/Money_listItems.dart';
 import '../../utils/toast_message.dart';
+import '../staff/widgets/common_bottom_sheet.dart';
+import '../survey/widget/filter_bottom_sheet.dart';
 
 class LorryReceiptListScreen extends ConsumerStatefulWidget {
   const LorryReceiptListScreen({super.key});
@@ -76,7 +79,7 @@ class _LorryReceiptListScreenState
         leading: IconButton(
           icon:
           const Icon(Icons.arrow_back, color: Colors.black),
-          onPressed: () => Navigator.pop(context),
+          onPressed: () => Navigator.of(context).maybePop(),
         ),
         titleSpacing: 0,
         title: Row(
@@ -185,17 +188,27 @@ class _LorryReceiptListScreenState
                 const SizedBox(width: 10),
 
                 /// Filter Icon
-                Container(
-                  height: 48,
-                  width: 48,
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius:
-                    BorderRadius.circular(12),
-                    border: Border.all(
-                        color: AppColors.mGray3),
+                GestureDetector(
+                  onTap: () {
+                    showModalBottomSheet(
+                      context: context,
+                      isScrollControlled: true,
+                      backgroundColor: Colors.transparent,
+                      builder: (context) => CommonFilterBottomSheet(
+                        notifier: ref.read(lorryReceiptProvider.notifier),
+                      ), // same widget
+                    );
+                  },
+                  child: Container(
+                    height: 48,
+                    width: 48,
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(color: AppColors.mGray3),
+                    ),
+                    child: const Icon(Icons.filter_list),
                   ),
-                  child: const Icon(Icons.filter_list),
                 ),
 
                 const SizedBox(width: 10),
@@ -355,12 +368,23 @@ class _LorryReceiptListScreenState
     from: item.movingFrom,
     to: item.movingTo,
     amount: item.totalAmount.split('.').first,
-    onTapView: () {
-    debugPrint("View ${item.uid}");
-    },
-    onTapDownload: () {
-    debugPrint("Download ${item.uid}");
-    },
+      onTapView: (details) {
+        _showLrPopupMenu(
+          context,
+          details.globalPosition,
+          item.uid,
+          false,
+        );
+      },
+
+      onTapDownload: (details) {
+        _showLrPopupMenu(
+          context,
+          details.globalPosition,
+          item.uid,
+          true,
+        );
+      },
     onTapMenu: (details) {
     _onTapMenu(context, details.globalPosition, item);
     },
@@ -438,6 +462,7 @@ class _LorryReceiptListScreenState
       context: context,
       builder: (context) {
         return AlertDialog(
+          backgroundColor: Colors.white,
           title: const Text("Delete Lorry Receipt"),
           content: const Text(
               "Are you sure you want to delete this lorry receipt?"),
@@ -451,7 +476,13 @@ class _LorryReceiptListScreenState
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.red,
               ),
-              child: const Text("Delete"),
+              child: const Text(
+                "Delete",
+                style: TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
             ),
           ],
         );
@@ -473,5 +504,75 @@ class _LorryReceiptListScreenState
         );
       }
     }
+  }
+  void _showLrPopupMenu(
+      BuildContext context,
+      Offset position,
+      String uid,
+      bool isDownload,
+      ) {
+    showGlobalPopupMenu(
+      context: context,
+      tapPosition: position,
+      items: [
+        PopupMenuModel(
+          value: 'Consigner',
+          title: 'Consigner LR',
+          icon: isDownload
+              ? "assets/icons/download_icon.svg"
+              : "assets/icons/view_icon.svg",
+        ),
+        PopupMenuModel(
+          value: 'Consignee',
+          title: 'Consignee LR',
+          icon: isDownload
+              ? "assets/icons/download_icon.svg"
+              : "assets/icons/view_icon.svg",
+        ),
+        PopupMenuModel(
+          value: 'Driver',
+          title: 'Driver LR',
+          icon: isDownload
+              ? "assets/icons/download_icon.svg"
+              : "assets/icons/view_icon.svg",
+        ),
+        PopupMenuModel(
+          value: 'Transporter',
+          title: 'Transporter LR',
+          icon: isDownload
+              ? "assets/icons/download_icon.svg"
+              : "assets/icons/view_icon.svg",
+        ),
+      ],
+      onSelected: (value) {
+        ViewDownloadService.handlePdf(
+          context: context,
+          type: "lr_bilty",
+          uid: uid,
+          copyType: value, // ✅ correct now
+          isDownload: isDownload,
+        );
+      },
+    );
+  }
+  Widget _lrOption(
+      String title,
+      String subType,
+      String uid,
+      bool isDownload,
+      ) {
+    return ListTile(
+      title: Text(title),
+      onTap: () {
+        Navigator.pop(context);
+
+        ViewDownloadService.handlePdf(
+          context: context,
+          type: "lr_bilty", // ✅ FIXED
+          uid: uid,
+          isDownload: isDownload,
+        );
+      },
+    );
   }
 }

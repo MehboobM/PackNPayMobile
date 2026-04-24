@@ -1,5 +1,8 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import '../models/staff_user_model.dart';
+import '../models/staff_details_modal.dart';
 import '../repositry/userstaff_repository.dart';
 
 class StaffNotifier extends ChangeNotifier {
@@ -7,108 +10,168 @@ class StaffNotifier extends ChangeNotifier {
 
   StaffNotifier(this._userRepository) {
     fetchUsers();
+    fetchStaffList();
   }
 
+  // ================= LIST DATA =================
   List<UserModel> _allStaff = [];
   List<UserModel> _filteredStaff = [];
 
   List<UserModel> get filteredStaff => _filteredStaff;
 
+  List<Map<String, dynamic>> _staffList = [];
+  List<Map<String, dynamic>> get staffList => _staffList;
+
   String _searchQuery = '';
   DateTime? _fromDate;
   DateTime? _toDate;
+  String? _sortOrder;
+  int? _staffId;
 
-  // 🔹 Fetch users from API
+  Timer? _debounce;
+
+  // ================= DETAILS DATA =================
+  UserDetailsModel? _selectedUserDetails;
+  UserDetailsModel? get selectedUserDetails => _selectedUserDetails;
+
+  bool _isDetailsLoading = false;
+  bool get isDetailsLoading => _isDetailsLoading;
+
+  // ================= FETCH STAFF LIST =================
+  Future<void> fetchStaffList() async {
+    try {
+      _staffList = await _userRepository.getStaffList();
+      notifyListeners();
+    } catch (e) {
+      print("Error fetching staff list: $e");
+    }
+  }
+
+  // ================= FETCH USERS (LIST) =================
   Future<void> fetchUsers() async {
     try {
-      _allStaff = await _userRepository.getUserList();
-      applyFilters();
+      final from = _fromDate != null
+          ? DateFormat('yyyy-MM-dd').format(_fromDate!)
+          : null;
+
+      final to = _toDate != null
+          ? DateFormat('yyyy-MM-dd').format(_toDate!)
+          : null;
+
+      _allStaff = await _userRepository.getUserListWithFilters(
+        search: _searchQuery,
+        fromDate: from,
+        toDate: to,
+        sortBy: "created_at",
+        sortOrder: _sortOrder,
+        staffId: _staffId,
+      );
+
+      _filteredStaff = _allStaff;
+      notifyListeners();
     } catch (e) {
       print("Error fetching users: $e");
     }
   }
 
-  // 🔹 Update search query
-  void updateSearch(String query) {
-    _searchQuery = query.toLowerCase();
-    applyFilters();
+  // ================= DETAILS API =================
+  Future<void> fetchUserDetails(String uid) async {
+    try {
+      _isDetailsLoading = true;
+      notifyListeners();
+
+      final data = await _userRepository.getUserByUid(uid);
+
+      _selectedUserDetails = UserDetailsModel.fromJson(data);
+
+      _isDetailsLoading = false;
+      notifyListeners();
+    } catch (e) {
+      _isDetailsLoading = false;
+      notifyListeners();
+      print("DETAIL FETCH ERROR => $e");
+    }
   }
 
-  // 🔹 Update date range
+  // ================= SEARCH =================
+  void updateSearch(String query) {
+    if (_debounce?.isActive ?? false) _debounce!.cancel();
+
+    _debounce = Timer(const Duration(milliseconds: 400), () {
+      _searchQuery = query;
+      fetchUsers();
+    });
+  }
+
+  // ================= DATE FILTER =================
   void updateDateRange(DateTime? from, DateTime? to) {
     _fromDate = from;
     _toDate = to;
-    applyFilters();
+    fetchUsers();
   }
+
+  // ================= SORT =================
+  void updateSort(String? sortOrder) {
+    _sortOrder = sortOrder;
+    fetchUsers();
+  }
+
+  // ================= STAFF FILTER =================
+  void updateStaff(int? staffId) {
+    _staffId = staffId;
+    fetchUsers();
+  }
+
+  // ================= DELETE =================
   Future<void> deleteStaff(String uid) async {
     final index = _allStaff.indexWhere((user) => user.uid == uid);
     if (index == -1) return;
 
     final removedUser = _allStaff[index];
 
-    // 🔹 Optimistic UI Update
     _allStaff.removeAt(index);
-    applyFilters();
+    _filteredStaff = _allStaff;
+    notifyListeners();
 
     try {
       await _userRepository.deleteUser(uid);
     } catch (e) {
-      // 🔹 Rollback if API fails
       _allStaff.insert(index, removedUser);
-      applyFilters();
+      _filteredStaff = _allStaff;
+      notifyListeners();
       print("Delete failed: $e");
       rethrow;
     }
   }
 
-  // 🔹 Apply search + date filters
-  void applyFilters() {
-    _filteredStaff = _allStaff.where((user) {
-      final name = user.name?.toLowerCase() ?? "";
-      final role = user.role?.toLowerCase() ?? "";
-
-      bool matchesSearch =
-          name.contains(_searchQuery) ||
-              role.contains(_searchQuery);
-
-      bool matchesDate = true;
-
-      if (_fromDate != null && _toDate != null && user.joiningDate != null) {
-        final joining = DateTime.tryParse(user.joiningDate!);
-
-        if (joining != null) {
-          matchesDate =
-              joining.isAfter(_fromDate!.subtract(const Duration(days: 1))) &&
-                  joining.isBefore(_toDate!.add(const Duration(days: 1)));
-        }
-      }
-
-      return matchesSearch && matchesDate;
-    }).toList();
-
-    notifyListeners();
-  }
+  // ================= TOGGLE STATUS =================
   Future<void> toggleStatus(UserModel user) async {
     final index = _allStaff.indexWhere((u) => u.uid == user.uid);
     if (index == -1) return;
 
     final oldUser = _allStaff[index];
 
-    // 🔹 Optimistic update
     final updatedUser = oldUser.copyWith(
       status: oldUser.status == "ACTIVE" ? "INACTIVE" : "ACTIVE",
     );
 
     _allStaff[index] = updatedUser;
-    applyFilters();
+    _filteredStaff = _allStaff;
+    notifyListeners();
 
     try {
       await _userRepository.toggleUserStatus(user.uid);
     } catch (e) {
-      // 🔹 rollback if API fails
       _allStaff[index] = oldUser;
-      applyFilters();
+      _filteredStaff = _allStaff;
+      notifyListeners();
       print("Toggle failed: $e");
     }
   }
+
+  // ================= GETTERS =================
+  DateTime? get fromDate => _fromDate;
+  DateTime? get toDate => _toDate;
+  String? get sortOrder => _sortOrder;
+  int? get staffId => _staffId;
 }

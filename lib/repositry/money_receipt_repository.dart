@@ -7,6 +7,7 @@ import '../models/moneyreceipt_list.dart';
 class MoneyReceiptRepo {
   final NetworkHandler _networkHandler = NetworkHandler();
 
+  /// 🔹 NORMAL LIST (optional fallback)
   Future<List<MoneyReceiptModel>> getMoneyReceipts({
     int page = 1,
     int limit = 10,
@@ -29,49 +30,71 @@ class MoneyReceiptRepo {
       throw Exception("Failed to load receipts");
     }
   }
-  Future<void> createReceipt(Map<String, dynamic> body) async {
+
+  /// ✅ 🔥 MAIN FILTER API (USE THIS)
+  Future<List<MoneyReceiptModel>> getMoneyReceiptsWithFilters({
+    int page = 1,
+    int limit = 10,
+    String? search,
+    String? fromDate,
+    String? toDate,
+    String? sortOrder,
+    int? staffId, // ✅ ADD
+  }) async {
     try {
-      final Response response = await _networkHandler.post(
-        ApiEndPoints.createMoneyReceipt,
-        body,
+      final queryParams = {
+        "page": page,
+        "limit": limit,
+        if (search != null && search.isNotEmpty) "search": search,
+        if (fromDate != null) "from_date": fromDate,
+        if (toDate != null) "to_date": toDate,
+        if (sortOrder != null) "sort_order": sortOrder,
+        if (staffId != null) "staff_id": staffId, // ✅ ADD
+      };
+
+      final response = await _networkHandler.get(
+        ApiEndPoints.moneyReceiptList,
+        queryParams: queryParams,
       );
 
-      print("CREATE RESPONSE: ${response.data}");
+      final data = response.data["data"] as List;
+
+      return data
+          .map((e) => MoneyReceiptModel.fromJson(e))
+          .toList();
     } catch (e) {
-      print("CREATE ERROR: $e");
-      rethrow;
+      throw Exception("Failed to load receipts");
     }
   }
+
+  /// 🔹 OTHER METHODS (UNCHANGED)
+  Future<void> createReceipt(Map<String, dynamic> body) async {
+    await _networkHandler.post(
+      ApiEndPoints.createMoneyReceipt,
+      body,
+    );
+  }
+
   Future<Map<String, dynamic>> getReceiptByUid(String uid) async {
     final response = await _networkHandler.get(
       "/money-receipt",
-      queryParams: {"uid": uid}, // ✅ FIXED
+      queryParams: {"uid": uid},
     );
 
     return response.data["data"];
   }
-  Future<void> updateReceipt(String uid, Map<String, dynamic> body) async {
-    try {
-      final response = await _networkHandler.put(
-        "/money-receipt/update/$uid",
-        body,
-      );
 
-      print("UPDATE RESPONSE: ${response.data}");
-    } catch (e) {
-      print("UPDATE ERROR: $e");
-      rethrow;
-    }
+  Future<void> updateReceipt(String uid, Map<String, dynamic> body) async {
+    await _networkHandler.put(
+      "/money-receipt/update/$uid",
+      body,
+    );
   }
+
   Future<void> deleteReceipt(String uid) async {
-    try {
-      await _networkHandler.delete(
-        "/money-receipt/$uid",
-        null, // 👈 no body needed
-      );
-    } catch (e) {
-      print("DELETE ERROR: $e");
-      rethrow;
-    }
+    await _networkHandler.delete(
+      "/money-receipt/$uid",
+      null,
+    );
   }
 }

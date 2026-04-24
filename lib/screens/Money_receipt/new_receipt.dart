@@ -146,7 +146,7 @@ class _NewReceiptScreenState extends ConsumerState<NewReceiptScreen> {
             : "Receipt created successfully",
       );
 
-      Navigator.pop(context);
+      Navigator.pop(context, true); // 👈 return true
     } catch (e) {
       ToastHelper.showError(message: e.toString());
     }
@@ -399,7 +399,7 @@ class _NewReceiptScreenState extends ConsumerState<NewReceiptScreen> {
                         Expanded(
                           child: CustomButton(
                             text: "Back",
-                            onPressed: () => Navigator.pop(context),
+                            onPressed: () => Navigator.pop(context, true),
                             backgroundColor: Colors.white,
                             foregroundColor: Colors.black,
                             borderColor: AppColors.primary,

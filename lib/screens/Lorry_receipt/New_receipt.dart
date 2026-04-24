@@ -7,6 +7,7 @@ import 'package:pack_n_pay/screens/Lorry_receipt/widgets/consignorForm.dart';
 import 'package:pack_n_pay/screens/Lorry_receipt/widgets/lr-details.dart';
 import 'package:pack_n_pay/notifier/lr_provider.dart';
 
+import '../../notifier/lorry_receiptnotifier.dart';
 import '../../utils/m_font_styles.dart';
 
 class NewLorryReceiptScreen extends ConsumerStatefulWidget {
@@ -35,20 +36,21 @@ class _NewLorryReceiptScreenState
   void initState() {
     super.initState();
 
-    /// Prefill form data in Edit Mode
-    if (widget.isEdit) {
-      Future.microtask(() {
-        final data = ref.read(lrFormDataProvider);
-        if (data.isNotEmpty) {
+    Future.microtask(() async {
+      if (widget.isEdit && widget.uid != null) {
+        try {
+          final data = await ref
+              .read(lorryReceiptProvider.notifier)
+              .getLorryReceiptByUid(widget.uid!);
+
           ref.read(lrFormDataProvider.notifier).state = data;
+        } catch (e) {
+          debugPrint("Prefill failed: $e");
         }
-      });
-    } else {
-      /// Clear form for new LR
-      Future.microtask(() {
+      } else {
         ref.read(lrFormDataProvider.notifier).state = {};
-      });
-    }
+      }
+    });
 
     steps = [
       LRDetailsForm(onNext: goToNextStep),

@@ -17,15 +17,8 @@ class TopSection extends StatelessWidget {
 
       child: const Column(
         children: [
-
-          /// HEADER
           HeaderSection(),
-
-
-
-          /// FILTER + SEARCH
           FilterSearchSection(),
-
           SizedBox(height: 8),
         ],
       ),

@@ -19,6 +19,7 @@ class _HelpSupportScreenState extends State<HelpSupportScreen> {
   final SupportRepository _repository = SupportRepository();
   late Future<List<SupportTicketModel>> _ticketsFuture;
 
+
   @override
   void initState() {
     super.initState();
@@ -96,8 +97,11 @@ class _HelpSupportScreenState extends State<HelpSupportScreen> {
               height: 36,
               child: ElevatedButton.icon(
                 onPressed: () async {
-                  await showRaiseComplaintBottomSheet(context);
-                  _refreshTickets(); // Refresh after submission
+                  final result = await showRaiseComplaintBottomSheet(context);
+
+                  if (result == true) {
+                    _refreshTickets(); // ✅ refresh ONLY after success
+                  } // Refresh after submission
                 },
                 icon: const Icon(
                   Icons.report_problem_outlined,
@@ -366,7 +370,7 @@ class _HelpSupportScreenState extends State<HelpSupportScreen> {
     );
   }
 
-  Future<void> showRaiseComplaintBottomSheet(BuildContext context) async {
+  Future<bool?> showRaiseComplaintBottomSheet(BuildContext context) async {
     final TextEditingController messageController = TextEditingController();
     String? selectedIssueType;
 
@@ -379,7 +383,7 @@ class _HelpSupportScreenState extends State<HelpSupportScreen> {
     final List<String> issueTypeLabels =
     issueTypeOptions.map((e) => e['label'].toString()).toList();
 
-    showModalBottomSheet(
+    return showModalBottomSheet(
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
@@ -528,7 +532,7 @@ class _HelpSupportScreenState extends State<HelpSupportScreen> {
                                   );
 
                                   if (success) {
-                                    Navigator.pop(context);
+                                    Navigator.pop(context, true);
                                     ToastHelper.showSuccess(
                                       message: "Complaint submitted successfully",
                                     );

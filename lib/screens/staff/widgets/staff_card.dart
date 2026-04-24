@@ -14,6 +14,10 @@ class StaffCardWidget extends StatelessWidget {
   final Function(bool)? onToggle;
   final VoidCallback? onView;
   final VoidCallback? onEdit;
+  final int surveyCount;
+  final int quotationCount;
+  final int orderCount;
+  final int lrCount;
 
   const StaffCardWidget({
     super.key,
@@ -27,6 +31,10 @@ class StaffCardWidget extends StatelessWidget {
     this.onToggle,
     this.onView,
     this.onEdit,
+    this.surveyCount = 0,
+    this.quotationCount = 0,
+    this.orderCount = 0,
+    this.lrCount = 0,
   });
 
   /// 🔹 Stats Item
@@ -123,29 +131,29 @@ class StaffCardWidget extends StatelessWidget {
             onTap: onView,
             child: SvgPicture.asset(
               "assets/icons/view_icon.svg",
-              width: 16,
-              height: 16,
+              width: 20,
+              height: 20,
               color: AppColors.primarySecond,
             ),
           ),
-          const SizedBox(width: 10),
+          const SizedBox(width: 14),
 
           // 📜 History
           SvgPicture.asset(
             "assets/icons/history_icon.svg",
-            width: 16,
-            height: 16,
+            width: 20,
+            height: 20,
             color: AppColors.primarySecond,
           ),
-          const SizedBox(width: 10),
+          const SizedBox(width: 14),
 
           // ✏️ Edit
           GestureDetector(
             onTap: onEdit, // ✅ Trigger edit action
             child: SvgPicture.asset(
               "assets/icons/note_edit_icon.svg",
-              width: 16,
-              height: 16,
+              width: 20,
+              height: 20,
               color: AppColors.primarySecond,
             ),
           ),
@@ -251,10 +259,10 @@ class StaffCardWidget extends StatelessWidget {
           /// 🔹 STATS
           Row(
             children: [
-              buildStatItem("Survey", "10"),
-              buildStatItem("Quotation", "10"),
-              buildStatItem("LR/Bilty", "10"),
-              buildStatItem("Orders", "10"),
+              buildStatItem("Survey", surveyCount.toString()),
+              buildStatItem("Quotation", quotationCount.toString()),
+              buildStatItem("LR/Bilty", lrCount.toString()),
+              buildStatItem("Orders", orderCount.toString()),
             ],
           ),
 

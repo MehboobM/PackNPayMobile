@@ -12,6 +12,8 @@ import '../../notifier/money_recepitform.dart';
 import '../../notifier/moneyreceipt_notifier.dart';
 import '../../routes/route_names_const.dart';
 import '../../utils/toast_message.dart';
+import '../staff/widgets/common_bottom_sheet.dart';
+import '../survey/widget/filter_bottom_sheet.dart';
 
 class MoneyListScreen extends ConsumerStatefulWidget {
   const MoneyListScreen({super.key});
@@ -23,8 +25,7 @@ class MoneyListScreen extends ConsumerStatefulWidget {
 
 class _MoneyListScreenState
     extends ConsumerState<MoneyListScreen> {
-  DateTime? fromDate;
-  DateTime? toDate;
+
 
   final TextEditingController searchController = TextEditingController();
 
@@ -53,6 +54,8 @@ class _MoneyListScreenState
   @override
   Widget build(BuildContext context) {
     final notifier = ref.watch(moneyReceiptProvider);
+    final from = notifier.fromDate;
+    final to = notifier.toDate;
 
     return Scaffold(
       backgroundColor: const Color(0xffF5F5F7),
@@ -120,12 +123,16 @@ class _MoneyListScreenState
                   padding: const EdgeInsets.symmetric(horizontal: 10),
                   elevation: 0,
                 ),
-                onPressed: () {
-                  Navigator.pushNamed(
-                    context,
-                    newReceiptScreenRoute,
-                  );
-                },
+    onPressed: () async {
+    final result = await Navigator.pushNamed(
+    context,
+    newReceiptScreenRoute,
+    );
+
+    if (result == true) {
+    await ref.read(moneyReceiptProvider).fetchReceipts();
+    }
+    },
                 icon: const Icon(Icons.add, size: 16, color: Colors.white),
                 label: Text(
                   "New MR",
@@ -154,23 +161,35 @@ class _MoneyListScreenState
                     hintStyle: TextStyles.f12w400Gray5,
                     textStyle: const TextStyle(fontSize: 14),
                     borderRadius: 12,
-                    onChanged: (value) {
-                      ref.read(moneyReceiptProvider).search(value);
-                    },
+                      onChanged: (value) {
+                        ref.read(moneyReceiptProvider).updateSearch(value);
+                      }
                   ),
                 ),
 
                 const SizedBox(width: 10),
 
-                Container(
-                  height: 48,
-                  width: 48,
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(12),
-                    border: Border.all(color: AppColors.mGray3),
+                GestureDetector(
+                  onTap: () {
+                    showModalBottomSheet(
+                      context: context,
+                      isScrollControlled: true,
+                      backgroundColor: Colors.transparent,
+                      builder: (context) => CommonFilterBottomSheet(
+                        notifier: ref.read(moneyReceiptProvider),
+                      ), // same widget
+                    );
+                  },
+                  child: Container(
+                    height: 48,
+                    width: 48,
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(color: AppColors.mGray3),
+                    ),
+                    child: const Icon(Icons.filter_list),
                   ),
-                  child: const Icon(Icons.filter_list),
                 ),
 
                 const SizedBox(width: 10),
@@ -184,10 +203,10 @@ class _MoneyListScreenState
                     );
 
                     if (picked != null) {
-                      setState(() {
-                        fromDate = picked.start;
-                        toDate = picked.end;
-                      });
+                      ref.read(moneyReceiptProvider).updateDateRange(
+                        picked.start,
+                        picked.end,
+                      );
                     }
                   },
                   child: Container(
@@ -207,10 +226,11 @@ class _MoneyListScreenState
             const SizedBox(height: 12),
 
             /// 📅 DATE VIEW
-            if (fromDate != null && toDate != null)
+
+
+            if (from != null && to != null)
               Container(
-                padding:
-                const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
                 decoration: BoxDecoration(
                   color: AppColors.tab,
                   borderRadius: BorderRadius.circular(12),
@@ -219,16 +239,12 @@ class _MoneyListScreenState
                   children: [
                     const Icon(Icons.calendar_today, size: 18),
                     const SizedBox(width: 10),
-                    Text(
-                        "${formatDate(fromDate!)} - ${formatDate(toDate!)}"),
+                    Text("${formatDate(from)} - ${formatDate(to)}"),
                     const Spacer(),
                     IconButton(
                       icon: const Icon(Icons.close, size: 20),
                       onPressed: () {
-                        setState(() {
-                          fromDate = null;
-                          toDate = null;
-                        });
+                        ref.read(moneyReceiptProvider).updateDateRange(null, null);
                       },
                     ),
                   ],
@@ -276,7 +292,7 @@ class _MoneyListScreenState
             Expanded(
               child: notifier.isLoading
                   ? const Center(child: CircularProgressIndicator())
-                  : notifier.receipts.isEmpty
+                  : notifier.filteredReceipts.isEmpty
                   ? const Center(child: Text("No Data Found"))
                   : ListView.builder(
     itemCount: notifier.filteredReceipts.length,
@@ -292,21 +308,21 @@ class _MoneyListScreenState
                     to: item.to,
                     amount: item.amount,
 
-                    onTapView: () {
+                    onTapView: (_) {
                       ViewDownloadService.handlePdf(
                         context: context,
-                        type: "money_receipt", // 👈 confirm API type
+                        type: "money_receipt",
                         uid: item.uid,
-                        isDownload: false, // 👈 VIEW (open file)
+                        isDownload: false,
                       );
                     },
 
-                    onTapDownload: () {
+                    onTapDownload: (_) {
                       ViewDownloadService.handlePdf(
                         context: context,
-                        type: "money_receipt", // 👈 confirm API type
+                        type: "money_receipt",
                         uid: item.uid,
-                        isDownload: true, // 👈 DOWNLOAD only
+                        isDownload: true,
                       );
                     },
                     onTapMenu: (details) {
@@ -358,11 +374,15 @@ class _MoneyListScreenState
 
       ref.read(moneyReceiptFormProvider.notifier).clear();
 
-      Navigator.pushNamed(
+      final result = await Navigator.pushNamed(
         context,
         newReceiptScreenRoute,
         arguments: data,
       );
+
+      if (result == true) {
+        await ref.read(moneyReceiptProvider).fetchReceipts();
+      }
     } catch (e) {
       ToastHelper.showError(
         message: "Failed to load receipt",
@@ -374,6 +394,7 @@ class _MoneyListScreenState
       context: context,
       builder: (context) {
         return AlertDialog(
+          backgroundColor: Colors.white,
           title: const Text("Delete Receipt"),
           content: const Text("Are you sure you want to delete this receipt?"),
           actions: [
@@ -383,7 +404,16 @@ class _MoneyListScreenState
             ),
             ElevatedButton(
               onPressed: () => Navigator.pop(context, true),
-              child: const Text("Delete"),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.red,
+              ),
+              child: const Text(
+                "Delete",
+                style: TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
             ),
           ],
         );

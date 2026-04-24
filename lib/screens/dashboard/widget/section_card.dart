@@ -70,7 +70,7 @@ class StatsSection extends StatelessWidget {
                 final item = items[index];
 
                 return Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                  padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(8),
                     border: Border.all(color: const Color(0xffE5E7EB)),

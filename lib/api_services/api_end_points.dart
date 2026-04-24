@@ -2,11 +2,12 @@ class ApiEndPoints {
 
 
   ///Local
-  //static const server = "http://192.168.0.247:5000/api/";
+  static const server = "http://192.168.0.247:5000/api/";
+  /*static const server = "http://192.168.0.246:5000/api/";*/
 
 
   ///Production
-  static const server = "https://packnpay.in/api/";
+  /*static const server = "https://packnpay.in/api/";*/
 
 
   static const baseurl = '${server}';
@@ -64,6 +65,11 @@ class ApiEndPoints {
       "settings/lr";
   static const String createSupportTicket = "support/create";
   static const String getMySupportTickets = "support/my-tickets";
+  static const String getSummaray = "dashboard/summary";
+  static const String getActions = "dashboard/actions";
+  static const String getupcomingOrders = "dashboard/upcoming-orders";
+  static const String getcalender= "dashboard/calendar";
+  static const String subscription = "subscription/current";
 
 
 

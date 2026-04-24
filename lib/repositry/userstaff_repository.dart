@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import '../api_services/network_handler.dart';
 import '../api_services/api_end_points.dart';
+import '../models/staff_details_modal.dart';
 import '../models/staff_user_model.dart';
 
 class UserRepository {
@@ -27,8 +28,7 @@ class UserRepository {
 
       print("API RESPONSE => ${response.data}");
 
-      if (response.statusCode == 200 &&
-          response.data['success'] == true) {
+      if (response.data['success'] == true) {
         return true; // ✅ SUCCESS
       } else {
         throw Exception(response.data['message'] ?? "Something went wrong");
@@ -56,18 +56,17 @@ class UserRepository {
       rethrow;
     }
   }
-  Future<UserModel> getUserByUid(String uid) async {
+  Future<Map<String, dynamic>> getUserByUid(String uid) async {
     try {
-      Response response =
-      await _networkHandler.get("user?uid=$uid");
+      Response response = await _networkHandler.get("user?uid=$uid");
 
-      if (response.statusCode == 200 &&
-          response.data['success'] == true) {
-        return UserModel.fromJson(response.data['data']);
+      if (response.statusCode == 200) {
+        return response.data; // ✅ DIRECT RETURN
       } else {
-        throw Exception(response.data['message'] ?? "Failed to fetch user");
+        throw Exception("Failed to fetch user");
       }
     } catch (e) {
+      print("GET USER ERROR => $e");
       rethrow;
     }
   }
@@ -106,6 +105,56 @@ class UserRepository {
       }
     } catch (e) {
       print("DELETE USER ERROR => $e");
+      rethrow;
+    }
+  }
+  Future<List<UserModel>> getUserListWithFilters({
+    int page = 1,
+    int limit = 15,
+    String? search,
+    String? fromDate,
+    String? toDate,
+    String? sortBy,
+    String? sortOrder,
+    int? staffId,
+  }) async {
+    try {
+      final queryParams = {
+        "page": page,
+        "limit": limit,
+        if (search != null && search.isNotEmpty) "search": search,
+        if (fromDate != null) "from_date": fromDate,
+        if (toDate != null) "to_date": toDate,
+        if (sortBy != null) "sort_by": sortBy,
+        if (sortOrder != null) "sort_order": sortOrder,
+        if (staffId != null) "staff_id": staffId,
+      };
+
+      Response response = await _networkHandler.get(
+        ApiEndPoints.userList,
+        queryParams: queryParams,
+      );
+
+      if (response.statusCode == 200 && response.data['success'] == true) {
+        List<dynamic> usersJson = response.data['data'];
+        return usersJson.map((json) => UserModel.fromJson(json)).toList();
+      } else {
+        throw Exception("Failed to load users");
+      }
+    } catch (e) {
+      rethrow;
+    }
+  }
+  Future<List<Map<String, dynamic>>> getStaffList() async {
+    try {
+      Response response = await _networkHandler.get("get-staff");
+
+      if (response.statusCode == 200 && response.data['success'] == true) {
+        return List<Map<String, dynamic>>.from(response.data['data']);
+      } else {
+        throw Exception("Failed to fetch staff");
+      }
+    } catch (e) {
       rethrow;
     }
   }
