@@ -1,6 +1,7 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:pack_n_pay/screens/staff/widgets/common_bottom_sheet.dart';
 import 'package:pack_n_pay/screens/staff/widgets/staff_card.dart';
 
 import '../../global_widget/custom_textfield.dart';
@@ -21,8 +22,6 @@ class StaffScreen extends StatefulWidget {
 class _StaffScreenState extends State<StaffScreen> {
   late final StaffNotifier staffNotifier;
   final TextEditingController searchController = TextEditingController();
-  DateTime? fromDate;
-  DateTime? toDate;
 
   @override
   void initState() {
@@ -45,7 +44,11 @@ class _StaffScreenState extends State<StaffScreen> {
       body: Column(
         children: [
           _buildSearchAndFilterSection(),
-          // 🔹 STAFF LIST
+
+          /// ✅ FILTER VIEW (NEW)
+          _buildActiveFilters(),
+
+          /// 🔹 STAFF LIST
           Expanded(
             child: AnimatedBuilder(
               animation: staffNotifier,
@@ -59,7 +62,8 @@ class _StaffScreenState extends State<StaffScreen> {
                   itemBuilder: (context, index) {
                     final user = staff[index];
                     final joiningDate = user.joiningDate != null
-                        ? DateFormat('yyyy-MM-dd').format(DateTime.parse(user.joiningDate!))
+                        ? DateFormat('yyyy-MM-dd')
+                        .format(DateTime.parse(user.joiningDate!))
                         : "-";
 
                     return StaffCardWidget(
@@ -70,20 +74,27 @@ class _StaffScreenState extends State<StaffScreen> {
                       phone: user.mobile ?? "-",
                       joiningDate: joiningDate,
                       isActive: user.status == "ACTIVE",
+                      surveyCount: user.surveyCount,
+                      quotationCount: user.quotationCount,
+                      orderCount: user.orderCount,
+                      lrCount: user.lrCount,
 
                       onToggle: (val) {
                         staffNotifier.toggleStatus(user);
                       },
 
-                      onView: () {
-                        Navigator.pushNamed(
+                      onView: () async {
+                        final result = await Navigator.pushNamed(
                           context,
                           staffDetailsScreenRoute,
                           arguments: user,
                         );
+
+                        if (result == true) {
+                          await staffNotifier.fetchUsers();
+                        }
                       },
 
-                      // ✅ EDIT FUNCTIONALITY
                       onEdit: () async {
                         final result = await Navigator.pushNamed(
                           context,
@@ -92,7 +103,7 @@ class _StaffScreenState extends State<StaffScreen> {
                         );
 
                         if (result == true) {
-                          await staffNotifier.fetchUsers(); // 🔄 Auto-refresh list
+                          await staffNotifier.fetchUsers();
                         }
                       },
                     );
@@ -124,17 +135,34 @@ class _StaffScreenState extends State<StaffScreen> {
             ),
           ),
           const SizedBox(width: 10),
-          Container(
-            height: 48,
-            width: 48,
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(12),
-              border: Border.all(color: AppColors.mGray3),
+
+          /// 🔹 FILTER BUTTON
+          GestureDetector(
+            onTap: () {
+              showModalBottomSheet(
+                context: context,
+                isScrollControlled: true,
+                backgroundColor: Colors.transparent,
+                builder: (context) => CommonFilterBottomSheet(
+                  notifier: staffNotifier,
+                ),
+              );
+            },
+            child: Container(
+              height: 48,
+              width: 48,
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(color: AppColors.mGray3),
+              ),
+              child: const Icon(Icons.filter_list),
             ),
-            child: const Icon(Icons.filter_list),
           ),
+
           const SizedBox(width: 10),
+
+          /// 🔹 DATE PICKER
           GestureDetector(
             onTap: () async {
               final picked = await showDateRangePicker(
@@ -144,7 +172,10 @@ class _StaffScreenState extends State<StaffScreen> {
               );
 
               if (picked != null) {
-                staffNotifier.updateDateRange(picked.start, picked.end);
+                staffNotifier.updateDateRange(
+                  picked.start,
+                  picked.end,
+                );
               }
             },
             child: Container(
@@ -155,22 +186,120 @@ class _StaffScreenState extends State<StaffScreen> {
                 borderRadius: BorderRadius.circular(12),
                 border: Border.all(color: AppColors.mGray3),
               ),
-    child: Padding(
-    padding: const EdgeInsets.all(8),
-    child: SvgPicture.asset(
-    "assets/icons/calender_icon.svg",
-    colorFilter: const ColorFilter.mode(
-    AppColors.mBlack9,
-    BlendMode.srcIn,
-    ),
-    ),
-    ),
+              child: Padding(
+                padding: const EdgeInsets.all(8),
+                child: SvgPicture.asset(
+                  "assets/icons/calender_icon.svg",
+                  colorFilter: const ColorFilter.mode(
+                    AppColors.mBlack9,
+                    BlendMode.srcIn,
+                  ),
+                ),
               ),
             ),
-
+          ),
         ],
       ),
     );
+  }
+
+  /// ✅ ACTIVE FILTERS UI
+  Widget _buildActiveFilters() {
+    return AnimatedBuilder(
+      animation: staffNotifier,
+      builder: (context, _) {
+        final from = staffNotifier.fromDate;
+        final to = staffNotifier.toDate;
+        final sort = staffNotifier.sortOrder;
+        final staffId = staffNotifier.staffId;
+
+        if (from == null &&
+            to == null &&
+            sort == null &&
+            staffId == null) {
+          return const SizedBox();
+        }
+
+        return Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 12),
+          child: Column(
+            children: [
+              const SizedBox(height: 10),
+
+              /// 📅 DATE
+              if (from != null && to != null)
+                _filterBox(
+                  icon: Icons.calendar_today,
+                  text:
+                  "${DateFormat('yyyy-MM-dd').format(from)} - ${DateFormat('yyyy-MM-dd').format(to)}",
+                  onRemove: () {
+                    staffNotifier.updateDateRange(null, null);
+                  },
+                ),
+
+              /// 🔽 SORT
+              if (sort != null)
+                _filterBox(
+                  icon: Icons.sort,
+                  text: "Sort: $sort",
+                  onRemove: () {
+                    staffNotifier.updateSort(null);
+                  },
+                ),
+
+              /// 👤 STAFF
+              if (staffId != null)
+                _filterBox(
+                  icon: Icons.person,
+                  text: _getStaffName(staffId),
+                  onRemove: () {
+                    staffNotifier.updateStaff(null);
+                  },
+                ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  /// 🔹 FILTER BOX
+  Widget _filterBox({
+    required IconData icon,
+    required String text,
+    required VoidCallback onRemove,
+  }) {
+    return Container(
+      margin: const EdgeInsets.only(bottom: 8),
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+      decoration: BoxDecoration(
+        color: AppColors.tab,
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: Row(
+        children: [
+          Icon(icon, size: 18),
+          const SizedBox(width: 10),
+          Expanded(child: Text(text)),
+          IconButton(
+            icon: const Icon(Icons.close, size: 20),
+            onPressed: onRemove,
+          ),
+        ],
+      ),
+    );
+  }
+
+  /// 🔹 GET STAFF NAME
+  String _getStaffName(int id) {
+    final staff = staffNotifier.staffList.firstWhere(
+          (e) => e['id'] == id,
+      orElse: () => {},
+    );
+
+    return staff.isNotEmpty
+        ? "Staff: ${staff['name']}"
+        : "Staff ID: $id";
   }
 
   AppBar _buildAppBar() {
@@ -190,7 +319,6 @@ class _StaffScreenState extends State<StaffScreen> {
               children: [
                 Text("Staff", style: TextStyles.f16w600mGray9),
                 const SizedBox(width: 6),
-                // 🔹 COUNT BADGE
                 AnimatedBuilder(
                   animation: staffNotifier,
                   builder: (context, _) {
@@ -242,7 +370,7 @@ class _StaffScreenState extends State<StaffScreen> {
                 );
 
                 if (result == true) {
-                  await staffNotifier.fetchUsers(); // 🔄 Auto-refresh list
+                  await staffNotifier.fetchUsers();
                 }
               },
               icon: const Icon(Icons.add, size: 16, color: Colors.white),

@@ -55,9 +55,9 @@ class _LRDetailsFormState extends ConsumerState<LRDetailsForm> {
 
   /// ================= EXPAND STATES =================
   bool lrExpanded = true;
-  bool truckExpanded = false;
-  bool driverExpanded = false;
-  bool invoiceExpanded = false;
+  bool truckExpanded = true;
+  bool driverExpanded = true;
+  bool invoiceExpanded = true;
   String? selectedRiskType = "At Owner Risk";
   final FocusNode orderIdFocusNode = FocusNode();
   Timer? _debounce;

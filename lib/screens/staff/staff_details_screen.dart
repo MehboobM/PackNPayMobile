@@ -2,6 +2,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:pack_n_pay/screens/staff/widgets/calender.dart';
+import '../../models/staff_details_modal.dart';
 import '../../models/staff_user_model.dart';
 import '../../repositry/userstaff_repository.dart';
 import '../../routes/route_names_const.dart';
@@ -20,6 +21,15 @@ class StaffDetailsScreen extends StatefulWidget {
 
 class _StaffDetailsScreenState extends State<StaffDetailsScreen> {
   late bool isActive;
+  UserModel? userData;
+  bool isLoading = true;
+  Map<String, dynamic> attendanceMap = {};
+  int totalDaysWorked = 0;
+
+  int surveyCount = 0;
+  int quotationCount = 0;
+  int orderCount = 0;
+  int lrCount = 0;
 
   DateTime selectedMonth = DateTime(2026, 4);
   String formatDate(String? date) {
@@ -38,17 +48,51 @@ class _StaffDetailsScreenState extends State<StaffDetailsScreen> {
     if (value == null) return "-";
     return "₹${value.toStringAsFixed(0)}";
   }
+  Future<void> _fetchUserDetails() async {
+    try {
+      final repository = UserRepository();
+
+      final response = await repository.getUserByUid(widget.user.uid);
+
+      print("DETAIL RESPONSE => $response"); // ✅ debug
+
+      final details = UserDetailsModel.fromJson(response);
+
+      setState(() {
+        userData = widget.user;
+
+        attendanceMap = details.attendanceMap ?? {};
+        totalDaysWorked = details.totalDaysWorked ?? 0;
+
+        surveyCount = details.surveyCount ?? 0;
+        quotationCount = details.quotationCount ?? 0;
+        orderCount = details.orderCount ?? 0;
+        lrCount = details.lrCount ?? 0;
+
+        isLoading = false; // ✅ CORRECT
+      });
+    } catch (e) {
+      print("ERROR => $e");
+
+      setState(() {
+        isLoading = false; // ✅ MUST USE setState
+      });
+
+      ToastHelper.showError(message: e.toString());
+    }
+  }
 
   @override
   void initState() {
     super.initState();
     isActive = widget.user.status == "ACTIVE";
+    _fetchUserDetails();
   }
 
 
   @override
   Widget build(BuildContext context) {
-    final user = widget.user;
+    final user = userData ?? widget.user;
 
     return Scaffold(
       backgroundColor: AppColors.bodysecondry,
@@ -123,7 +167,9 @@ class _StaffDetailsScreenState extends State<StaffDetailsScreen> {
           ),
         ],
       ),
-      body: SingleChildScrollView(
+      body: isLoading
+          ? const Center(child: CircularProgressIndicator())
+          : SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(16),
           child: Container(
@@ -280,10 +326,10 @@ class _StaffDetailsScreenState extends State<StaffDetailsScreen> {
                 _sectionTitle("Order Counts"),
                 Row(
                   children: [
-                    buildStatItem("Survey", "10"),
-                    buildStatItem("Quotation", "10"),
-                    buildStatItem("LR/Bilty", "10"),
-                    buildStatItem("Orders", "10"),
+                    buildStatItem("Survey", surveyCount.toString()),
+                    buildStatItem("Quotation", quotationCount.toString()),
+                    buildStatItem("LR/Bilty", lrCount.toString()),
+                    buildStatItem("Orders", orderCount.toString()),
                   ],
                 ),
               ],
@@ -382,10 +428,19 @@ class _StaffDetailsScreenState extends State<StaffDetailsScreen> {
         DateTime(selectedMonth.year, selectedMonth.month, 0).day;
 
     // Sample attendance data
-    final Map<int, String> attendanceData = {
-      1: "P",  // Present
-      18: "A", // Absent
-    };
+    final Map<int, String> attendanceData = {};
+
+    attendanceMap.forEach((date, value) {
+      try {
+        final parsedDate = DateTime.parse(date);
+
+        if (parsedDate.month == selectedMonth.month &&
+            parsedDate.year == selectedMonth.year) {
+          attendanceData[parsedDate.day] =
+          (value.isNotEmpty && value[0]['status'] == "P") ? "P" : "A";
+          }
+          } catch (_) {}
+        });
 
     return Container(
       decoration: BoxDecoration(

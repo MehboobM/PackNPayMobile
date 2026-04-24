@@ -12,8 +12,8 @@ class MoneyReceiptListItem extends StatelessWidget {
   final String to;
   final String amount;
 
-  final VoidCallback? onTapView;
-  final VoidCallback? onTapDownload;
+  final Function(TapDownDetails)? onTapView;
+  final Function(TapDownDetails)? onTapDownload;
   final Function(TapDownDetails)? onTapMenu;
 
   const MoneyReceiptListItem({
@@ -108,7 +108,9 @@ class MoneyReceiptListItem extends StatelessWidget {
               children: [
                 Flexible(
                   child: GestureDetector(
-                    onTap: onTapView,
+                    onTapDown: (details) {
+                      onTapView?.call(details);
+                    },
                     child: SvgPicture.asset(
                       "assets/icons/view_icon.svg",
                       width: 18,
@@ -120,7 +122,9 @@ class MoneyReceiptListItem extends StatelessWidget {
 
                 Flexible(
                   child: GestureDetector(
-                    onTap: onTapDownload,
+                    onTapDown: (details) {
+                      onTapDownload?.call(details);
+                    },
                     child: SvgPicture.asset(
                       "assets/icons/download_icon.svg",
                       width: 18,

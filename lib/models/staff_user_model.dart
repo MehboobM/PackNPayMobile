@@ -15,6 +15,12 @@ class UserModel {
   final String? profileImage;
   final String status;
 
+  // ✅ ADD THESE
+  final int surveyCount;
+  final int quotationCount;
+  final int orderCount;
+  final int lrCount;
+
   UserModel({
     required this.id,
     required this.uid,
@@ -31,6 +37,12 @@ class UserModel {
     this.baseSalary,
     this.profileImage,
     required this.status,
+
+    // ✅ ADD IN CONSTRUCTOR
+    this.surveyCount = 0,
+    this.quotationCount = 0,
+    this.orderCount = 0,
+    this.lrCount = 0,
   });
 
   factory UserModel.fromJson(Map<String, dynamic> json) {
@@ -50,28 +62,15 @@ class UserModel {
       baseSalary: json['base_salary']?.toString(),
       profileImage: json['profile_image'],
       status: json['status'] ?? "INACTIVE",
+
+      // ✅ MAP API DATA
+      surveyCount: json['survey_count'] ?? 0,
+      quotationCount: json['quotation_count'] ?? 0,
+      orderCount: json['order_count'] ?? 0,
+      lrCount: json['lr_count'] ?? 0,
     );
   }
 
-  Map<String, dynamic> toJson() => {
-    'id': id,
-    'uid': uid,
-    'username': username,
-    'name': name,
-    'role': role,
-    'email': email,
-    'mobile': mobile,
-    'alternate_mobile': alternateMobile,
-    'login_code': loginCode,
-    'joining_date': joiningDate,
-    'address': address,
-    'advance_salary': advanceSalary,
-    'base_salary': baseSalary,
-    'profile_image': profileImage,
-    'status': status,
-  };
-
-  /// ✅ copyWith method
   UserModel copyWith({
     int? id,
     String? uid,
@@ -88,6 +87,12 @@ class UserModel {
     String? baseSalary,
     String? profileImage,
     String? status,
+
+    // ✅ ADD THESE
+    int? surveyCount,
+    int? quotationCount,
+    int? orderCount,
+    int? lrCount,
   }) {
     return UserModel(
       id: id ?? this.id,
@@ -105,6 +110,12 @@ class UserModel {
       baseSalary: baseSalary ?? this.baseSalary,
       profileImage: profileImage ?? this.profileImage,
       status: status ?? this.status,
+
+      // ✅ KEEP OLD IF NULL
+      surveyCount: surveyCount ?? this.surveyCount,
+      quotationCount: quotationCount ?? this.quotationCount,
+      orderCount: orderCount ?? this.orderCount,
+      lrCount: lrCount ?? this.lrCount,
     );
   }
 }

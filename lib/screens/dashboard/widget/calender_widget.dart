@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 
+import '../../../repositry/Dashboard_repository.dart';
 import '../../../utils/app_colors.dart';
 import '../../../utils/m_font_styles.dart';
 
@@ -13,6 +14,8 @@ class CalendarWidget extends StatefulWidget {
 }
 
 class _CalendarWidgetState extends State<CalendarWidget> {
+  Map<String, int> calendarEvents = {};
+  bool isLoading = false;
 
   DateTime visibleMonth = DateTime.now();
   DateTimeRange? selectedRange;
@@ -35,6 +38,24 @@ class _CalendarWidgetState extends State<CalendarWidget> {
     ];
 
     controller = PageController(initialPage: 0);
+    fetchCalendar(visibleMonth);
+  }
+  Future<void> fetchCalendar(DateTime month) async {
+    try {
+      setState(() => isLoading = true);
+
+      final data = await DashboardService().getCalendarData(
+        year: month.year,
+        month: month.month,
+      );
+
+      setState(() {
+        calendarEvents = data;
+        isLoading = false;
+      });
+    } catch (e) {
+      setState(() => isLoading = false);
+    }
   }
 
   List<DateTime> getMonthDays(DateTime month) {
@@ -63,8 +84,12 @@ class _CalendarWidgetState extends State<CalendarWidget> {
 
       int day = date.day;
 
-      bool isGreenDay = day == 1;
-      bool isPinkDay = day == 18;
+      String key =
+          "${date.year.toString().padLeft(4, '0')}-"
+          "${date.month.toString().padLeft(2, '0')}-"
+          "${date.day.toString().padLeft(2, '0')}";
+
+      int? count = calendarEvents[key];
 
       bool isToday =
           date.year == DateTime.now().year &&
@@ -73,7 +98,7 @@ class _CalendarWidgetState extends State<CalendarWidget> {
 
       Widget cell;
 
-      if (isGreenDay) {
+      if (count != null && count > 0) {
         cell = Container(
           height: 60,
           color: const Color(0xff7CF2A1),
@@ -83,38 +108,17 @@ class _CalendarWidgetState extends State<CalendarWidget> {
                 top: 6,
                 left: 6,
                 child: Text(
-                  DateFormat("MMMM d").format(date),
+                  DateFormat("MMM d").format(date),
                   style: const TextStyle(fontSize: 11, color: Colors.black54),
                 ),
               ),
-              const Center(
+              Center(
                 child: Text(
-                  "10/10",
-                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 13),
-                ),
-              )
-            ],
-          ),
-        );
-      }
-      else if (isPinkDay) {
-        cell = Container(
-          height: 60,
-          color: const Color(0xffF3D6DA),
-          child: Stack(
-            children: [
-              Positioned(
-                top: 6,
-                left: 6,
-                child: Text(
-                  DateFormat("MMMM d").format(date),
-                  style: const TextStyle(fontSize: 11, color: Colors.black54),
-                ),
-              ),
-              const Center(
-                child: Text(
-                  "10/10",
-                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 13),
+                  "$count/10",
+                  style: const TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 13,
+                  ),
                 ),
               )
             ],
@@ -137,8 +141,8 @@ class _CalendarWidgetState extends State<CalendarWidget> {
           child: Text(
             "${date.day}",
             style: TextStyles.f8w500mWhite.copyWith(
-              color:AppColors.mGray5
-            )
+              color: AppColors.mGray5,
+            ),
           ),
         );
       }
@@ -197,57 +201,74 @@ class _CalendarWidgetState extends State<CalendarWidget> {
                 )
               ),
 
-              GestureDetector(
-                onTap: () async {
+              Row(
+                children: [
 
-                  DateTimeRange? picked =
-                  await showDateRangePicker(
-                    context: context,
-                    firstDate: DateTime(2000),
-                    lastDate: DateTime(2100),
-                  );
+                  /// SELECT RANGE
+                  GestureDetector(
+                    onTap: () async {
+                      DateTimeRange? picked = await showDateRangePicker(
+                        context: context,
+                        firstDate: DateTime(2000),
+                        lastDate: DateTime(2100),
+                      );
 
-                  if (picked != null) {
+                      if (picked != null) {
+                        List<DateTime> months =
+                        generateMonths(picked.start, picked.end);
 
-                    List<DateTime> months =
-                    generateMonths(picked.start, picked.end);
+                        setState(() {
+                          selectedRange = picked;
+                          monthsToShow = months;
+                          visibleMonth = months.first;
+                          controller = PageController(initialPage: 0);
+                        });
 
-                    setState(() {
-
-                      selectedRange = picked;
-                      monthsToShow = months;
-                      visibleMonth = months.first;
-
-                      controller = PageController(initialPage: 0);
-                    });
-                  }
-                },
-                child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(8),
-                    border: Border.all(color: const Color(0xffE5E7EB)),
-                  ),
-                  child: Row(
-                    children: [
-                      const Icon(Icons.calendar_today, size: 16),
-                      const SizedBox(width: 6),
-
-                      Text(
-                        selectedRange == null
-                            ? "Select Range"
-                            : "${DateFormat('MMM dd, yyyy').format(selectedRange!.start)} - ${DateFormat('MMM dd, yyyy').format(selectedRange!.end)}",
-                        style: TextStyles.f11w600mWhite.copyWith(
-                          color:AppColors.mGray9
-                        )
+                        fetchCalendar(visibleMonth);
+                      }
+                    },
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(8),
+                        border: Border.all(color: const Color(0xffE5E7EB)),
                       ),
-
-                      const SizedBox(width: 4),
-                      const Icon(Icons.keyboard_arrow_down, size: 18)
-                    ],
+                      child: Row(
+                        children: [
+                          const Icon(Icons.calendar_today, size: 16),
+                          const SizedBox(width: 6),
+                          Text(
+                            selectedRange == null
+                                ? "Select Range"
+                                : "${DateFormat('MMM dd, yyyy').format(selectedRange!.start)} - ${DateFormat('MMM dd, yyyy').format(selectedRange!.end)}",
+                            style: TextStyles.f11w600mWhite.copyWith(
+                              color: AppColors.mGray9,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
                   ),
-                ),
+
+                  const SizedBox(width: 8),
+
+                  /// RESET BUTTON
+                  if (selectedRange != null)
+                    GestureDetector(
+                      onTap: () {
+                        setState(() {
+                          selectedRange = null;
+                          monthsToShow = [DateTime.now()];
+                          visibleMonth = monthsToShow.first;
+                          controller = PageController(initialPage: 0);
+                        });
+
+                        fetchCalendar(visibleMonth);
+                      },
+                      child: const Icon(Icons.close, size: 20),
+                    )
+                ],
               )
             ],
           ),
@@ -302,6 +323,8 @@ class _CalendarWidgetState extends State<CalendarWidget> {
                         setState(() {
                           visibleMonth = monthsToShow[index];
                         });
+
+                        fetchCalendar(visibleMonth); // ✅ ADD THIS
                       },
                       itemBuilder: (context, index) {
 

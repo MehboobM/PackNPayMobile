@@ -9,6 +9,38 @@ class LorryReceiptRepository {
   final NetworkHandler _networkHandler = NetworkHandler();
 
   LorryReceiptRepository(NetworkHandler networkHandler);
+  Future<List<LorryReceiptModel>> getLorryReceiptsWithFilters({
+    int page = 1,
+    int limit = 10,
+    String? search,
+    String? fromDate,
+    String? toDate,
+    String? sortOrder,
+    int? staffId,
+  }) async {
+    try {
+      final queryParams = {
+        "page": page,
+        "limit": limit,
+        if (search != null && search.isNotEmpty) "search": search,
+        if (fromDate != null) "from_date": fromDate,
+        if (toDate != null) "to_date": toDate,
+        if (sortOrder != null) "sort_order": sortOrder,
+        if (staffId != null) "staff_id": staffId,
+      };
+
+      final response = await _networkHandler.get(
+        ApiEndPoints.lrList,
+        queryParams: queryParams,
+      );
+
+      final data = response.data["data"] as List;
+
+      return data.map((e) => LorryReceiptModel.fromJson(e)).toList();
+    } catch (e) {
+      throw Exception("Failed to load lorry receipts");
+    }
+  }
 
   Future<List<LorryReceiptModel>> getLorryReceipts() async {
     try {

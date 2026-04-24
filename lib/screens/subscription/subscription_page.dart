@@ -65,7 +65,7 @@ class SubscriptionPage extends StatelessWidget {
             // Background Image
             Positioned.fill(
               child: Image.asset(
-                'assets/images/subback.png',
+                'assets/images/backg_img.png',
                 fit: BoxFit.cover,
               ),
             ),

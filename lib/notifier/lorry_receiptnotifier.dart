@@ -4,6 +4,7 @@ import '../api_services/network_handler.dart';
 import '../models/create_lorry_receipt.dart';
 import '../models/lorry_receipt.dart';
 import '../repositry/lorry_receipt_repository.dart';
+import '../repositry/userstaff_repository.dart';
 
 final lorryReceiptProvider =
 StateNotifierProvider<LorryReceiptNotifier, LorryReceiptState>(
@@ -15,89 +16,99 @@ StateNotifierProvider<LorryReceiptNotifier, LorryReceiptState>(
 class LorryReceiptNotifier extends StateNotifier<LorryReceiptState> {
   final LorryReceiptRepository repository;
 
+  LorryReceiptNotifier(this.repository)
+      : super(const LorryReceiptState()) {
+    fetchStaffList();       // ✅ load staff
+    fetchLorryReceipts();   // ✅ initial API call
+  }
+
+  /// 🔥 FILTER STATE
   String _searchQuery = '';
   DateTime? _fromDate;
   DateTime? _toDate;
+  String? _sortOrder;
+  int? _staffId;
 
-  LorryReceiptNotifier(this.repository)
-      : super(const LorryReceiptState()) {
-    fetchLorryReceipts();
+  /// 👤 STAFF LIST (for dropdown)
+  List<Map<String, dynamic>> staffList = [];
+
+  /// ✅ GETTERS
+  DateTime? get fromDate => _fromDate;
+  DateTime? get toDate => _toDate;
+  String? get sortOrder => _sortOrder;
+  int? get staffId => _staffId;
+
+  /// 👤 FETCH STAFF LIST
+  Future<void> fetchStaffList() async {
+    try {
+      final repo = UserRepository();
+      staffList = await repo.getStaffList();
+      state = state.copyWith(); // refresh UI
+    } catch (e) {
+      print("Staff fetch error: $e");
+    }
   }
 
-  /// 🔹 Fetch Lorry Receipts
+  /// 🔹 MAIN FETCH (API FILTER BASED)
   Future<void> fetchLorryReceipts() async {
     try {
-      state = state.copyWith(
-        isLoading: true,
-        isInitialLoading: true,
-        error: null,
-      );
+      state = state.copyWith(isLoading: true, error: null);
 
-      final data = await repository.getLorryReceipts();
+      final from = _fromDate != null
+          ? "${_fromDate!.year}-${_fromDate!.month.toString().padLeft(2, '0')}-${_fromDate!.day.toString().padLeft(2, '0')}"
+          : null;
+
+      final to = _toDate != null
+          ? "${_toDate!.year}-${_toDate!.month.toString().padLeft(2, '0')}-${_toDate!.day.toString().padLeft(2, '0')}"
+          : null;
+
+      final data = await repository.getLorryReceiptsWithFilters(
+        search: _searchQuery,
+        fromDate: from,
+        toDate: to,
+        sortOrder: _sortOrder,
+        staffId: _staffId,
+      );
 
       state = state.copyWith(
         isLoading: false,
-        isInitialLoading: false,
         receipts: data,
         filteredReceipts: data,
       );
     } catch (e) {
       state = state.copyWith(
         isLoading: false,
-        isInitialLoading: false,
         error: "Failed to load lorry receipts",
       );
     }
   }
 
-  /// 🔍 Search Filter
+  /// 🔍 SEARCH
   void updateSearch(String query) {
-    _searchQuery = query.trim().toLowerCase();
-    applyFilters();
+    _searchQuery = query;
+    fetchLorryReceipts();
   }
 
-  /// 📅 Date Filter
+  /// 📅 DATE FILTER
   void updateDateRange(DateTime? from, DateTime? to) {
     _fromDate = from;
     _toDate = to;
-    applyFilters();
+    fetchLorryReceipts();
   }
 
-  /// 🔹 Apply Filters
-  /// 🔹 Apply Filters (Search + Date)
-  void applyFilters() {
-    final filtered = state.receipts.where((receipt) {
-      final query = _searchQuery.trim().toLowerCase();
-
-      // Fields to search
-      final name = receipt.customerName.toLowerCase();
-      final lrNo = receipt.lrNo.toLowerCase();
-      final phone = receipt.phone.toLowerCase();
-      final vehicleNo = receipt.vehicleNo.toLowerCase();
-
-      /// 🔍 Search Condition
-      bool matchesSearch = query.isEmpty ||
-          name.contains(query) ||
-          lrNo.contains(query) ||
-          phone.contains(query) ||
-          vehicleNo.contains(query);
-
-      /// 📅 Date Filter Condition
-      bool matchesDate = true;
-      if (_fromDate != null && _toDate != null) {
-        final date = DateTime.tryParse(receipt.lrDate);
-        if (date != null) {
-          matchesDate =
-              date.isAfter(_fromDate!.subtract(const Duration(days: 1))) &&
-                  date.isBefore(_toDate!.add(const Duration(days: 1)));
-        }
-      }
-
-      return matchesSearch && matchesDate;
-    }).toList();
-
-    state = state.copyWith(filteredReceipts: filtered);
+  /// 🔽 SORT
+  void updateSort(String? sortOrder) {
+    _sortOrder = sortOrder;
+    fetchLorryReceipts();
   }
+
+  /// 👤 STAFF FILTER
+  void updateStaff(int? staffId) {
+    _staffId = staffId;
+    fetchLorryReceipts();
+  }
+
+  /// 🔹 CREATE
   Future<bool> createLorryReceipt(
       CreateLorryReceiptRequest request) async {
     try {
@@ -111,12 +122,11 @@ class LorryReceiptNotifier extends StateNotifier<LorryReceiptState> {
       await repository.createLorryReceipt(request);
 
       if (success) {
+        await fetchLorryReceipts();
         state = state.copyWith(
           isLoading: false,
           successMessage: "Lorry Receipt created successfully",
         );
-
-        await fetchLorryReceipts(); // Refresh list
         return true;
       } else {
         state = state.copyWith(
@@ -133,6 +143,7 @@ class LorryReceiptNotifier extends StateNotifier<LorryReceiptState> {
       return false;
     }
   }
+
   void resetCreateState() {
     state = state.copyWith(
       isLoading: false,
@@ -140,7 +151,8 @@ class LorryReceiptNotifier extends StateNotifier<LorryReceiptState> {
       successMessage: null,
     );
   }
-  /// 🔹 Get LR by UID
+
+  /// 🔹 GET BY UID
   Future<Map<String, dynamic>> getLorryReceiptByUid(String uid) async {
     try {
       state = state.copyWith(isLoading: true, error: null);
@@ -158,7 +170,7 @@ class LorryReceiptNotifier extends StateNotifier<LorryReceiptState> {
     }
   }
 
-  /// 🔹 Update LR
+  /// 🔹 UPDATE
   Future<bool> updateLorryReceipt(
       String uid,
       CreateLorryReceiptRequest request,
@@ -167,19 +179,14 @@ class LorryReceiptNotifier extends StateNotifier<LorryReceiptState> {
       state = state.copyWith(
         isLoading: true,
         error: null,
-        successMessage: null,
       );
 
       final success =
       await repository.updateLorryReceipt(uid, request);
 
       if (success) {
-        state = state.copyWith(
-          isLoading: false,
-          successMessage: "Lorry Receipt updated successfully",
-        );
-
         await fetchLorryReceipts();
+        state = state.copyWith(isLoading: false);
         return true;
       } else {
         state = state.copyWith(
@@ -197,10 +204,10 @@ class LorryReceiptNotifier extends StateNotifier<LorryReceiptState> {
     }
   }
 
-  /// 🔹 Delete LR
+  /// 🔹 DELETE
   Future<bool> deleteLorryReceipt(String uid) async {
     try {
-      state = state.copyWith(isLoading: true, error: null);
+      state = state.copyWith(isLoading: true);
 
       final success =
       await repository.deleteLorryReceipt(uid);
@@ -224,11 +231,11 @@ class LorryReceiptNotifier extends StateNotifier<LorryReceiptState> {
       return false;
     }
   }
-  // lorry_receiptnotifier.dart
 
+  /// 🔹 PREFILL
   Future<Map<String, dynamic>> prefillByOrderNo(String orderNo) async {
     try {
-      state = state.copyWith(isLoading: true, error: null);
+      state = state.copyWith(isLoading: true);
 
       final data =
       await repository.prefillByOrderNo(orderNo);
@@ -243,5 +250,4 @@ class LorryReceiptNotifier extends StateNotifier<LorryReceiptState> {
       rethrow;
     }
   }
-
 }

@@ -36,10 +36,11 @@ class ViewDownloadService {
     required String type,
     required String uid,
     required bool isDownload,
+    String? copyType, // ✅ ADD THIS
   }) async {
     const requestPath = '/pdf/generate';
 
-    showLoader(context); // ✅ your existing loader
+    showLoader(context);
 
     try {
       final token = await StorageService().getToken();
@@ -48,7 +49,10 @@ class ViewDownloadService {
       final body = {
         "type": type,
         "uid": uid,
+        if (copyType != null) "copyType": copyType, // ✅ ONLY SEND IF EXISTS
       };
+
+      print("📦 PAYLOAD: $body"); // debug
 
       final response = await dio.post(
         requestPath,
@@ -59,7 +63,6 @@ class ViewDownloadService {
       if (response.statusCode == 200) {
         Directory dir;
 
-        /// 📱 ANDROID
         if (Platform.isAndroid) {
           if (isDownload) {
             final hasPermission = await _requestStoragePermission();
@@ -69,53 +72,42 @@ class ViewDownloadService {
           } else {
             dir = await getTemporaryDirectory();
           }
-        }
-
-        /// 🍎 IOS
-        else {
+        } else {
           dir = await getApplicationDocumentsDirectory();
         }
 
-        /// Create folder if not exists
         if (!await dir.exists()) {
           await dir.create(recursive: true);
         }
 
-        /// File name
-        final filePath = '${dir.path}/${type}_${DateTime.now().millisecondsSinceEpoch}.pdf';
+        final filePath =
+            '${dir.path}/${type}_${DateTime.now().millisecondsSinceEpoch}.pdf';
 
         final file = File(filePath);
         await file.writeAsBytes(List<int>.from(response.data));
 
-        print("✅ FILE SAVED: $filePath");
-
         if (isDownload) {
-          /// ❌ Do not open
-          if (context.mounted) {
-            ToastHelper.showSuccess(
-              message: Platform.isAndroid
-                  ? "Downloaded to:\n$filePath"
-                  : "Saved to Files:\n$filePath",
-            );
-          }
+          ToastHelper.showSuccess(
+            message: Platform.isAndroid
+                ? "Downloaded to:\n$filePath"
+                : "Saved to Files:\n$filePath",
+          );
         } else {
           final result = await OpenFile.open(filePath);
-          if (context.mounted) {
-            ToastHelper.showSuccess(
-              message: result.type == ResultType.done
-                  ? 'PDF opened successfully'
-                  : 'Unable to open PDF',
-            );
-          }
+          ToastHelper.showSuccess(
+            message: result.type == ResultType.done
+                ? 'PDF opened successfully'
+                : 'Unable to open PDF',
+          );
         }
       }
     } catch (e) {
       ToastHelper.showError(
-        message:  'Unable to download file',
+        message: 'Unable to download file',
       );
       print("❌ PDF ERROR: $e");
     } finally {
-      hideLoader(context); // ✅ always close loader
+      hideLoader(context);
     }
   }
 
@@ -123,7 +115,85 @@ class ViewDownloadService {
 
 
   /*
-  Future<bool> _requestStoragePermission() async {
+  Future<bool> _requestStoragePermistatic Future<void> handlePdf({
+  required BuildContext context,
+  required String type,
+  required String uid,
+  required bool isDownload,
+  String? copyType, // ✅ ADD THIS
+}) async {
+  const requestPath = '/pdf/generate';
+
+  showLoader(context);
+
+  try {
+    final token = await StorageService().getToken();
+    final dio = ServicesConstant.instanceDio(token);
+
+    final body = {
+      "type": type,
+      "uid": uid,
+      if (copyType != null) "copyType": copyType, // ✅ ONLY SEND IF EXISTS
+    };
+
+    print("📦 PAYLOAD: $body"); // debug
+
+    final response = await dio.post(
+      requestPath,
+      data: body,
+      options: Options(responseType: ResponseType.bytes),
+    );
+
+    if (response.statusCode == 200) {
+      Directory dir;
+
+      if (Platform.isAndroid) {
+        if (isDownload) {
+          final hasPermission = await _requestStoragePermission();
+          if (!hasPermission) return;
+
+          dir = Directory('/storage/emulated/0/Download');
+        } else {
+          dir = await getTemporaryDirectory();
+        }
+      } else {
+        dir = await getApplicationDocumentsDirectory();
+      }
+
+      if (!await dir.exists()) {
+        await dir.create(recursive: true);
+      }
+
+      final filePath =
+          '${dir.path}/${type}_${DateTime.now().millisecondsSinceEpoch}.pdf';
+
+      final file = File(filePath);
+      await file.writeAsBytes(List<int>.from(response.data));
+
+      if (isDownload) {
+        ToastHelper.showSuccess(
+          message: Platform.isAndroid
+              ? "Downloaded to:\n$filePath"
+              : "Saved to Files:\n$filePath",
+        );
+      } else {
+        final result = await OpenFile.open(filePath);
+        ToastHelper.showSuccess(
+          message: result.type == ResultType.done
+              ? 'PDF opened successfully'
+              : 'Unable to open PDF',
+        );
+      }
+    }
+  } catch (e) {
+    ToastHelper.showError(
+      message: 'Unable to download file',
+    );
+    print("❌ PDF ERROR: $e");
+  } finally {
+    hideLoader(context);
+  }
+}ssion() async {
     if (Platform.isAndroid) {
       final status = await Permission.storage.request();
 

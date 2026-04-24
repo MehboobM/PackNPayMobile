@@ -11,11 +11,14 @@ class OrdersListSection extends StatelessWidget {
   final List<OrderItemModel> items;
   final bool isUpcoming;
 
+  final Function(OrderItemModel)? onViewTap; // ✅ ADD
+
   const OrdersListSection({
     super.key,
     required this.title,
     required this.items,
     this.isUpcoming = true,
+    this.onViewTap, // ✅ ADD
   });
 
   @override
@@ -49,17 +52,17 @@ class OrdersListSection extends StatelessWidget {
 
           /// TABLE HEADER
           Container(
-            padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+            padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 8),
             decoration: BoxDecoration(
               color: AppColors.tab,
               borderRadius: BorderRadius.circular(6),
             ),
             child: Row(
               children: const [
-                Expanded(flex: 2, child: HeaderText("ORDER NO")),
-                Expanded(flex: 3, child: HeaderText("DETAILS")),
-                Expanded(flex: 3, child: HeaderText("LOCATION")),
-                Expanded(flex: 1, child: HeaderText("ACTION")),
+                Expanded(flex: 4, child: HeaderText("ORDER NO")),   // 2 * 2
+                Expanded(flex: 6, child: HeaderText("DETAILS")),    // 3 * 2
+                Expanded(flex: 6, child: HeaderText("LOCATION")),   // 3 * 2
+                Expanded(flex: 3, child: HeaderText("ACTION")),     // 1.5 * 2
               ],
             ),
           ),
@@ -67,13 +70,31 @@ class OrdersListSection extends StatelessWidget {
           const SizedBox(height: 10),
 
           /// LIST ITEMS
-          Column(
+          items.isEmpty
+              ? Container(
+            width: double.infinity,
+            padding: const EdgeInsets.symmetric(vertical: 30),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: Center(
+              child: Text(
+                isUpcoming
+                    ? "No upcoming orders"
+                    : "No action items",
+                style: TextStyles.f12w400Gray6,
+              ),
+            ),
+          )
+              : Column(
             children: items
                 .map((e) => Padding(
               padding: const EdgeInsets.only(bottom: 10),
               child: OrderTile(
                 model: e,
                 isUpcoming: isUpcoming,
+                onViewTap: () => onViewTap?.call(e),
               ),
             ))
                 .toList(),
@@ -92,6 +113,8 @@ class HeaderText extends StatelessWidget {
   Widget build(BuildContext context) {
     return Text(
       text,
+        maxLines: 1,                // 👈 IMPORTANT
+        overflow: TextOverflow.ellipsis,
       style: TextStyles.f10w500primary
     );
   }
@@ -99,11 +122,13 @@ class HeaderText extends StatelessWidget {
 class OrderTile extends StatelessWidget {
   final OrderItemModel model;
   final bool isUpcoming;
+  final VoidCallback? onViewTap; // ✅ ADD
 
   const OrderTile({
     super.key,
     required this.model,
     required this.isUpcoming,
+    this.onViewTap,
   });
 
   @override
@@ -206,10 +231,16 @@ class OrderTile extends StatelessWidget {
           ),
 
           /// ACTION
-          const Expanded(
+          Expanded(
             flex: 1,
-            child: Icon(Icons.remove_red_eye_outlined,
-                size: 20, color: AppColors.mGray6),
+            child: GestureDetector(
+              onTap: onViewTap,
+              child: const Icon(
+                Icons.remove_red_eye_outlined,
+                size: 20,
+                color: AppColors.mGray6,
+              ),
+            ),
           ),
         ],
       ),
