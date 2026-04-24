@@ -1,4 +1,5 @@
 
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:pack_n_pay/screens/dashboard/widget/RedCard.dart';
@@ -210,6 +211,12 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     );
   }
 
+  String formatDate(String date) {
+    final d = DateTime.tryParse(date);
+    if (d == null) return '';
+
+    return DateFormat('MMM d, yyyy').format(d);
+  }
   @override
   Widget build(BuildContext context) {
     final state = ref.watch(dashboardProvider);
