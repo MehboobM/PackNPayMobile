@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:dio/dio.dart';
+import '../../api_services/api_end_points.dart';
 import '../../database/shared_preferences/shared_storage.dart';
 import 'new_category_sheet.dart';
 import 'office_expence.dart';
@@ -29,7 +30,7 @@ class _ExpenseCategoriesPageState extends State<ExpenseCategoriesPage> {
     try {
       String? token = await _storage.getToken();
       final response = await _dio.get(
-        'http://192.168.0.176:5000/api/expense-category-list',
+        '${ApiEndPoints.baseurl}expense-category-list',
         options: Options(headers: {'Authorization': 'Bearer $token'}),
       );
 
@@ -57,7 +58,7 @@ class _ExpenseCategoriesPageState extends State<ExpenseCategoriesPage> {
       String? token = await _storage.getToken();
 
       final response = await _dio.patch(
-        'http://192.168.0.176:5000/api/expense-category/toggle/$uid',
+        '${ApiEndPoints.baseurl}expense-category/toggle/$uid',
         data: {},
         options: Options(
           headers: {
@@ -86,7 +87,7 @@ class _ExpenseCategoriesPageState extends State<ExpenseCategoriesPage> {
     try {
       String? token = await _storage.getToken();
       await _dio.delete(
-        'http://192.168.0.176:5000/api/expense-category/$uid',
+        '${ApiEndPoints.baseurl}expense-category/$uid',
         options: Options(headers: {'Authorization': 'Bearer $token'}),
       );
       _fetchCategories();

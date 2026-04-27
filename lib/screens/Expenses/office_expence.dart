@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:dio/dio.dart';
 import 'package:intl/intl.dart';
+import '../../api_services/api_end_points.dart';
 import '../../database/shared_preferences/shared_storage.dart';
 import 'new_expenses_sheet.dart';
 
@@ -62,7 +63,7 @@ class _OfficeExpensePageState extends State<OfficeExpensePage> {
     setState(() => _isLoading = true);
     try {
       String? token = await _storage.getToken();
-      String url = 'http://192.168.0.176:5000/api/office-expense-list';
+      String url = '${ApiEndPoints.baseurl}office-expense-list';
 
       Map<String, dynamic> queryParams = {};
       if (_selectedDateRange != null) {
@@ -98,7 +99,7 @@ class _OfficeExpensePageState extends State<OfficeExpensePage> {
     try {
       String? token = await _storage.getToken();
       await _dio.delete(
-        'http://192.168.0.176:5000/api/office-expense/$uid',
+        '${ApiEndPoints.baseurl}office-expense/$uid',
         options: Options(headers: {'Authorization': 'Bearer $token'}),
       );
       _fetchExpenses(); // Refresh list

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:dio/dio.dart';
+import 'package:pack_n_pay/api_services/api_end_points.dart';
 import '../../database/shared_preferences/shared_storage.dart';
 
 class NewCategorySheet extends StatefulWidget {
@@ -26,7 +27,7 @@ class _NewCategorySheetState extends State<NewCategorySheet> {
     try {
       String? token = await _storage.getToken();
       final response = await _dio.get(
-        'http://192.168.0.176:5000/api/expense-category',
+        '${ApiEndPoints.baseurl}expense-category',
         queryParameters: {'uid': widget.uid},
         options: Options(headers: {'Authorization': 'Bearer $token'}),
       );
@@ -54,13 +55,13 @@ class _NewCategorySheetState extends State<NewCategorySheet> {
 
       if (widget.uid == null) {
         await _dio.post(
-          'http://192.168.0.176:5000/api/expense-category/create',
+          '${ApiEndPoints.baseurl}expense-category/create',
           data: payload,
           options: Options(headers: {'Authorization': 'Bearer $token'}),
         );
       } else {
         await _dio.put(
-          'http://192.168.0.176:5000/api/expense-category/update/${widget.uid}',
+          '${ApiEndPoints.baseurl}expense-category/update/${widget.uid}',
           data: payload,
           options: Options(headers: {'Authorization': 'Bearer $token'}),
         );

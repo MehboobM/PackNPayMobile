@@ -2,6 +2,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:dio/dio.dart';
 import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
+import '../../api_services/api_end_points.dart';
 import '../../database/shared_preferences/shared_storage.dart';
 
 class MoneyReciptPage extends StatefulWidget {
@@ -45,7 +46,7 @@ class _MoneyReciptPageState extends State<MoneyReciptPage> {
     try {
       String? token = await _storage.getToken();
       final response = await _dio.get(
-        'http://192.168.0.176:5000/api/letter-head',
+        '${ApiEndPoints.baseurl}letter-head',
         queryParameters: {'uid': widget.uid},
         options: Options(headers: {'Authorization': 'Bearer $token'}),
       );
@@ -78,7 +79,7 @@ class _MoneyReciptPageState extends State<MoneyReciptPage> {
     }
 
     String? token = await _storage.getToken();
-    final String pdfUrl = 'http://192.168.0.176:5000/api/letter-head/preview/${widget.uid}';
+    final String pdfUrl = '${ApiEndPoints.baseurl}letter-head/preview/${widget.uid}';
 
     if (!mounted) return;
 
@@ -129,7 +130,7 @@ class _MoneyReciptPageState extends State<MoneyReciptPage> {
       if (widget.uid != null && widget.uid!.isNotEmpty) {
         // UPDATE (PUT)
         response = await _dio.put(
-          'http://192.168.0.176:5000/api/letter-head/update/${widget.uid}',
+          '${ApiEndPoints.baseurl}letter-head/update/${widget.uid}',
           data: payload,
           options: Options(headers: {'Authorization': 'Bearer $token'}),
         );
@@ -137,7 +138,7 @@ class _MoneyReciptPageState extends State<MoneyReciptPage> {
         // CREATE (POST)
         payload["lh_no"] = _lhNoController.text;
         response = await _dio.post(
-          'http://192.168.0.176:5000/api/letter-head/create',
+          '${ApiEndPoints.baseurl}letter-head/create',
           data: payload,
           options: Options(headers: {'Authorization': 'Bearer $token'}),
         );

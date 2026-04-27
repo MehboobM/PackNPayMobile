@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:dio/dio.dart';
+import '../../api_services/api_end_points.dart';
 import '../../database/shared_preferences/shared_storage.dart';
 
 class NewExpensesSheet extends StatefulWidget {
@@ -34,7 +35,7 @@ class _NewExpensesSheetState extends State<NewExpensesSheet> {
     try {
       String? token = await _storage.getToken();
       final response = await _dio.get(
-        'http://192.168.0.176:5000/api/expense-category-list',
+        '${ApiEndPoints.baseurl}expense-category-list',
         options: Options(headers: {'Authorization': 'Bearer $token'}),
       );
       setState(() => _categories = response.data['data']);
@@ -47,7 +48,7 @@ class _NewExpensesSheetState extends State<NewExpensesSheet> {
     try {
       String? token = await _storage.getToken();
       final response = await _dio.get(
-        'http://192.168.0.176:5000/api/office-expense',
+        '${ApiEndPoints.baseurl}office-expense',
         queryParameters: {'uid': widget.uid},
         options: Options(headers: {'Authorization': 'Bearer $token'}),
       );
@@ -76,10 +77,10 @@ class _NewExpensesSheetState extends State<NewExpensesSheet> {
       };
 
       if (widget.uid == null) {
-        await _dio.post('http://192.168.0.176:5000/api/office-expense/create',
+        await _dio.post('${ApiEndPoints.baseurl}office-expense/create',
             data: payload, options: Options(headers: {'Authorization': 'Bearer $token'}));
       } else {
-        await _dio.put('http://192.168.0.176:5000/api/office-expense/update/${widget.uid}',
+        await _dio.put('${ApiEndPoints.baseurl}office-expense/update/${widget.uid}',
             data: payload, options: Options(headers: {'Authorization': 'Bearer $token'}));
       }
       Navigator.pop(context);
