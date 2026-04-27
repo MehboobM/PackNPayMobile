@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:pack_n_pay/utils/app_colors.dart';
@@ -171,13 +172,13 @@ class _LRDetailsFormState extends ConsumerState<LRDetailsForm> {
 
             /// ================= LR DETAILS =================
             sectionHeader(
-              "LR Details",
+              "lr.add.sections.lrDetails".tr(),
               lrExpanded,
                   () => setState(() => lrExpanded = !lrExpanded),
             ),
 
             if (lrExpanded) ...[
-              formLabel("LR No."),
+              formLabel("lr.fields.lrNo".tr(),),
               const SizedBox(height: 6),
               CustomTextField(
                 controller: lrNoController,
@@ -187,7 +188,7 @@ class _LRDetailsFormState extends ConsumerState<LRDetailsForm> {
               ),
 
               const SizedBox(height: 12),
-              formLabel("Order ID"),
+              formLabel("lr.fields.orderId".tr(),),
               const SizedBox(height: 6),
               CustomTextField(
                 controller: orderIdController,
@@ -207,7 +208,8 @@ class _LRDetailsFormState extends ConsumerState<LRDetailsForm> {
               ),
               const SizedBox(height: 12),
 
-              formLabel("Date"),
+
+              formLabel("lr.fields.date".tr(),),
               const SizedBox(height: 6),
               CustomTextField(
                 controller: dateController,
@@ -221,7 +223,7 @@ class _LRDetailsFormState extends ConsumerState<LRDetailsForm> {
               SizedBox(
                 width: double.infinity,
                 child: buildCommonDropdown(
-                  title: "Risk Type",
+                  title: "lr.fields.riskType".tr(),
                   value: selectedRiskType,
                   items: riskTypeItems,
                   onChanged: (value) {
@@ -240,13 +242,12 @@ class _LRDetailsFormState extends ConsumerState<LRDetailsForm> {
 
             /// ================= TRUCK DETAILS =================
             sectionHeader(
-              "Truck Details",
-              truckExpanded,
-                  () => setState(() => truckExpanded = !truckExpanded),
+              "lr.add.sections.truckDetails".tr(),
+              truckExpanded, () => setState(() => truckExpanded = !truckExpanded),
             ),
 
             if (truckExpanded) ...[
-              formLabel("Vehicle No."),
+              formLabel("lr.fields.vehicleNo".tr()),
               const SizedBox(height: 6),
               CustomTextField(
                 controller: vehicleController,
@@ -258,99 +259,98 @@ class _LRDetailsFormState extends ConsumerState<LRDetailsForm> {
 
 
 
-    citiesAsync.when(
-    loading: () => const Padding(
-    padding: EdgeInsets.symmetric(vertical: 12),
-    child: Center(
-    child: SizedBox(
-    height: 24,
-    width: 24,
-    child: CircularProgressIndicator(strokeWidth: 2),
-    ),
-    ),
-    ),
+              citiesAsync.when(loading: () => const Padding(
+                padding: EdgeInsets.symmetric(vertical: 12),
+                child: Center(
+                  child: SizedBox(
+                    height: 24,
+                    width: 24,
+                    child: CircularProgressIndicator(strokeWidth: 2),
+                  ),
+                ),
+              ),
 
-    error: (error, stack) => Padding(
-    padding: const EdgeInsets.symmetric(vertical: 12),
-    child: Column(
-    children: [
-    const Text(
-    "Failed to load cities",
-    style: TextStyle(color: Colors.red),
-    ),
-    TextButton(
-    onPressed: () => ref.refresh(cityProvider),
-    child: const Text("Retry"),
-    ),
-    ],
-    ),
-    ),
+                error: (error, stack) => Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 12),
+                  child: Column(
+                    children: [
+                      const Text(
+                        "Failed to load cities",
+                        style: TextStyle(color: Colors.red),
+                      ),
+                      TextButton(
+                        onPressed: () => ref.refresh(cityProvider),
+                        child: const Text("Retry"),
+                      ),
+                    ],
+                  ),
+                ),
 
-    data: (cities) {
-    // Prepare dropdown items
-    final cityNames = cities.map((city) => city.name).toList();
+                data: (cities) {
+                  // Prepare dropdown items
+                  final cityNames = cities.map((city) => city.name).toList();
 
-    return Row(
-    children: [
-    /// Moving From Dropdown
-    Expanded(
-    child: buildCommonDropdown(
-    title: "Moving From",
-    value: selectedFromCity, // Keep null to show hint
-    items: cityNames,
-    onChanged: (value) {
-    if (value == null) return;
+                  return Row(
+                    children: [
+                      /// Moving From Dropdown
+                      Expanded(
+                        child: buildCommonDropdown(
+                          title: "lr.fields.movingFrom".tr(),
+                          value: selectedFromCity, // Keep null to show hint
+                          items: cityNames,
+                          onChanged: (value) {
+                            if (value == null) return;
 
-    final selectedCity =
-    cities.firstWhere((c) => c.name == value);
+                            final selectedCity =
+                            cities.firstWhere((c) => c.name == value);
 
-    setState(() {
-    selectedFromCity = value;
-    selectedFromCityId = selectedCity.id;
-    });
-    },
-    ),
-    ),
+                            setState(() {
+                              selectedFromCity = value;
+                              selectedFromCityId = selectedCity.id;
+                            });
+                          },
+                        ),
+                      ),
 
-    const SizedBox(width: 10),
+                      const SizedBox(width: 10),
 
-    /// Moving To Dropdown
-    Expanded(
-    child: buildCommonDropdown(
-    title: "Moving To",
-    value: selectedToCity, // Keep null to show hint
-    items: cityNames,
-    onChanged: (value) {
-    if (value == null) return;
+                      /// Moving To Dropdown
+                      Expanded(
+                        child: buildCommonDropdown(
+                          title: "lr.fields.movingTo".tr(),
+                          value: selectedToCity, // Keep null to show hint
+                          items: cityNames,
+                          onChanged: (value) {
+                            if (value == null) return;
 
-    final selectedCity =
-    cities.firstWhere((c) => c.name == value);
+                            final selectedCity =
+                            cities.firstWhere((c) => c.name == value);
 
-    setState(() {
-    selectedToCity = value;
-    selectedToCityId = selectedCity.id;
-    });
-    },
-    ),
-    ),
-    ],
-    );
-    },
-    ),
+                            setState(() {
+                              selectedToCity = value;
+                              selectedToCityId = selectedCity.id;
+                            });
+                          },
+                        ),
+                      ),
+                    ],
+                  );
+                },
+              ),
 
               const SizedBox(height:20),
 
 
             /// ================= DRIVER DETAILS =================
               sectionHeaderWithDivider(
-                "Driver Details",
+                "lr.add.sections.driverDetails".tr(),
                 driverExpanded,
-                    () => setState(() => driverExpanded = !driverExpanded),
+                 () => setState(() => driverExpanded = !driverExpanded),
               ),
               const SizedBox(height: 20),
 
 
-              formLabel("Driver name"),
+              formLabel("lr.fields.driverName".tr()),
               const SizedBox(height: 6),
               CustomTextField(
                 controller: driverNameController,
@@ -360,42 +360,43 @@ class _LRDetailsFormState extends ConsumerState<LRDetailsForm> {
 
               const SizedBox(height: 12),
 
-    Row(
-    crossAxisAlignment: CrossAxisAlignment.start,
-    children: [
-    Expanded(
-    child: Column(
-    crossAxisAlignment: CrossAxisAlignment.start,
-    children: [
-    formLabel("Mobile No."),
-      const SizedBox(height: 6),
-    CustomTextField(
-    controller: mobileController,
-    hintText: "Enter mobile no.",
-    keyboardType: TextInputType.phone,
-      borderRadius: 10,
-    ),
-    ],
-    ),
-    ),
-    const SizedBox(width: 10),
-    Expanded(
-    child: Column(
-    crossAxisAlignment: CrossAxisAlignment.start,
-    children: [
-    formLabel("Driver license no."),
-      const SizedBox(height: 6),
-    CustomTextField(
-    controller: altMobileController,
-    hintText: "XXXX-XXXX-XXXX",
-    keyboardType: TextInputType.phone,
-      borderRadius: 10,
-    ),
-    ],
-    ),
-    ),
-    ],
-    ),
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+
+                        formLabel("lr.fields.driverPhone".tr()),
+                        const SizedBox(height: 6),
+                        CustomTextField(
+                          controller: mobileController,
+                          hintText: "Enter mobile no.",
+                          keyboardType: TextInputType.phone,
+                          borderRadius: 10,
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(width: 10),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        formLabel("lr.fields.driverLicense".tr()),
+                        const SizedBox(height: 6),
+                        CustomTextField(
+                          controller: altMobileController,
+                          hintText: "XXXX-XXXX-XXXX",
+                          keyboardType: TextInputType.phone,
+                          borderRadius: 10,
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
 
               const SizedBox(height: 10),
             ],
@@ -403,52 +404,53 @@ class _LRDetailsFormState extends ConsumerState<LRDetailsForm> {
 
             /// ================= INVOICE =================
             sectionHeader(
-              "Invoice & E-Bill",
+              //"Invoice & E-Bill",
+              "invoiceEBill.title".tr(),
               invoiceExpanded,
                   () => setState(() => invoiceExpanded = !invoiceExpanded),
             ),
 
             if (invoiceExpanded) ...[
-    Row(
-    crossAxisAlignment: CrossAxisAlignment.start,
-    children: [
-    Expanded(
-    child: Column(
-    crossAxisAlignment: CrossAxisAlignment.start,
-    children: [
-    formLabel("Invoice Amount"),
-      const SizedBox(height: 6),
-    CustomTextField(
-    controller: invoiceAmountController,
-    hintText: "₹",
-    keyboardType: TextInputType.number,
-      borderRadius: 10,
-    ),
-    ],
-    ),
-    ),
-    const SizedBox(width: 10),
-    Expanded(
-    child: Column(
-    crossAxisAlignment: CrossAxisAlignment.start,
-    children: [
-    formLabel("Invoice Date"),
-      const SizedBox(height: 6),
-      CustomTextField(
-        controller: invoiceDateController,
-        hintText: "00/00/0000",
-        materialIcon: Icons.calendar_today,
-        borderRadius: 10,
-        onTap: () => _selectDate(invoiceDateController),
-      ),
-    ],
-    ),
-    ),
-    ],
-    ),
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        formLabel( "invoiceEBill.invoiceAmount".tr(),),
+                        const SizedBox(height: 6),
+                        CustomTextField(
+                          controller: invoiceAmountController,
+                          hintText: "₹",
+                          keyboardType: TextInputType.number,
+                          borderRadius: 10,
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(width: 10),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        formLabel("invoiceEBill.invoiceDate".tr(),),
+                        const SizedBox(height: 6),
+                        CustomTextField(
+                          controller: invoiceDateController,
+                          hintText: "00/00/0000",
+                          materialIcon: Icons.calendar_today,
+                          borderRadius: 10,
+                          onTap: () => _selectDate(invoiceDateController),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
 
               const SizedBox(height: 12),
-              formLabel("Invoice/Bill no. "),
+              formLabel("invoiceEBill.invoiceBillNo".tr(),),
               const SizedBox(height: 6),
 
               CustomTextField(
@@ -472,7 +474,7 @@ class _LRDetailsFormState extends ConsumerState<LRDetailsForm> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        formLabel("E-way Bill no."),
+                        formLabel("invoiceEBill.eWayBillNo".tr(),),
                         const SizedBox(height: 6),
                         CustomTextField(
                           controller: ewayBillNoController,
@@ -487,7 +489,7 @@ class _LRDetailsFormState extends ConsumerState<LRDetailsForm> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        formLabel("E-way Bill generation date"),
+                        formLabel("invoiceEBill.eWayBillGenerationDate".tr(),),
                         const SizedBox(height: 6),
                         CustomTextField(
                           controller: ewayBillGenDateController,
@@ -512,7 +514,7 @@ class _LRDetailsFormState extends ConsumerState<LRDetailsForm> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        formLabel("E-way Bill Expire date"),
+                        formLabel("invoiceEBill.eWayBillExpireDate".tr(),),
                         const SizedBox(height: 6),
                         CustomTextField(
                           controller: ewayBillExpireDateController,
@@ -530,6 +532,7 @@ class _LRDetailsFormState extends ConsumerState<LRDetailsForm> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         formLabel("E-way Bill Extend Period"),
+                     //   formLabel("invoiceEBill.eWayBillPeriod".tr(),),
                         const SizedBox(height: 6),
                         CustomTextField(
                           controller: ewayBillExtendPeriodController,
@@ -737,9 +740,7 @@ class _LRDetailsFormState extends ConsumerState<LRDetailsForm> {
 
     if (pickedDate != null) {
       controller.text =
-      "${pickedDate.day.toString().padLeft(2, '0')}/"
-          "${pickedDate.month.toString().padLeft(2, '0')}/"
-          "${pickedDate.year}";
+      "${pickedDate.day.toString().padLeft(2, '0')}/""${pickedDate.month.toString().padLeft(2, '0')}/""${pickedDate.year}";
     }
   }
 }

@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:dio/dio.dart';
 import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
@@ -201,7 +202,7 @@ class _MoneyReciptPageState extends State<MoneyReciptPage> {
                       children: [
                         Expanded(
                           child: _buildInputField(
-                            "LH No.",
+                            "letterHead.fields.lhNo".tr(),
                             controller: _lhNoController,
                             placeholder: "#PNP0001",
                             isReadOnly: true,
@@ -213,7 +214,7 @@ class _MoneyReciptPageState extends State<MoneyReciptPage> {
                             onTap: _selectDate,
                             child: AbsorbPointer(
                               child: _buildInputField(
-                                "Date",
+                                "letterHead.fields.date".tr(),
                                 controller: _dateController,
                                 placeholder: "YYYY-MM-DD",
                                 suffixIcon: Icons.calendar_month_outlined,
@@ -224,17 +225,17 @@ class _MoneyReciptPageState extends State<MoneyReciptPage> {
                       ],
                     ),
                     const SizedBox(height: 12),
-                    _buildInputField("Name", controller: _nameController, placeholder: "Enter name"),
+                    _buildInputField("letterHead.fields.name".tr(), controller: _nameController, placeholder: "Enter name"),
                     const SizedBox(height: 12),
                     Row(
                       children: [
-                        Expanded(child: _buildInputField("Phone", controller: _phoneController, placeholder: "Enter")),
+                        Expanded(child: _buildInputField("letterHead.fields.phone".tr(), controller: _phoneController, placeholder: "Enter")),
                         const SizedBox(width: 12),
-                        Expanded(child: _buildInputField("Email", controller: _emailController, placeholder: "Enter")),
+                        Expanded(child: _buildInputField("letterHead.fields.email".tr(),  controller: _emailController, placeholder: "Enter")),
                       ],
                     ),
                     const SizedBox(height: 12),
-                    _buildInputField("Remarks", controller: _remarksController, placeholder: "Write remarks...", maxLines: 2),
+                    _buildInputField("letterHead.fields.remarks".tr(), controller: _remarksController, placeholder: "Write remarks...", maxLines: 2),
                     const SizedBox(height: 20),
                     _buildSectionHeader("Letter Details", showRichTextTools: true),
                     const SizedBox(height: 10),

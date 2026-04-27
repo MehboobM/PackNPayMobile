@@ -326,6 +326,8 @@
   },
   "invoiceEBill": {
     "title": "Invoice & E-Bill (விலைப்பட்டியல் மற்றும் இ-பில்)",
+    "invoiceAmount": "இன்வாய்ஸ் தொகை",
+    "invoiceBillNo": "இன்வாய்ஸ்/பில் எண்",
     "packageBill": "Package/Bill (தொகுப்பு/பில்)",
     "invoiceDate": "Invoice Date (விலைப்பட்டியல் தேதி)",
     "eWayBillNo": "E-Way Bill No. (இ-வே பில் எண்.)",

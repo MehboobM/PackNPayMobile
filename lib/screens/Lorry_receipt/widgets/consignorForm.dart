@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:pack_n_pay/utils/app_colors.dart';
@@ -115,7 +116,7 @@ class _ConsignorFormState extends ConsumerState<ConsignorForm> {
                   children: [
                     /// ================= MOVE FROM =================
                     _sectionHeader(
-                      "Consignor/Move From",
+                      "consignorFrom.title".tr(),
                       moveFromExpanded,
                           () => setState(
                             () => moveFromExpanded = !moveFromExpanded,
@@ -193,7 +194,7 @@ class _ConsignorFormState extends ConsumerState<ConsignorForm> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        formLabel("Consignor name"),
+        formLabel("consignorFrom.consignorName".tr(),),
         const SizedBox(height: 6),
         CustomTextField(
           controller: nameController,
@@ -209,7 +210,7 @@ class _ConsignorFormState extends ConsumerState<ConsignorForm> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  formLabel("Consignor ph no."),
+                  formLabel("lr.fields.consignorPhone".tr(),),
                   const SizedBox(height: 6),
                   CustomTextField(
                     controller: phoneController,
@@ -225,7 +226,7 @@ class _ConsignorFormState extends ConsumerState<ConsignorForm> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  formLabel("CGSTIN no."),
+                  formLabel("lr.fields.gstNo".tr(),),
                   const SizedBox(height: 6),
                   CustomTextField(
                     controller: gstController,
@@ -278,7 +279,7 @@ class _ConsignorFormState extends ConsumerState<ConsignorForm> {
                   children: [
                     Expanded(
                       child: reusableDropdown(
-                        title: "Country",
+                        title: "lr.fields.country".tr(),
                         items: countryItems,
                         value: "India",
                         onChanged: (val) {},
@@ -287,7 +288,7 @@ class _ConsignorFormState extends ConsumerState<ConsignorForm> {
                     const SizedBox(width: 10),
                     Expanded(
                       child: reusableDropdown(
-                        title: "State",
+                        title: "lr.fields.state".tr(),
                         items: stateNames,
                         value: selectedState,
                         onChanged: (val) {
@@ -325,7 +326,7 @@ class _ConsignorFormState extends ConsumerState<ConsignorForm> {
             Expanded(
               child: selectedStateId == null
                   ? reusableDropdown(
-                title: "City",
+                title: "lr.fields.city".tr(),
                 items: const [],
                 value: null,
                 onChanged: (val) {},
@@ -365,7 +366,7 @@ class _ConsignorFormState extends ConsumerState<ConsignorForm> {
                       cities.map((city) => city.name).toList();
 
                       return reusableDropdown(
-                        title: "City",
+                        title: "lr.fields.city".tr(),
                         items: cityNames,
                         value: selectedCity,
                         onChanged: (val) {
@@ -396,7 +397,7 @@ class _ConsignorFormState extends ConsumerState<ConsignorForm> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  formLabel("Pincode"),
+                  formLabel("lr.fields.pincode".tr(),),
                   const SizedBox(height: 6),
                   CustomTextField(
                     controller: pincodeController,
@@ -412,7 +413,7 @@ class _ConsignorFormState extends ConsumerState<ConsignorForm> {
 
         const SizedBox(height: 12),
 
-        formLabel("Address"),
+        formLabel("lr.fields.address".tr(),),
         const SizedBox(height: 6),
         CustomTextField(
           controller: addressController,

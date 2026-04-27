@@ -325,6 +325,8 @@
   },
   "invoiceEBill": {
     "title": "Invoice & E-Bill (ഇൻവോയ്സ് & ഇ-ബിൽ)",
+    "invoiceAmount": "ഇൻവോയ്സ് തുക",
+    "invoiceBillNo": "ഇൻവോയ്സ്/ബിൽ നമ്പർ",
     "packageBill": "Package/Bill (പാക്കേജ്/ബിൽ)",
     "invoiceDate": "Invoice Date (ഇൻവോയ്സ് തീയതി)",
     "eWayBillNo": "E-Way Bill No. (ഇ-വേ ബിൽ നം.)",

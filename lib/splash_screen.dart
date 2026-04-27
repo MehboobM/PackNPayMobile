@@ -41,12 +41,10 @@ class SplashState extends State<SplashScreen> with WidgetsBindingObserver {
     /// -------- NOT LOGGED IN --------
     if(isLoginClick!="click"){
       Navigator.pushNamedAndRemoveUntil(context, onboardRoute, (_) => false,);
-    //  Navigator.pushNamedAndRemoveUntil(context, quotationScreenRoute, (_) => false,);
       return;
     }
     else if (token == null || token.isEmpty) {
       Navigator.pushNamedAndRemoveUntil(context, onboardRoute, (_) => false,);
-     // Navigator.pushNamedAndRemoveUntil(context, loginScreenRoute, (_) => false,);
       return;
     }
     else{

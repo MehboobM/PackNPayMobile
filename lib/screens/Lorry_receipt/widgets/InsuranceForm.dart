@@ -1,4 +1,5 @@
 import 'package:dropdown_button2/dropdown_button2.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -122,7 +123,7 @@ class _InsuranceFormState extends ConsumerState<InsuranceForm> {
                   children: [
                     /// ================= MATERIAL INSURANCE =================
                     _sectionHeader(
-                      "Material Insurance",
+                      "materialInsurance.title".tr(),
                       materialInsuranceExpanded,
                           () => setState(() => materialInsuranceExpanded =
                       !materialInsuranceExpanded),
@@ -133,7 +134,7 @@ class _InsuranceFormState extends ConsumerState<InsuranceForm> {
                       Row(
                         children: [
                           reusableDropdown(
-                            title: "Material Insurance",
+                            title:  "materialInsurance.title".tr(),
                             value: insuranceLabel,
                             items: insuranceItems,
                             onChanged: (val) {
@@ -149,7 +150,7 @@ class _InsuranceFormState extends ConsumerState<InsuranceForm> {
 
                       const SizedBox(height: 12),
 
-                      formLabel("Insurance company"),
+                      formLabel("materialInsurance.insuranceCompany".tr()),
                       const SizedBox(height: 6),
                       CustomTextField(
                         controller: insuranceCompanyController,
@@ -159,7 +160,7 @@ class _InsuranceFormState extends ConsumerState<InsuranceForm> {
 
                       const SizedBox(height: 12),
 
-                      formLabel("Policy no."),
+                      formLabel("materialInsurance.policyNo".tr()),
                       const SizedBox(height: 6),
                       CustomTextField(
                         controller: policyNoController,
@@ -176,7 +177,7 @@ class _InsuranceFormState extends ConsumerState<InsuranceForm> {
                               crossAxisAlignment:
                               CrossAxisAlignment.start,
                               children: [
-                                formLabel("Insured amount"),
+                                formLabel("materialInsurance.insuredAmount".tr()),
                                 const SizedBox(height: 6),
                                 CustomTextField(
                                   controller:
@@ -195,7 +196,7 @@ class _InsuranceFormState extends ConsumerState<InsuranceForm> {
                               crossAxisAlignment:
                               CrossAxisAlignment.start,
                               children: [
-                                formLabel("Insurance Date"),
+                                formLabel("lr.fields.insuranceDate".tr()),
                                 const SizedBox(height: 6),
                                 CustomTextField(
                                   controller:
@@ -215,7 +216,7 @@ class _InsuranceFormState extends ConsumerState<InsuranceForm> {
 
                       const SizedBox(height: 12),
 
-                      formLabel("Insurance Risk"),
+                      formLabel("lr.fields.riskDetails".tr()),
                       const SizedBox(height: 6),
                       CustomTextField(
                         controller: insuranceRiskController,
@@ -232,7 +233,7 @@ class _InsuranceFormState extends ConsumerState<InsuranceForm> {
 
                     /// ================= DEMURRAGE CHARGE =================
                     _sectionHeader(
-                      "Demurrage Charge",
+                      "lr.fields.demurrageCharge".tr(),
                       demurrageExpanded,
                           () => setState(
                               () => demurrageExpanded = !demurrageExpanded),
@@ -247,7 +248,7 @@ class _InsuranceFormState extends ConsumerState<InsuranceForm> {
                               CrossAxisAlignment.start,
                               children: [
                                 amountWithDropdownField(
-                                  label: "Demurrage charge",
+                                  label:  "lr.fields.demurrageCharge".tr(),
                                   controller: demurrageChargeController,
                                   items: demurrageTypeItems,
                                   selectedValue: demurrageTypeLabel,
@@ -255,7 +256,7 @@ class _InsuranceFormState extends ConsumerState<InsuranceForm> {
                                     setState(() {
                                       selectedDemurrageType =
                                           dropdown.getValueByLabel(
-                                            "demurrage_charge_type",
+                                            "lr.fields.demurrageCharge".tr(),
                                             val ?? "",
                                           );
                                     });
@@ -274,7 +275,7 @@ class _InsuranceFormState extends ConsumerState<InsuranceForm> {
                       Row(
                         children: [
                           reusableDropdown(
-                            title: "Demurrage charge Applicable",
+                            title: "demurrageCharge.demurrageChargeApplicable".tr(),
                             value: demurrageApplicableLabel,
                             items: demurrageApplicableItems,
                             onChanged: (val) {

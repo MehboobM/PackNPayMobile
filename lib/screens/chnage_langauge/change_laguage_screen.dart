@@ -98,7 +98,7 @@ class _ChangeLanguageScreenState extends State<ChangeLanguageScreen> {
                 children: [
                   _buildLanguageTile('English', 'en'),
                   _buildLanguageTile('Hindi', 'hi'),
-                  _buildLanguageTile('Kannada', 'kn'),
+                  _buildLanguageTile('Kannada', 'ka'),
                   _buildLanguageTile('Tamil', 'ta'),
                   _buildLanguageTile('Malayalam', 'ml'),
                 ],

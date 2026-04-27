@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:pack_n_pay/utils/app_colors.dart';
@@ -144,7 +145,7 @@ class _PackagePaymentFormState
                   children: [
                     /// ================= PACKAGE DETAILS =================
                     _sectionHeader(
-                      "Package Details",
+                      "packageDetails.title".tr(),
                       packageExpanded,
                           () => setState(
                               () => packageExpanded = !packageExpanded),
@@ -159,7 +160,7 @@ class _PackagePaymentFormState
 
                     /// ================= PAYMENT DETAILS =================
                     _sectionHeader(
-                      "Payment Details",
+                      "paymentDetailsLR.title".tr(),
                       paymentExpanded,
                           () => setState(
                               () => paymentExpanded = !paymentExpanded),
@@ -191,7 +192,7 @@ class _PackagePaymentFormState
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        formLabel("No. of package"),
+        formLabel("packageDetails.noOfPackage".tr()),
         const SizedBox(height: 6),
         CustomTextField(
           controller: packageController,
@@ -201,7 +202,7 @@ class _PackagePaymentFormState
         ),
         const SizedBox(height: 12),
 
-        formLabel("Description"),
+        formLabel("packageDetails.description".tr()),
         const SizedBox(height: 6),
         CustomTextField(
           controller: descriptionController,
@@ -215,7 +216,7 @@ class _PackagePaymentFormState
           children: [
             Expanded(
               child: buildWeightField(
-                title: "Actual Weight",
+                title: "packageDetails.actualWeight".tr(),
                 controller: actualWeightController,
                 selectedUnit: selectedActualWeightUnit,
                 units: weightUnitItems,
@@ -229,7 +230,7 @@ class _PackagePaymentFormState
             const SizedBox(width: 10),
             Expanded(
               child: buildWeightField(
-                title: "Charged Weight",
+                title: "packageDetails.chargedWeight".tr(),
                 controller: chargedWeightController,
                 selectedUnit: selectedChargedWeightUnit,
                 units: weightUnitItems,
@@ -245,7 +246,7 @@ class _PackagePaymentFormState
 
         const SizedBox(height: 12),
 
-        formLabel("Received Package condition"),
+        formLabel("lr.fields.conditionNote".tr(),),
         const SizedBox(height: 6),
         CustomTextField(
           controller: conditionController,
@@ -254,7 +255,7 @@ class _PackagePaymentFormState
         ),
         const SizedBox(height: 12),
 
-        formLabel("Remarks"),
+        formLabel("lr.fields.remarks".tr(),),
         const SizedBox(height: 6),
         CustomTextField(
           controller: remarksController,
@@ -272,7 +273,7 @@ class _PackagePaymentFormState
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        formLabel("Freight to be billed"),
+        formLabel("packageDetails.freightToBeBilled".tr()),
         const SizedBox(height: 6),
         CustomTextField(
           controller: freightToBeBilledController,
@@ -285,12 +286,12 @@ class _PackagePaymentFormState
           children: [
             Expanded(
               child: _currencyField(
-                  "Freight Paid", freightPaidController),
+                  "lr.fields.freightPaid".tr(), freightPaidController),
             ),
             const SizedBox(width: 10),
             Expanded(
               child: _currencyField(
-                  "Freight to pay", freightToPayController),
+                  "lr.fields.freightToPay".tr(), freightToPayController),
             ),
           ],
         ),
@@ -299,13 +300,13 @@ class _PackagePaymentFormState
         Row(
           children: [
             Expanded(
-              child: _currencyField("Total Basic freight",
+              child: _currencyField( "lr.fields.basicFreight".tr(),
                   totalBasicFreightController),
             ),
             const SizedBox(width: 10),
             Expanded(
               child: _currencyField(
-                  "Loading charge", loadingChargeController),
+                  "lr.fields.loadingCharge".tr(), loadingChargeController),
             ),
           ],
         ),
@@ -315,12 +316,12 @@ class _PackagePaymentFormState
           children: [
             Expanded(
               child: _currencyField(
-                  "Unloading charge", unloadingChargeController),
+                  "lr.fields.unloadingCharge".tr(), unloadingChargeController),
             ),
             const SizedBox(width: 10),
             Expanded(
               child:
-              _currencyField("S.T charge", stChargeController),
+              _currencyField("lr.fields.stCharge".tr(), stChargeController),
             ),
           ],
         ),
@@ -330,12 +331,12 @@ class _PackagePaymentFormState
           children: [
             Expanded(
               child: _currencyField(
-                  "Other charge", otherChargeController),
+                  "lr.fields.otherCharge".tr(), otherChargeController),
             ),
             const SizedBox(width: 10),
             Expanded(
               child: _currencyField(
-                  "LR/CN Charges", lrCnChargeController),
+                  "lr.fields.lrCnCharge".tr(), lrCnChargeController),
             ),
           ],
         ),
@@ -345,7 +346,7 @@ class _PackagePaymentFormState
           children: [
             Expanded(
               child: buildCommonDropdown(
-                title: "GST %",
+                title: "lr.fields.gstPercent".tr(),
                 value: selectedGst,
                 items: gstItems,
                 onChanged: (value) {
@@ -356,7 +357,7 @@ class _PackagePaymentFormState
             const SizedBox(width: 10),
             Expanded(
               child: buildCommonDropdown(
-                title: "GST paid by",
+                title: "lr.fields.gstPaidBy".tr(),
                 value: selectedGstPaidBy,
                 items: gstPaidByItems,
                 onChanged: (value) {

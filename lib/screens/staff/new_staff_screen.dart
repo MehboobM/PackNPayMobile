@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import '../../global_data/dropdown_data.dart';
@@ -278,30 +279,30 @@ class _NewStaffScreenState extends State<NewStaffScreen> {
                   ),
                   const SizedBox(height: 16),
 
-                  buildField("Name", nameController, hint: "Enter name"),
-                  buildField("Login Code", loginCodeController, hint: "Enter login code"),
+                  buildField("staff.form.name".tr(), nameController, hint: "Enter name"),
+                  buildField("staff.card.loginCode".tr(), loginCodeController, hint: "Enter login code"),
 
-                  buildDateField("DOB", dobController, (val) {
+                  buildDateField("staff.form.dob".tr(), dobController, (val) {
                     setState(() => dob = val);
                   }),
 
                   Row(
                     children: [
                       Expanded(
-                        child: buildField("Phone", phoneController,
-                            hint: "Enter phone", keyboard: TextInputType.phone),
+                        child: buildField("staff.form.mobile".tr(), phoneController,
+                            hint: "Enter mobile", keyboard: TextInputType.phone),
                       ),
                       const SizedBox(width: 12),
                       Expanded(
-                        child: buildField("Alternate ph. no.", altPhoneController,
+                        child: buildField("staff.form.altMobile".tr(), altPhoneController,
                             hint: "Enter alternate phone",
                             keyboard: TextInputType.phone),
                       ),
                     ],
                   ),
 
-                  buildField("Email", emailController, hint: "Enter email"),
-                  buildField("Address", addressController, hint: "Write address..."),
+                  buildField("staff.form.email".tr(),  emailController, hint: "Enter email"),
+                  buildField("staff.form.address".tr(), addressController, hint: "Write address..."),
 
                   const SizedBox(height: 20),
 
@@ -317,26 +318,26 @@ class _NewStaffScreenState extends State<NewStaffScreen> {
                   ),
                   const SizedBox(height: 16),
 
-                  buildDateField("Joining Date", joiningDateController, (val) {
+                  buildDateField("staff.form.joiningDate".tr(), joiningDateController, (val) {
                     setState(() => joiningDate = val);
                   }),
 
                   Row(
                     children: [
                       Expanded(
-                        child: buildField("Advance salary", advanceSalaryController,
+                        child: buildField("staff.form.advSalary".tr(), advanceSalaryController,
                             hint: "₹", keyboard: TextInputType.number),
                       ),
                       const SizedBox(width: 12),
                       Expanded(
-                        child: buildField("Base salary", baseSalaryController,
+                        child: buildField("staff.form.baseSalary".tr(), baseSalaryController,
                             hint: "₹", keyboard: TextInputType.number),
                       ),
                     ],
                   ),
 
                   DropdownWithField(
-                    title: "Role",
+                    title: "staff.form.role".tr(),
                     value: selectedRole, // 👈 FIX
                     items: roleOptions.map((e) => e["label"].toString()).toList(),
                     controller: roleController,

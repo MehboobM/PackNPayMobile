@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
@@ -232,7 +233,7 @@ class _NewReceiptScreenState extends ConsumerState<NewReceiptScreen> {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text("Receipt No.", style: TextStyles.f12w500Gray7),
+                              Text("receipt.receiptNo".tr(), style: TextStyles.f12w500Gray7),
                               const SizedBox(height: 6),
                               CustomTextField(
                                 controller: receiptNoController,
@@ -251,7 +252,7 @@ class _NewReceiptScreenState extends ConsumerState<NewReceiptScreen> {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text("Date", style: TextStyles.f12w500Gray7),
+                              Text("receipt.date".tr(), style: TextStyles.f12w500Gray7),
                               const SizedBox(height: 6),
                               CustomTextField(
                                 controller: dateController,
@@ -268,13 +269,13 @@ class _NewReceiptScreenState extends ConsumerState<NewReceiptScreen> {
 
                     const SizedBox(height: 16),
 
-                    buildField("Branch", branchController, "Enter Branch"),
-                    buildField("Name", nameController, "Enter name"),
-                    buildField("Phone no.", phoneController, "Enter phone no.",
+                    buildField("receipt.branch".tr(), branchController, "Enter Branch"),
+                    buildField("receipt.name".tr(), nameController, "Enter name"),
+                    buildField("receipt.phoneNo".tr(), phoneController, "Enter phone no.",
                         keyboard: TextInputType.phone),
 
                     DropdownWithField(
-                      title: "Receipt against",
+                      title: "receipt.receiptAgainst".tr(),
                       value: receiptAgainst,
                       items: ["Quotation", "Bill"],
                       controller: quotationNoController,
@@ -288,18 +289,18 @@ class _NewReceiptScreenState extends ConsumerState<NewReceiptScreen> {
 
                     const SizedBox(height: 16),
 
-                    buildDateField("Bill/Quotation date", billDateController),
+                    buildDateField("receipt.billAndQuotationDate".tr(), billDateController),
 
                     const SizedBox(height: 16),
 
                     Row(
                       children: [
                         Expanded(
-                          child: buildField("Move from", fromController, "Enter"),
+                          child: buildField("receipt.moveFrom".tr(), fromController, "Enter"),
                         ),
                         const SizedBox(width: 12),
                         Expanded(
-                          child: buildField("Move to", toController, "Enter"),
+                          child: buildField("receipt.moveTo".tr(), toController, "Enter"),
                         ),
                       ],
                     ),
@@ -308,7 +309,7 @@ class _NewReceiptScreenState extends ConsumerState<NewReceiptScreen> {
                     Row(
                       children: [
                         reusableDropdown(
-                          title: "Payment type",
+                          title: "receipt.paymentType".tr(),
                           value: paymentType,
                           items: ["Part", "Full"],
                           onChanged: (val) {
@@ -325,7 +326,7 @@ class _NewReceiptScreenState extends ConsumerState<NewReceiptScreen> {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text("Receipt amount", style: TextStyles.f12w500Gray7),
+                              Text("receipt.receiptAmount".tr(),style: TextStyles.f12w500Gray7),
                               const SizedBox(height: 6),
                               CustomTextField(
                                 controller: amountController,
@@ -343,7 +344,7 @@ class _NewReceiptScreenState extends ConsumerState<NewReceiptScreen> {
 
                     /// 🔹 PAYMENT MODE
                     DropdownWithField(
-                      title: "Payment mode",
+                      title: "receipt.paymentMode".tr(),
                       value: paymentMode,
                       items: ["Cash", "Online", "Cheque"],
                       controller: transactionController,
@@ -361,7 +362,7 @@ class _NewReceiptScreenState extends ConsumerState<NewReceiptScreen> {
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text("Remarks", style: TextStyles.f12w500Gray7),
+                        Text("receipt.remarks".tr(), style: TextStyles.f12w500Gray7),
                         const SizedBox(height: 6),
                         TextFormField(
                           controller: remarksController,

@@ -2,12 +2,12 @@ class ApiEndPoints {
 
 
   ///Local
-  static const server = "http://192.168.0.247:5000/api/";
+  //static const server = "http://192.168.0.247:5000/api/";
   /*static const server = "http://192.168.0.246:5000/api/";*/
 
 
   ///Production
-  /*static const server = "https://packnpay.in/api/";*/
+  static const server = "https://packnpay.in/api/";
 
 
   static const baseurl = '${server}';

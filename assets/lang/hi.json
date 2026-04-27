@@ -326,6 +326,8 @@
   "invoiceEBill": {
     "title": "Invoice & E-Bill (चालान और ई-बिल)",
     "packageBill": "Package/Bill (पैकेज/बिल)",
+    "invoiceAmount": "Invoice Amount (चालान राशि)",
+    "invoiceBillNo": "Invoice/Bill No. (चालान/बिल नंबर)",
     "invoiceDate": "Invoice Date (चालान तिथि)",
     "eWayBillNo": "E-Way Bill No. (ई-वे बिल नंबर)",
     "eWayBillGenerationDate": "E-way Bill generation date (ई-वे बिल जनरेशन तिथि)",
@@ -827,7 +829,7 @@
       "insuranceDate": "Insurance Date (बीमा तिथि)",
       "riskDetails": "Insurance Risk (बीमा जोखिम)",
       "freightToBeBilled": "Freight to be billed (बिल किया जाने वाला भाड़ा)",
-      "freightPaid": "Freight Paid (भुगतान किया गया भाड़ा)",
+      "freightPaid": "Freight Paid (भुगतान किया गया)",
       "freightToPay": "Freight to pay (भुगतान किया जाने वाला भाड़ा)",
       "basicFreight": "Total Basic freight (कुल मूल भाड़ा)",
       "loadingCharge": "Loading charge (लोडिंग शुल्क)",

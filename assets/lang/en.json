@@ -329,6 +329,8 @@
   },
   "invoiceEBill": {
     "title": "Invoice & E-Bill",
+    "invoiceAmount": "Invoice Amount",
+    "invoiceBillNo": "Invoice/Bill No.",
     "packageBill": "Package/Bill",
     "invoiceDate": "Invoice Date",
     "eWayBillNo": "E-Way Bill No.",
@@ -923,4 +925,4 @@
       "transporter": "Transporter"
     }
   }
-},
+}
