@@ -12,6 +12,7 @@ import '../../notifier/order_detail_notifier.dart';
 import '../../routes/route_names_const.dart';
 import '../../utils/toast_message.dart';
 import '../Quotation/widget/Quotation_items.dart';
+import '../follow_up/followup_dialog.dart';
 import '../survey/widget/filter_bottom_sheet.dart';
 import '../survey/widget/status_chip.dart';
 import '../survey/widget/survey_items.dart';
@@ -398,6 +399,12 @@ class _OrdersScreenState extends ConsumerState<OrdersScreen> {
           icon: "assets/images/delete.svg",
         ),
 
+        PopupMenuModel(
+          value: 'setFollow',
+          title: 'Set Follow Up',
+          icon: "assets/images/follow_up.svg",
+        ),
+
       ],
       onSelected: (value) {
         switch (value) {
@@ -432,6 +439,16 @@ class _OrdersScreenState extends ConsumerState<OrdersScreen> {
                   },
                 );
               },
+            );
+            break;
+
+          case 'setFollow':
+            print("object>>>>>>>>>>>>>>>${quotationNo}") ;
+            showFollowUpDialog(
+              context: context,
+              ref: ref,
+              sourceType: "Order",
+              sourceId: quotationNo ?? "",
             );
             break;
         }

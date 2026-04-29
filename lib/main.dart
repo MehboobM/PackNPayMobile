@@ -2,6 +2,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
 import 'package:flutter/services.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
@@ -10,13 +11,23 @@ import 'package:pack_n_pay/routes/routes.dart';
 import 'package:toastification/toastification.dart';
 
 import 'database/shared_preferences/shared_storage.dart';
+import 'notification/local_notification_service.dart';
 
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
 
+Future<void> requestNotificationPermission() async {
+  final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
+
+  final androidImplementation = flutterLocalNotificationsPlugin.resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>();
+
+  await androidImplementation?.requestNotificationsPermission();
+}
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-
+  await LocalNotificationService.init();
+  await requestNotificationPermission(); // 👈 ADD THIS
   /// ✅ INIT HIVE
   await Hive.initFlutter();
 

@@ -8,63 +8,49 @@ import '../../../models/order_detail_model.dart';
 
 class OrderStatusStepper extends StatelessWidget {
   final List<StatusLogs> logs;
+  final List<StatusTimeline> timeline;
 
-  const OrderStatusStepper({super.key, required this.logs});
+  const OrderStatusStepper({
+    super.key,
+    required this.logs,
+    required this.timeline,
+  });
 
   @override
   Widget build(BuildContext context) {
-    final List<String> allSteps = [
-      "QUOTATION",
-      "ORDER_CONFIRMED",
-      "LR_CREATED",
-      "SETTLED",
-    ];
-
-    /// ✅ SORT LOGS
+    /// ✅ SORT ORDER LOGS
     final sortedLogs = logs
         .where((e) => e.statusType == "ORDER")
-        .toList();
+        .toList()
+      ..sort((a, b) => (a.changedAt ?? "").compareTo(b.changedAt ?? ""));
 
-    sortedLogs.sort(
-          (a, b) => (a.changedAt ?? "").compareTo(b.changedAt ?? ""),
-    );
+    /// ✅ LATEST LOG
+    final StatusLogs? latestLog =
+    sortedLogs.isNotEmpty ? sortedLogs.last : null;
 
-    // final sortedLogs = [...logs];
-    // sortedLogs.sort(
-    //       (a, b) => (a.changedAt ?? "").compareTo(b.changedAt ?? ""),
-    // );
-
-    /// ✅ CURRENT STEP
-    int currentIndex = -1;
-    StatusLogs? latestLog;
-
-    if (sortedLogs.isNotEmpty) {
-      latestLog = sortedLogs.last;
-      currentIndex = allSteps.indexWhere((e) => e == latestLog!.status);
-    }
-
-    /// ✅ BUILD STEPS
-    final steps = allSteps.asMap().entries.map((entry) {
-      final index = entry.key;
-      final status = entry.value;
-
+    /// ✅ BUILD STEPS FROM API (NO STATIC LIST)
+    final steps = timeline.map((t) {
       StatusLogs? log;
 
       try {
-       // log = sortedLogs.firstWhere((e) => e.status == status);
-        log = sortedLogs.firstWhere((e) => e.status == status);
+        log = sortedLogs.firstWhere((e) => e.status == t.key);
       } catch (_) {
         log = null;
       }
 
       String date = "";
+
       if (log != null) {
         date = _formatDate(log.changedAt);
-      } else if (currentIndex >= 0 && index <= currentIndex) {
-        date = _formatDate(latestLog?.changedAt);
+      } else if (t.done == true && latestLog != null) {
+        // optional fallback
+        date = _formatDate(latestLog.changedAt);
       }
 
-      return _StepData(_mapStatus(status), date);
+      return _StepData(
+        t.label ?? t.key ?? "-",
+        date,
+      );
     }).toList();
 
     return Container(
@@ -74,28 +60,25 @@ class OrderStatusStepper extends StatelessWidget {
         borderRadius: BorderRadius.circular(12),
       ),
       child: Column(
-        mainAxisAlignment:MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text("order.orderStatus".tr(), style: TextStyles.f12w600Gray9),
-          SizedBox(height: 8,),
+          const SizedBox(height: 8),
+
           SingleChildScrollView(
             scrollDirection: Axis.horizontal,
-            padding: EdgeInsets.zero,
             child: Row(
               children: List.generate(steps.length, (index) {
-                final isCompleted = currentIndex >= 0 && index <= currentIndex;
+                final isCompleted = timeline[index].done == true;
 
                 return SizedBox(
-                  width: 110, // ✅ FIXED WIDTH (important)
+                  width: 110,
                   child: Column(
                     children: [
-                      /// ================= TOP (LINE + CIRCLE) =================
-
+                      /// ===== LINE + CIRCLE =====
                       SizedBox(
                         height: 34,
                         child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
                             /// LEFT LINE
                             Expanded(
@@ -103,7 +86,7 @@ class OrderStatusStepper extends StatelessWidget {
                                 height: 2,
                                 color: index == 0
                                     ? Colors.transparent
-                                    : (index <= currentIndex
+                                    : (timeline[index - 1].done == true
                                     ? AppColors.primary
                                     : Colors.grey.shade300),
                               ),
@@ -135,7 +118,7 @@ class OrderStatusStepper extends StatelessWidget {
                                 height: 2,
                                 color: index == steps.length - 1
                                     ? Colors.transparent
-                                    : (index < currentIndex
+                                    : (isCompleted
                                     ? AppColors.primary
                                     : Colors.grey.shade300),
                               ),
@@ -146,12 +129,11 @@ class OrderStatusStepper extends StatelessWidget {
 
                       const SizedBox(height: 6),
 
-                      /// ================= FIXED HEIGHT CONTENT =================
+                      /// ===== TITLE + DATE =====
                       SizedBox(
-                        height: 30, // ✅ KEY FIX (no layout shifting)
+                        height: 30,
                         child: Column(
                           children: [
-                            /// TITLE
                             Text(
                               steps[index].title,
                               textAlign: TextAlign.center,
@@ -161,26 +143,12 @@ class OrderStatusStepper extends StatelessWidget {
                                     : Colors.grey,
                               ),
                             ),
-
                             const SizedBox(height: 2),
-
-                            /// DATE
                             Text(
                               steps[index].date,
                               textAlign: TextAlign.center,
                               style: TextStyles.f7w400mGray6,
                             ),
-
-
-
-                            /// DOWNLOAD ICON
-                            // const SizedBox(height: 6),
-                            // if (steps[index].date.isNotEmpty)
-                            //   Icon(
-                            //     Icons.download,
-                            //     size: 16,
-                            //     color: AppColors.primary,
-                            //   ),
                           ],
                         ),
                       ),
@@ -193,22 +161,6 @@ class OrderStatusStepper extends StatelessWidget {
         ],
       ),
     );
-  }
-
-  /// ✅ STATUS TEXT MAP
-  String _mapStatus(String? status) {
-    switch (status) {
-      case "QUOTATION":
-        return "Quotation";
-      case "ORDER_CONFIRMED":
-        return "Order Confirmed";
-      case "LR_CREATED":
-        return "LR/Bilty";
-      case "SETTLED":
-        return "Settled";
-      default:
-        return status ?? "-";
-    }
   }
 
   /// ✅ DATE FORMAT
@@ -246,6 +198,247 @@ class _StepData {
 
   _StepData(this.title, this.date);
 }
+
+// class OrderStatusStepper extends StatelessWidget {
+//   final List<StatusLogs> logs;
+//
+//   const OrderStatusStepper({super.key, required this.logs});
+//
+//   @override
+//   Widget build(BuildContext context) {
+//     final List<String> allSteps = [
+//       "QUOTATION",
+//       "ORDER_CONFIRMED",
+//       "LR_CREATED",
+//       "SETTLED",
+//     ];
+//
+//     /// ✅ SORT LOGS
+//     final sortedLogs = logs
+//         .where((e) => e.statusType == "ORDER")
+//         .toList();
+//
+//     sortedLogs.sort(
+//           (a, b) => (a.changedAt ?? "").compareTo(b.changedAt ?? ""),
+//     );
+//
+//     // final sortedLogs = [...logs];
+//     // sortedLogs.sort(
+//     //       (a, b) => (a.changedAt ?? "").compareTo(b.changedAt ?? ""),
+//     // );
+//
+//     /// ✅ CURRENT STEP
+//     int currentIndex = -1;
+//     StatusLogs? latestLog;
+//
+//     if (sortedLogs.isNotEmpty) {
+//       latestLog = sortedLogs.last;
+//       currentIndex = allSteps.indexWhere((e) => e == latestLog!.status);
+//     }
+//
+//     /// ✅ BUILD STEPS
+//     final steps = allSteps.asMap().entries.map((entry) {
+//       final index = entry.key;
+//       final status = entry.value;
+//
+//       StatusLogs? log;
+//
+//       try {
+//        // log = sortedLogs.firstWhere((e) => e.status == status);
+//         log = sortedLogs.firstWhere((e) => e.status == status);
+//       } catch (_) {
+//         log = null;
+//       }
+//
+//       String date = "";
+//       if (log != null) {
+//         date = _formatDate(log.changedAt);
+//       } else if (currentIndex >= 0 && index <= currentIndex) {
+//         date = _formatDate(latestLog?.changedAt);
+//       }
+//
+//       return _StepData(_mapStatus(status), date);
+//     }).toList();
+//
+//     return Container(
+//       padding: const EdgeInsets.all(12),
+//       decoration: BoxDecoration(
+//         color: Colors.white,
+//         borderRadius: BorderRadius.circular(12),
+//       ),
+//       child: Column(
+//         mainAxisAlignment:MainAxisAlignment.start,
+//         crossAxisAlignment: CrossAxisAlignment.start,
+//         children: [
+//           Text("order.orderStatus".tr(), style: TextStyles.f12w600Gray9),
+//           SizedBox(height: 8,),
+//           SingleChildScrollView(
+//             scrollDirection: Axis.horizontal,
+//             padding: EdgeInsets.zero,
+//             child: Row(
+//               children: List.generate(steps.length, (index) {
+//                 final isCompleted = currentIndex >= 0 && index <= currentIndex;
+//
+//                 return SizedBox(
+//                   width: 110, // ✅ FIXED WIDTH (important)
+//                   child: Column(
+//                     children: [
+//                       /// ================= TOP (LINE + CIRCLE) =================
+//
+//                       SizedBox(
+//                         height: 34,
+//                         child: Row(
+//                           crossAxisAlignment: CrossAxisAlignment.center,
+//                           children: [
+//                             /// LEFT LINE
+//                             Expanded(
+//                               child: Container(
+//                                 height: 2,
+//                                 color: index == 0
+//                                     ? Colors.transparent
+//                                     : (index <= currentIndex
+//                                     ? AppColors.primary
+//                                     : Colors.grey.shade300),
+//                               ),
+//                             ),
+//
+//                             /// CIRCLE
+//                             Container(
+//                               width: 34,
+//                               height: 34,
+//                               alignment: Alignment.center,
+//                               decoration: BoxDecoration(
+//                                 shape: BoxShape.circle,
+//                                 color: Colors.white,
+//                                 border: Border.all(
+//                                   color: isCompleted
+//                                       ? AppColors.primary
+//                                       : Colors.grey.shade300,
+//                                   width: 2,
+//                                 ),
+//                               ),
+//                               child: isCompleted
+//                                   ? const Icon(Icons.check, size: 18)
+//                                   : null,
+//                             ),
+//
+//                             /// RIGHT LINE
+//                             Expanded(
+//                               child: Container(
+//                                 height: 2,
+//                                 color: index == steps.length - 1
+//                                     ? Colors.transparent
+//                                     : (index < currentIndex
+//                                     ? AppColors.primary
+//                                     : Colors.grey.shade300),
+//                               ),
+//                             ),
+//                           ],
+//                         ),
+//                       ),
+//
+//                       const SizedBox(height: 6),
+//
+//                       /// ================= FIXED HEIGHT CONTENT =================
+//                       SizedBox(
+//                         height: 30, // ✅ KEY FIX (no layout shifting)
+//                         child: Column(
+//                           children: [
+//                             /// TITLE
+//                             Text(
+//                               steps[index].title,
+//                               textAlign: TextAlign.center,
+//                               style: TextStyles.f8w600mGray9.copyWith(
+//                                 color: isCompleted
+//                                     ? AppColors.primary
+//                                     : Colors.grey,
+//                               ),
+//                             ),
+//
+//                             const SizedBox(height: 2),
+//
+//                             /// DATE
+//                             Text(
+//                               steps[index].date,
+//                               textAlign: TextAlign.center,
+//                               style: TextStyles.f7w400mGray6,
+//                             ),
+//
+//
+//
+//                             /// DOWNLOAD ICON
+//                             // const SizedBox(height: 6),
+//                             // if (steps[index].date.isNotEmpty)
+//                             //   Icon(
+//                             //     Icons.download,
+//                             //     size: 16,
+//                             //     color: AppColors.primary,
+//                             //   ),
+//                           ],
+//                         ),
+//                       ),
+//                     ],
+//                   ),
+//                 );
+//               }),
+//             ),
+//           ),
+//         ],
+//       ),
+//     );
+//   }
+//
+//   /// ✅ STATUS TEXT MAP
+//   String _mapStatus(String? status) {
+//     switch (status) {
+//       case "QUOTATION":
+//         return "Quotation";
+//       case "ORDER_CONFIRMED":
+//         return "Order Confirmed";
+//       case "LR_CREATED":
+//         return "LR/Bilty";
+//       case "SETTLED":
+//         return "Settled";
+//       default:
+//         return status ?? "-";
+//     }
+//   }
+//
+//   /// ✅ DATE FORMAT
+//   String _formatDate(String? date) {
+//     if (date == null || date.isEmpty) return "";
+//
+//     final d = DateTime.tryParse(date);
+//     if (d == null) return date;
+//
+//     return "${d.day.toString().padLeft(2, '0')} "
+//         "${_monthName(d.month)} ${d.year}, "
+//         "${_formatTime(d)}";
+//   }
+//
+//   String _monthName(int month) {
+//     const months = [
+//       "Jan", "Feb", "Mar", "Apr", "May", "Jun",
+//       "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
+//     ];
+//     return months[month - 1];
+//   }
+//
+//   String _formatTime(DateTime d) {
+//     final hour = d.hour > 12 ? d.hour - 12 : d.hour;
+//     final period = d.hour >= 12 ? "pm" : "am";
+//
+//     return "${hour.toString().padLeft(2, '0')}:"
+//         "${d.minute.toString().padLeft(2, '0')} $period";
+//   }
+// }
+//
+// class _StepData {
+//   final String title;
+//   final String date;
+//
+//   _StepData(this.title, this.date);
+// }
 //
 // class OrderStatusStepper extends StatelessWidget {
 //   final List<StatusLogs> logs;

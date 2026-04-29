@@ -72,5 +72,8 @@ class ApiEndPoints {
   static const String subscription = "subscription/current";
 
 
+  static const String setFollowUp = "dashboard/create-action";
+
+
 
 }

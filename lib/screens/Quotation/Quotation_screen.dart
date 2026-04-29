@@ -16,6 +16,7 @@ import '../../notifier/order_detail_notifier.dart';
 import '../../notifier/quatation_notifier.dart';
 import '../../notifier/quotation_form_notifier.dart';
 import '../../routes/route_names_const.dart';
+import '../follow_up/followup_dialog.dart';
 import '../survey/widget/filter_bottom_sheet.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter/material.dart';
@@ -459,6 +460,12 @@ class _QuotationScreenState extends ConsumerState<QuotationScreen> {
           icon: "assets/images/signature.svg",
         ),
 
+        PopupMenuModel(
+          value: 'setFollow',
+          title: 'Set Follow Up',
+          icon: "assets/images/follow_up.svg",
+        ),
+
 
       ],
       onSelected: (value) {
@@ -508,6 +515,16 @@ class _QuotationScreenState extends ConsumerState<QuotationScreen> {
 
           case 'order_generate':
             generateOrder(context,quotationNo!); // ✅ CLEAN
+            break;
+
+          case 'setFollow':
+            print("object>>>>>>>>>>>>>>>${quotationNo}") ;
+            showFollowUpDialog(
+              context: context,
+              ref: ref,
+              sourceType: "Quotation",
+              sourceId: quotationNo ?? "aa",
+            );
             break;
         }
       },

@@ -18,6 +18,7 @@ import '../../global_widget/custom_textfield.dart';
 import '../../models/survey_list_data.dart';
 import '../../routes/route_names_const.dart';
 import '../../utils/toast_message.dart';
+import '../follow_up/followup_dialog.dart';
 
 class SurveyListScreen extends ConsumerStatefulWidget {
    bool isHideLeading;
@@ -508,6 +509,12 @@ class _SurveyListScreenState extends ConsumerState<SurveyListScreen> {
           title: 'Generate Quotation',
           icon: "assets/images/quotation.svg",
         ),
+
+        PopupMenuModel(
+          value: 'setFollow',
+          title: 'Set Follow Up',
+          icon: "assets/images/follow_up.svg",
+        ),
       ],
 
       /// 🔥 IMPORTANT: make async
@@ -516,15 +523,10 @@ class _SurveyListScreenState extends ConsumerState<SurveyListScreen> {
 
         /// ✅ EDIT + QUOTATION (same flow)
           case 'edit':
-            await _shareSurveyLink(context, quotationNo, link);
+            String urlLink = "https://packnpay.in/survey/form/$quotationNo";
+            await _opeFormUrl(urlLink);
             // Navigator.pushNamed(context, surveyLinkRoute,arguments:item );
             break;
-
-
-        /// SIGNATURE
-        //   case 'signature':
-        //     _openSignatureUrl();
-        //     break;
 
         /// SHARE LINK
           case 'link':
@@ -537,6 +539,16 @@ class _SurveyListScreenState extends ConsumerState<SurveyListScreen> {
               ref: ref,
               quotationNo: quotationNo,
             );
+            break;
+
+          case 'setFollow':
+           print("object>>>>>>>>>>>>>>>${quotationNo}") ;
+           showFollowUpDialog(
+             context: context,
+             ref: ref,
+             sourceType: "Survey",
+             sourceId: quotationNo,
+           );
             break;
         }
       },
@@ -584,6 +596,18 @@ class _SurveyListScreenState extends ConsumerState<SurveyListScreen> {
   }
 
 
+  Future<void> _opeFormUrl(String urls) async {
+    final Uri url = Uri.parse(urls);
+
+    if (await canLaunchUrl(url)) {
+      await launchUrl(
+        url,
+        mode: LaunchMode.externalApplication,
+      );
+    } else {
+      ToastHelper.showError(message: "Could not open link");
+    }
+  }
 
 
   Future<void> _shareSurveyLink(BuildContext context,String quotationNo, String link,) async {

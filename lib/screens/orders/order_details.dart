@@ -93,7 +93,6 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
     final pickup = data?.quotationAddresses?.pickup;
     final delivery = data?.quotationAddresses?.delivery;
     final items = data?.surveyItems ?? [];
-    final logs = data?.statusLogs ?? [];
 
     final expenses = data?.expenses ?? [];
     final staffList = data?.staff ?? []; // if result null then pass data?.staff because reslut
@@ -122,7 +121,8 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
     for (var e in expenses) {
       totalExpense += double.tryParse(e.amount ?? "0") ?? 0;
     }
-
+    final statusLogs = data?.statusLogs ?? [];
+    final statusTimeline = data?.statusTimeline ?? [];
 
     return Scaffold(
       backgroundColor: AppColors.bodysecondry,
@@ -176,10 +176,10 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
                   //hide if null
                  // OrderStatusStepper(currentStep: 0),
 
-                  OrderStatusStepper(logs: logs),
+                  OrderStatusStepper(logs: statusLogs,timeline: statusTimeline,),
                   const SizedBox(height: 16),
                   //ShipmentStatusStepper(currentStep: 1),
-                  ShipmentStatusStepper(logs: logs),
+                  ShipmentStatusStepper(logs: statusLogs),
                   const SizedBox(height: 10),
 
                   //Order details
@@ -236,7 +236,7 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
                               context: context,
                               builder: (_) => ChangeStatusDialog(
                                 uid: data?.existingOrderUid ?? "",
-                                logs: logs,
+                                logs: statusLogs,
                               ),
                             );
                           },

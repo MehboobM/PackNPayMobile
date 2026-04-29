@@ -81,6 +81,8 @@ class DetailData {
   String? unloadingRestrictions;
   String? specialNeeds;
   List<StatusLogs>? statusLogs;
+  List<StatusTimeline>? statusTimeline;
+
   QuotationAddresses? quotationAddresses;
   String? surveyUid;
   List<SurveyItems>? surveyItems;
@@ -154,6 +156,7 @@ class DetailData {
         this.unloadingRestrictions,
         this.specialNeeds,
         this.statusLogs,
+        this.statusTimeline,
         this.quotationAddresses,
         this.surveyUid,
         this.surveyItems,
@@ -233,6 +236,13 @@ class DetailData {
       statusLogs = <StatusLogs>[];
       json['status_logs'].forEach((v) {
         statusLogs!.add(new StatusLogs.fromJson(v));
+      });
+    }
+
+    if (json['status_timeline'] != null) {
+      statusTimeline = <StatusTimeline>[];
+      json['status_timeline'].forEach((v) {
+        statusTimeline!.add(new StatusTimeline.fromJson(v));
       });
     }
 
@@ -349,6 +359,11 @@ class DetailData {
     data['special_needs'] = this.specialNeeds;
     if (this.statusLogs != null) {
       data['status_logs'] = this.statusLogs!.map((v) => v.toJson()).toList();
+    }
+
+    if (this.statusTimeline != null) {
+      data['status_timeline'] =
+          this.statusTimeline!.map((v) => v.toJson()).toList();
     }
     if (this.quotationAddresses != null) {
       data['quotation_addresses'] = this.quotationAddresses!.toJson();
@@ -796,6 +811,29 @@ class PaymentSummary {
     data['advance_payment'] = this.advancePayment;
     data['expenses'] = this.expenses;
     data['total_amount_to_pay'] = this.totalAmountToPay;
+    return data;
+  }
+}
+
+
+class StatusTimeline {
+  String? key;
+  String? label;
+  bool? done;
+
+  StatusTimeline({this.key, this.label, this.done});
+
+  StatusTimeline.fromJson(Map<String, dynamic> json) {
+    key = json['key'];
+    label = json['label'];
+    done = json['done'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['key'] = this.key;
+    data['label'] = this.label;
+    data['done'] = this.done;
     return data;
   }
 }
