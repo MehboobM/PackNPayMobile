@@ -102,11 +102,34 @@ class _MoneyListScreenState
         actions: [
           Padding(
             padding: const EdgeInsets.only(right: 8),
-            child: SvgPicture.asset(
-              "assets/icons/pdf.svg",
-              width: 20,
-              height: 20,
-              color: AppColors.primary,
+            child: GestureDetector(
+              onTap: () {
+                final notifier = ref.read(moneyReceiptProvider);
+
+                ViewDownloadService.exportPdf(
+                  context: context,
+                  module: "MONEY_RECEIPT",
+                  filters: {
+                    "from_date": notifier.fromDate != null
+                        ? "${notifier.fromDate!.year}-${notifier.fromDate!.month.toString().padLeft(2, '0')}-${notifier.fromDate!.day.toString().padLeft(2, '0')}"
+                        : null,
+
+                    "to_date": notifier.toDate != null
+                        ? "${notifier.toDate!.year}-${notifier.toDate!.month.toString().padLeft(2, '0')}-${notifier.toDate!.day.toString().padLeft(2, '0')}"
+                        : null,
+
+                    "search": notifier.searchQuery, // 👈 IMPORTANT (see below)
+                    "staff_id": notifier.staffId,
+                    "sort_order": notifier.sortOrder,
+                  },
+                );
+              },
+              child: SvgPicture.asset(
+                "assets/icons/pdf.svg",
+                width: 20,
+                height: 20,
+                color: AppColors.primary,
+              ),
             ),
           ),
 

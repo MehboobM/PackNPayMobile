@@ -18,6 +18,8 @@ import '../screens/Money_receipt/new_receipt.dart';
 import '../screens/Quotation/Quotation_screen.dart';
 import '../screens/Quotation/new_quotation_screen.dart';
 import '../screens/basic_detail/basic_detail_screen.dart';
+import '../screens/business_details/company_lists.dart';
+import '../screens/business_details/my_business_page.dart';
 import '../screens/chnage_langauge/change_laguage_screen.dart';
 import '../screens/dashboard/dashboard_screen.dart';
 import '../screens/login/login_screen.dart';
@@ -191,6 +193,15 @@ class NavigationRouter {
           builder: (_) => LRBiltySettingsScreen(
             settings: settingsModel,
           ),
+        );
+      case myBusinessRoute:
+        final uid = settings.arguments as String?;
+        return MaterialPageRoute(
+          builder: (_) => MyBusinessPage(uid: uid),
+        );
+      case companyListRoute:
+        return MaterialPageRoute(
+          builder: (_) => const CompanyListsPage(),
         );
 
 

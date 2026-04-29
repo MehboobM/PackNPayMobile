@@ -388,7 +388,6 @@ class _PackagePaymentFormState
       ],
     );
   }
-
   /// ================= SECTION HEADER =================
   Widget _sectionHeader(
       String title, bool expanded, VoidCallback onTap) {
@@ -415,7 +414,6 @@ class _PackagePaymentFormState
       ),
     );
   }
-
   /// ================= BOTTOM BAR =================
   Widget _buildBottomBar() {
     return SafeArea(
@@ -450,7 +448,6 @@ class _PackagePaymentFormState
               child: CustomButton(
                 onPressed: () {
                   final notifier = ref.read(lorryReceiptProvider.notifier);
-
                   updateFormData(ref, {
                     "package_details": {
                       "no_of_package": packageController.text.trim(),
@@ -478,7 +475,6 @@ class _PackagePaymentFormState
                       "gst_paid_by": selectedGstPaidBy,
                     },
                   });
-
                   widget.onNext();
                 },
                 text: "Save & Next  >>",
@@ -529,14 +525,12 @@ class _PackagePaymentFormState
                   ),
                 ),
               ),
-
               /// Divider aligned to the right
               Container(
                 width: 1,
                 height: 28,
                 color: AppColors.mGray3,
               ),
-
               /// Weight Unit Dropdown (Fixed Width)
               SizedBox(
                 width: 80,

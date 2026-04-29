@@ -34,6 +34,7 @@ class MoneyReceiptNotifier extends ChangeNotifier {
   int? _staffId;
 
   Timer? _debounce;
+  String get searchQuery => _searchQuery;
 
   /// ✅ GETTERS
   DateTime? get fromDate => _fromDate;

@@ -16,36 +16,34 @@ Widget buildCommonDropdown({
   required Function(String?) onChanged,
   bool isRequired = false,
 }) {
-  return Expanded(
-    child: Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        formLabel(title, isRequired: isRequired),
-        const SizedBox(height: 6),
-        Container(
-          height: 48,
-          padding: const EdgeInsets.symmetric(horizontal: 6),
-          decoration: BoxDecoration(
-            border: Border.all(color: AppColors.mGray3),
-            borderRadius: BorderRadius.circular(12),
-            color: AppColors.mWhite,
+  return Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      formLabel(title, isRequired: isRequired),
+      const SizedBox(height: 6),
+      Container(
+        height: 48,
+        padding: const EdgeInsets.symmetric(horizontal: 6),
+        decoration: BoxDecoration(
+          border: Border.all(color: AppColors.mGray3),
+          borderRadius: BorderRadius.circular(12),
+          color: AppColors.mWhite,
+        ),
+        child: CustomDropdownField<String>(
+          value: value,
+          hintText: "select",
+          items: items,
+          onChanged: onChanged,
+          textStyle: GoogleFonts.inter(
+            fontSize: 12,
+            color: AppColors.mBlack9,
           ),
-          child: CustomDropdownField<String>(
-            value: value,
-            hintText: "select",
-            items: items,
-            onChanged: onChanged,
-            textStyle: GoogleFonts.inter(
-              fontSize: 12,
-              color: AppColors.mBlack9,
-            ),
-            hintStyle: GoogleFonts.inter(
-              fontSize: 12,
-              color: AppColors.mBlack9,
-            ),
+          hintStyle: GoogleFonts.inter(
+            fontSize: 12,
+            color: AppColors.mBlack9,
           ),
         ),
-      ],
-    ),
+      ),
+    ],
   );
 }

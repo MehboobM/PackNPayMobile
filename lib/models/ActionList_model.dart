@@ -8,6 +8,12 @@ class ActionItemModel {
   final String from;
   final String to;
 
+  /// ✅ ADD THESE
+  final String? quotationNo;
+  final String? surveyNo;
+  final String? orderNo;
+  final String? lrNo;
+
   ActionItemModel({
     required this.id,
     required this.type,
@@ -17,18 +23,28 @@ class ActionItemModel {
     required this.phone,
     required this.from,
     required this.to,
+    this.quotationNo,
+    this.surveyNo,
+    this.orderNo,
+    this.lrNo,
   });
 
   factory ActionItemModel.fromJson(Map<String, dynamic> json) {
     return ActionItemModel(
       id: json['uid'] ?? "",
-      type: json['source_type'] ?? "N/A",
+      type: json['source_type'] ?? "",
       remark: json['remark'] ?? "",
       date: json['trigger_on'] ?? "",
       name: json['customer_name'] ?? "Unknown",
       phone: json['phone'] ?? "-",
       from: json['moving_from'] ?? "-",
       to: json['moving_to'] ?? "-",
+
+      /// ✅ MAP THESE
+      quotationNo: json['quotation_no'],
+      surveyNo: json['survey_no'],
+      orderNo: json['order_no'],
+      lrNo: json['lr_no'],
     );
   }
 }

@@ -84,24 +84,40 @@ class _ConsignorFormState extends ConsumerState<ConsignorForm> {
     consignorGstinFromController.text = from["gst_no"] ?? "";
     pincodeFromController.text = from["pincode"] ?? "";
     addressFromController.text = from["address"] ?? "";
-    selectedFromState = from["state"];
-    selectedFromCity = from["city"];
+    selectedFromState = from["state"]?.toString();
+    selectedFromCity = from["city"]?.toString();
 
     consignorNameToController.text = to["name"] ?? "";
     consignorPhoneToController.text = to["phone"] ?? "";
     consignorGstinToController.text = to["gst_no"] ?? "";
     pincodeToController.text = to["pincode"] ?? "";
     addressToController.text = to["address"] ?? "";
-    selectedToState = to["state"];
-    selectedToCity = to["city"];
+    selectedFromState = from["state"]?.toString();
+    selectedFromCity = from["city"]?.toString();
+
+
   }
   @override
   Widget build(BuildContext context) {
     final dropdown = ref.read(dropdownProvider.notifier);
 
-    final countryItems = dropdown.getLabels("country");
-    final stateItems = dropdown.getLabels("state");
-    final cityItems = dropdown.getLabels("city");
+    final countryItems =
+    dropdown.getLabels("country").toSet().toList();
+
+    final stateItems =
+    dropdown.getLabels("state").toSet().toList();
+
+    final cityItems =
+    dropdown.getLabels("city").toSet().toList();
+    if (selectedFromState != null &&
+        !stateItems.contains(selectedFromState)) {
+      selectedFromState = null;
+    }
+
+    if (selectedFromCity != null &&
+        !cityItems.contains(selectedFromCity)) {
+      selectedFromCity = null;
+    }
 
     return Container(
       color: Colors.white,
@@ -281,7 +297,7 @@ class _ConsignorFormState extends ConsumerState<ConsignorForm> {
                       child: reusableDropdown(
                         title: "lr.fields.country".tr(),
                         items: countryItems,
-                        value: "India",
+                        value: countryItems.contains("India") ? "India" : null,
                         onChanged: (val) {},
                       ),
                     ),
@@ -290,7 +306,7 @@ class _ConsignorFormState extends ConsumerState<ConsignorForm> {
                       child: reusableDropdown(
                         title: "lr.fields.state".tr(),
                         items: stateNames,
-                        value: selectedState,
+                        value: stateNames.contains(selectedState) ? selectedState : null,
                         onChanged: (val) {
                           final selected = states.firstWhere(
                                   (state) => state.name == val);
@@ -368,7 +384,7 @@ class _ConsignorFormState extends ConsumerState<ConsignorForm> {
                       return reusableDropdown(
                         title: "lr.fields.city".tr(),
                         items: cityNames,
-                        value: selectedCity,
+                        value: cityNames.contains(selectedCity) ? selectedCity : null,
                         onChanged: (val) {
                           final selectedCityModel =
                           cities.firstWhere(

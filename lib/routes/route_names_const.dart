@@ -30,5 +30,6 @@ const String letterHeadSettingsRoute = '/letterHeadSettings';
 const String quotationSettingsRoute = '/quotationSettingsRoute';
 const String lrBiltySettingsRoute = '/lrBiltySettingsRoute';
 const String languageRoute = '/languageScreen';
-
+const String myBusinessRoute = "/myBusinessRoute";
+const String companyListRoute = "/companyListScreen";
 
