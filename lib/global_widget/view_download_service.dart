@@ -110,7 +110,74 @@ class ViewDownloadService {
       hideLoader(context);
     }
   }
+  static Future<void> exportPdf({
+    required BuildContext context,
+    required String module, // e.g. MONEY_RECEIPT
+    required Map<String, dynamic> filters,
+  }) async {
+    const requestPath = '/export-data-pdf';
 
+    showLoader(context);
+
+    try {
+      final token = await StorageService().getToken();
+      final dio = ServicesConstant.instanceDio(token);
+
+      final body = {
+        "module": module,
+        "filters": filters,
+      };
+
+      print("📦 EXPORT PAYLOAD: $body");
+
+      final response = await dio.post(
+        requestPath,
+        data: body,
+        options: Options(responseType: ResponseType.bytes),
+      );
+
+      if (response.statusCode == 200) {
+        Directory dir;
+
+        if (Platform.isAndroid) {
+          final hasPermission = await _requestStoragePermission();
+          if (!hasPermission) return;
+
+          dir = Directory('/storage/emulated/0/Download');
+        } else {
+          dir = await getApplicationDocumentsDirectory();
+        }
+
+        if (!await dir.exists()) {
+          await dir.create(recursive: true);
+        }
+
+        final filePath =
+            '${dir.path}/${module}_${DateTime.now().millisecondsSinceEpoch}.pdf';
+
+        final file = File(filePath);
+        await file.writeAsBytes(List<int>.from(response.data));
+
+        if (context.mounted) {
+          ToastHelper.showSuccess(
+            message: Platform.isAndroid
+                ? "Downloaded to:\n$filePath"
+                : "Saved to Files:\n$filePath",
+          );
+        }
+      }
+    } catch (e) {
+      print("❌ EXPORT ERROR: $e");
+
+      if (context.mounted) {
+        ToastHelper.showError(
+          message: "Failed to export PDF",
+        );
+      }
+    } finally {
+      hideLoader(context);
+    }
+  }
 
 
 

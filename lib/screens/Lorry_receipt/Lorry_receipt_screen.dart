@@ -110,8 +110,33 @@ class _LorryReceiptListScreenState
           ],
         ),
         actions: [
-          Padding(
-            padding: const EdgeInsets.only(right: 8),
+          GestureDetector(
+            onTap: () {
+              final notifier = ref.read(lorryReceiptProvider.notifier);
+
+              ViewDownloadService.exportPdf(
+                context: context,
+                module: "LR",
+                filters: {
+                  if (notifier.fromDate != null)
+                    "from_date":
+                    "${notifier.fromDate!.year}-${notifier.fromDate!.month.toString().padLeft(2, '0')}-${notifier.fromDate!.day.toString().padLeft(2, '0')}",
+
+                  if (notifier.toDate != null)
+                    "to_date":
+                    "${notifier.toDate!.year}-${notifier.toDate!.month.toString().padLeft(2, '0')}-${notifier.toDate!.day.toString().padLeft(2, '0')}",
+
+                  if (notifier.staffId != null)
+                    "staff_id": notifier.staffId,
+
+                  if (notifier.sortOrder != null)
+                    "sort_order": notifier.sortOrder,
+
+                  if (notifier.searchQuery.isNotEmpty)
+                    "search": notifier.searchQuery,
+                },
+              );
+            },
             child: SvgPicture.asset(
               "assets/icons/pdf.svg",
               width: 20,
@@ -122,6 +147,7 @@ class _LorryReceiptListScreenState
               ),
             ),
           ),
+          const SizedBox(width: 6),
           Padding(
             padding: const EdgeInsets.only(right: 12),
             child: SizedBox(

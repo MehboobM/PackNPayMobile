@@ -2,7 +2,7 @@ class ApiEndPoints {
 
 
   ///Local
-  //static const server = "http://192.168.0.247:5000/api/";
+  /*static const server = "http://192.168.0.247:5000/api/";*/
   /*static const server = "http://192.168.0.246:5000/api/";*/
 
 
@@ -70,6 +70,8 @@ class ApiEndPoints {
   static const String getupcomingOrders = "dashboard/upcoming-orders";
   static const String getcalender= "dashboard/calendar";
   static const String subscription = "subscription/current";
+  static const String subscriptionHistory = "subscription/history";
+
 
 
 

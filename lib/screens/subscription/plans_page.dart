@@ -1,19 +1,59 @@
 import 'package:flutter/material.dart';
+import 'package:dio/dio.dart';class PlansPage extends StatefulWidget {
+  const PlansPage({super.key});
 
-class PlansPage extends StatefulWidget {
-  const PlansPage({super.key});@override
+  @override
   State<PlansPage> createState() => _PlansPageState();
 }
 
 class _PlansPageState extends State<PlansPage> {
-  // Track the selected plan index. Defaulting to 1 (Premium).
-  int selectedIndex = 1;
+  int selectedIndex = 0;
+  List<dynamic> apiPlans = [];
+  bool isLoading = true;
+  String? errorMessage;
 
-  final List<Map<String, String>> plans = [
-    {"tag": "BEST VALUE", "title": "STANDARD", "price": "₹1249"},
-    {"tag": "MOST POPULAR", "title": "PREMIUM", "price": "₹1400"},
-    {"tag": "MOST POPULAR", "title": "BUSINESS", "price": "₹1400"},
-  ];
+  final String authToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjE5LCJjb21wYW55X2lkIjoxMCwiY29tcGFueV9pZHMiOlsxMCwxMV0sImlhdCI6MTc3NjY4Nzg1OSwiZXhwIjoxNzc3MjkyNjU5fQ.IlY5FfknQSOAhdh30HJ8x8msHxxFUHq6SG_Ozy6HvDE";
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchPlans();
+  }
+
+  Future<void> _fetchPlans() async {
+    setState(() {
+      isLoading = true;
+      errorMessage = null;
+    });
+
+    try {
+      final dio = Dio();
+      final response = await dio.get(
+        'http://192.168.0.247:5000/api/subscription/plans',
+        options: Options(
+          headers: {
+            'Authorization': 'Bearer $authToken',
+            'Content-Type': 'application/json',
+          },
+        ),
+      );
+
+      if (response.statusCode == 200) {
+        setState(() {
+          // Adjust based on your API response structure.
+          // If the list is inside a key, use response.data['data'] or similar.
+          apiPlans = response.data is List ? response.data : (response.data['plans'] ?? []);
+          isLoading = false;
+        });
+      }
+    } catch (e) {
+      setState(() {
+        isLoading = false;
+        errorMessage = "Failed to load plans. Check connection.";
+      });
+      debugPrint("Dio Error: $e");
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -31,24 +71,45 @@ class _PlansPageState extends State<PlansPage> {
             ),
           ),
           SafeArea(
-            child: SingleChildScrollView(
-              child: Column(
-                children: [
-                  _buildHeader(context),
-                  const SizedBox(height: 10),
-                  _buildMainTitles(),
-                  const SizedBox(height: 25),
-                  _buildPlanGrid(), // Replaced Carousel with Grid/Row
-                  const SizedBox(height: 32),
-                  _buildFeaturesCard(),
-                  const SizedBox(height: 40),
-                  _buildBottomButton(),
-                  _buildLegalText(),
-                  const SizedBox(height: 24),
-                ],
-              ),
-            ),
+            child: isLoading
+                ? const Center(child: CircularProgressIndicator(color: Color(0xFF2E3B8E)))
+                : errorMessage != null
+                ? _buildErrorState()
+                : _buildMainContent(),
           ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildErrorState() {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Text(errorMessage!, style: const TextStyle(color: Colors.red)),
+          const SizedBox(height: 16),
+          ElevatedButton(onPressed: _fetchPlans, child: const Text("Retry")),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildMainContent() {
+    return SingleChildScrollView(
+      child: Column(
+        children: [
+          _buildHeader(context),
+          const SizedBox(height: 10),
+          _buildMainTitles(),
+          const SizedBox(height: 25),
+          _buildPlanGrid(),
+          const SizedBox(height: 32),
+          _buildFeaturesCard(),
+          const SizedBox(height: 40),
+          _buildBottomButton(),
+          _buildLegalText(),
+          const SizedBox(height: 24),
         ],
       ),
     );
@@ -131,14 +192,20 @@ class _PlansPageState extends State<PlansPage> {
     );
   }
 
-  // Changed from ListView to Row to fit all 3 items
   Widget _buildPlanGrid() {
+    if (apiPlans.isEmpty) return const SizedBox();
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 12),
       child: Row(
-        children: plans.asMap().entries.map((entry) {
+        children: apiPlans.asMap().entries.map((entry) {
           int index = entry.key;
           var plan = entry.value;
+
+          // Logic for dynamic tags based on index
+          String tag = "BEST VALUE";
+          if (index == 1) tag = "MOST POPULAR";
+          if (index == 2) tag = "PREMIUM";
+
           return Expanded(
             child: GestureDetector(
               onTap: () {
@@ -147,9 +214,9 @@ class _PlansPageState extends State<PlansPage> {
                 });
               },
               child: _buildPlanCard(
-                plan["tag"]!,
-                plan["title"]!,
-                plan["price"]!,
+                tag,
+                plan["plan_name"]?.toString().toUpperCase() ?? "PLAN",
+                "₹${plan["price"]}",
                 selectedIndex == index,
               ),
             ),
@@ -162,7 +229,7 @@ class _PlansPageState extends State<PlansPage> {
   Widget _buildPlanCard(String tag, String title, String price, bool isSelected) {
     return AnimatedContainer(
       duration: const Duration(milliseconds: 200),
-      height: 200, // Fixed height for uniformity
+      height: 200,
       margin: const EdgeInsets.symmetric(horizontal: 4),
       padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 4),
       decoration: BoxDecoration(
@@ -243,7 +310,6 @@ class _PlansPageState extends State<PlansPage> {
                   fontWeight: FontWeight.w700),
             ),
           ),
-          // Selection Indicator
           Container(
             width: 22,
             height: 22,
@@ -273,8 +339,12 @@ class _PlansPageState extends State<PlansPage> {
   }
 
   Widget _buildFeaturesCard() {
-    String currentPlanName = plans[selectedIndex]["title"]!;
-    final features = [
+    if (apiPlans.isEmpty) return const SizedBox();
+
+    String currentPlanName = apiPlans[selectedIndex]["plan_name"] ?? "PLAN";
+
+    // Map 'benefits' from API if available, otherwise use fallback
+    List<dynamic> features = apiPlans[selectedIndex]["benefits"] ?? [
       "Unlimited local move consultations",
       "Priority scheduling",
       "Free packing material tips",
@@ -319,7 +389,7 @@ class _PlansPageState extends State<PlansPage> {
                         size: 16, color: Color(0xFFFF6D00)),
                     const SizedBox(width: 8),
                     Text(
-                      "$currentPlanName PLAN FEATURES LIST",
+                      "${currentPlanName.toUpperCase()} PLAN FEATURES LIST",
                       style: const TextStyle(
                           fontSize: 11,
                           fontWeight: FontWeight.w800,
@@ -341,7 +411,7 @@ class _PlansPageState extends State<PlansPage> {
                     const SizedBox(width: 14),
                     Expanded(
                       child: Text(
-                        f,
+                        f.toString(),
                         style: const TextStyle(
                             fontSize: 13,
                             color: Color(0xFF3C4043),
@@ -377,11 +447,13 @@ class _PlansPageState extends State<PlansPage> {
   }
 
   Widget _buildBottomButton() {
-    String price = plans[selectedIndex]["price"]!;
+    String price = apiPlans.isNotEmpty ? apiPlans[selectedIndex]["price"].toString() : "0";
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20),
       child: ElevatedButton(
-        onPressed: () {},
+        onPressed: () {
+          // Add subscription logic here
+        },
         style: ElevatedButton.styleFrom(
           backgroundColor: const Color(0xFF2E3B8E),
           minimumSize: const Size(double.infinity, 56),
@@ -390,7 +462,7 @@ class _PlansPageState extends State<PlansPage> {
           elevation: 0,
         ),
         child: Text(
-          "Starting at $price/m",
+          "Starting at ₹$price/m",
           style: const TextStyle(
               fontSize: 18, fontWeight: FontWeight.w700, color: Colors.white),
         ),

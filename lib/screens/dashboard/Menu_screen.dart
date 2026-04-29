@@ -322,19 +322,26 @@ class MenuScreen extends StatelessWidget {
                           ],
                         ),
 
-                         MenuDropdown(
+                        MenuDropdown(
                           title: "Business Details",
                           icon: "assets/icons/buisness.svg",
                           children: [
                             MenuItem(
-                              title: "subscription",
-                              icon: "assets/icons/subs.svg",
+                              title: "Business List",
+                              icon: "assets/icons/bar.svg",
                               onTap: () {
-                                Navigator.pushReplacement(
+                                Navigator.pushNamed(context, companyListRoute);
+                              },
+                            ),
+
+                            MenuItem(
+                              title: "New Business",
+                              icon: "assets/icons/Plus.svg",
+                              onTap: () {
+                                Navigator.pushNamed(
                                   context,
-                                  MaterialPageRoute(
-                                    builder: (context) => const DummyExpenseScreen(),
-                                  ),
+                                  myBusinessRoute,
+                                  arguments: null, // create
                                 );
                               },
                             ),

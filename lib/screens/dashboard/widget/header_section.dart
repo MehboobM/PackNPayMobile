@@ -2,7 +2,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:pack_n_pay/utils/app_colors.dart';
 import 'package:pack_n_pay/utils/m_font_styles.dart';
+
+import '../../../routes/route_names_const.dart';
 
 class HeaderSection extends StatelessWidget {
   const HeaderSection({super.key});
@@ -53,7 +56,27 @@ class HeaderSection extends StatelessWidget {
 
           const Spacer(),
 
-          /// NOTIFICATION BELL
+          /// 🌐 LANGUAGE ICON (NEW)
+          GestureDetector(
+            onTap: () {
+              Navigator.pushNamed(context, languageRoute);
+            },
+            child: Container(
+              padding: const EdgeInsets.all(2),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: SvgPicture.asset(
+                "assets/images/language.svg",
+                width: 24,
+                height: 24,
+                color: AppColors.mBlack9,
+              ),
+            ),
+          ),
+
+
+          /// 🔔 NOTIFICATION BELL
           Stack(
             children: [
               const Icon(Icons.notifications_none, size: 28),
@@ -83,7 +106,7 @@ class HeaderSection extends StatelessWidget {
 
           const SizedBox(width: 12),
 
-          /// PROFILE IMAGE
+          /// 👤 PROFILE IMAGE
           const CircleAvatar(
             radius: 18,
             backgroundImage: AssetImage("assets/images/profile.png"),

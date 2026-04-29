@@ -17,6 +17,7 @@ import '../../global_widget/confirmation_dialog.dart';
 import '../../global_widget/view_download_service.dart';
 import '../../models/order_item.dart';
 import '../../notifier/dashboard_notifier.dart';// ✅ IMPORTANT
+import '../../utils/toast_message.dart';
 import '../survey/survey_list_screen.dart';
 import 'Menu_screen.dart';
 
@@ -179,29 +180,51 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                OrdersListSection(
     title: "Action lists",
     isUpcoming: false,
-    items: actions.map((e) {
-    return OrderItemModel(
-    orderNo: e.type,
-    date: (e.date.isNotEmpty) ? formatDate(e.date) : "-",
-    name: e.name,
-    phone: e.phone,
-    from: e.from,
-    to: e.to,
-    uid: e.id,
-    );
-    }).toList(),
+                 items: actions.map((e) {
+                   final docNo = e.quotationNo ??
+                       e.surveyNo ??
+                       e.orderNo ??
+                       e.lrNo;
+
+                   return OrderItemModel(
+                     /// ✅ SHOW NAME IN UI
+                     orderNo: _getDisplayName(e.type),
+
+                     /// 🔥 KEEP REAL TYPE
+                     sourceType: e.type,
+
+                     date: (e.date.isNotEmpty) ? formatDate(e.date) : "-",
+                     name: e.name,
+                     phone: e.phone,
+                     from: e.from,
+                     to: e.to,
+
+                     /// 🔥 KEEP DOC NUMBER FOR API
+                     uid: docNo,
+                   );
+                 }).toList(),
 
     /// ✅ CHANGE HERE (IMPORTANT)
-    onViewTap: (item) {
-    if (item.uid != null && item.uid!.isNotEmpty) {
-    ViewDownloadService.handlePdf(
-    context: context,
-    type: "order", // 👈 OR correct type from API
-    uid: item.uid!,
-    isDownload: false, // 👈 VIEW (open PDF)
-    );
-    }
-    },
+                 onViewTap: (item) {
+                   if (item.uid != null && item.uid!.isNotEmpty) {
+
+                     final type = _mapSourceType(item.sourceType);
+
+                     if (type.isEmpty) {
+                       ToastHelper.showError(
+                         message: "Unsupported document type",
+                       );
+                       return;
+                     }
+
+                     ViewDownloadService.handlePdf(
+                       context: context,
+                       type: type,
+                       uid: item.uid!,
+                       isDownload: false,
+                     );
+                   }
+                 },
     ),
               ],
             ),
@@ -209,6 +232,59 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         ),
       ],
     );
+  }
+  String _mapSourceType(String? sourceType) {
+    final type = sourceType?.trim().toLowerCase();
+
+    switch (type) {
+      case "quotation":
+        return "quotation";
+
+      case "survey":
+        return "survey";
+
+      case "order":
+        return "order";
+
+      case "money receipt":
+      case "money_receipt":
+        return "money_receipt";
+
+      case "lr":
+      case "lorry receipt":
+      case "lorry_receipt":
+        return "lr_bilty";
+
+      default:
+        debugPrint("⚠️ Unknown sourceType: $sourceType");
+        return ""; // ❌ DON'T fallback blindly
+    }
+  }
+  String _getDisplayName(String? sourceType) {
+    final type = sourceType?.trim().toLowerCase();
+
+    switch (type) {
+      case "quotation":
+        return "Quotation";
+
+      case "survey":
+        return "Survey";
+
+      case "order":
+        return "Order";
+
+      case "money receipt":
+      case "money_receipt":
+        return "Money Receipt";
+
+      case "lr":
+      case "lorry receipt":
+      case "lorry_receipt":
+        return "Lorry Receipt";
+
+      default:
+        return "Document";
+    }
   }
 
   String formatDate(String date) {

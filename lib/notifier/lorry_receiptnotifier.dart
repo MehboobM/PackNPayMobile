@@ -23,6 +23,7 @@ class LorryReceiptNotifier extends StateNotifier<LorryReceiptState> {
   }
 
   /// 🔥 FILTER STATE
+  String get searchQuery => _searchQuery;
   String _searchQuery = '';
   DateTime? _fromDate;
   DateTime? _toDate;

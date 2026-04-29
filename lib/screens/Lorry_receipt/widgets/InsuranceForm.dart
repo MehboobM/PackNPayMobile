@@ -44,7 +44,6 @@ class _InsuranceFormState extends ConsumerState<InsuranceForm> {
   TextEditingController();
   final TextEditingController demurrageChargeController =
   TextEditingController();
-
   String? selectedInsuranceType;
   String? selectedDemurrageType;
   String? selectedDemurrageApplicable;
@@ -54,7 +53,6 @@ class _InsuranceFormState extends ConsumerState<InsuranceForm> {
   @override
   void initState() {
     super.initState();
-
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final data = ref.read(lrFormDataProvider);
       if (data.isNotEmpty) {
@@ -66,7 +64,6 @@ class _InsuranceFormState extends ConsumerState<InsuranceForm> {
   void _populateFields(Map<String, dynamic> data) {
     final insurance = data["insurance"] ?? {};
     final demurrage = data["demurrage"] ?? {};
-
     selectedInsuranceType = insurance["insurance_type"];
     insuranceCompanyController.text =
         insurance["company_name"] ?? "";
@@ -77,7 +74,6 @@ class _InsuranceFormState extends ConsumerState<InsuranceForm> {
         insurance["insurance_date"] ?? "";
     insuranceRiskController.text =
         insurance["insurance_risk"] ?? "";
-
     demurrageChargeController.text =
         (demurrage["charge"] ?? "").toString();
     selectedDemurrageType =
@@ -305,7 +301,6 @@ class _InsuranceFormState extends ConsumerState<InsuranceForm> {
       ),
     );
   }
-
   /// ================= SECTION HEADER =================
   Widget _sectionHeader(
       String title, bool expanded, VoidCallback onTap) {
@@ -332,7 +327,6 @@ class _InsuranceFormState extends ConsumerState<InsuranceForm> {
       ),
     );
   }
-
   /// ================= DATE PICKER =================
   Future<void> _pickDate(TextEditingController controller) async {
     DateTime? pickedDate = await showDatePicker(
@@ -349,7 +343,6 @@ class _InsuranceFormState extends ConsumerState<InsuranceForm> {
           "${pickedDate.year}";
     }
   }
-
   Widget amountWithDropdownField({
     required String label,
     required TextEditingController controller,
@@ -397,7 +390,6 @@ class _InsuranceFormState extends ConsumerState<InsuranceForm> {
                   ),
                 ),
               ),
-
               /// Divider
               Container(
                 height: 28,
@@ -472,7 +464,6 @@ class _InsuranceFormState extends ConsumerState<InsuranceForm> {
       ],
     );
   }
-
   /// ================= BOTTOM BAR =================
   Widget _buildBottomBar() {
     return SafeArea(
@@ -503,7 +494,6 @@ class _InsuranceFormState extends ConsumerState<InsuranceForm> {
               ),
             ),
             const SizedBox(width: 12),
-
             /// 🚀 Submit Button
             Expanded(
               child: Consumer(
@@ -512,15 +502,12 @@ class _InsuranceFormState extends ConsumerState<InsuranceForm> {
                     onPressed: () async {
                       final notifier =
                       ref.read(lorryReceiptProvider.notifier);
-
                       /// 🔹 Get Route Arguments
                       final args = ModalRoute.of(context)
                           ?.settings
                           .arguments as Map<String, dynamic>?;
-
                       final String? uidFromArgs = args?['uid'];
                       final bool isEdit = args?['isEdit'] ?? false;
-
                       /// ✅ Save Insurance & Demurrage Data
                       updateFormData(ref, {
                         "insurance": {
@@ -545,17 +532,13 @@ class _InsuranceFormState extends ConsumerState<InsuranceForm> {
                           selectedDemurrageApplicable ?? "",
                         },
                       });
-
                       /// ✅ Get Complete Form Data
                       final formData = ref.read(lrFormDataProvider);
-
                       try {
                         /// Convert JSON to Request Model
                         final request =
                         CreateLorryReceiptRequest.fromJson(formData);
-
                         bool success;
-
                         /// ✏️ UPDATE EXISTING LR
                         if (isEdit && uidFromArgs != null) {
                           success = await notifier.updateLorryReceipt(
@@ -568,9 +551,7 @@ class _InsuranceFormState extends ConsumerState<InsuranceForm> {
                           success =
                           await notifier.createLorryReceipt(request);
                         }
-
                         if (!context.mounted) return;
-
                         if (success) {
                           /// 🎉 Success Toast
                           ToastHelper.showSuccess(
@@ -579,20 +560,13 @@ class _InsuranceFormState extends ConsumerState<InsuranceForm> {
                                 ? "Lorry Receipt Updated Successfully"
                                 : "Lorry Receipt Created Successfully",
                           );
-
                           /// 🧹 Reset Form State
                           ref.read(lrFormDataProvider.notifier).state = {};
                           notifier.resetCreateState();
-
                           /// 🔄 Refresh List
                           await notifier.fetchLorryReceipts();
-
                           /// 🚀 Navigate to List Screen
-                          Navigator.pushNamedAndRemoveUntil(
-                            context,
-                            lorryReceiptListScreenRoute,
-                                (route) => false,
-                          );
+                          Navigator.pop(context);
                         } else {
                           final error =
                               ref.read(lorryReceiptProvider).error ??

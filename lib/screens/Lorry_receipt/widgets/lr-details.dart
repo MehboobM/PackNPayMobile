@@ -59,7 +59,7 @@ class _LRDetailsFormState extends ConsumerState<LRDetailsForm> {
   bool truckExpanded = true;
   bool driverExpanded = true;
   bool invoiceExpanded = true;
-  String? selectedRiskType = "At Owner Risk";
+  String? selectedRiskType;
   final FocusNode orderIdFocusNode = FocusNode();
   Timer? _debounce;
   Future<void> _fetchPrefillByOrderNo(String orderNo) async {
@@ -142,7 +142,7 @@ class _LRDetailsFormState extends ConsumerState<LRDetailsForm> {
     ewayBillExtendPeriodController.text =
         _formatDisplayDate(data["eway_extend_date"]);
 
-    selectedRiskType = data["risk_type"];
+    selectedRiskType = data["risk_type"]?.toString().trim();
     selectedFromCity = data["moving_from"];
     selectedToCity = data["moving_to"];
   }
@@ -157,7 +157,17 @@ class _LRDetailsFormState extends ConsumerState<LRDetailsForm> {
   Widget build(BuildContext context) {
     final dropdown = ref.read(dropdownProvider.notifier);
     final citiesAsync = ref.watch(cityProvider);
-    final riskTypeItems = dropdown.getLabels("risk_type");
+    final riskTypeItems =
+    dropdown.getLabels("risk_type").toSet().toList();
+    // ✅ Fix invalid selected value
+    if (selectedRiskType != null &&
+        !riskTypeItems.contains(selectedRiskType)) {
+      selectedRiskType = null;
+    }
+    selectedRiskType ??=
+    riskTypeItems.isNotEmpty ? riskTypeItems.first : null;
+    print("Risk Items: $riskTypeItems");
+    print("Selected Risk: $selectedRiskType");
     return Container(
         color: Colors.white, // 👈 ADD THIS
         child: Column(
