@@ -223,6 +223,15 @@ class _OtpScreenState extends ConsumerState<OtpScreen> {
                   }
 
                   final user = response['user'];
+                  if (user != null) {
+                    if (user['company_status'] != null) {
+                      await storage.saveCompanyStatus(user['company_status']);
+                    }
+
+                    if (user['subscription_status'] != null) {
+                      await storage.saveSubscriptionStatus(user['subscription_status']);
+                    }
+                  }
 
                   if (user != null) {
                     if (user['company_id'] != null) {

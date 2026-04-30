@@ -14,6 +14,8 @@ class StorageService {
   static const String _isLoginKey = "login_click";
   static const String _userName = "user_name";
   static const String _companyId = "company_id";
+  static const String _companyStatus = "company_status";
+  static const String _subscriptionStatus = "subscription_status";
 
 
   Future<void> writeData(String key, String? value) async {
@@ -93,6 +95,21 @@ class StorageService {
     await prefs.clear();
   }
 
+  Future<void> saveCompanyStatus(String status) async {
+    await writeData(_companyStatus, status);
+  }
+
+  Future<String?> getCompanyStatus() async {
+    return await readData(_companyStatus);
+  }
+
+  Future<void> saveSubscriptionStatus(String status) async {
+    await writeData(_subscriptionStatus, status);
+  }
+
+  Future<String?> getSubscriptionStatus() async {
+    return await readData(_subscriptionStatus);
+  }
 
 
 }

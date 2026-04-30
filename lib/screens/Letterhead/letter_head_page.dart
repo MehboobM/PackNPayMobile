@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+ import 'package:flutter/material.dart';
 import 'package:dio/dio.dart';
 import '../../api_services/api_end_points.dart';
 import '../../database/shared_preferences/shared_storage.dart';
@@ -14,8 +14,10 @@ class LetterHeadPage extends StatefulWidget {
 class _LetterHeadPageState extends State<LetterHeadPage> {
   final Dio _dio = Dio();
   final StorageService _storage = StorageService();
+  final GlobalKey _filterKey = GlobalKey();
 
   List<dynamic> _allLetterHeads = [];
+  String? _selectedSort;
   List<dynamic> _filteredLetterHeads = [];
   bool _isLoading = true;
   String? _errorMessage;
@@ -29,7 +31,12 @@ class _LetterHeadPageState extends State<LetterHeadPage> {
     _fetchLetterHeads();
   }
 
-  Future<void> _fetchLetterHeads() async {
+  Future<void> _fetchLetterHeads({
+    String? search,
+    String? fromDate,
+    String? toDate,
+    String? sortOrder,
+  }) async {
     try {
       setState(() {
         _isLoading = true;
@@ -40,21 +47,21 @@ class _LetterHeadPageState extends State<LetterHeadPage> {
 
       final response = await _dio.get(
         '${ApiEndPoints.baseurl}letter-head-list',
-        options: Options(
-          headers: {
-            'Authorization': 'Bearer $token',
-            'Accept': 'application/json',
-          },
-        ),
+        queryParameters: {
+          if (search != null && search.isNotEmpty) "search": search,
+          if (fromDate != null) "from_date": fromDate,
+          if (toDate != null) "to_date": toDate,
+          if (sortOrder != null) "sort_order": sortOrder,
+        },
+        options: Options(headers: {
+          'Authorization': 'Bearer $token',
+        }),
       );
 
-      if (response.statusCode == 200) {
-        setState(() {
-          _allLetterHeads = response.data['data'] ?? [];
-          _filteredLetterHeads = _allLetterHeads;
-          _isLoading = false;
-        });
-      }
+      setState(() {
+        _filteredLetterHeads = response.data['data'] ?? [];
+        _isLoading = false;
+      });
     } catch (e) {
       setState(() {
         _errorMessage = "Failed to load data";
@@ -65,35 +72,35 @@ class _LetterHeadPageState extends State<LetterHeadPage> {
 
   // --- SEARCH LOGIC ---
   void _runFilter(String query) {
-    setState(() {
-      _filteredLetterHeads = _allLetterHeads.where((item) {
-        final name = (item['name'] ?? "").toString().toLowerCase();
-        final lhNo = (item['lh_no'] ?? "").toString().toLowerCase();
-        final phone = (item['phone'] ?? "").toString().toLowerCase();
-        return name.contains(query.toLowerCase()) ||
-            lhNo.contains(query.toLowerCase()) ||
-            phone.contains(query.toLowerCase());
-      }).toList();
-    });
+    _fetchLetterHeads(search: query);
+  }
+  void _onFilterTap() {
+    final RenderBox button =
+    _filterKey.currentContext!.findRenderObject() as RenderBox;
+
+    final RenderBox overlay =
+    Overlay.of(context).context.findRenderObject() as RenderBox;
+
+    final Offset position =
+    button.localToGlobal(Offset.zero, ancestor: overlay);
+
+    _showFilterPopup(context, position, button.size);
   }
 
   // --- DATE FILTER LOGIC ---
   Future<void> _selectDate(BuildContext context) async {
-    final DateTime? picked = await showDatePicker(
+    final picked = await showDatePicker(
       context: context,
-      initialDate: _selectedDate ?? DateTime.now(),
+      initialDate: DateTime.now(),
       firstDate: DateTime(2020),
       lastDate: DateTime(2101),
     );
+
     if (picked != null) {
-      setState(() {
-        _selectedDate = picked;
-        String formattedDate =
-            "${picked.year}-${picked.month.toString().padLeft(2, '0')}-${picked.day.toString().padLeft(2, '0')}";
-        _filteredLetterHeads = _allLetterHeads
-            .where((item) => item['lh_date'] == formattedDate)
-            .toList();
-      });
+      final formatted =
+          "${picked.year}-${picked.month.toString().padLeft(2, '0')}-${picked.day.toString().padLeft(2, '0')}";
+
+      _fetchLetterHeads(fromDate: formatted, toDate: formatted);
     }
   }
 
@@ -242,13 +249,7 @@ class _LetterHeadPageState extends State<LetterHeadPage> {
                   ),
                 ),
                 const SizedBox(width: 8),
-                _buildIconButton(Icons.filter_list, () {
-                  setState(() {
-                    _filteredLetterHeads = _allLetterHeads;
-                    _searchController.clear();
-                    _selectedDate = null;
-                  });
-                }),
+                _buildIconButton(Icons.filter_list, _onFilterTap, key: _filterKey),
                 const SizedBox(width: 8),
                 _buildIconButton(Icons.calendar_today_outlined,
                         () => _selectDate(context)),
@@ -276,16 +277,18 @@ class _LetterHeadPageState extends State<LetterHeadPage> {
     );
   }
 
-  Widget _buildIconButton(IconData icon, VoidCallback onTap) {
+  Widget _buildIconButton(IconData icon, VoidCallback onTap, {Key? key}) {
     return InkWell(
+      key: key,
       onTap: onTap,
       child: Container(
         height: 42,
         width: 42,
         decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(8),
-            border: Border.all(color: const Color(0xFFE0E0E0))),
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(8),
+          border: Border.all(color: const Color(0xFFE0E0E0)),
+        ),
         child: Icon(icon, color: Colors.black87, size: 18),
       ),
     );
@@ -324,7 +327,7 @@ class _LetterHeadPageState extends State<LetterHeadPage> {
     );
   }
 
-  Widget _buildLetterHeadTile(dynamic data) {
+  Widget _buildLetterHeadTile(dynamic data)  {
     final String uid = data['uid'] ?? "";
     final String lhNo = data['lh_no'] ?? "N/A";
 
@@ -404,5 +407,95 @@ class _LetterHeadPageState extends State<LetterHeadPage> {
         ],
       ),
     );
+  }
+  void _showFilterPopup(
+      BuildContext context, Offset position, Size size) async {
+    final result = await showMenu<String>(
+      context: context,
+      position: RelativeRect.fromLTRB(
+        position.dx,
+        position.dy + size.height, // 👈 THIS MAKES IT OPEN BELOW ICON
+        position.dx + size.width,
+        position.dy,
+      ),
+      color: Colors.white,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(12),
+      ),
+      items: [
+        PopupMenuItem(
+          enabled: false,
+          child: StatefulBuilder(
+            builder: (context, setState) {
+              return Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const Text("Filter",
+                      style:
+                      TextStyle(fontWeight: FontWeight.bold, fontSize: 14)),
+                  const SizedBox(height: 10),
+
+                  RadioListTile(
+                    dense: true,
+                    contentPadding: EdgeInsets.zero,
+                    title: const Text("Newest First"),
+                    value: "desc",
+                    groupValue: _selectedSort,
+                    onChanged: (val) {
+                      setState(() => _selectedSort = val);
+                    },
+                  ),
+
+                  RadioListTile(
+                    dense: true,
+                    contentPadding: EdgeInsets.zero,
+                    title: const Text("Oldest First"),
+                    value: "asc",
+                    groupValue: _selectedSort,
+                    onChanged: (val) {
+                      setState(() => _selectedSort = val);
+                    },
+                  ),
+
+                  RadioListTile(
+                    dense: true,
+                    contentPadding: EdgeInsets.zero,
+                    title: const Text("All"),
+                    value: null,
+                    groupValue: _selectedSort,
+                    onChanged: (val) {
+                      setState(() => _selectedSort = val);
+                    },
+                  ),
+
+                  const SizedBox(height: 8),
+
+                  ElevatedButton(
+                    onPressed: () {
+                      Navigator.pop(context, _selectedSort);
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: const Color(0xFF2E3B8E),
+                      minimumSize: const Size(double.infinity, 36),
+                    ),
+                    child: const Text(
+                      "Apply",
+                      style: TextStyle(color: Colors.white),
+                    ),
+                  ),
+                ],
+              );
+            },
+          ),
+        ),
+      ],
+    );
+
+    if (result != null) {
+      _selectedSort = result;
+      _fetchLetterHeads(sortOrder: result);
+    } else {
+      _fetchLetterHeads();
+    }
   }
 }
