@@ -213,6 +213,12 @@ class _BasicDetailScreenState extends ConsumerState<BasicDetailScreen> {
                           ToastHelper.showSuccess(message: response['message']);
                           await StorageService().saveToken(response['token']);
                           await AuthHiveService.saveResponse(response);
+                          final user = response['user'];
+
+                          if (user != null) {
+                            await StorageService().saveCompanyStatus(user['company_status'] ?? '');
+                            await StorageService().saveSubscriptionStatus(user['subscription_status'] ?? '');
+                          }
                           Navigator.pushNamedAndRemoveUntil(context, homeScreenRoute, (_) => false,);
                         }else{
                           ToastHelper.showError(message: authState.error ?? "Something went wrong");

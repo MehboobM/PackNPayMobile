@@ -7,6 +7,7 @@ import 'dart:typed_data';
 import 'package:image_picker/image_picker.dart';
 import 'package:dio/dio.dart';
 import '../../api_services/network_handler.dart';
+import '../../database/shared_preferences/shared_storage.dart';
 import '../../models/location_modal.dart';
 import '../../notifier/location_notifier.dart';
 import '../../utils/toast_message.dart';
@@ -148,9 +149,13 @@ class _MyBusinessPageState extends ConsumerState<MyBusinessPage> {
             : "Business created successfully",
       );
 
-      /// ✅ REDIRECT TO LIST PAGE (IMPORTANT)
+// ✅ SAVE STATUS
+      final storage = StorageService();
+      await storage.saveCompanyStatus("COMPLETE");
+
+// ✅ REDIRECT
       if (mounted) {
-        Navigator.pop(context, true); // triggers refresh in list page
+        Navigator.pop(context, true);
       }
 
     } on DioException catch (e) {

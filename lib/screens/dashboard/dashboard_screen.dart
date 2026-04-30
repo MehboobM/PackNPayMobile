@@ -7,16 +7,19 @@ import 'package:pack_n_pay/screens/dashboard/widget/calender_widget.dart';
 import 'package:pack_n_pay/screens/dashboard/widget/custom_nav_bar.dart';
 import 'package:pack_n_pay/screens/dashboard/widget/order_list.dart';
 import 'package:pack_n_pay/screens/dashboard/widget/section_card.dart';
+import 'package:pack_n_pay/screens/dashboard/widget/set_up_popup.dart';
 import 'package:pack_n_pay/screens/dashboard/widget/staffWise_profit.dart';
 import 'package:pack_n_pay/screens/dashboard/widget/subscription_card.dart';
 import 'package:pack_n_pay/screens/dashboard/widget/top_section.dart';
 import 'package:pack_n_pay/utils/app_colors.dart';
 
 import '../../all_state/dashboard_state.dart';
+import '../../database/shared_preferences/shared_storage.dart';
 import '../../global_widget/confirmation_dialog.dart';
 import '../../global_widget/view_download_service.dart';
 import '../../models/order_item.dart';
 import '../../notifier/dashboard_notifier.dart';// ✅ IMPORTANT
+import '../../routes/route_names_const.dart';
 import '../../utils/toast_message.dart';
 import '../survey/survey_list_screen.dart';
 import 'Menu_screen.dart';
@@ -29,7 +32,44 @@ class HomeScreen extends ConsumerStatefulWidget {
 }
 
 class _HomeScreenState extends ConsumerState<HomeScreen> {
+  @override
+  void initState() {
+    super.initState();
+
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      await _ensureSetupCompleted();
+    });
+  }
   int selectedIndex = 0;
+  Future<bool> _ensureSetupCompleted() async {
+    final storage = StorageService();
+
+    final companyStatus = await storage.getCompanyStatus();
+    final subscriptionStatus = await storage.getSubscriptionStatus();
+
+    print("companyStatus: $companyStatus");
+    print("subscriptionStatus: $subscriptionStatus");
+
+    final isComplete =
+        companyStatus == "COMPLETE" &&
+            subscriptionStatus == "ACTIVE";
+
+    if (!isComplete) {
+      showDialog(
+        context: context,
+        barrierDismissible: true,
+        builder: (_) {
+          return SetupPopup(
+            onClose: () {
+              Navigator.pop(context);
+            },
+          );
+        },
+      );
+    }
+
+    return isComplete;
+  }
 
   /// SCREEN SWITCHER
   Widget _getScreen(DashboardState state) {
@@ -335,7 +375,11 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         body: _getScreen(state), // ✅ FIXED
         bottomNavigationBar: CustomBottomNav(
           selectedIndex: selectedIndex,
-          onTap: (index) {
+          onTap: (index) async {
+            final allowed = await _ensureSetupCompleted();
+
+            if (!allowed) return; // ❌ block navigation
+
             setState(() {
               selectedIndex = index;
             });

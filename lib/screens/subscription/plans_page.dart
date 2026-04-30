@@ -7,6 +7,7 @@ import 'package:razorpay_flutter/razorpay_flutter.dart';
 
 import '../../api_services/api_end_points.dart';
 import '../../api_services/network_handler.dart';
+import '../../database/shared_preferences/shared_storage.dart';
 import '../../notifier/dashboard_notifier.dart';
 class PlansPage extends ConsumerStatefulWidget {
   const PlansPage({super.key});
@@ -112,8 +113,8 @@ class _PlansPageState extends ConsumerState<PlansPage> {
       final verifyResponse = await _networkHandler.post(
         "subscription/verify",
         {
-          "plan_uid": selectedPlan["uid"], // ✅ use uid here also
-          "vendor_id": 5, // replace dynamically
+          "plan_uid": selectedPlan["uid"],
+          "vendor_id": 5,
           "razorpay_order_id": response.orderId,
           "razorpay_payment_id": response.paymentId,
           "razorpay_signature": response.signature,
@@ -121,9 +122,16 @@ class _PlansPageState extends ConsumerState<PlansPage> {
       );
 
       if (verifyResponse.data["success"] == true) {
+
+        // ✅ SAVE SUBSCRIPTION STATUS
+        final storage = StorageService();
+        await storage.saveSubscriptionStatus("ACTIVE");
+
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text("Payment Successful")),
         );
+
+        Navigator.pop(context, true); // go back to popup
       }
     } catch (e) {
       print("Verify Error: $e");

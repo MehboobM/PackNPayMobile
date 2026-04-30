@@ -1,3 +1,4 @@
+import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:dio/dio.dart';
@@ -99,7 +100,7 @@ class _NewExpensesSheetState extends State<NewExpensesSheet> {
         decoration: const BoxDecoration(color: Colors.white, borderRadius: BorderRadius.vertical(top: Radius.circular(20))),
         child: SingleChildScrollView(
           child: Padding(
-            padding: const EdgeInsets.fromLTRB(20, 20, 20, 24),
+            padding: const EdgeInsets.fromLTRB(20, 6, 20, 24),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
@@ -111,16 +112,16 @@ class _NewExpensesSheetState extends State<NewExpensesSheet> {
                     IconButton(onPressed: () => Navigator.pop(context), icon: const Icon(Icons.close, color: Colors.grey)),
                   ],
                 ),
-                const SizedBox(height: 24),
+                const SizedBox(height: 16),
                 _buildAmountInput(),
                 const Text("Expense Amount", style: TextStyle(fontSize: 13, color: Color(0xFF757575))),
-                const SizedBox(height: 32),
+                const SizedBox(height: 16),
                 _buildInputLabel("Expense Name"),
                 _buildTextField(_nameController, "Enter name"),
-                const SizedBox(height: 20),
+                const SizedBox(height: 16),
                 _buildInputLabel("Expense category"),
                 _buildDropdownField(),
-                const SizedBox(height: 32),
+                const SizedBox(height: 80),
                 SizedBox(
                   width: double.infinity,
                   height: 54,
@@ -176,20 +177,69 @@ class _NewExpensesSheetState extends State<NewExpensesSheet> {
   Widget _buildDropdownField() {
     return Container(
       margin: const EdgeInsets.only(top: 8),
-      padding: const EdgeInsets.symmetric(horizontal: 12),
-      decoration: BoxDecoration(borderRadius: BorderRadius.circular(8), border: Border.all(color: const Color(0xFFE0E0E0))),
       child: DropdownButtonHideUnderline(
-        child: DropdownButton<int>(
-          value: _selectedCategoryId,
-          hint: const Text("Select category", style: TextStyle(color: Color(0xFFBDBDBD), fontSize: 14)),
+        child: DropdownButton2<int>(
           isExpanded: true,
-          items: _categories.map((item) {
+          value: _selectedCategoryId,
+
+          hint: const Text(
+            "Select category",
+            style: TextStyle(color: Color(0xFFBDBDBD), fontSize: 14),
+          ),
+
+          items: _categories.map<DropdownMenuItem<int>>((item) {
             return DropdownMenuItem<int>(
               value: item['id'],
-              child: Text(item['name'], style: const TextStyle(fontSize: 14)),
+              child: Text(
+                item['name'],
+                style: const TextStyle(fontSize: 14),
+              ),
             );
           }).toList(),
-          onChanged: (val) => setState(() => _selectedCategoryId = val),
+
+          onChanged: (val) {
+            setState(() => _selectedCategoryId = val);
+          },
+
+          /// 🔹 BUTTON STYLE (closed box)
+          buttonStyleData: ButtonStyleData(
+            height: 48,
+            padding: const EdgeInsets.symmetric(horizontal: 12),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(8),
+              border: Border.all(color: const Color(0xFFE0E0E0)),
+              color: Colors.white,
+            ),
+          ),
+
+          /// 🔹 DROPDOWN STYLE (OPENED WHITE BOX BELOW)
+          dropdownStyleData: DropdownStyleData(
+            maxHeight: 250,
+            decoration: BoxDecoration(
+              color: Colors.white, // ✅ white background
+              borderRadius: BorderRadius.circular(8),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.08),
+                  blurRadius: 8,
+                ),
+              ],
+            ),
+            offset: const Offset(0, 4), // ✅ opens BELOW
+          ),
+
+          /// 🔹 ITEM STYLE
+          menuItemStyleData: const MenuItemStyleData(
+            height: 40,
+            padding: EdgeInsets.symmetric(horizontal: 12),
+          ),
+
+          /// 🔹 ICON
+          iconStyleData: const IconStyleData(
+            icon: Icon(Icons.keyboard_arrow_down),
+            iconSize: 20,
+            iconEnabledColor: Color(0xFF9CA3AF),
+          ),
         ),
       ),
     );
