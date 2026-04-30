@@ -74,6 +74,14 @@ class OnboardState extends State<OnboardScreen> {
                     onPressed: () async {
                       await StorageService().saveIsLoginClick("click");
                       Navigator.pushNamed(context, loginScreenRoute);
+
+
+                    //    Navigator.pushNamedAndRemoveUntil(context, basicDetailRoute, (route) => false,
+                      //                         arguments: {
+                      //                           "mobile":"",
+                      //                           "otp": "",
+                      //                         },
+                      //                       );
                     },
                     borderRadius: 6,
                     backgroundColor: AppColors.mWhite,

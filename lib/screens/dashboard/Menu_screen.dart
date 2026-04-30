@@ -4,21 +4,62 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:pack_n_pay/screens/dashboard/widget/Drop_down_items.dart';
+import 'package:share_plus/share_plus.dart';
 
+import '../../database/hive_database/hive_permission.dart';
 import '../../database/hive_database/hive_quation_form.dart';
 import '../../notifier/quatation_notifier.dart';
 import '../../notifier/quotation_form_notifier.dart';
+import '../../notifier/survey_notifier.dart';
 import '../../routes/route_names_const.dart';
 import '../../utils/app_colors.dart';
 import '../../utils/m_font_styles.dart';
+import '../../utils/toast_message.dart';
 import '../dummy/dummy_screen.dart';
 import '../Quotation/widget/common_dialog.dart';
 
-class MenuScreen extends StatelessWidget {
+class MenuScreen extends ConsumerStatefulWidget {
   const MenuScreen({super.key});
 
   @override
+  ConsumerState<MenuScreen> createState() => _MenuScreenState();
+}
+
+class _MenuScreenState extends ConsumerState<MenuScreen> {
+  String? surveyShareUrl;
+
+  updateGenericLInk() async {
+    String? results = await ref.read(surveyDataProvider.notifier).getSurveyShareLink();
+    surveyShareUrl = results as String?;
+    setState(() {});
+  }
+
+  @override
+  void initState() {
+    updateGenericLInk();
+    // TODO: implement initState
+    super.initState();
+  }
+
+
+  @override
   Widget build(BuildContext context) {
+
+    final canViewSurvey = PermissionHelper.canView(ModuleCode.survey);
+    final canAddSurvey = PermissionHelper.canAdd(ModuleCode.survey);
+
+    final canViewQuotation = PermissionHelper.canView(ModuleCode.quotation);
+    final canAddQuotation = PermissionHelper.canAdd(ModuleCode.quotation);
+
+    final canViewOrder = PermissionHelper.canView(ModuleCode.order);
+
+    final canViewMReceipt = PermissionHelper.canView(ModuleCode.moneyReceipt);
+    final canViewStaff = PermissionHelper.canView(ModuleCode.staff);
+    final canViewExpense = PermissionHelper.canView(ModuleCode.expense);
+    final canViewLr = PermissionHelper.canView(ModuleCode.lr);
+    final canViewLetterHead = PermissionHelper.canView(ModuleCode.letterHead);
+
+
     return Scaffold(
       backgroundColor: AppColors.mWhite,
 
@@ -89,6 +130,8 @@ class MenuScreen extends StatelessWidget {
                           icon: "assets/images/home_icon.svg",
                           children: [],
                         ),
+
+                       if(canViewSurvey)
                         MenuDropdown(
                           title: "Survey",
                           icon: "assets/icons/Survey.svg",
@@ -99,10 +142,9 @@ class MenuScreen extends StatelessWidget {
                               onTap: () {
                                 Navigator.pushNamed(context, surveyScreenRoute);
                               },
-
-
                             ),
-                            MenuItem(
+                            if(canAddSurvey)
+                              MenuItem(
                               title: "Add new survey",
                               icon: "assets/icons/Plus.svg",
                               onTap: () {
@@ -112,15 +154,24 @@ class MenuScreen extends StatelessWidget {
                             ),
                             MenuItem(
                                 title: "Share survey link",
-                                icon: "assets/icons/file.svg"),
+                                icon: "assets/icons/file.svg",
+                              onTap: () async {
+                                if (surveyShareUrl == null) {
+                                  ToastHelper.showError(message: "Link not ready, try again");
+                                  return;
+                                }
+
+                                await Share.share(surveyShareUrl!);
+                              },
+                            ),
                             MenuItem(
                                 title: "Generic survey link",
                                 icon: "assets/icons/generic.svg"),
                           ],
                         ),
 
-
-                        MenuDropdown(
+                       if(canViewQuotation)
+                         MenuDropdown(
                           title: "Quotation",
                           icon: "assets/icons/generic.svg",
                           children: [
@@ -131,6 +182,7 @@ class MenuScreen extends StatelessWidget {
                                 Navigator.pushNamed(context, quotationScreenRoute);
                               },
                             ),
+                          if(canAddQuotation)
                             MenuItem(
                               title: "Add new quotation",
                               icon: "assets/icons/Plus.svg",
@@ -200,7 +252,7 @@ class MenuScreen extends StatelessWidget {
                           ],
                         ),
 
-
+                      if(canViewOrder)
                         MenuDropdown(
                           title: "Orders",
                           icon: "assets/icons/Box.svg",
@@ -216,6 +268,7 @@ class MenuScreen extends StatelessWidget {
                           ],
                         ),
 
+                      if(canViewLr)
                         MenuDropdown(
                           title: "LR Bilty",
                           icon: "assets/icons/Bilty.svg",
@@ -230,7 +283,7 @@ class MenuScreen extends StatelessWidget {
 
                           ],
                         ),
-
+                      if(canViewMReceipt)
                         MenuDropdown(
                           title: "Money Receipt",
                           icon: "assets/icons/Receipt.svg",
@@ -244,7 +297,7 @@ class MenuScreen extends StatelessWidget {
                             ),
                           ],
                         ),
-
+                      if(canViewStaff)
                         MenuDropdown(
                           title: "Staffs",
                           icon: "assets/icons/users.svg",
@@ -259,7 +312,7 @@ class MenuScreen extends StatelessWidget {
 
                           ],
                         ),
-
+                      if(canViewExpense)
                         MenuDropdown(
                           title: "Expanse Management",
                           icon: "assets/icons/expense.svg",
@@ -280,7 +333,9 @@ class MenuScreen extends StatelessWidget {
                             ),
                           ],
                         ),
+
                         const MenuSectionHeader(title: "Others"),
+                      if(canViewLetterHead)
                         MenuDropdown(
                           title: "Letter Head",
                           icon: "assets/icons/Letterhead.svg",
@@ -294,7 +349,8 @@ class MenuScreen extends StatelessWidget {
                             ),
                           ],
                         ),
-                         MenuDropdown(
+
+                        MenuDropdown(
                           title: "Subscription",
                           icon: "assets/icons/subs.svg",
                           children: [

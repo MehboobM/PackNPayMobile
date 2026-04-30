@@ -92,12 +92,16 @@ class AuthNotifier extends StateNotifier<AuthState> {
     required String mobile,
     required String email,
     required String otp,
+    required String companyName,
+    required String gstNumber,
   }) async {
     try {
       state = state.copyWith(isLoading: true, error: null);
       final response = await repo.register(
         mobile: mobile,
         otp: otp,
+        companyName: companyName,
+        gstNumber: gstNumber,
         name: name,
         email: email,
       );

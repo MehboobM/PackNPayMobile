@@ -33,6 +33,8 @@ void main() async {
 
   /// ✅ OPEN BOX (IMPORTANT)
   await Hive.openBox('quotationBox');
+  await Hive.openBox('authBox');
+  await Hive.openBox('notificationBox');
 
   await SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,

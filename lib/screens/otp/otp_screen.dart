@@ -9,6 +9,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:pack_n_pay/utils/app_colors.dart';
 import 'package:pinput/pinput.dart';
 
+import '../../database/hive_database/hive_permission.dart';
 import '../../database/shared_preferences/shared_storage.dart';
 import '../../notifier/login_notifier.dart';
 import '../../routes/route_names_const.dart';
@@ -216,7 +217,7 @@ class _OtpScreenState extends ConsumerState<OtpScreen> {
 
                   /// ✅ SUCCESS
                   storage.saveNewUser("${response['isNewUser']}");
-
+                  await AuthHiveService.saveResponse(response);
                   if(response['token'] != null) {
                     storage.saveToken(response['token']);
                   }

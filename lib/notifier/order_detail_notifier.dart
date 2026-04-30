@@ -18,6 +18,26 @@ class OrderDetailNotifier extends StateNotifier<OrderDetailState> {
   OrderDetailNotifier(this.repository) : super(OrderDetailState());
 
 
+  void clearState() {
+    state = OrderDetailState();
+    //If you only want to clear data but keep loading state untouched:
+     //state = state.copyWith(orderData: null);
+  }
+
+  Future<bool> fetchOrderByUid(String uid) async {
+    state = state.copyWith(isPageLoading: true);
+
+    try {
+      final orderData = await repository.fetchOrderByUid(uid);
+
+      state = state.copyWith(isPageLoading: false, orderData: orderData);
+
+      return true; // ✅ success
+    } catch (e) {
+      state = state.copyWith(isPageLoading: false);
+      return false; // ❌ fail
+    }
+  }
 
   Future<List<dynamic>> searchStaff(String query) async {
     final companyId = await StorageService().getCompanyId() ?? "-1";
@@ -153,20 +173,7 @@ class OrderDetailNotifier extends StateNotifier<OrderDetailState> {
     }
   }
 
-  Future<bool> fetchOrderByUid(String uid) async {
-    state = state.copyWith(isPageLoading: true);
 
-    try {
-      final orderData = await repository.fetchOrderByUid(uid);
-
-      state = state.copyWith(isPageLoading: false, orderData: orderData);
-
-      return true; // ✅ success
-    } catch (e) {
-      state = state.copyWith(isPageLoading: false);
-      return false; // ❌ fail
-    }
-  }
 
 
   Future<String?> updatePackingAndUnpackingOrder({

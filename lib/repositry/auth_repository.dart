@@ -47,12 +47,16 @@ class AuthRepository {
     required String mobile,
     required String email,
     required String otp,
+    required String companyName,
+    required String gstNumber,
   }) async {
     final response = await network.post(
       ApiEndPoints.register,
         {
           "name": name,
           "mobile": mobile,
+          "company_name": companyName,
+          "gst_number": gstNumber,
           "email": email,
           "otp" : otp
         },

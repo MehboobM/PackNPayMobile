@@ -10,6 +10,7 @@ import 'package:pack_n_pay/utils/m_font_styles.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../../database/hive_database/hive_permission.dart';
 import '../../global_widget/confirmation_dialog.dart';
 import '../../global_widget/menu_widget.dart';
 import '../../global_widget/view_download_service.dart';
@@ -42,10 +43,10 @@ class _SurveyListScreenState extends ConsumerState<SurveyListScreen> {
   String formatDate(DateTime date) {
     return "${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}";
   }
-  String? surveyShareUrl;
+
   bool isShareLoading = false;
 
-
+  String? surveyShareUrl;
   updateGenericLInk() async {
 
     String? results = await ref.read(surveyDataProvider.notifier).getSurveyShareLink();
@@ -95,8 +96,10 @@ class _SurveyListScreenState extends ConsumerState<SurveyListScreen> {
     final state = ref.watch(surveyDataProvider);
     final list = state.filteredList ?? [];
 
+    final canAdd = PermissionHelper.canAdd(ModuleCode.survey);
+    final canView = PermissionHelper.canView(ModuleCode.survey);
 
-    return Scaffold(
+    return canView ? Scaffold(
       backgroundColor: AppColors.bodysecondry,
 
       appBar: AppBar(
@@ -150,7 +153,8 @@ class _SurveyListScreenState extends ConsumerState<SurveyListScreen> {
 
           const SizedBox(width: 16),
 
-          CustomButton(
+          if(canAdd)
+           CustomButton(
             onPressed: () {
               Navigator.pushNamed(context, surveyLinkRoute);
             },
@@ -435,7 +439,7 @@ class _SurveyListScreenState extends ConsumerState<SurveyListScreen> {
         ),
       ),
 
-    );
+    ) : Center(child: Text( "Permission not granted", style: TextStyles.f12w400Gray5,));
   }
 
 
@@ -485,20 +489,21 @@ class _SurveyListScreenState extends ConsumerState<SurveyListScreen> {
 
 
   void _onTapMenu(BuildContext context, Offset position, String quotationNo,String link,SurveyList? item) async {
+    final isCompleted = (item?.status ?? "").toLowerCase().trim() == "completed";
+    final canEdit = PermissionHelper.canEdit(ModuleCode.survey);
+
+    print("can edit is >>>>>>>>>>>>>$canEdit");
     showGlobalPopupMenu(
       context: context,
       tapPosition: position,
       items: [
-        PopupMenuModel(
+        if (!isCompleted && canEdit)
+         PopupMenuModel(
           value: 'edit',
           title: 'Edit',
           icon: "assets/images/edit.svg",
         ),
-        // PopupMenuModel(
-        //   value: 'signature',
-        //   title: 'Customer Signature',
-        //   icon: "assets/images/signature.svg",
-        // ),
+
         PopupMenuModel(
           value: 'link',
           title: 'Share survey link',
@@ -509,8 +514,8 @@ class _SurveyListScreenState extends ConsumerState<SurveyListScreen> {
           title: 'Generate Quotation',
           icon: "assets/images/quotation.svg",
         ),
-
-        PopupMenuModel(
+        if (!isCompleted && canEdit)
+         PopupMenuModel(
           value: 'setFollow',
           title: 'Set Follow Up',
           icon: "assets/images/follow_up.svg",
@@ -554,7 +559,11 @@ class _SurveyListScreenState extends ConsumerState<SurveyListScreen> {
       },
     );
   }
-
+  // PopupMenuModel(
+  //   value: 'signature',
+  //   title: 'Customer Signature',
+  //   icon: "assets/images/signature.svg",
+  // ),
 
 
   Future<void> handleSurveyNavigation({

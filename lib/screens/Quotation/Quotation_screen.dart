@@ -8,6 +8,7 @@ import 'package:pack_n_pay/screens/Quotation/widget/common_dialog.dart';
 import 'package:pack_n_pay/utils/app_colors.dart';
 import 'package:pack_n_pay/utils/m_font_styles.dart';
 import 'package:pack_n_pay/utils/toast_message.dart';
+import '../../database/hive_database/hive_permission.dart';
 import '../../database/hive_database/hive_quation_form.dart';
 import '../../global_widget/confirmation_dialog.dart';
 import '../../global_widget/menu_widget.dart';
@@ -434,20 +435,26 @@ class _QuotationScreenState extends ConsumerState<QuotationScreen> {
     );
   }
   void _onTapMenu(BuildContext context, Offset position,String? quotationNo) {
+    final canEditQuotation = PermissionHelper.canEdit(ModuleCode.quotation);
+    final canDeleteQuotation = PermissionHelper.canDelete(ModuleCode.quotation);
     showGlobalPopupMenu(
       context: context,
       tapPosition: position,
       items: [
-        PopupMenuModel(
+       if(canEditQuotation)
+         PopupMenuModel(
           value: 'edit',
           title: 'Edit',
           icon: "assets/images/edit.svg",
         ),
-        PopupMenuModel(
+
+       if(canDeleteQuotation)
+         PopupMenuModel(
           value: 'delete',
           title: 'Delete',
           icon: "assets/images/delete.svg",
         ),
+
         PopupMenuModel(
           value: 'signature',
           title: 'Customer Signature',

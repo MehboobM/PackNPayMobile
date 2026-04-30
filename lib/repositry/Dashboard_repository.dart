@@ -1,6 +1,7 @@
 import 'package:pack_n_pay/api_services/api_end_points.dart';
 
 import '../api_services/network_handler.dart';
+import '../database/hive_database/hive_notification_tracker.dart';
 import '../database/shared_preferences/shared_storage.dart';
 import '../models/ActionList_model.dart';
 import '../models/dashboard_model.dart';
@@ -48,7 +49,7 @@ class DashboardService {
   //   }
   // }
 
-  Future<List<ActionItemModel>> getActions() async {
+  /*Future<List<ActionItemModel>> getActions() async {
     final companyId = await StorageService().getCompanyId();
 
     final response = await NetworkHandler().get(
@@ -104,6 +105,71 @@ class DashboardService {
           title: "Follow-up (${item.type})",
           body: "$location\n$formattedDate",
         );
+      }
+
+      return list;
+    } else {
+      throw Exception("Failed to load actions");
+    }
+  }*/
+
+  Future<List<ActionItemModel>> getActions() async {
+    final companyId = await StorageService().getCompanyId();
+
+    final response = await NetworkHandler().get(
+      ApiEndPoints.getActions,
+      queryParams: {"company_id": companyId ?? 1},
+    );
+
+    final data = response.data;
+
+    if (data['success']) {
+      final list = (data['data'] as List)
+          .map((e) => ActionItemModel.fromJson(e))
+          .toList();
+
+      /// ✅ SAFE DATE PARSER
+      DateTime safeParse(String? d) {
+        return DateTime.tryParse(d ?? "") ?? DateTime.now();
+      }
+
+      /// ✅ REMOVE TIME
+      DateTime onlyDate(DateTime d) => DateTime(d.year, d.month, d.day);
+
+      final today = onlyDate(DateTime.now());
+
+      /// ✅ FORMAT TIME
+      String twoDigit(int n) => n.toString().padLeft(2, '0');
+
+      /// ✅ LOOP ALL ITEMS
+      for (int i = 0; i < list.length; i++) {
+        final item = list[i];
+
+        final triggerDate = onlyDate(safeParse(item.date));
+
+        /// ❌ SKIP NOT TODAY (includes tomorrow & past)
+        if (triggerDate != today) continue;
+
+        /// ❌ SKIP IF ALREADY SHOWN
+        if (NotificationTracker.isShown(item.id)) continue;
+
+        final date = safeParse(item.date);
+
+        final formattedDate =
+            "${date.day}/${date.month}/${date.year} "
+            "${twoDigit(date.hour)}:${twoDigit(date.minute)}";
+
+        final location =
+            "${item.from.isNotEmpty ? item.from : '-'} → ${item.to.isNotEmpty ? item.to : '-'}";
+
+        await LocalNotificationService.showNotification(
+          id: int.tryParse(item.id.replaceAll(RegExp(r'[^0-9]'), '')) ?? i,
+          title: "Follow-up (${item.type})",
+          body: "$location\n$formattedDate",
+        );
+
+        /// ✅ MARK AS SHOWN (IMPORTANT)
+        await NotificationTracker.markShown(item.id);
       }
 
       return list;
