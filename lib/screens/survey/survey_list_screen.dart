@@ -331,8 +331,6 @@ class _SurveyListScreenState extends ConsumerState<SurveyListScreen> {
               ],
             ),
 
-
-
             /// DATE HEADER (WITH CLEAR)
             if (fromDate != null && toDate != null)
               Container(

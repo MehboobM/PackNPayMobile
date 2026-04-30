@@ -58,6 +58,8 @@ class _MenuScreenState extends ConsumerState<MenuScreen> {
     final canViewExpense = PermissionHelper.canView(ModuleCode.expense);
     final canViewLr = PermissionHelper.canView(ModuleCode.lr);
     final canViewLetterHead = PermissionHelper.canView(ModuleCode.letterHead);
+    final canViewSubscription = PermissionHelper.canView(ModuleCode.subscription);
+    final canViewBusiness = PermissionHelper.canView(ModuleCode.business);
 
 
     return Scaffold(
@@ -335,6 +337,7 @@ class _MenuScreenState extends ConsumerState<MenuScreen> {
                         ),
 
                         const MenuSectionHeader(title: "Others"),
+
                       if(canViewLetterHead)
                         MenuDropdown(
                           title: "Letter Head",
@@ -350,6 +353,7 @@ class _MenuScreenState extends ConsumerState<MenuScreen> {
                           ],
                         ),
 
+                     if(canViewSubscription)
                         MenuDropdown(
                           title: "Subscription",
                           icon: "assets/icons/subs.svg",
@@ -364,21 +368,8 @@ class _MenuScreenState extends ConsumerState<MenuScreen> {
                           ],
                         ),
 
-                        MenuDropdown(
-                          title: "Language",
-                          icon: "assets/images/language.svg",
-                          children: [
-                            MenuItem(
-                              title: "Language",
-                              icon: "assets/images/language.svg",
-                              onTap: () {
-                                Navigator.pushNamed(context, languageRoute);
-                              },
-                            ),
-                          ],
-                        ),
-
-                        MenuDropdown(
+                      if(canViewBusiness)
+                          MenuDropdown(
                           title: "Business Details",
                           icon: "assets/icons/buisness.svg",
                           children: [
@@ -403,6 +394,22 @@ class _MenuScreenState extends ConsumerState<MenuScreen> {
                             ),
                           ],
                         ),
+
+                        MenuDropdown(
+                          title: "Language",
+                          icon: "assets/images/language.svg",
+                          children: [
+                            MenuItem(
+                              title: "Language",
+                              icon: "assets/images/language.svg",
+                              onTap: () {
+                                Navigator.pushNamed(context, languageRoute);
+                              },
+                            ),
+                          ],
+                        ),
+
+
 
                       ],
                     ),

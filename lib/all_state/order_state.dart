@@ -9,6 +9,7 @@ class OrderDataState {
   final String? error;
   final String? successMessage;
   final bool isInitialLoading; // 👈 NEW
+  final String? sortOrder; // ✅ ADD THIS
 
   OrderDataState({
     this.isPageLoading = false,
@@ -18,6 +19,7 @@ class OrderDataState {
     this.error,
     this.successMessage,
     this.isInitialLoading = true, // 👈 default true
+    this.sortOrder
 
   });
 
@@ -29,6 +31,8 @@ class OrderDataState {
     String? error,
     String? successMessage,
     bool? isInitialLoading,
+    String? sortOrder, // ✅ ADD
+    bool clearSort = false, // ✅ ADD FLAG
   }) {
     return OrderDataState(
       isPageLoading: isPageLoading ?? this.isPageLoading,
@@ -38,6 +42,7 @@ class OrderDataState {
       error: error,
       successMessage: successMessage,
       isInitialLoading: isInitialLoading ?? this.isInitialLoading,
+      sortOrder: clearSort ? null : (sortOrder ?? this.sortOrder),
     );
   }
 }

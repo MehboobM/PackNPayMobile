@@ -22,21 +22,44 @@ class QuotationNotifier extends StateNotifier<QuotationState> {
 
   QuotationNotifier(this.repository) : super(QuotationState());
 
+  void clearSort() {
+    currentPage = 1;
+
+    state = state.copyWith(
+      clearSort: true, // ✅ this removes sortOrder
+      isPageLoading: true,
+      isInitialLoading: true,
+    );
+
+    fetchQuotationList(); // ✅ fresh API call
+  }
+
+
   Future<void> fetchQuotationList({
     bool isLoadMore = false,
     String? fromDate,
     String? toDate,
+    String? status,
+    String? sort,
   }) async {
     try {
       if (!isLoadMore) {
         currentPage = 1;
-        state = state.copyWith(isPageLoading: true);
+
+        state = state.copyWith(
+          isPageLoading: true,
+          isInitialLoading: true,
+          error: null,
+          sortOrder: sort, // ✅ SAVE SORT
+        );
       }
 
       final data = await repository.fetchQuatation(
         page: currentPage,
         fromDate: fromDate,
         toDate: toDate,
+        status: status,
+        sort: sort,
       );
 
       final oldList = state.quatationData?.data ?? [];
@@ -45,23 +68,70 @@ class QuotationNotifier extends StateNotifier<QuotationState> {
           ? [...oldList, ...?data.data]
           : data.data;
 
-      isLastPage =
-          currentPage >= (data.pagination?.totalPages ?? 1);
+      isLastPage = currentPage >= (data.pagination?.totalPages ?? 1);
 
       currentPage++;
 
       state = state.copyWith(
         isPageLoading: false,
+        isInitialLoading: false,
         quatationData: data..data = newList,
-        filteredList: newList, // ✅ IMPORTANT (initial data)
+        filteredList: newList, // ✅ IMPORTANT
       );
     } catch (e) {
+      print("Quotation error: $e");
+
       state = state.copyWith(
         isPageLoading: false,
+        isInitialLoading: false,
         error: "Error loading data",
       );
     }
   }
+  // Future<void> fetchQuotationList({
+  //   bool isLoadMore = false,
+  //   String? fromDate,
+  //   String? toDate,
+  //   String? status,
+  //   String? sort,
+  // }) async {
+  //   try {
+  //     if (!isLoadMore) {
+  //       currentPage = 1;
+  //       state = state.copyWith(isPageLoading: true);
+  //     }
+  //
+  //     final data = await repository.fetchQuatation(
+  //       page: currentPage,
+  //       fromDate: fromDate,
+  //       toDate: toDate,
+  //       status: status,
+  //       sort: sort
+  //     );
+  //
+  //     final oldList = state.quatationData?.data ?? [];
+  //
+  //     final newList = isLoadMore
+  //         ? [...oldList, ...?data.data]
+  //         : data.data;
+  //
+  //     isLastPage =
+  //         currentPage >= (data.pagination?.totalPages ?? 1);
+  //
+  //     currentPage++;
+  //
+  //     state = state.copyWith(
+  //       isPageLoading: false,
+  //       quatationData: data..data = newList,
+  //       filteredList: newList, // ✅ IMPORTANT (initial data)
+  //     );
+  //   } catch (e) {
+  //     state = state.copyWith(
+  //       isPageLoading: false,
+  //       error: "Error loading data",
+  //     );
+  //   }
+  // }
 
   /// ✅ LOCAL SEARCH METHOD (NEW)
   void filterLocalList(String query) {

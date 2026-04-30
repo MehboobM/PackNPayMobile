@@ -5,6 +5,7 @@ import 'package:pack_n_pay/notifier/order_notifier.dart';
 import 'package:pack_n_pay/screens/orders/widgets/order_list.dart';
 import 'package:pack_n_pay/utils/app_colors.dart';
 import 'package:pack_n_pay/utils/m_font_styles.dart';
+import '../../database/hive_database/hive_permission.dart';
 import '../../global_widget/confirmation_dialog.dart';
 import '../../global_widget/custom_textfield.dart';
 import '../../global_widget/menu_widget.dart';
@@ -64,6 +65,57 @@ class _OrdersScreenState extends ConsumerState<OrdersScreen> {
     _scrollController.dispose();
     searchController.dispose();
     super.dispose();
+  }
+
+
+
+  void _onTapSort(BuildContext context, Offset position) async {
+    showGlobalPopupMenu(
+      context: context,
+      tapPosition: position,
+      items: [
+        PopupMenuModel(
+          value: 'new_first',
+          title: 'Date: Newest First',
+          icon: "assets/images/arrow_down2.svg",
+        ),
+        PopupMenuModel(
+          value: 'old_first',
+          title: 'Date: Oldest First',
+          icon: "assets/images/arrow_up.svg",
+        ),
+        PopupMenuModel(
+          value: 'clear',
+          title: 'Clear',
+          icon: "assets/images/x.svg",
+        ),
+      ],
+
+      onSelected: (value) async {
+        switch (value) {
+          case 'new_first':
+            ref.read(orderDataProvider.notifier).fetchOrderList(
+              sort: "new",
+            );
+            break;
+
+          case 'old_first':
+            ref.read(orderDataProvider.notifier).fetchOrderList(
+              sort: "old",
+            );
+            break;
+
+          case 'clear':
+            ref.read(orderDataProvider.notifier).clearSort();
+            break;
+        }
+      },
+    );
+  }
+
+  bool get isFilterApplied {
+    final state = ref.watch(orderDataProvider);
+    return state.sortOrder != null && state.sortOrder!.isNotEmpty;
   }
 
 
@@ -191,27 +243,50 @@ class _OrdersScreenState extends ConsumerState<OrdersScreen> {
                   ),
                 ),
 
+
                 const SizedBox(width: 10),
 
                 /// FILTER
                 GestureDetector(
-                  onTap: () {
-                    showModalBottomSheet(
-                      context: context,
-                      isScrollControlled: true,
-                      backgroundColor: Colors.transparent,
-                      builder: (context) => const FilterBottomSheet(),
-                    );
+                  onTapDown: (details) {
+                    // showModalBottomSheet(
+                    //   context: context,
+                    //   isScrollControlled: true,
+                    //   backgroundColor: Colors.transparent,
+                    //   builder: (context) => const FilterBottomSheet(),
+                    // );
+                    _onTapSort(context, details.globalPosition);
                   },
-                  child: Container(
-                    height: 48,
-                    width: 48,
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(12),
-                      border: Border.all(color: AppColors.mGray3),
-                    ),
-                    child: const Icon(Icons.filter_list),
+                  child: Stack(
+                    children: [
+                      Container(
+                        height: 48,
+                        width: 48,
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(12),
+                          border: Border.all(color: AppColors.mGray3),
+                        ),
+                        child: const Icon(Icons.filter_list),
+                      ),
+
+                      /// 🔴 DOT INDICATOR
+                      if (isFilterApplied)
+                        Positioned(
+                          right: 6,
+                          top: 6,
+                          child: Container(
+                            height: 10,
+                            width: 10,
+                            decoration: const BoxDecoration(
+                              color: Colors.black,
+                              shape: BoxShape.circle,
+                            ),
+                          ),
+                        ),
+
+
+                    ],
                   ),
                 ),
 
@@ -246,6 +321,61 @@ class _OrdersScreenState extends ConsumerState<OrdersScreen> {
                     child: const Icon(Icons.calendar_today),
                   ),
                 ),
+
+
+                // /// FILTER
+                // GestureDetector(
+                //   onTap: () {
+                //     showModalBottomSheet(
+                //       context: context,
+                //       isScrollControlled: true,
+                //       backgroundColor: Colors.transparent,
+                //       builder: (context) => const FilterBottomSheet(),
+                //     );
+                //   },
+                //   child: Container(
+                //     height: 48,
+                //     width: 48,
+                //     decoration: BoxDecoration(
+                //       color: Colors.white,
+                //       borderRadius: BorderRadius.circular(12),
+                //       border: Border.all(color: AppColors.mGray3),
+                //     ),
+                //     child: const Icon(Icons.filter_list),
+                //   ),
+                // ),
+                //
+                // const SizedBox(width: 10),
+                //
+                // /// CALENDAR
+                // GestureDetector(
+                //   onTap: () async {
+                //     final picked = await showDateRangePicker(
+                //       context: context,
+                //       firstDate: DateTime(2020),
+                //       lastDate: DateTime(2100),
+                //     );
+                //
+                //     if (picked != null) {
+                //       setState(() {
+                //         fromDate = picked.start;
+                //         toDate = picked.end;
+                //       });
+                //
+                //       ref.read(orderDataProvider.notifier).fetchOrderList(fromDate: formatDate(fromDate!), toDate: formatDate(toDate!),);
+                //     }
+                //   },
+                //   child: Container(
+                //     height: 48,
+                //     width: 48,
+                //     decoration: BoxDecoration(
+                //       color: Colors.white,
+                //       borderRadius: BorderRadius.circular(12),
+                //       border: Border.all(color: AppColors.mGray3),
+                //     ),
+                //     child: const Icon(Icons.calendar_today),
+                //   ),
+                // ),
               ],
             ),
 
@@ -384,15 +514,22 @@ class _OrdersScreenState extends ConsumerState<OrdersScreen> {
 
 
   void _onTapMenu(BuildContext context, Offset position,String? quotationNo) {
+
+
+    final canEditOrder = PermissionHelper.canEdit(ModuleCode.order);
+    final canDeleteOrder = PermissionHelper.canDelete(ModuleCode.order);
+
     showGlobalPopupMenu(
       context: context,
       tapPosition: position,
       items: [
+      if(canEditOrder)
         PopupMenuModel(
           value: 'edit',
           title: 'Edit',
           icon: "assets/images/edit.svg",
         ),
+      if(canDeleteOrder)
         PopupMenuModel(
           value: 'delete',
           title: 'Delete',

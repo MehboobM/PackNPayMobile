@@ -4,6 +4,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:pack_n_pay/screens/staff/widgets/common_bottom_sheet.dart';
 import 'package:pack_n_pay/screens/staff/widgets/staff_card.dart';
 
+import '../../database/hive_database/hive_permission.dart';
 import '../../global_widget/custom_textfield.dart';
 import '../../models/staff_user_model.dart';
 import '../../notifier/staff_notifier.dart';
@@ -105,6 +106,7 @@ class _StaffScreenState extends State<StaffScreen> {
                         if (result == true) {
                           await staffNotifier.fetchUsers();
                         }
+
                       },
                     );
                   },
@@ -303,6 +305,7 @@ class _StaffScreenState extends State<StaffScreen> {
   }
 
   AppBar _buildAppBar() {
+    final canAddStaff = PermissionHelper.canAdd(ModuleCode.staff);
     return AppBar(
       backgroundColor: Colors.white,
       elevation: 0,
@@ -350,6 +353,8 @@ class _StaffScreenState extends State<StaffScreen> {
             color: AppColors.primary,
           ),
         ),
+
+     if(canAddStaff)
         Padding(
           padding: const EdgeInsets.only(right: 12),
           child: SizedBox(

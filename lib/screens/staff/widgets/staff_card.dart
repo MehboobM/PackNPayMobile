@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import '../../../database/hive_database/hive_permission.dart';
 import '../../../utils/app_colors.dart';
 import '../../../utils/m_font_styles.dart';
 
@@ -116,6 +117,8 @@ class StaffCardWidget extends StatelessWidget {
 
   /// 🔹 Action Buttons with SVG Icons
   Widget _buildActionButtons() {
+    final canEditStaff = PermissionHelper.canEdit(ModuleCode.staff);
+
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
       decoration: BoxDecoration(
@@ -148,6 +151,7 @@ class StaffCardWidget extends StatelessWidget {
           const SizedBox(width: 14),
 
           // ✏️ Edit
+        if(canEditStaff)
           GestureDetector(
             onTap: onEdit, // ✅ Trigger edit action
             child: SvgPicture.asset(

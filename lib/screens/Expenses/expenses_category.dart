@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:dio/dio.dart';
 import '../../api_services/api_end_points.dart';
+import '../../database/hive_database/hive_permission.dart';
 import '../../database/shared_preferences/shared_storage.dart';
 import 'new_category_sheet.dart';
 import 'office_expence.dart';
@@ -98,6 +99,8 @@ class _ExpenseCategoriesPageState extends State<ExpenseCategoriesPage> {
 
   @override
   Widget build(BuildContext context) {
+
+    final canAddExpense = PermissionHelper.canAdd(ModuleCode.expense);
     return Scaffold(
       backgroundColor: const Color(0xFFF8F9FA),
       appBar: AppBar(
@@ -143,11 +146,14 @@ class _ExpenseCategoriesPageState extends State<ExpenseCategoriesPage> {
           ),
         ],
       ),
-      bottomSheet: _buildAddButton(context),
+      bottomSheet: canAddExpense ? _buildAddButton(context) : null,
     );
   }
 
   Widget _buildCategoryRow(int index, String num, String name, String amount, bool isActive, String uid, {bool isLast = false}) {
+
+    final canEditExpense = PermissionHelper.canEdit(ModuleCode.expense);
+    final canDeleteExpense = PermissionHelper.canDelete(ModuleCode.expense);
     return InkWell(
       //onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => const OfficeExpensePage())),
       child: Container(
@@ -183,7 +189,9 @@ class _ExpenseCategoriesPageState extends State<ExpenseCategoriesPage> {
                 }
               },
               itemBuilder: (context) => [
+                if(canEditExpense)
                 const PopupMenuItem(value: 'edit', child: Text("Edit")),
+                if(canDeleteExpense)
                 const PopupMenuItem(value: 'delete', child: Text("Delete", style: TextStyle(color: Colors.red))),
               ],
               child: const Icon(Icons.more_vert, color: Colors.grey, size: 20),

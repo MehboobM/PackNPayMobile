@@ -19,6 +19,8 @@ class QuotationState {
 
   final States? selectedState;
   final Cities? selectedCity;
+  final bool isInitialLoading;
+  final String? sortOrder; // ✅ ADD THIS
 
 
   QuotationState({
@@ -33,6 +35,8 @@ class QuotationState {
     this.filteredList,
     this.error,
     this.successMessage,
+    this.isInitialLoading = true,
+    this.sortOrder,
   });
 
   QuotationState copyWith({
@@ -47,6 +51,10 @@ class QuotationState {
     List<Cities>? cities,
     States? selectedState,
     Cities? selectedCity,
+
+    bool? isInitialLoading,
+    String? sortOrder, // ✅ ADD
+    bool clearSort = false, // ✅ ADD FLAG
   }) {
     return QuotationState(
       isPageLoading: isPageLoading ?? this.isPageLoading,
@@ -59,6 +67,8 @@ class QuotationState {
       cities: cities ?? this.cities,
       selectedState: selectedState ?? this.selectedState,
       selectedCity: selectedCity ?? this.selectedCity,
+      isInitialLoading: isInitialLoading ?? this.isInitialLoading,
+      sortOrder: clearSort ? null : (sortOrder ?? this.sortOrder),
     );
   }
 }

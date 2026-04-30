@@ -6,6 +6,7 @@ import 'package:pack_n_pay/screens/Money_receipt/widgets/Money_listItems.dart';
 import 'package:pack_n_pay/utils/app_colors.dart';
 import 'package:pack_n_pay/utils/m_font_styles.dart';
 import 'package:pack_n_pay/global_widget/custom_textfield.dart';
+import '../../database/hive_database/hive_permission.dart';
 import '../../global_widget/menu_widget.dart';
 import '../../global_widget/view_download_service.dart';
 import '../../notifier/money_recepitform.dart';
@@ -56,7 +57,7 @@ class _MoneyListScreenState
     final notifier = ref.watch(moneyReceiptProvider);
     final from = notifier.fromDate;
     final to = notifier.toDate;
-
+    final canAddMr = PermissionHelper.canAdd(ModuleCode.moneyReceipt);
     return Scaffold(
       backgroundColor: const Color(0xffF5F5F7),
 
@@ -133,6 +134,7 @@ class _MoneyListScreenState
             ),
           ),
 
+       if(canAddMr)
           Padding(
             padding: const EdgeInsets.only(right: 12),
             child: SizedBox(
@@ -361,15 +363,23 @@ class _MoneyListScreenState
     );
   }
   void onTapMenu(BuildContext context, Offset position, item) {
+
+    final canDeleteMr = PermissionHelper.canDelete(ModuleCode.moneyReceipt);
+    final canEditMr = PermissionHelper.canEdit(ModuleCode.moneyReceipt);
     showGlobalPopupMenu(
       context: context,
       tapPosition: position,
       items: [
+
+     if(canEditMr)
         PopupMenuModel(
           value: 'edit',
           title: 'Edit',
           icon: "assets/images/edit.svg",
         ),
+
+
+     if(canDeleteMr)
         PopupMenuModel(
           value: 'delete',
           title: 'Delete',

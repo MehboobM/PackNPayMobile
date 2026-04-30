@@ -27,6 +27,7 @@ class DetailData {
   int? companyId;
   String? existingOrderUid;
   String? existingOrderNo;
+  String? orderNo;
   String? customerName;
   String? phone;
   String? email;
@@ -101,6 +102,7 @@ class DetailData {
         this.quotationNo,
         this.companyId,
         this.existingOrderUid,
+        this.orderNo,
         this.existingOrderNo,
         this.customerName,
         this.phone,
@@ -176,8 +178,8 @@ class DetailData {
     quotationNo = json['quotation_no'];
     companyId = json['company_id'];
     existingOrderUid = json['existing_order_uid'] ?? json['uid'];
-
-    existingOrderNo = json['existing_order_no'] ?? json['order_no'];
+    orderNo = json['order_no'];
+    existingOrderNo = json['existing_order_no'];
 
     customerName = json['customer_name'];
     phone = json['phone'];
@@ -304,6 +306,7 @@ class DetailData {
     data['quotation_no'] = this.quotationNo;
     data['company_id'] = this.companyId;
     data['existing_order_uid'] = this.existingOrderUid;
+    data["order_no"] = this.orderNo;
     data['existing_order_no'] = this.existingOrderNo;
     data['customer_name'] = this.customerName;
     data['phone'] = this.phone;

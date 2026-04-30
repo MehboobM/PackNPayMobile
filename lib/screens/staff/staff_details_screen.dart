@@ -2,6 +2,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:pack_n_pay/screens/staff/widgets/calender.dart';
+import '../../database/hive_database/hive_permission.dart';
 import '../../models/staff_details_modal.dart';
 import '../../models/staff_user_model.dart';
 import '../../repositry/userstaff_repository.dart';
@@ -93,7 +94,8 @@ class _StaffDetailsScreenState extends State<StaffDetailsScreen> {
   @override
   Widget build(BuildContext context) {
     final user = userData ?? widget.user;
-
+    final canEditStaff = PermissionHelper.canEdit(ModuleCode.staff);
+    final canDeleteStaff = PermissionHelper.canDelete(ModuleCode.staff);
     return Scaffold(
       backgroundColor: AppColors.bodysecondry,
       appBar: AppBar(
@@ -104,6 +106,8 @@ class _StaffDetailsScreenState extends State<StaffDetailsScreen> {
         title: Text("Staff Details", style: TextStyles.f16w600mGray9),
         actions: [
           /// ✏️ EDIT BUTTON
+
+          if(canEditStaff)
           Padding(
             padding: const EdgeInsets.only(right: 8),
             child: InkWell(
@@ -138,7 +142,8 @@ class _StaffDetailsScreenState extends State<StaffDetailsScreen> {
           ),
 
           /// 🗑️ DELETE BUTTON
-          Padding(
+          if(canDeleteStaff)
+           Padding(
             padding: const EdgeInsets.only(right: 16),
             child: InkWell(
               onTap: _confirmDelete,

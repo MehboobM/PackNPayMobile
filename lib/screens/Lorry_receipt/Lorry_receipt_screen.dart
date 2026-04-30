@@ -5,6 +5,7 @@ import 'package:pack_n_pay/routes/route_names_const.dart';
 import 'package:pack_n_pay/utils/app_colors.dart';
 import 'package:pack_n_pay/utils/m_font_styles.dart';
 
+import '../../database/hive_database/hive_permission.dart';
 import '../../global_widget/custom_textfield.dart';
 import '../../global_widget/menu_widget.dart';
 import '../../global_widget/view_download_service.dart';
@@ -65,8 +66,11 @@ class _LorryReceiptListScreenState
   @override
   Widget build(BuildContext context) {
     final notifier = ref.watch(lorryReceiptProvider);
-    final lrNotifier =
-    ref.read(lorryReceiptProvider.notifier);
+    final lrNotifier = ref.read(lorryReceiptProvider.notifier);
+
+    final canAddLR = PermissionHelper.canEdit(ModuleCode.lr);
+
+
 
     return Scaffold(
       backgroundColor: AppColors.bodysecondry,
@@ -148,6 +152,8 @@ class _LorryReceiptListScreenState
             ),
           ),
           const SizedBox(width: 6),
+
+          if(canAddLR)
           Padding(
             padding: const EdgeInsets.only(right: 12),
             child: SizedBox(
@@ -424,20 +430,21 @@ class _LorryReceiptListScreenState
       ),
     );
   }
-  void _onTapMenu(
-      BuildContext context,
-      Offset position,
-      LorryReceiptModel item,
-      ) {
-    showGlobalPopupMenu(
-      context: context,
-      tapPosition: position,
+
+  void _onTapMenu(BuildContext context, Offset position, LorryReceiptModel item,) {
+
+    final canEditLr = PermissionHelper.canEdit(ModuleCode.lr);
+    final canDeleteLr = PermissionHelper.canDelete(ModuleCode.lr);
+
+    showGlobalPopupMenu(context: context, tapPosition: position,
       items: [
+        if(canEditLr)
         PopupMenuModel(
           value: 'edit',
           title: 'Edit',
           icon: "assets/images/edit.svg",
         ),
+        if(canDeleteLr)
         PopupMenuModel(
           value: 'delete',
           title: 'Delete',

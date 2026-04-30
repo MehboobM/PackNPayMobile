@@ -28,12 +28,7 @@ class OrderDetailsScreen extends ConsumerStatefulWidget {
 
 class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
 
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-    orderCreate();
-  }
+
 
   String formatDate(String? date) {
     if (date == null || date.isEmpty) return '-';
@@ -69,27 +64,367 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
     }).toList();
   }
 
+  @override
+  void didUpdateWidget(covariant OrderDetailsScreen oldWidget) {
+    // TODO: implement didUpdateWidget
+    super.didUpdateWidget(oldWidget);
+    _dialogShown = false;
+  }
+
+
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      orderCreate(); // ✅ safe call after build
+    });
+  }
+
   orderCreate() async {
-    final state = ref.watch(orderDetailProvider);
-    final data = state.orderData?.data;
-    if(data?.id==null) {
-      final message = await ref
-          .read(orderDetailProvider.notifier)
-          .createOrderAndRefresh(data?.quotationId ?? "");
-      if (message == "Order created successfully") {
-        ToastHelper.showSuccess(message: message!);
-      } else {
-        ToastHelper.showError(message: message ?? "Error occurred");
+    var state = ref.read(orderDetailProvider);
+    var data = state.orderData?.data;
+
+    /// CREATE ORDER
+
+
+    /// SHOW DIALOG
+    if (!_dialogShown && data?.existingOrderNo != null && data!.existingOrderNo!.isNotEmpty) {
+
+      _dialogShown = true; // ✅ set BEFORE dialog to avoid multiple calls
+
+     final isBack = await showOrderExistsDialog(context, data.existingOrderNo!,);
+
+      if( isBack ?? false){
+        if (data?.id == null) {
+          final message = await ref.read(orderDetailProvider.notifier).createOrderAndRefresh(data?.quotationId ?? "");
+          if (message == "Order created successfully") {
+            ToastHelper.showSuccess(message: message!);
+          } else {
+            ToastHelper.showError(message: message ?? "Error occurred");
+          }
+
+          /// 🔥 IMPORTANT: re-fetch updated state
+          // state = ref.read(orderDetailProvider);
+          // data = state.orderData?.data;
+        }
       }
     }
   }
 
+  Future<bool?> showOrderExistsDialog(BuildContext context, String existingId) {
+    return showDialog<bool>(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) {
+        final state = ref.watch(orderDetailProvider);
+        final isLoading = state.isPageLoading;
 
+        return Dialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
+          backgroundColor: AppColors.mWhite,
+          child: Padding(
+            padding: const EdgeInsets.all(20),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+
+                /// 🔶 Top Row (Icon)
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.all(10),
+                      decoration: BoxDecoration(
+                        color: AppColors.lightYellow,
+                        shape: BoxShape.circle,
+                      ),
+                      child: Icon(
+                        Icons.warning_amber_rounded,
+                        color: AppColors.orangeStatus,
+                        size: 22,
+                      ),
+                    ),
+                    const SizedBox(width: 24),
+                  ],
+                ),
+
+                const SizedBox(height: 16),
+
+                /// 🔤 Title
+                Align(
+                  alignment: Alignment.centerLeft,
+                  child: Text(
+                    "Order Already Exists",
+                    style: TextStyles.f18w600Black8,
+                  ),
+                ),
+
+                const SizedBox(height: 8),
+
+                /// 📄 Description
+                Align(
+                  alignment: Alignment.centerLeft,
+                  child: Text(
+                    "An order $existingId already exists for this quotation. Do you want to open it?",
+                    style: TextStyles.f14w500mGray7,
+                  ),
+                ),
+
+                const SizedBox(height: 20),
+
+                Divider(color: AppColors.mGray3, height: 1),
+
+                const SizedBox(height: 16),
+
+                /// 🔘 Buttons
+                Row(
+                  children: [
+                    Expanded(
+                      child: OutlinedButton(
+                        style: OutlinedButton.styleFrom(
+                          padding: const EdgeInsets.symmetric(vertical: 12),
+                          side: BorderSide(color: AppColors.mGray3),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                        ),
+                        onPressed: isLoading
+                            ? null
+                            : () {
+                          Navigator.pop(context, true); // ✅ return true
+                        },
+                        child: Text(
+                          "Stay Here",
+                          style: TextStyles.f14w600mGray9,
+                        ),
+                      ),
+                    ),
+
+                    const SizedBox(width: 12),
+
+                    Expanded(
+                      child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: AppColors.primarySecond,
+                          padding: const EdgeInsets.symmetric(vertical: 12),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          elevation: 0,
+                        ),
+                        onPressed: () async {
+                          final navigator = Navigator.of(context);
+
+                          final isSuccess = await ref
+                              .read(orderDetailProvider.notifier)
+                              .fetchOrderByUid(existingId);
+
+                          if (!mounted) return;
+
+                          if (!isSuccess) {
+                            ToastHelper.showError(
+                              message: 'Failed to load order details',
+                            );
+                            return;
+                          }
+
+                          if (navigator.canPop()) {
+                            navigator.pop(false); // ✅ return false
+                          }
+                        },
+                        child: Text(
+                          "Open Order",
+                          style: TextStyles.f14w400White,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  // void showOrderExistsDialog(BuildContext context, String existingId) {
+  //   showDialog(
+  //     context: context,
+  //     barrierDismissible: false,
+  //     builder: (context) {
+  //       final state = ref.watch(orderDetailProvider);
+  //       final isLoading = state.isPageLoading;
+  //
+  //       return Dialog(
+  //         shape: RoundedRectangleBorder(
+  //           borderRadius: BorderRadius.circular(16),
+  //         ),
+  //         backgroundColor: AppColors.mWhite,
+  //         child: Padding(
+  //           padding: const EdgeInsets.all(20),
+  //           child: Column(
+  //             mainAxisSize: MainAxisSize.min,
+  //             children: [
+  //
+  //               /// 🔶 Top Row (Icon)
+  //               Row(
+  //                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  //                 children: [
+  //                   Container(
+  //                     padding: const EdgeInsets.all(10),
+  //                     decoration: BoxDecoration(
+  //                       color: AppColors.lightYellow,
+  //                       shape: BoxShape.circle,
+  //                     ),
+  //                     child: Icon(
+  //                       Icons.warning_amber_rounded,
+  //                       color: AppColors.orangeStatus,
+  //                       size: 22,
+  //                     ),
+  //                   ),
+  //                   const SizedBox(width: 24),
+  //                 ],
+  //               ),
+  //
+  //               const SizedBox(height: 16),
+  //
+  //               /// 🔤 Title
+  //               Align(
+  //                 alignment: Alignment.centerLeft,
+  //                 child: Text(
+  //                   "Order Already Exists",
+  //                   style: TextStyles.f18w600Black8,
+  //                 ),
+  //               ),
+  //
+  //               const SizedBox(height: 8),
+  //
+  //               /// 📄 Description
+  //               Align(
+  //                 alignment: Alignment.centerLeft,
+  //                 child: Text(
+  //                   "An order $existingId already exists for this quotation. Do you want to open it?",
+  //                   style: TextStyles.f14w500mGray7,
+  //                 ),
+  //               ),
+  //
+  //               const SizedBox(height: 20),
+  //
+  //               Divider(color: AppColors.mGray3, height: 1),
+  //
+  //               const SizedBox(height: 16),
+  //
+  //               /// 🔘 Buttons
+  //               Row(
+  //                 children: [
+  //                   Expanded(
+  //                     child: OutlinedButton(
+  //                       style: OutlinedButton.styleFrom(
+  //                         padding: const EdgeInsets.symmetric(vertical: 12),
+  //                         side: BorderSide(color: AppColors.mGray3),
+  //                         shape: RoundedRectangleBorder(
+  //                           borderRadius: BorderRadius.circular(10),
+  //                         ),
+  //                       ),
+  //                       onPressed: isLoading
+  //                           ? null
+  //                           : () {
+  //                         //  ref.read(orderDetailProvider.notifier).clearState();
+  //                         Navigator.pop(context,true);
+  //                       },
+  //                       child: Text(
+  //                         "Stay Here",
+  //                         style: TextStyles.f14w600mGray9,
+  //                       ),
+  //                     ),
+  //                   ),
+  //
+  //                   const SizedBox(width: 12),
+  //
+  //                   Expanded(
+  //                     child: ElevatedButton(
+  //                       style: ElevatedButton.styleFrom(
+  //                         backgroundColor: AppColors.primarySecond,
+  //                         padding: const EdgeInsets.symmetric(vertical: 12),
+  //                         shape: RoundedRectangleBorder(
+  //                           borderRadius: BorderRadius.circular(10),
+  //                         ),
+  //                         elevation: 0,
+  //                       ),
+  //                       onPressed:
+  //                       // isLoading && !_dialogShown ? null :
+  //                           () async {
+  //                         final navigator = Navigator.of(context);
+  //
+  //                         final isSuccess = await ref.read(orderDetailProvider.notifier).fetchOrderByUid(existingId);
+  //
+  //                         if (!mounted) return;
+  //
+  //                         if (!isSuccess) {
+  //                           ToastHelper.showError(message: 'Failed to load order details',);
+  //                           return;
+  //                         }
+  //
+  //                         if (navigator.canPop()) {
+  //                           navigator.pop(false);
+  //                         }
+  //                         // final isSuccess = await ref
+  //                         //     .read(orderDetailProvider.notifier)
+  //                         //     .fetchOrderByUid(existingId);
+  //                         //
+  //                         // if (!isSuccess) {
+  //                         //   ToastHelper.showError(
+  //                         //     message: 'Failed to load order details',
+  //                         //   );
+  //                         //   return;
+  //                         // }
+  //                         // _dialogShown = true;
+  //                         // Navigator.pop(context);
+  //                       },
+  //                       child:
+  //                       // (isLoading && _dialogShown)
+  //                       //     ? SizedBox(
+  //                       //   height: 16,
+  //                       //   width: 16,
+  //                       //   child: CircularProgressIndicator(
+  //                       //     strokeWidth: 2,
+  //                       //     color: AppColors.mWhite,
+  //                       //   ),
+  //                       // ) :
+  //                       Text(
+  //                         "Open Order",
+  //                         style: TextStyles.f14w400White,
+  //                       ),
+  //                     ),
+  //                   ),
+  //                 ],
+  //               ),
+  //             ],
+  //           ),
+  //         ),
+  //       );
+  //     },
+  //   );
+  // }
+
+
+
+
+  bool _dialogShown = false;
   @override
   Widget build(BuildContext context) {
-    final state = ref.watch(orderDetailProvider);
 
+    final state = ref.watch(orderDetailProvider);
     final data = state.orderData?.data;
+
+    print("existingOrderNo>>>>> ${data?.existingOrderNo}");
+
+
     final pickup = data?.quotationAddresses?.pickup;
     final delivery = data?.quotationAddresses?.delivery;
     final items = data?.surveyItems ?? [];
@@ -198,7 +533,7 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
                               ),
                               SizedBox(height: 4),
                               Text(
-                                "${data?.existingOrderNo ?? "-"}",
+                                "${data?.existingOrderNo ?? data?.orderNo ?? ""}",
                                 style: TextStyles.f12w600Gray5,
                               ),
                             ],

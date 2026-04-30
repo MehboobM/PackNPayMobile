@@ -76,10 +76,62 @@ class _QuotationScreenState extends ConsumerState<QuotationScreen> {
     super.dispose();
   }
 
+  void _onTapSort(BuildContext context, Offset position) async {
+    showGlobalPopupMenu(
+      context: context,
+      tapPosition: position,
+      items: [
+        PopupMenuModel(
+          value: 'new_first',
+          title: 'Date: Newest First',
+          icon: "assets/images/arrow_down2.svg",
+        ),
+        PopupMenuModel(
+          value: 'old_first',
+          title: 'Date: Oldest First',
+          icon: "assets/images/arrow_up.svg",
+        ),
+        PopupMenuModel(
+          value: 'clear',
+          title: 'Clear',
+          icon: "assets/images/x.svg",
+        ),
+      ],
+
+      onSelected: (value) async {
+        switch (value) {
+          case 'new_first':
+            ref.read(quotationProvider.notifier).fetchQuotationList(
+              sort: "new",
+            );
+            break;
+
+          case 'old_first':
+            ref.read(quotationProvider.notifier).fetchQuotationList(
+              sort: "old",
+            );
+            break;
+
+          case 'clear':
+            ref.read(quotationProvider.notifier).clearSort();
+            break;
+        }
+      },
+    );
+  }
+
+  bool get isFilterApplied {
+    final state = ref.watch(quotationProvider);
+    return state.sortOrder != null && state.sortOrder!.isNotEmpty;
+  }
+
+
   @override
   Widget build(BuildContext context) {
     final state = ref.watch(quotationProvider);
     final list = state.filteredList ?? [];
+    final canAddQuotation = PermissionHelper.canAdd(ModuleCode.quotation);
+
     return Scaffold(
       backgroundColor: const Color(0xffF5F5F7),
       appBar: AppBar(
@@ -122,7 +174,8 @@ class _QuotationScreenState extends ConsumerState<QuotationScreen> {
             ],
           ),
           const SizedBox(width: 16),
-          Container(
+          if(canAddQuotation)
+            Container(
             margin: const EdgeInsets.only(right: 12),
             child: ElevatedButton.icon(
               style: ElevatedButton.styleFrom(
@@ -226,23 +279,45 @@ class _QuotationScreenState extends ConsumerState<QuotationScreen> {
 
                 /// FILTER
                 GestureDetector(
-                  onTap: () {
-                    showModalBottomSheet(
-                      context: context,
-                      isScrollControlled: true,
-                      backgroundColor: Colors.transparent,
-                      builder: (context) => const FilterBottomSheet(),
-                    );
+                  onTapDown: (details) {
+                    // showModalBottomSheet(
+                    //   context: context,
+                    //   isScrollControlled: true,
+                    //   backgroundColor: Colors.transparent,
+                    //   builder: (context) => const FilterBottomSheet(),
+                    // );
+                    _onTapSort(context, details.globalPosition);
                   },
-                  child: Container(
-                    height: 48,
-                    width: 48,
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(12),
-                      border: Border.all(color: AppColors.mGray3),
-                    ),
-                    child: const Icon(Icons.filter_list),
+                  child: Stack(
+                    children: [
+                      Container(
+                        height: 48,
+                        width: 48,
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(12),
+                          border: Border.all(color: AppColors.mGray3),
+                        ),
+                        child: const Icon(Icons.filter_list),
+                      ),
+
+                      /// 🔴 DOT INDICATOR
+                      if (isFilterApplied)
+                        Positioned(
+                          right: 6,
+                          top: 6,
+                          child: Container(
+                            height: 10,
+                            width: 10,
+                            decoration: const BoxDecoration(
+                              color: Colors.black,
+                              shape: BoxShape.circle,
+                            ),
+                          ),
+                        ),
+
+
+                    ],
                   ),
                 ),
 
@@ -263,12 +338,7 @@ class _QuotationScreenState extends ConsumerState<QuotationScreen> {
                         toDate = picked.end;
                       });
 
-                      ref
-                          .read(quotationProvider.notifier)
-                          .fetchQuotationList(
-                        fromDate: formatDate(fromDate!),
-                        toDate: formatDate(toDate!),
-                      );
+                      ref.read(quotationProvider.notifier).fetchQuotationList(fromDate: formatDate(fromDate!), toDate: formatDate(toDate!),);
                     }
                   },
                   child: Container(
@@ -282,6 +352,65 @@ class _QuotationScreenState extends ConsumerState<QuotationScreen> {
                     child: const Icon(Icons.calendar_today),
                   ),
                 ),
+
+                /// FILTER
+                // GestureDetector(
+                //   onTap: () {
+                //     showModalBottomSheet(
+                //       context: context,
+                //       isScrollControlled: true,
+                //       backgroundColor: Colors.transparent,
+                //       builder: (context) => const FilterBottomSheet(),
+                //     );
+                //   },
+                //   child: Container(
+                //     height: 48,
+                //     width: 48,
+                //     decoration: BoxDecoration(
+                //       color: Colors.white,
+                //       borderRadius: BorderRadius.circular(12),
+                //       border: Border.all(color: AppColors.mGray3),
+                //     ),
+                //     child: const Icon(Icons.filter_list),
+                //   ),
+                // ),
+                //
+                // const SizedBox(width: 10),
+                //
+                // /// CALENDAR
+                // GestureDetector(
+                //   onTap: () async {
+                //     final picked = await showDateRangePicker(
+                //       context: context,
+                //       firstDate: DateTime(2020),
+                //       lastDate: DateTime(2100),
+                //     );
+                //
+                //     if (picked != null) {
+                //       setState(() {
+                //         fromDate = picked.start;
+                //         toDate = picked.end;
+                //       });
+                //
+                //       ref
+                //           .read(quotationProvider.notifier)
+                //           .fetchQuotationList(
+                //         fromDate: formatDate(fromDate!),
+                //         toDate: formatDate(toDate!),
+                //       );
+                //     }
+                //   },
+                //   child: Container(
+                //     height: 48,
+                //     width: 48,
+                //     decoration: BoxDecoration(
+                //       color: Colors.white,
+                //       borderRadius: BorderRadius.circular(12),
+                //       border: Border.all(color: AppColors.mGray3),
+                //     ),
+                //     child: const Icon(Icons.calendar_today),
+                //   ),
+                // ),
               ],
             ),
 
@@ -435,32 +564,37 @@ class _QuotationScreenState extends ConsumerState<QuotationScreen> {
     );
   }
   void _onTapMenu(BuildContext context, Offset position,String? quotationNo) {
+
     final canEditQuotation = PermissionHelper.canEdit(ModuleCode.quotation);
     final canDeleteQuotation = PermissionHelper.canDelete(ModuleCode.quotation);
+    final canViewOrder = PermissionHelper.canView(ModuleCode.order);
+    final canAddOrder = PermissionHelper.canAdd(ModuleCode.order);
+
     showGlobalPopupMenu(
       context: context,
       tapPosition: position,
       items: [
        if(canEditQuotation)
-         PopupMenuModel(
+           PopupMenuModel(
           value: 'edit',
           title: 'Edit',
           icon: "assets/images/edit.svg",
         ),
 
        if(canDeleteQuotation)
-         PopupMenuModel(
+           PopupMenuModel(
           value: 'delete',
           title: 'Delete',
           icon: "assets/images/delete.svg",
         ),
 
-        PopupMenuModel(
+          PopupMenuModel(
           value: 'signature',
           title: 'Customer Signature',
           icon: "assets/images/signature.svg",
         ),
 
+        if(canViewOrder && canAddOrder)
         PopupMenuModel(
           value: 'order_generate',
           title: 'Order Generate',
@@ -537,6 +671,7 @@ class _QuotationScreenState extends ConsumerState<QuotationScreen> {
       },
     );
   }
+
 
   Future<void> generateOrder(BuildContext context, String uid) async {
     final container = ProviderScope.containerOf(context, listen: false);

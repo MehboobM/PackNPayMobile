@@ -16,6 +16,8 @@ class OrderRepository {
     int page = 1,
     String? fromDate,
     String? toDate,
+    String? status, // ✅ ADD
+    String? sort,
   }) async {
     try {
       final Map<String, dynamic> params = {
@@ -26,6 +28,16 @@ class OrderRepository {
         params["from_date"] = fromDate;
         params["to_date"] = toDate;
       }
+      /// ✅ STATUS FILTER
+      if (status != null && status.isNotEmpty) {
+        params["status"] = status;
+      }
+      /// ✅ SORT FILTER
+      if (sort != null && sort.isNotEmpty) {
+        params["sort_by"] = "created_at";
+        params["sort_order"] = sort; // new / old
+      }
+
       final response = await network.get(
         ApiEndPoints.orderList,
         queryParams: params,

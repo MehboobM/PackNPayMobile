@@ -103,6 +103,20 @@ enum ModuleCode {
   expense,
   lr,
   letterHead,
+
+  // ✅ NEW MODULES
+  home,
+  subscription,
+  business,
+  accounting,
+  download,
+  helpLine,
+  support,
+  helpSupport,
+  userProfile,
+  complaints,
+  vendor,
+  items,
 }
 
 extension ModuleCodeExtension on ModuleCode {
@@ -124,6 +138,32 @@ extension ModuleCodeExtension on ModuleCode {
         return "LR";
       case ModuleCode.letterHead:
         return "LETTER_HEAD";
+
+    // ✅ NEW CASES
+      case ModuleCode.home:
+        return "HOME";
+      case ModuleCode.subscription:
+        return "SUBSCRIPTION";
+      case ModuleCode.business:
+        return "BUSINESS";
+      case ModuleCode.accounting:
+        return "ACCOUNTING";
+      case ModuleCode.download:
+        return "DOWNLOAD";
+      case ModuleCode.helpLine:
+        return "HELP_LINE";
+      case ModuleCode.support:
+        return "SUPPORT";
+      case ModuleCode.helpSupport:
+        return "HELP_SUPPORT";
+      case ModuleCode.userProfile:
+        return "USER_PROFILE";
+      case ModuleCode.complaints:
+        return "COMPLAINTS";
+      case ModuleCode.vendor:
+        return "VENDOR";
+      case ModuleCode.items:
+        return "ITEMS";
     }
   }
 }
