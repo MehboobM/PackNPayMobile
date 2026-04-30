@@ -32,4 +32,5 @@ const String lrBiltySettingsRoute = '/lrBiltySettingsRoute';
 const String languageRoute = '/languageScreen';
 const String myBusinessRoute = "/myBusinessRoute";
 const String companyListRoute = "/companyListScreen";
+const String PlansRoute = "/plans_screen";
 

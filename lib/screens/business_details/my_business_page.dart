@@ -1,18 +1,27 @@
+import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'dart:ui';
 import 'dart:typed_data';
 import 'package:image_picker/image_picker.dart';
 import 'package:dio/dio.dart';
+import '../../api_services/network_handler.dart';
+import '../../models/location_modal.dart';
+import '../../notifier/location_notifier.dart';
+import '../../utils/toast_message.dart';
 import 'add_signature.dart';
 import 'dart:io';
-class MyBusinessPage extends StatefulWidget {
+class MyBusinessPage extends ConsumerStatefulWidget {
   final String? uid;
   const MyBusinessPage({super.key, this.uid});
+
   @override
-  State<MyBusinessPage> createState() => _MyBusinessPageState();
+  ConsumerState<MyBusinessPage> createState() => _MyBusinessPageState();
 }
-class _MyBusinessPageState extends State<MyBusinessPage> {
+class _MyBusinessPageState extends ConsumerState<MyBusinessPage> {
+  StateModel? _selectedState;
+  CityModel? _selectedCity;
   final Dio _dio = Dio();
   Uint8List? _signatureBytes;
   List<Uint8List> _upiQrList = [];
@@ -57,15 +66,122 @@ class _MyBusinessPageState extends State<MyBusinessPage> {
       _fetchBusinessData();
     }
   }
+  Future<void> _submitBusiness() async {
+    try {
+      if (!_formKey.currentState!.validate()) return;
+
+      if (_selectedState == null || _selectedCity == null) {
+        ToastHelper.showError(message: "Please select state & city");
+        return;
+      }
+
+      final isUpdate = widget.uid != null;
+
+      /// 🔹 BODY DATA
+      final Map<String, dynamic> body = {
+        "company_name": _nameController.text.trim(),
+        "tagline": _taglineController.text.trim(),
+        "email": _emailController.text.trim(),
+        "mobile": _contact1Controller.text.trim(),
+        "landline": _landlineController.text.trim(),
+        "contact2": _contact2Controller.text.trim(),
+        "contact3": _contact3Controller.text.trim(),
+        "contact4": _contact4Controller.text.trim(),
+        "contact5": _contact5Controller.text.trim(),
+        "alternate_phone": _altContactController.text.trim(),
+        "toll_free": _tollFreeController.text.trim(),
+        "website": _websiteController.text.trim(),
+        "gst_no": _gstController.text.trim(),
+        "pan_no": _panController.text.trim(),
+        "jurisdiction": _jurisdiction1Controller.text.trim(),
+        "address": _addressController.text.trim(),
+        "state": _selectedState!.id.toString(),
+        "city": _selectedCity!.id.toString(),
+
+        "beneficiary_name": _beneficiaryController.text.trim(),
+        "bank_name": _bankNameController.text.trim(),
+        "account_no": _accountNoController.text.trim(),
+        "ifsc_no": _ifscController.text.trim(),
+        "branch_name": _branchController.text.trim(),
+
+        "upi_id": _upiId1Controller.text.trim(),
+        "upi_id2": _upiId2Controller.text.trim(),
+        "phonepe_no": _phonepeController.text.trim(),
+        "gpay_no": _gpayController.text.trim(),
+      };
+
+      /// ✅ ADD UID ONLY FOR UPDATE
+      if (isUpdate) {
+        body["uid"] = widget.uid;
+      }
+
+      /// 🔹 FILES
+      final Map<String, File> files = {};
+
+      if (_businessLogo != null) {
+        files["logo"] = File(_businessLogo!.path);
+      }
+
+      if (_signatureBytes != null) {
+        files["signature"] =
+        await _createTempFile(_signatureBytes!, "signature.png");
+      }
+
+      for (int i = 0; i < _upiQrList.length; i++) {
+        files["upi_qr[$i]"] =
+        await _createTempFile(_upiQrList[i], "upi_$i.png");
+      }
+
+      /// 🔥 API CALL
+      final response = await NetworkHandler().postMultipart(
+        isUpdate ? "update-company-config" : "create-company",
+        body: body,
+        files: files.isEmpty ? null : files,
+      );
+
+      debugPrint("SUCCESS: ${response.data}");
+
+      /// ✅ SUCCESS TOAST
+      ToastHelper.showSuccess(
+        message: isUpdate
+            ? "Business updated successfully"
+            : "Business created successfully",
+      );
+
+      /// ✅ REDIRECT TO LIST PAGE (IMPORTANT)
+      if (mounted) {
+        Navigator.pop(context, true); // triggers refresh in list page
+      }
+
+    } on DioException catch (e) {
+      final errorMsg =
+          e.response?.data["message"] ?? "Something went wrong";
+
+      ToastHelper.showError(message: errorMsg.toString());
+
+      debugPrint("API ERROR: ${e.response?.data}");
+    } catch (e) {
+      ToastHelper.showError(message: "Unexpected error occurred");
+      debugPrint("ERROR: $e");
+    }
+  }
+  Future<File> _createTempFile(Uint8List bytes, String filename) async {
+    final dir = await Directory.systemTemp.createTemp();
+    final file = File("${dir.path}/$filename");
+    await file.writeAsBytes(bytes);
+    return file;
+  }
 
   Future<void> _fetchBusinessData() async {
     try {
-      final response = await _dio.get(
-        'http://192.168.0.247:5000/api/company-config',
-        queryParameters: {'uid': widget.uid},
+      final response = await NetworkHandler().get(
+        "company-config",
+        queryParams: {'uid': widget.uid},
       );
-      debugPrint("API Response: ${response.data}");
+
       final data = response.data;
+
+      debugPrint("API Response: $data");
 
       setState(() {
         _nameController.text = (data['company_name'] ?? "").toString();
@@ -93,10 +209,13 @@ class _MyBusinessPageState extends State<MyBusinessPage> {
         _upiId2Controller.text = (data['upi_id2'] ?? "").toString();
         _phonepeController.text = (data['phonepe_no'] ?? "").toString();
         _gpayController.text = (data['gpay_no'] ?? "").toString();
+
         if (data['logo'] != null) {
-          _networkLogoUrl = data['logo'].toString().replaceAll('localhost', '192.168.0.247');
+          _networkLogoUrl = data['logo'].toString();
         }
       });
+    } on DioException catch (e) {
+      debugPrint("GET ERROR: ${e.response?.data}");
     } catch (e) {
       debugPrint("Error fetching business details: $e");
     }
@@ -107,6 +226,7 @@ class _MyBusinessPageState extends State<MyBusinessPage> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
+        surfaceTintColor: Colors.white,
         backgroundColor: Colors.white,
         elevation: 0,
         leading: IconButton(
@@ -194,10 +314,52 @@ class _MyBusinessPageState extends State<MyBusinessPage> {
         _buildTextField(hint: "XXX XXX XXX XX", controller: _gstController),
         _buildLabel("PAN no."),
         _buildTextField(hint: "XXXX XXXX XXX", controller: _panController),
+        /// STATE DROPDOWN
         _buildLabel("State"),
-        _buildDropdownField(hint: "Select"),
+        ref.watch(stateProvider).when(
+          data: (states) => _commonDropdown<StateModel>(
+            hint: "Select State",
+            items: states,
+            selectedValue: _selectedState,
+            label: (s) => s.name,
+            onChanged: (value) {
+              setState(() {
+                _selectedState = value;
+                _selectedCity = null; // reset city
+              });
+            },
+          ),
+          loading: () => const Padding(
+            padding: EdgeInsets.all(8.0),
+            child: CircularProgressIndicator(),
+          ),
+          error: (e, _) => Text("Error: $e"),
+        ),
+
+
+        /// CITY DROPDOWN
         _buildLabel("City"),
-        _buildDropdownField(hint: "Select"),
+        if (_selectedState == null)
+          const Text("Select state first")
+        else
+          ref.watch(cityProvider(_selectedState!.id)).when(
+            data: (cities) => _commonDropdown<CityModel>(
+              hint: "Select City",
+              items: cities,
+              selectedValue: _selectedCity,
+              label: (c) => c.name,
+              onChanged: (value) {
+                setState(() {
+                  _selectedCity = value;
+                });
+              },
+            ),
+            loading: () => const Padding(
+              padding: EdgeInsets.all(8.0),
+              child: CircularProgressIndicator(),
+            ),
+            error: (e, _) => Text("Error: $e"),
+          ),
         _buildLabel("Jurisdiction"),
         _buildTextField(hint: "Enter", controller: _jurisdiction1Controller),
         _buildLabel("Jurisdiction"),
@@ -520,7 +682,7 @@ class _MyBusinessPageState extends State<MyBusinessPage> {
         children: [
           Expanded(child: OutlinedButton(onPressed: () => Navigator.pop(context), style: OutlinedButton.styleFrom(padding: const EdgeInsets.symmetric(vertical: 16), side: const BorderSide(color: Color(0xFF2E4094)), shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8))), child: const Text("Back", style: TextStyle(color: Color(0xFF2E4094), fontWeight: FontWeight.bold)))),
           const SizedBox(width: 16),
-          Expanded(child: ElevatedButton(onPressed: () {}, style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFF2E4094), padding: const EdgeInsets.symmetric(vertical: 16), shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8))), child: Text(_activeTabIndex == 0 ? (widget.uid == null ? "Save Business" : "Update Details") : "Save", style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold)))),
+          Expanded(child: ElevatedButton(onPressed: _submitBusiness, style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFF2E4094), padding: const EdgeInsets.symmetric(vertical: 16), shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8))), child: Text(_activeTabIndex == 0 ? (widget.uid == null ? "Save Business" : "Update Details") : "Save", style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold)))),
         ],
       ),
     );
@@ -560,6 +722,78 @@ class _MyBusinessPageState extends State<MyBusinessPage> {
         }
       }
     }
+  }
+
+  Widget _commonDropdown<T>({
+    required String hint,
+    required List<T> items,
+    required T? selectedValue,
+    required String Function(T) label,
+    required Function(T?) onChanged,
+  }) {
+    return DropdownButtonHideUnderline(
+      child: DropdownButton2<T>(
+        isExpanded: true,
+        hint: Text(
+          hint,
+          style: const TextStyle(fontSize: 14, color: Colors.grey),
+        ),
+        value: selectedValue,
+        items: items.map((item) {
+          return DropdownMenuItem<T>(
+            value: item,
+            child: Text(
+              label(item),
+              style: const TextStyle(
+                fontSize: 14,
+                color: Color(0xFF1A1C1E),
+              ),
+            ),
+          );
+        }).toList(),
+        onChanged: onChanged,
+
+        /// 🔥 BUTTON STYLE (closed state)
+        buttonStyleData: ButtonStyleData(
+          height: 48,
+          padding: const EdgeInsets.symmetric(horizontal: 12),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(8),
+            border: Border.all(color: const Color(0xFFE5E7EB)),
+            color: Colors.white,
+          ),
+        ),
+
+        /// 🔥 DROPDOWN STYLE (opened white small box)
+        dropdownStyleData: DropdownStyleData(
+          maxHeight: 250,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(8),
+            color: Colors.white,
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.08),
+                blurRadius: 8,
+              ),
+            ],
+          ),
+          offset: const Offset(0, 4),
+        ),
+
+        /// 🔥 MENU ITEM STYLE
+        menuItemStyleData: const MenuItemStyleData(
+          height: 40,
+          padding: EdgeInsets.symmetric(horizontal: 12),
+        ),
+
+        /// 🔥 ICON
+        iconStyleData: const IconStyleData(
+          icon: Icon(Icons.keyboard_arrow_down),
+          iconSize: 20,
+          iconEnabledColor: Color(0xFF9CA3AF),
+        ),
+      ),
+    );
   }
 }
 

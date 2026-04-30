@@ -112,6 +112,46 @@ class NetworkHandler {
       rethrow;
     }
   }
+  Future<Response> postMultipart(
+      String url, {
+        required Map<String, dynamic> body,
+        Map<String, File>? files,
+      }) async {
+    try {
+      final token = await StorageService().getToken();
+
+      final formData = FormData.fromMap({
+        ...body,
+
+        if (files != null)
+          ...files.map(
+                (key, file) => MapEntry(
+              key,
+              MultipartFile.fromFileSync(
+                file.path,
+                filename: file.path.split('/').last,
+              ),
+            ),
+          ),
+      });
+
+      return await ServicesConstant.instanceDio(token).post(
+        url, // ✅ only endpoint
+        data: formData,
+        options: Options(
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        ),
+      );
+    } on DioException catch (e) {
+      print("POST MULTIPART ERROR: ${e.response}");
+      rethrow;
+    } catch (e) {
+      print("POST MULTIPART EXCEPTION: $e");
+      rethrow;
+    }
+  }
 }
 
 /*class NetworkHandler {
