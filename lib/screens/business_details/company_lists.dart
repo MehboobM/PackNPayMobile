@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:dio/dio.dart';
+import '../../api_services/network_handler.dart';
 import 'my_business_page.dart';
 
 class CompanyListsPage extends StatefulWidget {
@@ -10,62 +11,80 @@ class CompanyListsPage extends StatefulWidget {
 }
 
 class _CompanyListsPageState extends State<CompanyListsPage> {
-  final Dio _dio = Dio();
   List<dynamic> _companyList = [];
   bool _isLoading = true;
-  final String _baseUrl = 'http://192.168.0.247:5000';
-  final String _token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjE5LCJjb21wYW55X2lkIjoxMCwiY29tcGFueV9pZHMiOlsxMCwxMV0sImlhdCI6MTc3NjY4Nzg1OSwiZXhwIjoxNzc3MjkyNjU5fQ.IlY5FfknQSOAhdh30HJ8x8msHxxFUHq6SG_Ozy6HvDE";
+
+  final NetworkHandler _networkHandler = NetworkHandler();
 
   @override
   void initState() {
     super.initState();
-    _dio.options.headers['Authorization'] = 'Bearer $_token';
     _fetchCompanyData();
   }
+
+  // ✅ FETCH COMPANIES
   Future<void> _fetchCompanyData() async {
     setState(() => _isLoading = true);
+
     try {
-      final response = await _dio.get('$_baseUrl/api/company-config-list');
-      if (response.data['success'] == true) {
+      final response = await _networkHandler.get(
+        'company-config-list',
+      );
+
+      if (response.statusCode == 200 &&
+          response.data['success'] == true) {
+
         setState(() {
-          _companyList = response.data['data'];
+          _companyList = response.data['data'] ?? [];
           _isLoading = false;
         });
+
+      } else {
+        _handleError("Failed to load companies");
       }
+
     } catch (e) {
+      _handleError("Something went wrong");
       debugPrint("Error fetching companies: $e");
-      setState(() => _isLoading = false);
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text("Failed to load companies: $e")),
-        );
-      }
     }
   }
+
+  // ✅ SET DEFAULT COMPANY
   Future<void> _setDefaultCompany(String uid) async {
     try {
-      final response = await _dio.patch('$_baseUrl/api/company-config/set-default/$uid');
+      final response = await _networkHandler.patch(
+        'company-config/set-default/$uid',
+        {},
+      );
 
       if (response.statusCode == 200) {
-        if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text("Company set as default successfully")),
-          );
-        }
+        _showSuccess("Company set as default successfully");
         _fetchCompanyData();
       }
+
     } catch (e) {
       debugPrint("Error setting default: $e");
-      if (mounted) {
-        String errorMessage = "Error updating default company";
-        if (e is DioException && e.response?.data != null) {
-          errorMessage = e.response?.data['message'] ?? errorMessage;
-        }
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(errorMessage)),
-        );
-      }
+      _handleError("Error updating default company");
     }
+  }
+
+  // ✅ COMMON ERROR HANDLER
+  void _handleError(String message) {
+    setState(() => _isLoading = false);
+
+    if (!mounted) return;
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text(message)),
+    );
+  }
+
+  void _showSuccess(String message) {
+    if (!mounted) return;
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text(message)),
+    );
   }
   @override
   Widget build(BuildContext context) {

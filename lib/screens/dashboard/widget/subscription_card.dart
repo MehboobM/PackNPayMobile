@@ -10,7 +10,10 @@ import '../../../notifier/dashboard_notifier.dart';
 import '../../../routes/route_names_const.dart';
 
 class SubscriptionCard extends ConsumerWidget {
-  const SubscriptionCard({super.key});
+  final String? navigateTo; // 👈 ADD THIS
+
+  const SubscriptionCard({super.key, this.navigateTo});
+
 
   String formatDate(String date) {
     try {
@@ -56,7 +59,10 @@ class SubscriptionCard extends ConsumerWidget {
                 ),
                 InkWell(
                   onTap: () {
-                    Navigator.pushNamed(context, SubscriptionRoute);
+                    Navigator.pushNamed(
+                      context,
+                      navigateTo ?? SubscriptionRoute,
+                    );
                   },
                   child: Image.asset(
                     "assets/images/renew_button.png",
@@ -117,7 +123,7 @@ class SubscriptionCard extends ConsumerWidget {
                 onTap: () {
                   Navigator.pushNamed(
                     context,
-                    SubscriptionRoute,
+                    navigateTo ?? SubscriptionRoute,
                   );
                 },
                 child: Image.asset(

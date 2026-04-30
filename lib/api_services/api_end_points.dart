@@ -71,9 +71,7 @@ class ApiEndPoints {
   static const String getcalender= "dashboard/calendar";
   static const String subscription = "subscription/current";
   static const String subscriptionHistory = "subscription/history";
-
-
-
+  static const String subscriptionPlans = "subscription/plans";
   static const String setFollowUp = "dashboard/create-action";
 
 

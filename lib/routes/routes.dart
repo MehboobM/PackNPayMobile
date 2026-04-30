@@ -26,6 +26,7 @@ import '../screens/login/login_screen.dart';
 import '../screens/new_survey/survey_link_screen.dart';
 import '../screens/orders/order_details.dart';
 import '../screens/orders/order_screen.dart';
+import '../screens/subscription/plans_page.dart';
 import '../screens/survey/survey_list_screen.dart';
 import '../screens/setting_helpsupport/help_support.dart';
 import '../screens/setting_helpsupport/letter_head.dart';
@@ -202,6 +203,10 @@ class NavigationRouter {
       case companyListRoute:
         return MaterialPageRoute(
           builder: (_) => const CompanyListsPage(),
+        );
+      case PlansRoute:
+        return MaterialPageRoute(
+          builder: (_) => const PlansPage(),
         );
 
 

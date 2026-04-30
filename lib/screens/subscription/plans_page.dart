@@ -1,23 +1,133 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
-import 'package:dio/dio.dart';class PlansPage extends StatefulWidget {
+import 'package:dio/dio.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:razorpay_flutter/razorpay_flutter.dart';
+
+import '../../api_services/api_end_points.dart';
+import '../../api_services/network_handler.dart';
+import '../../notifier/dashboard_notifier.dart';
+class PlansPage extends ConsumerStatefulWidget {
   const PlansPage({super.key});
 
   @override
-  State<PlansPage> createState() => _PlansPageState();
+  ConsumerState<PlansPage> createState() => _PlansPageState();
 }
 
-class _PlansPageState extends State<PlansPage> {
+class _PlansPageState extends ConsumerState<PlansPage> {
+  final NetworkHandler _networkHandler = NetworkHandler();
   int selectedIndex = 0;
   List<dynamic> apiPlans = [];
   bool isLoading = true;
   String? errorMessage;
-
-  final String authToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjE5LCJjb21wYW55X2lkIjoxMCwiY29tcGFueV9pZHMiOlsxMCwxMV0sImlhdCI6MTc3NjY4Nzg1OSwiZXhwIjoxNzc3MjkyNjU5fQ.IlY5FfknQSOAhdh30HJ8x8msHxxFUHq6SG_Ozy6HvDE";
+  late Razorpay _razorpay;
 
   @override
   void initState() {
     super.initState();
     _fetchPlans();
+
+    _razorpay = Razorpay();
+    _razorpay.on(Razorpay.EVENT_PAYMENT_SUCCESS, _handlePaymentSuccess);
+    _razorpay.on(Razorpay.EVENT_PAYMENT_ERROR, _handlePaymentError);
+    _razorpay.on(Razorpay.EVENT_EXTERNAL_WALLET, _handleExternalWallet);
+  }
+
+  @override
+  void dispose() {
+    _razorpay.clear();
+    super.dispose();
+  }
+  Future<void> _startPayment() async {
+    try {
+      final selectedPlan = apiPlans[selectedIndex];
+
+      // ✅ Handle FREE plan
+      if (selectedPlan["amount"] == "0.00") {
+        print("Free plan selected → skip Razorpay");
+        return;
+      }
+
+      final response = await _networkHandler.post(
+        "subscription/create-order",
+        {
+          "plan_uid": selectedPlan["uid"],
+        },
+      );
+
+      final data = response.data;
+
+      if (data["success"] == true) {
+        // ✅ CORRECT parsing based on your response
+        final order = data["order"]["order"];
+
+        String orderId = order["id"];
+        int amount = order["amount"];
+
+        String key = data["key"]; // dynamic key from backend
+
+        _openRazorpay(orderId, amount, key);
+      } else {
+        print("API Error: ${data["message"]}");
+      }
+    } catch (e) {
+      print("Create Order Error: $e");
+    }
+  }
+  void _handlePaymentError(PaymentFailureResponse response) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text("Payment Failed: ${response.message}")),
+    );
+  }
+  void _handleExternalWallet(ExternalWalletResponse response) {
+    print("External Wallet: ${response.walletName}");
+  }
+  void _openRazorpay(String orderId, int amount, String key) {
+    var options = {
+      'key': key, // ✅ use backend key
+      'amount': amount,
+      'name': 'PackNPay',
+      'description': 'Subscription Plan',
+      'order_id': orderId,
+      'prefill': {
+        'contact': '9999999999',
+        'email': 'test@gmail.com',
+      },
+      'theme': {
+        'color': '#2E3B8E'
+      }
+    };
+
+    try {
+      _razorpay.open(options);
+    } catch (e) {
+      print("Razorpay Open Error: $e");
+    }
+  }
+  void _handlePaymentSuccess(PaymentSuccessResponse response) async {
+    try {
+      final selectedPlan = apiPlans[selectedIndex];
+
+      final verifyResponse = await _networkHandler.post(
+        "subscription/verify",
+        {
+          "plan_uid": selectedPlan["uid"], // ✅ use uid here also
+          "vendor_id": 5, // replace dynamically
+          "razorpay_order_id": response.orderId,
+          "razorpay_payment_id": response.paymentId,
+          "razorpay_signature": response.signature,
+        },
+      );
+
+      if (verifyResponse.data["success"] == true) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text("Payment Successful")),
+        );
+      }
+    } catch (e) {
+      print("Verify Error: $e");
+    }
   }
 
   Future<void> _fetchPlans() async {
@@ -27,36 +137,36 @@ class _PlansPageState extends State<PlansPage> {
     });
 
     try {
-      final dio = Dio();
-      final response = await dio.get(
-        'http://192.168.0.247:5000/api/subscription/plans',
-        options: Options(
-          headers: {
-            'Authorization': 'Bearer $authToken',
-            'Content-Type': 'application/json',
-          },
-        ),
+      final response = await _networkHandler.get(
+        ApiEndPoints.subscriptionPlans,
       );
 
-      if (response.statusCode == 200) {
+      if (response.statusCode == 200 &&
+          response.data['success'] == true) {
+
         setState(() {
-          // Adjust based on your API response structure.
-          // If the list is inside a key, use response.data['data'] or similar.
-          apiPlans = response.data is List ? response.data : (response.data['plans'] ?? []);
+          apiPlans = response.data['data'] ?? [];
           isLoading = false;
+        });
+
+      } else {
+        setState(() {
+          isLoading = false;
+          errorMessage = "Failed to load plans";
         });
       }
     } catch (e) {
       setState(() {
         isLoading = false;
-        errorMessage = "Failed to load plans. Check connection.";
+        errorMessage = "Something went wrong";
       });
-      debugPrint("Dio Error: $e");
+      print("ERROR: $e");
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    final subscription = ref.watch(dashboardProvider).subscription;
     return Scaffold(
       backgroundColor: Colors.white,
       body: Stack(
@@ -215,8 +325,8 @@ class _PlansPageState extends State<PlansPage> {
               },
               child: _buildPlanCard(
                 tag,
-                plan["plan_name"]?.toString().toUpperCase() ?? "PLAN",
-                "₹${plan["price"]}",
+                plan["name"]?.toString().toUpperCase() ?? "PLAN",
+                "₹${plan["amount"]}",
                 selectedIndex == index,
               ),
             ),
@@ -344,14 +454,16 @@ class _PlansPageState extends State<PlansPage> {
     String currentPlanName = apiPlans[selectedIndex]["plan_name"] ?? "PLAN";
 
     // Map 'benefits' from API if available, otherwise use fallback
-    List<dynamic> features = apiPlans[selectedIndex]["benefits"] ?? [
-      "Unlimited local move consultations",
-      "Priority scheduling",
-      "Free packing material tips",
-      "Assistance with short-term relocations",
-      "24/7 customer assistance",
-      "Packing & unpacking guidance",
-    ];
+    List<dynamic> features = [];
+
+    try {
+      final desc = apiPlans[selectedIndex]["description"];
+      if (desc != null) {
+        features = jsonDecode(desc);
+      }
+    } catch (e) {
+      features = [];
+    }
 
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 20),
@@ -447,24 +559,40 @@ class _PlansPageState extends State<PlansPage> {
   }
 
   Widget _buildBottomButton() {
-    String price = apiPlans.isNotEmpty ? apiPlans[selectedIndex]["price"].toString() : "0";
+    if (apiPlans.isEmpty) return const SizedBox();
+
+    final subscription = ref.watch(dashboardProvider).subscription;
+
+    final selectedPlan = apiPlans[selectedIndex];
+    final price = selectedPlan["amount"].toString();
+
+    // ✅ MATCH ACTIVE PLAN
+    final isPurchased =
+        subscription != null &&
+            subscription.name.toLowerCase() ==
+                selectedPlan["name"].toString().toLowerCase();
+
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20),
       child: ElevatedButton(
-        onPressed: () {
-          // Add subscription logic here
-        },
+        onPressed: isPurchased ? null : _startPayment,
         style: ElevatedButton.styleFrom(
-          backgroundColor: const Color(0xFF2E3B8E),
+          backgroundColor:
+          isPurchased ? Colors.grey : const Color(0xFF2E3B8E),
           minimumSize: const Size(double.infinity, 56),
-          shape:
-          RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-          elevation: 0,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10),
+          ),
         ),
         child: Text(
-          "Starting at ₹$price/m",
+          isPurchased
+              ? "Purchased ✅"
+              : "Starting at ₹$price/m",
           style: const TextStyle(
-              fontSize: 18, fontWeight: FontWeight.w700, color: Colors.white),
+            fontSize: 18,
+            fontWeight: FontWeight.w700,
+            color: Colors.white,
+          ),
         ),
       ),
     );

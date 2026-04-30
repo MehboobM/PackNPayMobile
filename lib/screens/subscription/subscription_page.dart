@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -5,6 +6,7 @@ import '../../all_state/dashboard_state.dart';
 import '../../notifier/dashboard_notifier.dart';
 import '../../api_services/api_end_points.dart';
 import '../../api_services/network_handler.dart';
+import '../../routes/route_names_const.dart';
 import '../dashboard/widget/subscription_card.dart';
 
 class SubscriptionPage extends ConsumerStatefulWidget {
@@ -18,6 +20,28 @@ class SubscriptionPage extends ConsumerStatefulWidget {
 class _SubscriptionPageState
     extends ConsumerState<SubscriptionPage> {
   final NetworkHandler _networkHandler = NetworkHandler();
+  String formatFullDate(String date) {
+    try {
+      final parsed = DateTime.parse(date);
+      return DateFormat("MMM d, yyyy").format(parsed); // Jan 9, 2026
+    } catch (e) {
+      return date;
+    }
+  }
+
+  String formatShortDate(String date) {
+    try {
+      final parsed = DateTime.parse(date);
+      return DateFormat("MMM d, yy").format(parsed); // Jan 9, 26
+    } catch (e) {
+      return date;
+    }
+  }
+
+  String formatAmount(dynamic amount) {
+    if (amount == null) return "₹0";
+    return "₹${amount.toString()}";
+  }
 
   List<dynamic> historyList = [];
   bool isLoadingHistory = true;
@@ -97,7 +121,9 @@ class _SubscriptionPageState
 
             /// ✅ REUSED CARD
             if (dashboard != null)
-              const SubscriptionCard(),
+              const SubscriptionCard(
+                navigateTo: PlansRoute, // 👈 ADD THIS
+              ),
 
             const SizedBox(height: 24),
 
@@ -111,8 +137,8 @@ class _SubscriptionPageState
             ),
             const SizedBox(height: 12),
 
-            _buildSearchBar(),
-            const SizedBox(height: 16),
+            /*_buildSearchBar(),
+            const SizedBox(height: 16),*/
 
             /// 🔥 API DATA
             if (isLoadingHistory)
@@ -122,7 +148,9 @@ class _SubscriptionPageState
               const Center(child: Text("No History Found"))
             else
               Column(
-                children: historyList.map((item) {
+                children: historyList.asMap().entries.map((entry) {
+                  final index = entry.key;
+                  final item = entry.value;
                   final status = item['status'] ?? "";
 
                   final isActive =
@@ -132,6 +160,7 @@ class _SubscriptionPageState
                     padding:
                     const EdgeInsets.only(bottom: 12),
                     child: _buildHistoryItem(
+                      index,
                       status,
                       isActive
                           ? const Color(0xFFE3F2FD)
@@ -142,9 +171,9 @@ class _SubscriptionPageState
 
                       /// 🔥 PASS API DATA
                       planName: item['plan_name'] ?? '',
-                      amount: item['amount'].toString(),
                       startDate: item['start_date'] ?? '',
                       endDate: item['end_date'] ?? '',
+                      amount: formatAmount(item['amount']),
                     ),
                   );
                 }).toList(),
@@ -200,6 +229,7 @@ class _SubscriptionPageState
 
   /// ================= HISTORY ITEM =================
   Widget _buildHistoryItem(
+      int index,
       String status,
       Color bgColor,
       Color textColor, {
@@ -222,16 +252,20 @@ class _SubscriptionPageState
             mainAxisAlignment:
             MainAxisAlignment.spaceBetween,
             children: [
-              const Text("#01",
-                  style: TextStyle(
-                      color: Colors.grey, fontSize: 12)),
+              Text(
+                "#${(index + 1).toString().padLeft(2, '0')}",
+                style: const TextStyle(
+                  color: Colors.grey,
+                  fontSize: 12,
+                ),
+              ),
               Row(
                 children: [
-                  const Icon(Icons.visibility_outlined,
+                  /*const Icon(Icons.visibility_outlined,
                       size: 18, color: Colors.grey),
                   const SizedBox(width: 12),
                   const Icon(Icons.file_download_outlined,
-                      size: 18, color: Colors.grey),
+                      size: 18, color: Colors.grey),*/
                   const SizedBox(width: 12),
                   Container(
                     padding: const EdgeInsets.symmetric(
@@ -268,10 +302,13 @@ class _SubscriptionPageState
             mainAxisAlignment:
             MainAxisAlignment.spaceBetween,
             children: [
-              _HistoryDetail("Price", "₹$amount"),
-              _HistoryDetail("Purchased On", startDate),
-              _HistoryDetail(
-                  "Period", "$startDate - $endDate"),
+              _HistoryDetail("Price", amount),
+      _HistoryDetail("Purchased On", formatFullDate(startDate)),
+      _HistoryDetail(
+        "Period",
+        "${formatShortDate(startDate)} - ${formatShortDate(endDate)}",
+      ),
+
             ],
           ),
         ],
@@ -304,4 +341,6 @@ class _HistoryDetail extends StatelessWidget {
       ],
     );
   }
+
+
 }
