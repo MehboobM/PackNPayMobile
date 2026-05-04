@@ -216,6 +216,13 @@ class _NewQuotationScreenState extends ConsumerState<NewQuotationScreen> {
 
     final data = ref.read(quotationFormProvider);
 
+    // 🔍 PRINT REQUEST DATA
+    debugPrint("======== API REQUEST DATA ========");
+    debugPrint("KeyType: ${widget.keyType}");
+    debugPrint("UID: ${widget.uid}");
+    debugPrint("Payload: ${data.toJson()}"); // Assuming your model has toJson()
+    debugPrint("==================================");
+
     try {
       /// 🔄 LOADER
       showDialog(
@@ -235,23 +242,28 @@ class _NewQuotationScreenState extends ConsumerState<NewQuotationScreen> {
       /// ✅ FINAL STEP
       if (currentStep == 3) {
         bool success = false;
+        dynamic apiResponse; // Variable to store response for logging
 
         /// 🔥 EDIT FLOW
-        if (widget.keyType == "edit_click") {
-          success = await ref.read(quotationProvider.notifier).updateQuotation(widget.uid ?? "", data,widget.keyType);
-        }else if(widget.keyType == "edit_click_from_survey"){
-          success = await ref.read(quotationProvider.notifier).updateQuotation(widget.uid ?? "", data,widget.keyType);
+        if (widget.keyType == "edit_click" || widget.keyType == "edit_click_from_survey") {
+          apiResponse = await ref.read(quotationProvider.notifier).updateQuotation(widget.uid ?? "", data, widget.keyType);
+          success = apiResponse == true; // Adjust this based on what your updateQuotation returns
         }
-
         /// 🔥 CREATE FLOW
         else {
-          final res = await ref.read(quotationProvider.notifier).createQuotation(data);
+          apiResponse = await ref.read(quotationProvider.notifier).createQuotation(data);
+          success = apiResponse['success'] == true;
+        }
 
-          success = res['success'] == true;
+        // 🔍 PRINT API RESPONSE
+        debugPrint("======== API RESPONSE ========");
+        debugPrint(apiResponse.toString());
+        debugPrint("==============================");
 
-          if (success) {
+        if (success) {
+          if (widget.keyType == "create_quatation" && apiResponse is Map) {
             ToastHelper.showSuccess(
-              message: "Quotation Created: ${res['quotation_no']}",
+              message: "Quotation Created: ${apiResponse['quotation_no']}",
             );
           }
         }
@@ -284,6 +296,11 @@ class _NewQuotationScreenState extends ConsumerState<NewQuotationScreen> {
     } catch (e) {
       if (mounted) Navigator.pop(context);
 
+      // 🔍 PRINT ERROR
+      debugPrint("======== API ERROR ========");
+      debugPrint(e.toString());
+      debugPrint("===========================");
+
       ToastHelper.showError(
         message: widget.keyType == "edit_click"
             ? "Failed to update quotation"
@@ -291,10 +308,4 @@ class _NewQuotationScreenState extends ConsumerState<NewQuotationScreen> {
       );
     }
   }
-
-
 }
-
-
-
-

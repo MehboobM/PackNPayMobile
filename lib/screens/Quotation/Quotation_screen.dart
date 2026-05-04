@@ -75,6 +75,25 @@ class _QuotationScreenState extends ConsumerState<QuotationScreen> {
     searchController.dispose();
     super.dispose();
   }
+  void _exportQuotations() {
+    final state = ref.read(quotationProvider);
+
+    if (state.filteredList == null || state.filteredList!.isEmpty) {
+      ToastHelper.showError(message: "No data to export");
+      return;
+    }
+
+    ViewDownloadService.exportPdf(
+      context: context,
+      module: "QUOTATION",
+      filters: {
+        if (fromDate != null) "from_date": formatDate(fromDate!),
+        if (toDate != null) "to_date": formatDate(toDate!),
+        if (searchController.text.isNotEmpty)
+          "search": searchController.text,
+      },
+    );
+  }
 
   void _onTapSort(BuildContext context, Offset position) async {
     showGlobalPopupMenu(
@@ -162,18 +181,18 @@ class _QuotationScreenState extends ConsumerState<QuotationScreen> {
           ],
         ),
         actions: [
-          Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              SvgPicture.asset(
+          GestureDetector(
+            onTap: _exportQuotations, // ✅ direct download
+            child: Padding(
+              padding: const EdgeInsets.only(right: 12),
+              child: SvgPicture.asset(
                 "assets/icons/pdf.svg",
-                width: 20,
-                height: 20,
+                width: 22,
+                height: 22,
                 color: AppColors.primary,
               ),
-            ],
+            ),
           ),
-          const SizedBox(width: 16),
           if(canAddQuotation)
             Container(
             margin: const EdgeInsets.only(right: 12),

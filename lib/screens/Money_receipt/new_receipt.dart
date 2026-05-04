@@ -113,7 +113,7 @@ class _NewReceiptScreenState extends ConsumerState<NewReceiptScreen> {
     if (amountController.text.isEmpty ||
         int.tryParse(amountController.text) == null ||
         int.parse(amountController.text) <= 0) {
-      ToastHelper.showError(message: "Enter valid amount (> 0)");
+      ToastHelper.showError(message: "Enter valid amount");
       return;
     }
 

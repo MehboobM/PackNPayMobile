@@ -1,5 +1,4 @@
-
-
+import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:pack_n_pay/notifier/quotation_form_notifier.dart';
 
@@ -11,7 +10,7 @@ import '../models/state_data.dart';
 import '../repositry/quatation_repository.dart';
 
 final quotationProvider = StateNotifierProvider<QuotationNotifier, QuotationState>(
-      (ref) => QuotationNotifier(QuatationRepository(NetworkHandler()),),
+      (ref) => QuotationNotifier(QuatationRepository(NetworkHandler())),
 );
 
 class QuotationNotifier extends StateNotifier<QuotationState> {
@@ -24,16 +23,13 @@ class QuotationNotifier extends StateNotifier<QuotationState> {
 
   void clearSort() {
     currentPage = 1;
-
     state = state.copyWith(
-      clearSort: true, // ✅ this removes sortOrder
+      clearSort: true,
       isPageLoading: true,
       isInitialLoading: true,
     );
-
-    fetchQuotationList(); // ✅ fresh API call
+    fetchQuotationList();
   }
-
 
   Future<void> fetchQuotationList({
     bool isLoadMore = false,
@@ -45,12 +41,11 @@ class QuotationNotifier extends StateNotifier<QuotationState> {
     try {
       if (!isLoadMore) {
         currentPage = 1;
-
         state = state.copyWith(
           isPageLoading: true,
           isInitialLoading: true,
           error: null,
-          sortOrder: sort, // ✅ SAVE SORT
+          sortOrder: sort,
         );
       }
 
@@ -63,24 +58,19 @@ class QuotationNotifier extends StateNotifier<QuotationState> {
       );
 
       final oldList = state.quatationData?.data ?? [];
-
-      final newList = isLoadMore
-          ? [...oldList, ...?data.data]
-          : data.data;
+      final newList = isLoadMore ? [...oldList, ...?data.data] : data.data;
 
       isLastPage = currentPage >= (data.pagination?.totalPages ?? 1);
-
       currentPage++;
 
       state = state.copyWith(
         isPageLoading: false,
         isInitialLoading: false,
         quatationData: data..data = newList,
-        filteredList: newList, // ✅ IMPORTANT
+        filteredList: newList,
       );
     } catch (e) {
-      print("Quotation error: $e");
-
+      debugPrint("Quotation error: $e");
       state = state.copyWith(
         isPageLoading: false,
         isInitialLoading: false,
@@ -88,84 +78,28 @@ class QuotationNotifier extends StateNotifier<QuotationState> {
       );
     }
   }
-  // Future<void> fetchQuotationList({
-  //   bool isLoadMore = false,
-  //   String? fromDate,
-  //   String? toDate,
-  //   String? status,
-  //   String? sort,
-  // }) async {
-  //   try {
-  //     if (!isLoadMore) {
-  //       currentPage = 1;
-  //       state = state.copyWith(isPageLoading: true);
-  //     }
-  //
-  //     final data = await repository.fetchQuatation(
-  //       page: currentPage,
-  //       fromDate: fromDate,
-  //       toDate: toDate,
-  //       status: status,
-  //       sort: sort
-  //     );
-  //
-  //     final oldList = state.quatationData?.data ?? [];
-  //
-  //     final newList = isLoadMore
-  //         ? [...oldList, ...?data.data]
-  //         : data.data;
-  //
-  //     isLastPage =
-  //         currentPage >= (data.pagination?.totalPages ?? 1);
-  //
-  //     currentPage++;
-  //
-  //     state = state.copyWith(
-  //       isPageLoading: false,
-  //       quatationData: data..data = newList,
-  //       filteredList: newList, // ✅ IMPORTANT (initial data)
-  //     );
-  //   } catch (e) {
-  //     state = state.copyWith(
-  //       isPageLoading: false,
-  //       error: "Error loading data",
-  //     );
-  //   }
-  // }
 
-  /// ✅ LOCAL SEARCH METHOD (NEW)
   void filterLocalList(String query) {
     final originalList = state.quatationData?.data ?? [];
-
     if (query.isEmpty) {
       state = state.copyWith(filteredList: originalList);
       return;
     }
 
     final lowerQuery = query.toLowerCase();
-
     final filtered = originalList.where((item) {
-      return (item.quotationNo ?? "")
-          .toLowerCase()
-          .contains(lowerQuery) ||
-          (item.customerName ?? "")
-              .toLowerCase()
-              .contains(lowerQuery) ||
-          (item.phone ?? "")
-              .toLowerCase()
-              .contains(lowerQuery);
+      return (item.quotationNo ?? "").toLowerCase().contains(lowerQuery) ||
+          (item.customerName ?? "").toLowerCase().contains(lowerQuery) ||
+          (item.phone ?? "").toLowerCase().contains(lowerQuery);
     }).toList();
 
     state = state.copyWith(filteredList: filtered);
   }
 
-
   Future<void> loadStates() async {
     try {
       state = state.copyWith(isPageLoading: true);
-
       final res = await repository.fetchStates();
-
       state = state.copyWith(
         isPageLoading: false,
         states: res.data ?? [],
@@ -178,18 +112,14 @@ class QuotationNotifier extends StateNotifier<QuotationState> {
     }
   }
 
-
   Future<void> onStateSelected(States selectedState) async {
     try {
-      // reset city first
       state = state.copyWith(
         selectedState: selectedState,
         selectedCity: null,
         cities: [],
       );
-
       final res = await repository.fetchCities(selectedState.id!);
-
       state = state.copyWith(
         cities: res.data ?? [],
       );
@@ -203,280 +133,128 @@ class QuotationNotifier extends StateNotifier<QuotationState> {
   Future<Map<String, dynamic>> createQuotation(QuotationFormModel model) async {
     try {
       state = state.copyWith(isPageLoading: true);
-
       final payload = await _buildPayload(model);
-
       final res = await repository.createQuotation(payload);
-
       state = state.copyWith(isPageLoading: false);
-
-      return res; // ✅ IMPORTANT
-
+      return res;
     } catch (e) {
       state = state.copyWith(isPageLoading: false);
-      throw Exception("Create quotation failed");
+      rethrow;
     }
   }
+
+  /// ✅ UPDATED PAYLOAD BUILDER WITH TYPE SAFETY
   Future<Map<String, dynamic>> _buildPayload(QuotationFormModel m) async {
     final companyId = await StorageService().getCompanyId();
     final userName = await StorageService().getUserName();
-    int companyIdInt = int.parse(companyId ?? "-1");
 
-    print("id is $companyIdInt>>>>>>>>>>$userName");
     return {
-      "company_id": companyId,
-      "customer_name": userName,
-      "phone": m.phone,
-      "email": m.email,
-      "company_or_party_name": m.companyName,
-      "party_name": m.partyName,
-      "gst_no": m.gstNo,
-
-
+      "company_id": companyId?.toString(), // Ensure String
+      "customer_name": userName?.toString(),
+      "phone": m.phone?.toString(),
+      "email": m.email?.toString(),
+      "company_or_party_name": m.companyName?.toString(),
+      "party_name": m.partyName?.toString(),
+      "gst_no": m.gstNo?.toString(),
 
       "quotation_date": formatToApiDate(m.quotationDate),
       "packing_date": formatToApiDate(m.packingDate),
       "delivery_date": formatToApiDate(m.deliveryDate),
 
-      "moving_from": m.pickupCityName,
-      "moving_to": m.deliveryCityName,
+      "moving_from": m.pickupCityName?.toString(),
+      "moving_to": m.deliveryCityName?.toString(),
 
-      "vehicle_type": m.vehicleType,
-      "load_type": m.loadType,
-      "moving_path": m.movingPath,
+      "vehicle_type": m.vehicleType?.toString(),
+      "load_type": m.loadType?.toString(),
+      "moving_path": m.movingPath?.toString(),
 
-      "remarks": m.specialNeeds,
+      "remarks": m.specialNeeds?.toString(),
 
       /// INSURANCE
-      "insurance_type": m.insuranceType,
-      "insurance_charge": m.insurancePercent,
-      "insurance_gst": m.insuranceGst,
-      "declaration_of_goods": m.goodsDeclaration,
+      "insurance_type": m.insuranceType?.toString(),
+      "insurance_charge": m.insurancePercent?.toString(),
+      "insurance_gst": m.insuranceGst?.toString(),
+      "declaration_of_goods": m.goodsDeclaration?.toString(),
 
-      "vehicle_insurance_type": m.vehicleInsuranceType,
-      "vehicle_insurance_charge": m.vehicleInsurancePercent,
-      "vehicle_insurance_gst": m.vehicleInsuranceGst,
-      "declaration_of_vehicle": m.vehicleDeclaration,
+      "vehicle_insurance_type": m.vehicleInsuranceType?.toString(),
+      "vehicle_insurance_charge": m.vehicleInsurancePercent?.toString(),
+      "vehicle_insurance_gst": m.vehicleInsuranceGst?.toString(),
+      "declaration_of_vehicle": m.vehicleDeclaration?.toString(),
 
       /// OTHER
-      "easy_access": m.easyAccess,
-      "balcony_items": m.balconyRemarks,
-      "loading_restrictions": m.restriction,
-      "unloading_restrictions": m.restriction,
-      "special_needs": m.specialNeeds,
+      "easy_access": m.easyAccess?.toString(),
+      "balcony_items": m.balconyRemarks?.toString(),
+      "loading_restrictions": m.restriction?.toString(),
+      "unloading_restrictions": m.restriction?.toString(),
+      "special_needs": m.specialNeeds?.toString(),
 
-      /// PAYMENT
-      "freight_charge": m.freightCharge,
-      "packing_charge": m.packingCharge,
-      "packing_charge_type": m.packingChargeType,
-      "unpacking_charge": m.unpackingCharge,
-      "unpacking_charge_type": m.unpackingChargeType,
-      "loading_charge": m.loadingCharge,
-      "loading_charge_type": m.loadingChargeType,
-      "unloading_charge": m.unloadingCharge,
-      "unloading_charge_type": m.unloadingChargeType,
-      "packing_material_charge": m.packingMaterialCharge,
-      "packing_material_charge_type": m.packingMaterialChargeType,
-      "total_amount": m.totalAmount,
-      /// TODO (optional calc)
-      "gst_amount": 0,
-      "discount": 0,
+      /// PAYMENT - All charges forced to String
+      "freight_charge": m.freightCharge?.toString(),
+      "packing_charge": m.packingCharge?.toString(),
+      "packing_charge_type": m.packingChargeType?.toString(),
+      "unpacking_charge": m.unpackingCharge?.toString(),
+      "unpacking_charge_type": m.unpackingChargeType?.toString(),
+      "loading_charge": m.loadingCharge?.toString(),
+      "loading_charge_type": m.loadingChargeType?.toString(),
+      "unloading_charge": m.unloadingCharge?.toString(),
+      "unloading_charge_type": m.unloadingChargeType?.toString(),
+      "packing_material_charge": m.packingMaterialCharge?.toString(),
+      "packing_material_charge_type": m.packingMaterialChargeType?.toString(),
+      "total_amount": m.totalAmount?.toString(),
 
+      "gst_amount": "0", // Force string
+      "discount": "0",   // Force string
 
-      "storage_charge": m.storageCharge,
-      "car_bike_tpt": m.tptCharge,
-      "misc_charge": m.miscCharge,
-      "other_charges": m.otherCharges,
-      "st_charge": m.stCharges,
+      "storage_charge": m.storageCharge?.toString(),
+      "car_bike_tpt": m.tptCharge?.toString(),
+      "misc_charge": m.miscCharge?.toString(),
+      "other_charges": m.otherCharges?.toString(),
+      "st_charge": m.stCharges?.toString(),
 
-      "surcharge": m.surchargeAmount,
-      "surcharge_type": m.surchargeType,
+      "surcharge": m.surchargeAmount?.toString(),
+      "surcharge_type": m.surchargeType?.toString(),
 
       /// GST
       "show_gst": "YES",
-      "gst_type": m.gstType,
-      "gst_percent": m.gstPercent,
-
+      "gst_type": m.gstType?.toString(),
+      "gst_percent": m.gstPercent?.toString(),
 
       /// PICKUP
       "pickup_address": {
-        "email": m.pickupEmail,
-        "phone": m.pickupPhone,
-        "state": m.pickupStateId,
-        "city": m.pickupCityId,
-        "pincode": m.pickupPincode,
-        "lift_available": m.pickupLiftAvailable,
-        "moving_date":formatToApiDate(m.packingDate),// m.packingDate,
+        "email": m.pickupEmail?.toString(),
+        "phone": m.pickupPhone?.toString(),
+        "state": m.pickupStateId?.toString(), // Force String
+        "city": m.pickupCityId?.toString(),   // Force String
+        "pincode": m.pickupPincode?.toString(),
+        "lift_available": m.pickupLiftAvailable?.toString(),
+        "moving_date": formatToApiDate(m.packingDate),
       },
 
       /// DELIVERY
       "delivery_address": {
-        "email": m.deliveryEmail,
-        "phone": m.deliveryPhone,
-        "state": m.deliveryStateId,
-        "city": m.deliveryCityId,
-        "pincode": m.deliveryPincode,
-        "lift_available": m.deliveryLiftAvailable,
-        "moving_date": formatToApiDate(m.deliveryDate),//m.deliveryDate,
+        "email": m.deliveryEmail?.toString(),
+        "phone": m.deliveryPhone?.toString(),
+        "state": m.deliveryStateId?.toString(), // Force String
+        "city": m.deliveryCityId?.toString(),   // Force String
+        "pincode": m.deliveryPincode?.toString(),
+        "lift_available": m.deliveryLiftAvailable?.toString(),
+        "moving_date": formatToApiDate(m.deliveryDate),
       },
     };
   }
 
-
   String formatToApiDate(String? date) {
     if (date == null || date.isEmpty) return "";
-
-    final parts = date.split('/'); // [dd, mm, yyyy]
-
+    final parts = date.split('/');
     if (parts.length != 3) return date;
-
     return "${parts[2]}-${parts[1]}-${parts[0]}"; // yyyy-mm-dd
   }
-
 
   Future<bool> deleteQuotation(String quotationNo) async {
     try {
       state = state.copyWith(isPageLoading: true);
       final success = await repository.deleteQuotation(quotationNo);
-
-      if (success) {
-        state = state.copyWith(isPageLoading: false);
-        return true;
-      } else {
-        return false;
-      }
-    } catch (e) {
-      return false;
-    }
-  }
-
-  Future<void> fetchQuotationAndFillForm(
-      String uid, WidgetRef ref) async {
-    try {
-      state = state.copyWith(isPageLoading: true);
-
-      final data = await repository.fetchQuotationByUid(uid);
-
-      final model = QuotationFormModel(
-        /// STEP 1
-        quotationNo: data["quotation_no"],
-        companyName: data["company_or_party_name"],
-        partyName: data["party_name"],
-        phone: data["phone"],
-        email: data["email"],
-        gstNo: data["gst_no"],
-
-        shiftingDate: _formatDate(data["pickup_address"]?["moving_date"]),
-        quotationDate: _formatDate(data["quotation_date"]),
-        packingDate: _formatDate(data["packing_date"]),
-        deliveryDate: _formatDate(data["delivery_address"]?["moving_date"]), // ✅ FIX
-
-        /// LOCATION
-        movingFrom: data["moving_from"],
-        movingTo: data["moving_to"],
-        pickupCityName: data["moving_from"],
-        deliveryCityName: data["moving_to"],
-
-        vehicleType: data["vehicle_type"],
-        loadType: data["load_type"],
-        movingPath: data["moving_path"],
-
-        /// PICKUP
-        pickupPhone: data["pickup_address"]?["phone"],
-        pickupEmail: data["pickup_address"]?["email"],
-        pickupPincode: data["pickup_address"]?["pincode"],
-        pickupStateId: data["pickup_address"]?["state"]?.toString(),
-        pickupCityId: data["pickup_address"]?["city"]?.toString(),
-        pickupLiftAvailable: data["pickup_address"]?["lift_available"],
-
-        /// DELIVERY
-        deliveryPhone: data["delivery_address"]?["phone"],
-        deliveryEmail: data["delivery_address"]?["email"],
-        deliveryPincode: data["delivery_address"]?["pincode"],
-        deliveryStateId: data["delivery_address"]?["state"]?.toString(),
-        deliveryCityId: data["delivery_address"]?["city"]?.toString(),
-        deliveryLiftAvailable: data["delivery_address"]?["lift_available"],
-
-        /// CHARGES
-        freightCharge: data["freight_charge"],
-        packingCharge: data["packing_charge"],
-        unpackingCharge: data["unpacking_charge"],
-        loadingCharge: data["loading_charge"],
-        unloadingCharge: data["unloading_charge"],
-        packingMaterialCharge: data["packing_material_charge"],
-
-        storageCharge: data["storage_charge"],
-        tptCharge: data["car_bike_tpt"],
-        miscCharge: data["misc_charge"],
-        otherCharges: data["other_charges"],
-        stCharges: data["st_charge"],
-
-        surchargeAmount: data["surcharge"],
-        surchargeType: data["surcharge_type"],
-
-        /// TYPES
-        packingChargeType: data["packing_charge_type"],
-        unpackingChargeType: data["unpacking_charge_type"],
-        loadingChargeType: data["loading_charge_type"],
-        unloadingChargeType: data["unloading_charge_type"],
-        packingMaterialChargeType:
-        data["packing_material_charge_type"],
-
-        /// GST
-        gstType: data["gst_type"],
-        gstPercent: data["gst_percent"],
-
-        /// INSURANCE
-        insuranceType: data["insurance_type"],
-        insurancePercent: data["insurance_charge"],
-        insuranceGst: data["insurance_gst"],
-
-        vehicleInsuranceType: data["vehicle_insurance_type"],
-        vehicleInsurancePercent:
-        data["vehicle_insurance_charge"],
-        vehicleInsuranceGst: data["vehicle_insurance_gst"],
-
-        /// DECLARATION
-        goodsDeclaration: data["declaration_of_goods"],
-        vehicleDeclaration: data["declaration_of_vehicle"],
-
-        /// OTHER
-        easyAccess: data["easy_access"],
-        balconyRemarks: data["balcony_items"],
-        restriction: data["loading_restrictions"],
-        specialNeeds: data["special_needs"],
-      );
-
-      ref.read(quotationFormProvider.notifier).state = model;
-
       state = state.copyWith(isPageLoading: false);
-    } catch (e) {
-      state = state.copyWith(isPageLoading: false);
-      throw Exception("Failed to load quotation");
-    }
-  }
-
-  String _formatDate(String? date) {
-    if (date == null) return "";
-
-    final parsed = DateTime.tryParse(date);
-    if (parsed == null) return "";
-
-    return "${parsed.day.toString().padLeft(2, '0')}/"
-        "${parsed.month.toString().padLeft(2, '0')}/"
-        "${parsed.year}";
-  }
-
-  Future<bool> updateQuotation(String uid, QuotationFormModel model,String? keyType) async {
-    try {
-      state = state.copyWith(isPageLoading: true);
-
-      final payload = await _buildPayload(model);
-
-      final success = await repository.updateQuotation(uid, payload,keyType);
-
-      state = state.copyWith(isPageLoading: false);
-
       return success;
     } catch (e) {
       state = state.copyWith(isPageLoading: false);
@@ -484,5 +262,102 @@ class QuotationNotifier extends StateNotifier<QuotationState> {
     }
   }
 
-}
+  Future<void> fetchQuotationAndFillForm(String uid, WidgetRef ref) async {
+    try {
+      state = state.copyWith(isPageLoading: true);
+      final data = await repository.fetchQuotationByUid(uid);
 
+      final model = QuotationFormModel(
+        quotationNo: data["quotation_no"]?.toString(),
+        companyName: data["company_or_party_name"]?.toString(),
+        partyName: data["party_name"]?.toString(),
+        phone: data["phone"]?.toString(),
+        email: data["email"]?.toString(),
+        gstNo: data["gst_no"]?.toString(),
+        shiftingDate: _formatDate(data["pickup_address"]?["moving_date"]),
+        quotationDate: _formatDate(data["quotation_date"]),
+        packingDate: _formatDate(data["packing_date"]),
+        deliveryDate: _formatDate(data["delivery_address"]?["moving_date"]),
+        movingFrom: data["moving_from"]?.toString(),
+        movingTo: data["moving_to"]?.toString(),
+        pickupCityName: data["moving_from"]?.toString(),
+        deliveryCityName: data["moving_to"]?.toString(),
+        vehicleType: data["vehicle_type"]?.toString(),
+        loadType: data["load_type"]?.toString(),
+        movingPath: data["moving_path"]?.toString(),
+        pickupPhone: data["pickup_address"]?["phone"]?.toString(),
+        pickupEmail: data["pickup_address"]?["email"]?.toString(),
+        pickupPincode: data["pickup_address"]?["pincode"]?.toString(),
+        pickupStateId: data["pickup_address"]?["state"]?.toString(),
+        pickupCityId: data["pickup_address"]?["city"]?.toString(),
+        pickupLiftAvailable: data["pickup_address"]?["lift_available"]?.toString(),
+        deliveryPhone: data["delivery_address"]?["phone"]?.toString(),
+        deliveryEmail: data["delivery_address"]?["email"]?.toString(),
+        deliveryPincode: data["delivery_address"]?["pincode"]?.toString(),
+        deliveryStateId: data["delivery_address"]?["state"]?.toString(),
+        deliveryCityId: data["delivery_address"]?["city"]?.toString(),
+        deliveryLiftAvailable: data["delivery_address"]?["lift_available"]?.toString(),
+        freightCharge: data["freight_charge"]?.toString(),
+        packingCharge: data["packing_charge"]?.toString(),
+        unpackingCharge: data["unpacking_charge"]?.toString(),
+        loadingCharge: data["loading_charge"]?.toString(),
+        unloadingCharge: data["unloading_charge"]?.toString(),
+        packingMaterialCharge: data["packing_material_charge"]?.toString(),
+        storageCharge: data["storage_charge"]?.toString(),
+        tptCharge: data["car_bike_tpt"]?.toString(),
+        miscCharge: data["misc_charge"]?.toString(),
+        otherCharges: data["other_charges"]?.toString(),
+        stCharges: data["st_charge"]?.toString(),
+        surchargeAmount: data["surcharge"]?.toString(),
+        surchargeType: data["surcharge_type"]?.toString(),
+        packingChargeType: data["packing_charge_type"]?.toString(),
+        unpackingChargeType: data["unpacking_charge_type"]?.toString(),
+        loadingChargeType: data["loading_charge_type"]?.toString(),
+        unloadingChargeType: data["unloading_charge_type"]?.toString(),
+        packingMaterialChargeType: data["packing_material_charge_type"]?.toString(),
+        gstType: data["gst_type"]?.toString(),
+        gstPercent: data["gst_percent"]?.toString(),
+        insuranceType: data["insurance_type"]?.toString(),
+        insurancePercent: data["insurance_charge"]?.toString(),
+        insuranceGst: data["insurance_gst"]?.toString(),
+        vehicleInsuranceType: data["vehicle_insurance_type"]?.toString(),
+        vehicleInsurancePercent: data["vehicle_insurance_charge"]?.toString(),
+        vehicleInsuranceGst: data["vehicle_insurance_gst"]?.toString(),
+        goodsDeclaration: data["declaration_of_goods"]?.toString(),
+        vehicleDeclaration: data["declaration_of_vehicle"]?.toString(),
+        easyAccess: data["easy_access"]?.toString(),
+        balconyRemarks: data["balcony_items"]?.toString(),
+        restriction: data["loading_restrictions"]?.toString(),
+        specialNeeds: data["special_needs"]?.toString(),
+      );
+
+      ref.read(quotationFormProvider.notifier).state = model;
+      state = state.copyWith(isPageLoading: false);
+    } catch (e) {
+      state = state.copyWith(isPageLoading: false);
+      throw Exception("Failed to load quotation: $e");
+    }
+  }
+
+  String _formatDate(String? date) {
+    if (date == null) return "";
+    final parsed = DateTime.tryParse(date);
+    if (parsed == null) return "";
+    return "${parsed.day.toString().padLeft(2, '0')}/"
+        "${parsed.month.toString().padLeft(2, '0')}/"
+        "${parsed.year}";
+  }
+
+  Future<bool> updateQuotation(String uid, QuotationFormModel model, String? keyType) async {
+    try {
+      state = state.copyWith(isPageLoading: true);
+      final payload = await _buildPayload(model);
+      final success = await repository.updateQuotation(uid, payload, keyType);
+      state = state.copyWith(isPageLoading: false);
+      return success;
+    } catch (e) {
+      state = state.copyWith(isPageLoading: false);
+      return false;
+    }
+  }
+}

@@ -395,7 +395,7 @@ class QuotationFormNotifier extends StateNotifier<QuotationFormModel> {
     final gstEnabled = state.gstType == "CGST/SGST" || state.gstType == "IGST";
 
     final gstPct = gstEnabled
-        ? double.tryParse(state.gstPercent ?? "0") ?? 0
+        ? double.tryParse(state.gstPercent?.toString() ?? "0") ?? 0
         : 0;
 
     final gstAmount = (subTotal * gstPct) / 100;

@@ -28,6 +28,7 @@ class ConsignorForm extends ConsumerStatefulWidget {
 }
 
 class _ConsignorFormState extends ConsumerState<ConsignorForm> {
+  final _formKey = GlobalKey<FormState>();
   /// Controllers - Move From
   final TextEditingController consignorNameFromController =
   TextEditingController();
@@ -119,9 +120,11 @@ class _ConsignorFormState extends ConsumerState<ConsignorForm> {
       selectedFromCity = null;
     }
 
-    return Container(
-      color: Colors.white,
-      child: Column(
+    return Form(
+        key: _formKey,
+        child: Container(
+          color: Colors.white,
+          child: Column(
         children: [
           /// FORM CONTENT
           Expanded(
@@ -187,6 +190,7 @@ class _ConsignorFormState extends ConsumerState<ConsignorForm> {
           _buildBottomBar(),
         ],
       ),
+        ),
     );
   }
 
@@ -216,6 +220,12 @@ class _ConsignorFormState extends ConsumerState<ConsignorForm> {
           controller: nameController,
           hintText: "Enter name",
           borderRadius: 10,
+          validator: (value) {
+            if (value == null || value.trim().isEmpty) {
+              return "Name is required";
+            }
+            return null;
+          },
         ),
 
         const SizedBox(height: 12),
@@ -233,6 +243,15 @@ class _ConsignorFormState extends ConsumerState<ConsignorForm> {
                     hintText: "Enter no.",
                     keyboardType: TextInputType.phone,
                     borderRadius: 10,
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return "Phone number required";
+                      }
+                      if (value.length != 10) {
+                        return "Enter valid 10 digit number";
+                      }
+                      return null;
+                    },
                   ),
                 ],
               ),
@@ -248,6 +267,12 @@ class _ConsignorFormState extends ConsumerState<ConsignorForm> {
                     controller: gstController,
                     hintText: "XXXXX-XXXXX",
                     borderRadius: 10,
+                    validator: (value) {
+                      if (value != null && value.isNotEmpty && value.length < 15) {
+                        return "Invalid GST number";
+                      }
+                      return null;
+                    },
                   ),
                 ],
               ),
@@ -420,6 +445,15 @@ class _ConsignorFormState extends ConsumerState<ConsignorForm> {
                     hintText: "Enter",
                     keyboardType: TextInputType.number,
                     borderRadius: 10,
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return "Pincode required";
+                      }
+                      if (value.length != 6) {
+                        return "Enter valid pincode";
+                      }
+                      return null;
+                    },
                   ),
                 ],
               ),
@@ -435,6 +469,12 @@ class _ConsignorFormState extends ConsumerState<ConsignorForm> {
           controller: addressController,
           hintText: "Enter address",
           borderRadius: 10,
+          validator: (value) {
+            if (value == null || value.trim().isEmpty) {
+              return "Address is required";
+            }
+            return null;
+          },
         ),
       ],
     );
@@ -500,6 +540,25 @@ class _ConsignorFormState extends ConsumerState<ConsignorForm> {
             Expanded(
               child: CustomButton(
                 onPressed: () {
+                  if (!_formKey.currentState!.validate()) {
+                    return;
+                  }
+
+                  /// Validate dropdowns manually
+                  if (selectedFromState == null || selectedFromCity == null) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text("Select From State & City")),
+                    );
+                    return;
+                  }
+
+                  if (selectedToState == null || selectedToCity == null) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text("Select To State & City")),
+                    );
+                    return;
+                  }
+
                   final notifier = ref.read(lorryReceiptProvider.notifier);
 
                   updateFormData(ref, {
@@ -525,7 +584,7 @@ class _ConsignorFormState extends ConsumerState<ConsignorForm> {
                     },
                   });
 
-                  widget.onNext();
+                  widget.onNext(); // ✅ only after validation
                 },
                 text: "Save & Next  >>",
                 iconRight: true,

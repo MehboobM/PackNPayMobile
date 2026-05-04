@@ -125,7 +125,7 @@ class _PlansPageState extends ConsumerState<PlansPage> {
 
         // ✅ SAVE SUBSCRIPTION STATUS
         final storage = StorageService();
-        await storage.saveSubscriptionStatus("ACTIVE");
+        await storage.saveSubscriptionStatus("complete");
 
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text("Payment Successful")),

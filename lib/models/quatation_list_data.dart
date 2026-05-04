@@ -1,5 +1,3 @@
-
-
 import 'package:pack_n_pay/models/pagination.dart';
 
 class QuotationListData {
@@ -10,6 +8,7 @@ class QuotationListData {
   QuotationListData({this.success, this.data, this.pagination});
 
   QuotationListData.fromJson(Map<String, dynamic> json) {
+    // success is a bool, so we keep it as is
     success = json['success'];
     if (json['data'] != null) {
       data = <QuotationList>[];
@@ -34,6 +33,7 @@ class QuotationListData {
     return data;
   }
 }
+
 class QuotationList {
   String? uid;
   String? quotationNo;
@@ -51,39 +51,41 @@ class QuotationList {
   String? lrNo;
   String? orderNo;
 
-  QuotationList(
-      {this.uid,
-        this.quotationNo,
-        this.customerName,
-        this.phone,
-        this.movingFrom,
-        this.movingTo,
-        this.quotationDate,
-        this.totalAmount,
-        this.advancePaid,
-        this.balanceAmount,
-        this.paymentStatus,
-        this.totalPaid,
-        this.surveyNo,
-        this.lrNo,
-        this.orderNo});
+  QuotationList({
+    this.uid,
+    this.quotationNo,
+    this.customerName,
+    this.phone,
+    this.movingFrom,
+    this.movingTo,
+    this.quotationDate,
+    this.totalAmount,
+    this.advancePaid,
+    this.balanceAmount,
+    this.paymentStatus,
+    this.totalPaid,
+    this.surveyNo,
+    this.lrNo,
+    this.orderNo,
+  });
 
+  /// SAFE FROM JSON: Converts all potential numbers to Strings
   QuotationList.fromJson(Map<String, dynamic> json) {
-    uid = json['uid'];
-    quotationNo = json['quotation_no'];
-    customerName = json['customer_name'];
-    phone = json['phone'];
-    movingFrom = json['moving_from'];
-    movingTo = json['moving_to'];
-    quotationDate = json['quotation_date'];
-    totalAmount = json['total_amount'];
-    advancePaid = json['advance_paid'];
-    balanceAmount = json['balance_amount'];
-    paymentStatus = json['payment_status'];
-    totalPaid = json['total_paid'];
-    surveyNo = json['survey_no'];
-    lrNo = json['lr_no'];
-    orderNo = json['order_no'];
+    uid = json['uid']?.toString();
+    quotationNo = json['quotation_no']?.toString();
+    customerName = json['customer_name']?.toString();
+    phone = json['phone']?.toString();
+    movingFrom = json['moving_from']?.toString();
+    movingTo = json['moving_to']?.toString();
+    quotationDate = json['quotation_date']?.toString();
+    totalAmount = json['total_amount']?.toString();
+    advancePaid = json['advance_paid']?.toString();
+    balanceAmount = json['balance_amount']?.toString();
+    paymentStatus = json['payment_status']?.toString();
+    totalPaid = json['total_paid']?.toString();
+    surveyNo = json['survey_no']?.toString();
+    lrNo = json['lr_no']?.toString();
+    orderNo = json['order_no']?.toString();
   }
 
   Map<String, dynamic> toJson() {
@@ -106,5 +108,3 @@ class QuotationList {
     return data;
   }
 }
-
-

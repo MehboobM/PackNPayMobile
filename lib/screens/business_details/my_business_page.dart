@@ -151,7 +151,7 @@ class _MyBusinessPageState extends ConsumerState<MyBusinessPage> {
 
 // ✅ SAVE STATUS
       final storage = StorageService();
-      await storage.saveCompanyStatus("COMPLETE");
+      await storage.saveCompanyStatus("complete");
 
 // ✅ REDIRECT
       if (mounted) {

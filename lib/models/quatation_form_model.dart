@@ -1,6 +1,4 @@
-
 class QuotationFormModel {
-
   /// STEP 1: QUOTATION DETAILS
   String? quotationNo;
   String? companyName;
@@ -11,7 +9,7 @@ class QuotationFormModel {
 
   String? quotationDate;
   String? packingDate;
-  String? deliveryDate; // this date initialize from delivery_address "moving_date": "2026-04-16"  because they added by mistackly
+  String? deliveryDate;
 
   /// Dropdowns (STORE VALUE)
   String? vehicleType;
@@ -41,16 +39,14 @@ class QuotationFormModel {
   String? movingFrom;
   String? movingTo;
 
-
   String? deliveryStateId;
   String? deliveryStateCode;
   String? deliveryCityId;
   String? deliveryCityName;
 
   /// STEP 3: PAYMENT DETAILS
-
   String? freightCharge;
-  String? advancePaid; // we will use directly this on advance field
+  String? advancePaid;
   String? summaryDiscount;
 
   String? packingCharge;
@@ -67,7 +63,6 @@ class QuotationFormModel {
   String? tptCharge;
   String? miscCharge;
 
-
   String? packingChargeType;
   String? unpackingChargeType;
   String? loadingChargeType;
@@ -77,36 +72,26 @@ class QuotationFormModel {
   String? paymentStatus;
   String? totalAmount;
 
-
   dynamic gstPercent;
   String? gstType;
   String? surchargeType;
 
   /// STEP 4: INSURANCE & OTHER
-  /// Goods Insurance
   String? insuranceType;
   dynamic insurancePercent;
   dynamic insuranceGst;
 
-  /// Vehicle Insurance
   String? vehicleInsuranceType;
   dynamic vehicleInsurancePercent;
   dynamic vehicleInsuranceGst;
 
-  /// Remarks
   String? goodsDeclaration;
   String? vehicleDeclaration;
 
-  /// Other
   String? easyAccess;
   String? restriction;
-  String? balconyRemarks;   // ✅ NEW
-  String? specialNeeds;     // ✅ NEW
-
-
-  /// =========================
-  /// CONSTRUCTOR
-  /// =========================
+  String? balconyRemarks;
+  String? specialNeeds;
 
   QuotationFormModel({
     this.quotationNo,
@@ -121,7 +106,6 @@ class QuotationFormModel {
     this.vehicleType,
     this.loadType,
     this.movingPath,
-
     this.shiftingDate,
     this.pickupPhone,
     this.pickupEmail,
@@ -141,7 +125,6 @@ class QuotationFormModel {
     this.deliveryCityName,
     this.movingFrom,
     this.movingTo,
-
     this.freightCharge,
     this.advancePaid,
     this.packingCharge,
@@ -155,11 +138,9 @@ class QuotationFormModel {
     this.storageCharge,
     this.tptCharge,
     this.miscCharge,
-
     this.packingChargeType,
     this.paymentStatus,
     this.totalAmount,
-
     this.unpackingChargeType,
     this.loadingChargeType,
     this.unloadingChargeType,
@@ -167,7 +148,6 @@ class QuotationFormModel {
     this.gstPercent,
     this.gstType,
     this.surchargeType,
-
     this.insuranceType,
     this.insurancePercent,
     this.insuranceGst,
@@ -180,171 +160,150 @@ class QuotationFormModel {
     this.restriction,
     this.balconyRemarks,
     this.specialNeeds,
-
   });
-
-
-  /// =========================
-  /// TO JSON (FOR HIVE/API)
-  /// =========================
 
   Map<String, dynamic> toJson() {
     return {
-      "quotationNo": quotationNo,
-      "companyName": companyName,
-      "partyName": partyName,
-      "gstNo": gstNo,
-      "phone": phone,
-      "email": email,
-      "quotationDate": quotationDate,
-      "packingDate": packingDate,
-      "deliveryDate": deliveryDate,
-      "vehicleType": vehicleType,
-      "loadType": loadType,
-      "movingPath": movingPath,
-
-      "shiftingDate": shiftingDate,
-      "pickupPhone": pickupPhone,
-      "pickupEmail": pickupEmail,
-      "pickupPincode": pickupPincode,
-      "deliveryPhone": deliveryPhone,
-      "deliveryEmail": deliveryEmail,
-      "deliveryPincode": deliveryPincode,
-      "pickupLiftAvailable": pickupLiftAvailable,
-      "deliveryLiftAvailable": deliveryLiftAvailable,
-      "pickupStateId": pickupStateId,
-      "pickupStateCode": pickupStateCode,
-      "pickupCityId": pickupCityId,
-      "pickupCityName": pickupCityName,
-      "deliveryStateId": deliveryStateId,
-      "deliveryStateCode": deliveryStateCode,
-      "deliveryCityId": deliveryCityId,
-      "deliveryCityName": deliveryCityName,
-      "movingFrom": movingFrom,
-      "movingTo": movingTo,
-
-      "freightCharge": freightCharge,
-      "advancePaid": advancePaid,
-      "summaryDiscount": summaryDiscount,
-      "packingCharge": packingCharge,
-      "unpackingCharge": unpackingCharge,
-      "loadingCharge": loadingCharge,
-      "unloadingCharge": unloadingCharge,
-      "packingMaterialCharge": packingMaterialCharge,
-      "stCharges": stCharges,
-      "otherCharges": otherCharges,
-      "storageCharge": storageCharge,
-      "tptCharge": tptCharge,
-      "miscCharge": miscCharge,
-
-      "packingChargeType": packingChargeType,
-      "paymentStatus": paymentStatus,
-      "totalAmount": totalAmount,
-      "unpackingChargeType": unpackingChargeType,
-      "loadingChargeType": loadingChargeType,
-      "unloadingChargeType": unloadingChargeType,
-      "packingMaterialChargeType": packingMaterialChargeType,
-      "gstPercent": gstPercent,
-      "gstType": gstType,
-      "surchargeType": surchargeType,
-      "surchargeAmount": surchargeAmount,
-
-      "insuranceType": insuranceType,
-      "insurancePercent": insurancePercent,
-      "insuranceGst": insuranceGst,
-      "vehicleInsuranceType": vehicleInsuranceType,
-      "vehicleInsurancePercent": vehicleInsurancePercent,
-      "vehicleInsuranceGst": vehicleInsuranceGst,
-      "goodsDeclaration": goodsDeclaration,
-      "vehicleDeclaration": vehicleDeclaration,
-      "easyAccess": easyAccess,
-      "restriction": restriction,
-
-      "balconyRemarks":balconyRemarks,
-      "specialNeeds":specialNeeds,
-
+      "quotationNo": quotationNo?.toString(),
+      "companyName": companyName?.toString(),
+      "partyName": partyName?.toString(),
+      "gstNo": gstNo?.toString(),
+      "phone": phone?.toString(),
+      "email": email?.toString(),
+      "quotationDate": quotationDate?.toString(),
+      "packingDate": packingDate?.toString(),
+      "deliveryDate": deliveryDate?.toString(),
+      "vehicleType": vehicleType?.toString(),
+      "loadType": loadType?.toString(),
+      "movingPath": movingPath?.toString(),
+      "shiftingDate": shiftingDate?.toString(),
+      "pickupPhone": pickupPhone?.toString(),
+      "pickupEmail": pickupEmail?.toString(),
+      "pickupPincode": pickupPincode?.toString(),
+      "deliveryPhone": deliveryPhone?.toString(),
+      "deliveryEmail": deliveryEmail?.toString(),
+      "deliveryPincode": deliveryPincode?.toString(),
+      "pickupLiftAvailable": pickupLiftAvailable?.toString(),
+      "deliveryLiftAvailable": deliveryLiftAvailable?.toString(),
+      // CRITICAL: Ensure IDs are Strings
+      "pickupStateId": pickupStateId?.toString(),
+      "pickupStateCode": pickupStateCode?.toString(),
+      "pickupCityId": pickupCityId?.toString(),
+      "pickupCityName": pickupCityName?.toString(),
+      "deliveryStateId": deliveryStateId?.toString(),
+      "deliveryStateCode": deliveryStateCode?.toString(),
+      "deliveryCityId": deliveryCityId?.toString(),
+      "deliveryCityName": deliveryCityName?.toString(),
+      "movingFrom": movingFrom?.toString(),
+      "movingTo": movingTo?.toString(),
+      // CRITICAL: Ensure Charges are Strings
+      "freightCharge": freightCharge?.toString(),
+      "advancePaid": advancePaid?.toString(),
+      "summaryDiscount": summaryDiscount?.toString(),
+      "packingCharge": packingCharge?.toString(),
+      "unpackingCharge": unpackingCharge?.toString(),
+      "loadingCharge": loadingCharge?.toString(),
+      "unloadingCharge": unloadingCharge?.toString(),
+      "packingMaterialCharge": packingMaterialCharge?.toString(),
+      "stCharges": stCharges?.toString(),
+      "otherCharges": otherCharges?.toString(),
+      "storageCharge": storageCharge?.toString(),
+      "tptCharge": tptCharge?.toString(),
+      "miscCharge": miscCharge?.toString(),
+      "packingChargeType": packingChargeType?.toString(),
+      "paymentStatus": paymentStatus?.toString(),
+      "totalAmount": totalAmount?.toString(),
+      "unpackingChargeType": unpackingChargeType?.toString(),
+      "loadingChargeType": loadingChargeType?.toString(),
+      "unloadingChargeType": unloadingChargeType?.toString(),
+      "packingMaterialChargeType": packingMaterialChargeType?.toString(),
+      "gstPercent": gstPercent?.toString(),
+      "gstType": gstType?.toString(),
+      "surchargeType": surchargeType?.toString(),
+      "surchargeAmount": surchargeAmount?.toString(),
+      "insuranceType": insuranceType?.toString(),
+      "insurancePercent": insurancePercent?.toString(),
+      "insuranceGst": insuranceGst?.toString(),
+      "vehicleInsuranceType": vehicleInsuranceType?.toString(),
+      "vehicleInsurancePercent": vehicleInsurancePercent?.toString(),
+      "vehicleInsuranceGst": vehicleInsuranceGst?.toString(),
+      "goodsDeclaration": goodsDeclaration?.toString(),
+      "vehicleDeclaration": vehicleDeclaration?.toString(),
+      "easyAccess": easyAccess?.toString(),
+      "restriction": restriction?.toString(),
+      "balconyRemarks": balconyRemarks?.toString(),
+      "specialNeeds": specialNeeds?.toString(),
     };
   }
 
-
-  /// =========================
-  /// FROM JSON (HIVE / API)
-  /// =========================
-
   factory QuotationFormModel.fromJson(Map<String, dynamic> json) {
     return QuotationFormModel(
-      quotationNo: json["quotationNo"],
-      companyName: json["companyName"],
-      partyName: json["partyName"],
-      gstNo: json["gstNo"],
-      phone: json["phone"],
-      email: json["email"],
-      quotationDate: json["quotationDate"],
-      packingDate: json["packingDate"],
-      deliveryDate: json["deliveryDate"],
-      vehicleType: json["vehicleType"],
-      loadType: json["loadType"],
-      movingPath: json["movingPath"],
-
-      shiftingDate: json["shiftingDate"],
-      pickupPhone: json["pickupPhone"],
-      pickupEmail: json["pickupEmail"],
-      pickupPincode: json["pickupPincode"],
-      deliveryPhone: json["deliveryPhone"],
-      deliveryEmail: json["deliveryEmail"],
-      deliveryPincode: json["deliveryPincode"],
-      pickupLiftAvailable: json["pickupLiftAvailable"],
-      deliveryLiftAvailable: json["deliveryLiftAvailable"],
-      pickupStateId: json["pickupStateId"],
-      pickupStateCode: json["pickupStateCode"],
-      pickupCityId: json["pickupCityId"],
-      pickupCityName: json["pickupCityName"],
-      deliveryStateId: json["deliveryStateId"],
-      deliveryStateCode: json["deliveryStateCode"],
-      deliveryCityId: json["deliveryCityId"],
-      deliveryCityName: json["deliveryCityName"],
-      movingFrom: json["movingFrom"],
-      movingTo: json["movingTo"],
-      freightCharge: json["freightCharge"],
-      advancePaid: json["advancePaid"],
-      packingCharge: json["packingCharge"],
-      unpackingCharge: json["unpackingCharge"],
-      loadingCharge: json["loadingCharge"],
-      unloadingCharge: json["unloadingCharge"],
-      packingMaterialCharge: json["packingMaterialCharge"],
-      stCharges: json["stCharges"],
-      otherCharges: json["otherCharges"],
-      storageCharge: json["storageCharge"],
-      tptCharge: json["tptCharge"],
-      miscCharge: json["miscCharge"],
-      packingChargeType: json["packingChargeType"],
-      paymentStatus: json["paymentStatus"],
-      totalAmount: json["totalAmount"],
-      unpackingChargeType: json["unpackingChargeType"],
-      loadingChargeType: json["loadingChargeType"],
-      unloadingChargeType: json["unloadingChargeType"],
-      packingMaterialChargeType: json["packingMaterialChargeType"],
+      quotationNo: json["quotationNo"]?.toString(),
+      companyName: json["companyName"]?.toString(),
+      partyName: json["partyName"]?.toString(),
+      gstNo: json["gstNo"]?.toString(),
+      phone: json["phone"]?.toString(),
+      email: json["email"]?.toString(),
+      quotationDate: json["quotationDate"]?.toString(),
+      packingDate: json["packingDate"]?.toString(),
+      deliveryDate: json["deliveryDate"]?.toString(),
+      vehicleType: json["vehicleType"]?.toString(),
+      loadType: json["loadType"]?.toString(),
+      movingPath: json["movingPath"]?.toString(),
+      shiftingDate: json["shiftingDate"]?.toString(),
+      pickupPhone: json["pickupPhone"]?.toString(),
+      pickupEmail: json["pickupEmail"]?.toString(),
+      pickupPincode: json["pickupPincode"]?.toString(),
+      deliveryPhone: json["deliveryPhone"]?.toString(),
+      deliveryEmail: json["deliveryEmail"]?.toString(),
+      deliveryPincode: json["deliveryPincode"]?.toString(),
+      pickupLiftAvailable: json["pickupLiftAvailable"]?.toString(),
+      deliveryLiftAvailable: json["deliveryLiftAvailable"]?.toString(),
+      pickupStateId: json["pickupStateId"]?.toString(),
+      pickupStateCode: json["pickupStateCode"]?.toString(),
+      pickupCityId: json["pickupCityId"]?.toString(),
+      pickupCityName: json["pickupCityName"]?.toString(),
+      deliveryStateId: json["deliveryStateId"]?.toString(),
+      deliveryStateCode: json["deliveryStateCode"]?.toString(),
+      deliveryCityId: json["deliveryCityId"]?.toString(),
+      deliveryCityName: json["deliveryCityName"]?.toString(),
+      movingFrom: json["movingFrom"]?.toString(),
+      movingTo: json["movingTo"]?.toString(),
+      freightCharge: json["freightCharge"]?.toString(),
+      advancePaid: json["advancePaid"]?.toString(),
+      packingCharge: json["packingCharge"]?.toString(),
+      unpackingCharge: json["unpackingCharge"]?.toString(),
+      loadingCharge: json["loadingCharge"]?.toString(),
+      unloadingCharge: json["unloadingCharge"]?.toString(),
+      packingMaterialCharge: json["packingMaterialCharge"]?.toString(),
+      stCharges: json["stCharges"]?.toString(),
+      otherCharges: json["otherCharges"]?.toString(),
+      storageCharge: json["storageCharge"]?.toString(),
+      tptCharge: json["tptCharge"]?.toString(),
+      miscCharge: json["miscCharge"]?.toString(),
+      packingChargeType: json["packingChargeType"]?.toString(),
+      paymentStatus: json["paymentStatus"]?.toString(),
+      totalAmount: json["totalAmount"]?.toString(),
+      unpackingChargeType: json["unpackingChargeType"]?.toString(),
+      loadingChargeType: json["loadingChargeType"]?.toString(),
+      unloadingChargeType: json["unloadingChargeType"]?.toString(),
+      packingMaterialChargeType: json["packingMaterialChargeType"]?.toString(),
       gstPercent: json["gstPercent"],
-      gstType: json["gstType"],
-      surchargeType: json["surchargeType"],
-      surchargeAmount: json["surchargeAmount"],
-
-      insuranceType: json["insuranceType"],
+      gstType: json["gstType"]?.toString(),
+      surchargeType: json["surchargeType"]?.toString(),
+      surchargeAmount: json["surchargeAmount"]?.toString(),
+      insuranceType: json["insuranceType"]?.toString(),
       insurancePercent: json["insurancePercent"],
       insuranceGst: json["insuranceGst"],
-      vehicleInsuranceType: json["vehicleInsuranceType"],
+      vehicleInsuranceType: json["vehicleInsuranceType"]?.toString(),
       vehicleInsurancePercent: json["vehicleInsurancePercent"],
       vehicleInsuranceGst: json["vehicleInsuranceGst"],
-      goodsDeclaration: json["goodsDeclaration"],
-      vehicleDeclaration: json["vehicleDeclaration"],
-      easyAccess: json["easyAccess"],
-      restriction: json["restriction"],
-
-      balconyRemarks: json["balconyRemarks"],
-      specialNeeds: json["specialNeeds"],
-
-
-
+      goodsDeclaration: json["goodsDeclaration"]?.toString(),
+      vehicleDeclaration: json["vehicleDeclaration"]?.toString(),
+      easyAccess: json["easyAccess"]?.toString(),
+      restriction: json["restriction"]?.toString(),
+      balconyRemarks: json["balconyRemarks"]?.toString(),
+      specialNeeds: json["specialNeeds"]?.toString(),
     );
   }
 }

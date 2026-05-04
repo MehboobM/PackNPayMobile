@@ -68,6 +68,7 @@ class _PackagePaymentFormState
   String? selectedGstPaidBy = "Consignee";
   String selectedActualWeightUnit = "KG";
   String selectedChargedWeightUnit = "KG";
+  final _formKey = GlobalKey<FormState>();
 
 
   bool packageExpanded = true;
@@ -138,40 +139,40 @@ class _PackagePaymentFormState
         children: [
           /// ================= FORM CONTENT =================
           Expanded(
-            child: SingleChildScrollView(
-              child: Padding(
-                padding: const EdgeInsets.all(16),
-                child: Column(
-                  children: [
-                    /// ================= PACKAGE DETAILS =================
-                    _sectionHeader(
-                      "packageDetails.title".tr(),
-                      packageExpanded,
-                          () => setState(
-                              () => packageExpanded = !packageExpanded),
-                    ),
+            child: Form(
+              key: _formKey,
+              child: SingleChildScrollView(
+                child: Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: Column(
+                    children: [
+                      /// ================= PACKAGE DETAILS =================
+                      _sectionHeader(
+                        "packageDetails.title".tr(),
+                        packageExpanded,
+                            () => setState(() => packageExpanded = !packageExpanded),
+                      ),
 
-                    if (packageExpanded) _buildPackageDetails(),
+                      if (packageExpanded) _buildPackageDetails(),
 
-                    const Divider(
-                      thickness: 1.2,
-                      color: AppColors.primary,
-                    ),
+                      const Divider(
+                        thickness: 1.2,
+                        color: AppColors.primary,
+                      ),
 
-                    /// ================= PAYMENT DETAILS =================
-                    _sectionHeader(
-                      "paymentDetailsLR.title".tr(),
-                      paymentExpanded,
-                          () => setState(
-                              () => paymentExpanded = !paymentExpanded),
-                    ),
+                      /// ================= PAYMENT DETAILS =================
+                      _sectionHeader(
+                        "paymentDetailsLR.title".tr(),
+                        paymentExpanded,
+                            () => setState(() => paymentExpanded = !paymentExpanded),
+                      ),
 
-                    if (paymentExpanded)
-                      _buildPaymentDetails(
-                          gstItems, gstPaidByItems),
+                      if (paymentExpanded)
+                        _buildPaymentDetails(gstItems, gstPaidByItems),
 
-                    const SizedBox(height: 80),
-                  ],
+                      const SizedBox(height: 80),
+                    ],
+                  ),
                 ),
               ),
             ),
@@ -199,6 +200,12 @@ class _PackagePaymentFormState
           hintText: "Enter no.",
           keyboardType: TextInputType.number,
           borderRadius: 10,
+          validator: (value) {
+            if (value == null || value.isEmpty) {
+              return "Enter number of packages";
+            }
+            return null;
+          },
         ),
         const SizedBox(height: 12),
 
@@ -208,6 +215,12 @@ class _PackagePaymentFormState
           controller: descriptionController,
           hintText: "Enter desc.",
           borderRadius: 10,
+          validator: (value) {
+            if (value == null || value.isEmpty) {
+              return "Enter description";
+            }
+            return null;
+          },
         ),
         const SizedBox(height: 12),
 
@@ -225,6 +238,7 @@ class _PackagePaymentFormState
                     selectedActualWeightUnit = value!;
                   });
                 },
+
               ),
             ),
             const SizedBox(width: 10),
@@ -384,6 +398,15 @@ class _PackagePaymentFormState
           hintText: "₹",
           keyboardType: TextInputType.number,
           borderRadius: 10,
+          validator: (value) {
+            if (value == null || value.isEmpty) {
+              return "Required";
+            }
+            if (double.tryParse(value) == null) {
+              return "Invalid amount";
+            }
+            return null;
+          },
         ),
       ],
     );
@@ -447,35 +470,39 @@ class _PackagePaymentFormState
             Expanded(
               child: CustomButton(
                 onPressed: () {
-                  final notifier = ref.read(lorryReceiptProvider.notifier);
-                  updateFormData(ref, {
-                    "package_details": {
-                      "no_of_package": packageController.text.trim(),
-                      "description": descriptionController.text.trim(),
-                      "actual_weight": actualWeightController.text.trim(),
-                      "actual_weight_unit": selectedActualWeightUnit,
-                      "charged_weight": chargedWeightController.text.trim(),
-                      "charged_weight_unit": selectedChargedWeightUnit,
-                      "condition": conditionController.text.trim(),
-                      "remarks": remarksController.text.trim(),
-                    },
-                    "payment_details": {
-                      "freight_to_be_billed":
-                      freightToBeBilledController.text.trim(),
-                      "freight_paid": freightPaidController.text.trim(),
-                      "freight_to_pay": freightToPayController.text.trim(),
-                      "total_basic_freight":
-                      totalBasicFreightController.text.trim(),
-                      "loading_charge": loadingChargeController.text.trim(),
-                      "unloading_charge": unloadingChargeController.text.trim(),
-                      "st_charge": stChargeController.text.trim(),
-                      "other_charge": otherChargeController.text.trim(),
-                      "lr_cn_charge": lrCnChargeController.text.trim(),
-                      "gst_percent": selectedGst,
-                      "gst_paid_by": selectedGstPaidBy,
-                    },
-                  });
-                  widget.onNext();
+                  if (_formKey.currentState!.validate()) {
+                    final notifier = ref.read(lorryReceiptProvider.notifier);
+
+                    updateFormData(ref, {
+                      "package_details": {
+                        "no_of_package": packageController.text.trim(),
+                        "description": descriptionController.text.trim(),
+                        "actual_weight": actualWeightController.text.trim(),
+                        "actual_weight_unit": selectedActualWeightUnit,
+                        "charged_weight": chargedWeightController.text.trim(),
+                        "charged_weight_unit": selectedChargedWeightUnit,
+                        "condition": conditionController.text.trim(),
+                        "remarks": remarksController.text.trim(),
+                      },
+                      "payment_details": {
+                        "freight_to_be_billed":
+                        freightToBeBilledController.text.trim(),
+                        "freight_paid": freightPaidController.text.trim(),
+                        "freight_to_pay": freightToPayController.text.trim(),
+                        "total_basic_freight":
+                        totalBasicFreightController.text.trim(),
+                        "loading_charge": loadingChargeController.text.trim(),
+                        "unloading_charge": unloadingChargeController.text.trim(),
+                        "st_charge": stChargeController.text.trim(),
+                        "other_charge": otherChargeController.text.trim(),
+                        "lr_cn_charge": lrCnChargeController.text.trim(),
+                        "gst_percent": selectedGst,
+                        "gst_paid_by": selectedGstPaidBy,
+                      },
+                    });
+
+                    widget.onNext();
+                  }
                 },
                 text: "Save & Next  >>",
                 iconRight: true,

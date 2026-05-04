@@ -147,7 +147,7 @@ class OrderListItem extends StatelessWidget {
               // ),
 
               /// ACTION ICONS
-              Row(
+              /*Row(
                 children: [
                   const Icon(Icons.visibility_outlined, size: 18),
                   const SizedBox(width: 8),
@@ -159,7 +159,7 @@ class OrderListItem extends StatelessWidget {
                       },
                       child: const Icon(Icons.more_vert, size: 20)),
                 ],
-              ),
+              ),*/
             ],
           ),
 

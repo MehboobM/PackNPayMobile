@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -8,6 +7,7 @@ import 'package:share_plus/share_plus.dart';
 
 import '../../database/hive_database/hive_permission.dart';
 import '../../database/hive_database/hive_quation_form.dart';
+import '../../database/shared_preferences/shared_storage.dart';
 import '../../notifier/quatation_notifier.dart';
 import '../../notifier/quotation_form_notifier.dart';
 import '../../notifier/survey_notifier.dart';
@@ -37,7 +37,6 @@ class _MenuScreenState extends ConsumerState<MenuScreen> {
   @override
   void initState() {
     updateGenericLInk();
-    // TODO: implement initState
     super.initState();
   }
 
@@ -66,8 +65,8 @@ class _MenuScreenState extends ConsumerState<MenuScreen> {
       backgroundColor: AppColors.mWhite,
 
       appBar: AppBar(
-        automaticallyImplyLeading: false, // hides back button
-        shadowColor: Colors.black38, // stronger shadow
+        automaticallyImplyLeading: false, 
+        shadowColor: Colors.black38, 
         surfaceTintColor: Colors.transparent,
         backgroundColor: AppColors.mWhite,
         title: Text(
@@ -76,7 +75,6 @@ class _MenuScreenState extends ConsumerState<MenuScreen> {
         ),
         elevation: 2,
         actions: [
-          /// 🔹 Help & Support Icon
           Padding(
             padding: const EdgeInsets.only(right: 16),
             child: GestureDetector(
@@ -90,8 +88,6 @@ class _MenuScreenState extends ConsumerState<MenuScreen> {
               ),
             ),
           ),
-
-          /// 🔹 Settings Icon
           Padding(
             padding: const EdgeInsets.only(right: 16),
             child: GestureDetector(
@@ -120,17 +116,22 @@ class _MenuScreenState extends ConsumerState<MenuScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-
-
-                  /// MENU LIST
                   Expanded(
                     child: ListView(
                       children: [
                         const MenuSectionHeader(title: "Main"),
-                        const MenuDropdown(
+                         MenuDropdown(
                           title: "Home",
                           icon: "assets/images/home_icon.svg",
-                          children: [],
+                          children: [
+                            MenuItem(
+                              title: "Home",
+                              icon: "assets/icons/home_icon.svg",
+                              onTap: () {
+                                Navigator.pushNamed(context, homeScreenRoute);
+                              },
+                            ),
+                          ],
                         ),
 
                        if(canViewSurvey)
@@ -162,7 +163,6 @@ class _MenuScreenState extends ConsumerState<MenuScreen> {
                                   ToastHelper.showError(message: "Link not ready, try again");
                                   return;
                                 }
-
                                 await Share.share(surveyShareUrl!);
                               },
                             ),
@@ -199,33 +199,22 @@ class _MenuScreenState extends ConsumerState<MenuScreen> {
                                       return CommonResumeDialog(
                                         onContinue: () async {
                                           Navigator.pop(context);
-
                                           ref.read(quotationFormProvider.notifier).state = oldData;
-
-                                          final result = await Navigator.pushNamed(
+                                          await Navigator.pushNamed(
                                             context,
                                             newQuotationRoute,
                                             arguments: {"keyType": "create_quatation"},
                                           );
-
-                                          /// 🔥 REFRESH AFTER BACK
-                                          // if (result == true) {
-                                          //   ref.read(quotationProvider.notifier).fetchQuotationList();
-                                          // }
                                         },
                                         onNew: () async {
                                           await HiveService.clear();
-
                                           ref.read(quotationFormProvider.notifier).clear();
-
                                           Navigator.pop(context);
                                           final result = await Navigator.pushNamed(
                                             context,
                                             newQuotationRoute,
                                             arguments: {"keyType": "create_quatation"},
                                           );
-
-                                          /// 🔥 REFRESH AFTER BACK
                                           if (result == true) {
                                             ref.read(quotationProvider.notifier).fetchQuotationList();
                                           }
@@ -235,22 +224,14 @@ class _MenuScreenState extends ConsumerState<MenuScreen> {
                                   );
                                 } else {
                                   ref.read(quotationFormProvider.notifier).clear();
-                                  final result = await Navigator.pushNamed(
+                                  await Navigator.pushNamed(
                                     context,
                                     newQuotationRoute,
                                     arguments: {"keyType": "create_quatation"},
                                   );
-
-                                  /// 🔥 REFRESH AFTER BACK
-                                  // if (result == true) {
-                                  //   ref.read(quotationProvider.notifier).fetchQuotationList();
-                                  // }
                                 }
-                                //this api refrsesh when i came back from this screen newQuotationRoute
-                                // ref.read(quotationProvider.notifier).fetchQuotationList();
                               },
                             ),
-
                           ],
                         ),
 
@@ -266,7 +247,6 @@ class _MenuScreenState extends ConsumerState<MenuScreen> {
                                 Navigator.pushNamed(context, ordersScreenRoute);
                               },
                             ),
-
                           ],
                         ),
 
@@ -277,12 +257,11 @@ class _MenuScreenState extends ConsumerState<MenuScreen> {
                           children: [
                             MenuItem(
                               title: "Lorry Receipts",
-                              icon: "assets/icons/bar.svg", // Replace with a suitable icon if available
+                              icon: "assets/icons/bar.svg", 
                               onTap: () {
                                 Navigator.pushNamed(context, lorryReceiptListScreenRoute);
                               },
                             ),
-
                           ],
                         ),
                       if(canViewMReceipt)
@@ -311,7 +290,6 @@ class _MenuScreenState extends ConsumerState<MenuScreen> {
                                 Navigator.pushNamed(context, staffScreenRoute);
                               },
                             ),
-
                           ],
                         ),
                       if(canViewExpense)
@@ -380,7 +358,6 @@ class _MenuScreenState extends ConsumerState<MenuScreen> {
                                 Navigator.pushNamed(context, companyListRoute);
                               },
                             ),
-
                             MenuItem(
                               title: "New Business",
                               icon: "assets/icons/Plus.svg",
@@ -388,7 +365,7 @@ class _MenuScreenState extends ConsumerState<MenuScreen> {
                                 Navigator.pushNamed(
                                   context,
                                   myBusinessRoute,
-                                  arguments: null, // create
+                                  arguments: null,
                                 );
                               },
                             ),
@@ -400,8 +377,8 @@ class _MenuScreenState extends ConsumerState<MenuScreen> {
                           icon: "assets/images/language.svg",
                           children: [
                             MenuItem(
-                              title: "Language",
-                              icon: "assets/images/language.svg",
+                              title: "Select Language",
+                              icon: "assets/icons/bar.svg",
                               onTap: () {
                                 Navigator.pushNamed(context, languageRoute);
                               },
@@ -409,13 +386,35 @@ class _MenuScreenState extends ConsumerState<MenuScreen> {
                           ],
                         ),
 
-
-
+                        const SizedBox(height: 10),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 16),
+                          child: ListTile(
+                            leading: const Icon(Icons.logout, color: Colors.red),
+                            title: Text(
+                              "Logout",
+                              style: GoogleFonts.inter(
+                                fontSize: 14,
+                                fontWeight: FontWeight.w500,
+                                color: Colors.red,
+                              ),
+                            ),
+                            onTap: () async {
+                               await StorageService().clearAll();
+                               if (context.mounted) {
+                                 Navigator.pushNamedAndRemoveUntil(
+                                   context,
+                                   loginScreenRoute,
+                                   (route) => false,
+                                 );
+                               }
+                            },
+                          ),
+                        ),
+                        const SizedBox(height: 20),
                       ],
                     ),
                   ),
-
-
                 ],
               ),
             ),
@@ -425,266 +424,3 @@ class _MenuScreenState extends ConsumerState<MenuScreen> {
     );
   }
 }
-
-
-/*
-class MenuScreen extends StatelessWidget {
-  const MenuScreen({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppColors.mWhite,
-
-      appBar: AppBar(
-        automaticallyImplyLeading: false, // hides back button
-        shadowColor: Colors.black38, // stronger shadow
-        surfaceTintColor: Colors.transparent,
-        backgroundColor: AppColors.mWhite,
-        title: Text(
-          "Menus",
-          style: TextStyles.f16w600Black8,
-        ),
-        elevation: 2,
-        actions: [
-          Padding(
-            padding: const EdgeInsets.only(right: 16),
-            child: SvgPicture.asset(
-              "assets/icons/P_support.svg",
-              width: 22,
-              height: 22,
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.only(right: 16),
-            child: SvgPicture.asset(
-              "assets/icons/Settings.svg",
-              width: 22,
-              height: 22,
-            ),
-          ),
-        ],
-      ),
-
-      body: Consumer(
-        builder: (context, ref, child) {
-          return Container(
-            color: const Color(0xffF3F3F3),
-            child: Container(
-              margin: const EdgeInsets.only(top: 10),
-              decoration: const BoxDecoration(
-                color: Colors.white,
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-
-
-                  /// MENU LIST
-                  Expanded(
-                    child: ListView(
-                      children: [
-                        const MenuSectionHeader(title: "Main"),
-                        const MenuDropdown(
-                          title: "Home",
-                          icon: "assets/images/home_icon.svg",
-                          children: [],
-                        ),
-
-                         MenuDropdown(
-                          title: "Survey",
-                          icon: "assets/icons/Survey.svg",
-                          children: [
-                            MenuItem(
-                                title: "Survey list",
-                                icon: "assets/icons/bar.svg",
-                              onTap: () {
-                                Navigator.pushNamed(context, surveyScreenRoute);
-                              },
-
-
-                            ),
-                            MenuItem(
-                                title: "Add new survey",
-                                icon: "assets/icons/Plus.svg",
-                              onTap: () {
-                                Navigator.pushNamed(context, surveyLinkRoute);
-                              },
-
-                            ),
-                            MenuItem(
-                                title: "Share survey link",
-                                icon: "assets/icons/file.svg"),
-                            MenuItem(
-                                title: "Generic survey link",
-                                icon: "assets/icons/generic.svg"),
-                          ],
-                        ),
-
-                        MenuDropdown(
-                          title: "Quotation",
-                          icon: "assets/icons/generic.svg",
-                          children: [
-                            MenuItem(
-                              title: "Quotation List",
-                              icon: "assets/icons/bar.svg",
-                              onTap: () {
-                                Navigator.pushNamed(context, quotationScreenRoute);
-                              },
-                            ),
-                            MenuItem(
-                              title: "Add new quotation",
-                              icon: "assets/icons/Plus.svg",
-                              onTap:  () async {
-                                final oldData = HiveService.get();
-
-                                if (oldData != null) {
-                                  showDialog(
-                                    context: context,
-                                    barrierDismissible: false,
-                                    builder: (_) {
-                                      return CommonResumeDialog(
-                                        onContinue: () async {
-                                          Navigator.pop(context);
-
-                                          ref.read(quotationFormProvider.notifier).state = oldData;
-
-                                          final result = await Navigator.pushNamed(
-                                            context,
-                                            newQuotationRoute,
-                                            arguments: {"keyType": "create_quatation"},
-                                          );
-
-                                          /// 🔥 REFRESH AFTER BACK
-                                          // if (result == true) {
-                                          //   ref.read(quotationProvider.notifier).fetchQuotationList();
-                                          // }
-                                        },
-                                        onNew: () async {
-                                          await HiveService.clear();
-
-                                          ref.read(quotationFormProvider.notifier).clear();
-
-                                          Navigator.pop(context);
-                                          final result = await Navigator.pushNamed(
-                                            context,
-                                            newQuotationRoute,
-                                            arguments: {"keyType": "create_quatation"},
-                                          );
-
-                                          /// 🔥 REFRESH AFTER BACK
-                                          if (result == true) {
-                                            ref.read(quotationProvider.notifier).fetchQuotationList();
-                                          }
-                                        },
-                                      );
-                                    },
-                                  );
-                                } else {
-                                  ref.read(quotationFormProvider.notifier).clear();
-                                  final result = await Navigator.pushNamed(
-                                    context,
-                                    newQuotationRoute,
-                                    arguments: {"keyType": "create_quatation"},
-                                  );
-
-                                  /// 🔥 REFRESH AFTER BACK
-                                  // if (result == true) {
-                                  //   ref.read(quotationProvider.notifier).fetchQuotationList();
-                                  // }
-                                }
-                                //this api refrsesh when i came back from this screen newQuotationRoute
-                                // ref.read(quotationProvider.notifier).fetchQuotationList();
-                              },
-                            ),
-
-                          ],
-                        ),
-
-
-                        MenuDropdown(
-                          title: "Orders",
-                          icon: "assets/icons/Box.svg",
-                          children: [
-                            MenuItem(
-                              title: "Orders List",
-                              icon: "assets/icons/bar.svg",
-                              onTap: () {
-                                Navigator.pushNamed(context, ordersScreenRoute);
-                              },
-                            ),
-
-                          ],
-                        ),
-
-                        const MenuDropdown(
-                          title: "LR Bilty",
-                          icon: "assets/icons/Bilty.svg",
-                          children: [],
-                        ),
-
-                        MenuDropdown(
-                          title: "Money Receipt",
-                          icon: "assets/icons/Receipt.svg",
-                          children: [
-                            MenuItem(
-                              title: "Money List",
-                              icon: "assets/icons/bar.svg",
-                              onTap: () {
-                                Navigator.pushNamed(context, moneyListScreenRoute);
-                              },
-                            ),
-                            MenuItem(
-                              title: "New Receipt",
-                              icon: "assets/icons/Plus.svg",
-                              onTap: () {
-                                Navigator.pushNamed(context, newReceiptScreenRoute);
-                              },
-                            ),
-                          ],
-                        ),
-
-                        const MenuDropdown(
-                          title: "Staffs",
-                          icon: "assets/icons/users.svg",
-                          children: [],
-                        ),
-
-                        MenuDropdown(
-                          title: "Expanse Management",
-                          icon: "assets/icons/expense.svg",
-                          children: [],
-                        ),
-                        const MenuSectionHeader(title: "Others"),
-                        const MenuDropdown(
-                          title: "Letter Head",
-                          icon: "assets/icons/Letterhead.svg",
-                          children: [],
-                        ),
-                        const MenuDropdown(
-                          title: "Subscription",
-                          icon: "assets/icons/subs.svg",
-                          children: [],
-                        ),
-                        const MenuDropdown(
-                          title: "Business Details",
-                          icon: "assets/icons/buisness.svg",
-                          children: [],
-                        ),
-
-                      ],
-                    ),
-                  ),
-
-
-                ],
-              ),
-            ),
-          );
-        },
-      )
-
-    );
-  }
-}
- */

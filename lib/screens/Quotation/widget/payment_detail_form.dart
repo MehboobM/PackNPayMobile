@@ -134,6 +134,7 @@ class _PaymentDetailFormState extends ConsumerState<PaymentDetailForm> {
       padding: const EdgeInsets.all(16.0),
       child: Form(
         key: _formKey,
+        child: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -429,22 +430,26 @@ class _PaymentDetailFormState extends ConsumerState<PaymentDetailForm> {
                     ],
                   ),
                 ),
+
                 const SizedBox(width: 12),
-                buildCommonDropdown(
-                  title: "payment.gst".tr(),
-                  isRequired: true,
-                  value: selectedGstPercentLabel,
-                  items: gstPercentItems,
-                  onChanged: (value) {
-                    final val = dropdown.getValueByLabel("gst_percent", value ?? "");
 
-                    setState(() {
-                      gstSelectedPercentage = val;
-                    });
+                /// ✅ FIX HERE
+                Expanded(
+                  child: buildCommonDropdown(
+                    title: "payment.gst".tr(),
+                    isRequired: true,
+                    value: selectedGstPercentLabel,
+                    items: gstPercentItems,
+                    onChanged: (value) {
+                      final val = dropdown.getValueByLabel("gst_percent", value ?? "");
 
-                    /// ✅ ADD THIS
-                    ref.read(quotationFormProvider.notifier).state.gstPercent = val;
-                  },
+                      setState(() {
+                        gstSelectedPercentage = val;
+                      });
+
+                      ref.read(quotationFormProvider.notifier).state.gstPercent = val;
+                    },
+                  ),
                 ),
               ],
             ),
@@ -453,21 +458,22 @@ class _PaymentDetailFormState extends ConsumerState<PaymentDetailForm> {
 
             Row(
               children: [
-                buildCommonDropdown(
-                  title:  "payment.gstType".tr(),
-                  isRequired: true,
-                  value: selectedGstLabel,
-                  items: gstTypeItems,
-                  onChanged: (value) {
-                    final val = dropdown.getValueByLabel("gst_type", value ?? "");
+                Expanded(
+                  child: buildCommonDropdown(
+                    title: "payment.gstType".tr(),
+                    isRequired: true,
+                    value: selectedGstLabel,
+                    items: gstTypeItems,
+                    onChanged: (value) {
+                      final val = dropdown.getValueByLabel("gst_type", value ?? "");
 
-                    setState(() {
-                      gstTypeSelectedPercentage = val;
-                    });
+                      setState(() {
+                        gstTypeSelectedPercentage = val;
+                      });
 
-                    /// ✅ ADD THIS
-                    ref.read(quotationFormProvider.notifier).state.gstType = val;
-                  },
+                      ref.read(quotationFormProvider.notifier).state.gstType = val;
+                    },
+                  ),
                 ),
               ],
             ),
@@ -501,6 +507,7 @@ class _PaymentDetailFormState extends ConsumerState<PaymentDetailForm> {
           ],
         ),
       ),
+    )
     );
   }
 

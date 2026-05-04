@@ -225,10 +225,7 @@ class _SubscriptionPageState
       ),
       child: Icon(icon, size: 20, color: Colors.black87),
     );
-  }
-
-  /// ================= HISTORY ITEM =================
-  Widget _buildHistoryItem(
+  }Widget _buildHistoryItem(
       int index,
       String status,
       Color bgColor,

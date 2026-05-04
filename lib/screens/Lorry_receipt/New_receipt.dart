@@ -29,7 +29,6 @@ class _NewLorryReceiptScreenState
     extends ConsumerState<NewLorryReceiptScreen> {
   int currentStep = 0;
 
-  /// List of all step screens
   late final List<Widget> steps;
 
   @override
@@ -61,11 +60,15 @@ class _NewLorryReceiptScreenState
     ];
   }
 
+  /// ================= STEP NAVIGATION =================
+
   void goToNextStep() {
-    if (currentStep < steps.length - 1) {
-      setState(() {
-        currentStep++;
-      });
+    if (_validateCurrentStep()) {
+      if (currentStep < steps.length - 1) {
+        setState(() {
+          currentStep++;
+        });
+      }
     }
   }
 
@@ -80,17 +83,108 @@ class _NewLorryReceiptScreenState
   }
 
   void onStepTapped(int index) {
+    /// 🔒 Prevent forward navigation without validation
+    if (index > currentStep) {
+      if (!_validateCurrentStep()) return;
+    }
+
     setState(() {
       currentStep = index;
     });
   }
+
+  /// ================= VALIDATION HANDLER =================
+
+  bool _validateCurrentStep() {
+    switch (currentStep) {
+      case 0:
+        return _validateLRDetails();
+      case 1:
+        return _validateConsignor();
+      case 2:
+        return _validatePackage();
+      case 3:
+        return _validateInsurance();
+      default:
+        return true;
+    }
+  }
+
+  /// ================= STEP 1 VALIDATION =================
+  bool _validateLRDetails() {
+    final data = ref.read(lrFormDataProvider);
+
+    if ((data["order_id"] ?? "").toString().isEmpty) {
+      _showError("Order ID is required");
+      return false;
+    }
+
+    if ((data["lr_no"] ?? "").toString().isEmpty) {
+      _showError("LR No is required");
+      return false;
+    }
+
+    return true;
+  }
+
+  /// ================= STEP 2 VALIDATION =================
+  bool _validateConsignor() {
+    final data = ref.read(lrFormDataProvider);
+
+    final from = data["consignor_from"] ?? {};
+    final to = data["consignor_to"] ?? {};
+
+    if ((from["name"] ?? "").toString().isEmpty) {
+      _showError("Consignor name required");
+      return false;
+    }
+
+    if ((to["name"] ?? "").toString().isEmpty) {
+      _showError("Consignee name required");
+      return false;
+    }
+
+    return true;
+  }
+
+  /// ================= STEP 3 VALIDATION =================
+  bool _validatePackage() {
+    final data = ref.read(lrFormDataProvider);
+    final pkg = data["package_details"] ?? {};
+
+    if ((pkg["no_of_package"] ?? "").toString().isEmpty) {
+      _showError("No. of package required");
+      return false;
+    }
+
+    if ((pkg["actual_weight"] ?? "").toString().isEmpty) {
+      _showError("Actual weight required");
+      return false;
+    }
+
+    return true;
+  }
+
+  /// ================= STEP 4 VALIDATION =================
+  bool _validateInsurance() {
+    // Optional validation
+    return true;
+  }
+
+  /// ================= COMMON ERROR =================
+  void _showError(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text(message)),
+    );
+  }
+
+  /// ================= UI =================
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: true,
 
-      /// 🔵 APPBAR + STEPPER
       appBar: AppBar(
         title: Text(
           widget.isEdit ? "Edit LR" : "New LR",
@@ -121,7 +215,6 @@ class _NewLorryReceiptScreenState
         ),
       ),
 
-      /// 🔵 BODY
       body: SafeArea(
         child: steps[currentStep],
       ),

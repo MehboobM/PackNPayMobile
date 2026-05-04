@@ -51,8 +51,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     print("subscriptionStatus: $subscriptionStatus");
 
     final isComplete =
-        companyStatus == "COMPLETE" &&
-            subscriptionStatus == "ACTIVE";
+        companyStatus == "complete" &&
+            subscriptionStatus == "complete";
 
     if (!isComplete) {
       showDialog(
