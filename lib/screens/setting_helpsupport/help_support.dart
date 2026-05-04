@@ -237,16 +237,15 @@ class _HelpSupportScreenState extends State<HelpSupportScreen> {
             ),
           ),
           const SizedBox(height: 18),
-          _contactRow(Icons.phone, "Call us", "+91 0000000000"),
+          _contactRow(Icons.phone, "Call us", "+91 7411628282"),
           const SizedBox(height: 14),
-          _contactRow(Icons.email, "Mail us", "support@email.com"),
+          _contactRow(Icons.email, "Mail us", "info@packnpay.in"),
           const SizedBox(height: 14),
           _contactRow(
             Icons.location_on,
             "Office",
-            "105 Jerry Dove Drive, Florence, SC 29501",
+            "No.5/149, Shop no.5,4th Main Rd, Valmi Street,Otteri Extension, Chennai,Tamil Nadu -600048 ",
           ),
-          const SizedBox(height: 8),
         ],
       ),
     );
@@ -257,8 +256,13 @@ class _HelpSupportScreenState extends State<HelpSupportScreen> {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Icon(icon, color: Colors.white, size: 20),
+        Padding(
+          padding: const EdgeInsets.only(top: 2),
+          child: Icon(icon, color: Colors.white, size: 20),
+        ),
         const SizedBox(width: 10),
+
+        /// 🔥 Important: Expanded for proper wrapping
         Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -269,11 +273,16 @@ class _HelpSupportScreenState extends State<HelpSupportScreen> {
                   color: AppColors.mWhite.withOpacity(0.8),
                 ),
               ),
-              const SizedBox(height: 10),
+
+              const SizedBox(height: 4), // 👈 reduced spacing
+
+              /// ✅ Wrap + better readability
               Text(
                 value,
-                style: TextStyles.f12w400mWhite,
-              ),
+                style: TextStyles.f12w400mWhite.copyWith(
+                  height: 1.2, // 👈 improves readability for long address
+                ),
+              )
             ],
           ),
         ),

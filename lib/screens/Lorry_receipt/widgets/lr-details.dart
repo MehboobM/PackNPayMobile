@@ -34,6 +34,7 @@ class _LRDetailsFormState extends ConsumerState<LRDetailsForm> {
   String? selectedToCity;
   int? selectedFromCityId;
   int? selectedToCityId;
+  final _formKey = GlobalKey<FormState>();
   /// ================= CONTROLLERS (UNCHANGED) =================
   final TextEditingController lrNoController =
   TextEditingController(text: "PNP0001");
@@ -168,7 +169,9 @@ class _LRDetailsFormState extends ConsumerState<LRDetailsForm> {
     riskTypeItems.isNotEmpty ? riskTypeItems.first : null;
     print("Risk Items: $riskTypeItems");
     print("Selected Risk: $selectedRiskType");
-    return Container(
+    return Form(
+        key: _formKey,
+        child: Container(
         color: Colors.white, // 👈 ADD THIS
         child: Column(
             children: [
@@ -205,6 +208,12 @@ class _LRDetailsFormState extends ConsumerState<LRDetailsForm> {
                 focusNode: orderIdFocusNode,
                 hintText: "Enter Order ID",
                 borderRadius: 10,
+                validator: (value) {
+                  if (value == null || value.trim().isEmpty) {
+                    return "Order ID is required";
+                  }
+                  return null;
+                },
                 onChanged: (value) {
                   if (_debounce?.isActive ?? false) _debounce!.cancel();
 
@@ -226,8 +235,13 @@ class _LRDetailsFormState extends ConsumerState<LRDetailsForm> {
                 hintText: "00/00/0000",
                 materialIcon: Icons.calendar_today,
                 borderRadius: 10,
-
                 onTap: () => _selectDate(dateController),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return "Date is required";
+                  }
+                  return null;
+                },
               ),
               const SizedBox(height: 10),
               SizedBox(
@@ -263,6 +277,12 @@ class _LRDetailsFormState extends ConsumerState<LRDetailsForm> {
                 controller: vehicleController,
                 hintText: "Enter vehicle no.",
                 borderRadius: 10,
+                validator: (value) {
+                  if (value == null || value.trim().isEmpty) {
+                    return "Vehicle number is required";
+                  }
+                  return null;
+                },
               ),
 
               const SizedBox(height: 12),
@@ -366,6 +386,12 @@ class _LRDetailsFormState extends ConsumerState<LRDetailsForm> {
                 controller: driverNameController,
                 hintText: "Enter driver name",
                 borderRadius: 10,
+                validator: (value) {
+                  if (value == null || value.trim().isEmpty) {
+                    return "Driver name is required";
+                  }
+                  return null;
+                },
               ),
 
               const SizedBox(height: 12),
@@ -385,6 +411,15 @@ class _LRDetailsFormState extends ConsumerState<LRDetailsForm> {
                           hintText: "Enter mobile no.",
                           keyboardType: TextInputType.phone,
                           borderRadius: 10,
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return "Mobile number is required";
+                            }
+                            if (!RegExp(r'^[0-9]{10}$').hasMatch(value)) {
+                              return "Enter valid 10-digit number";
+                            }
+                            return null;
+                          },
                         ),
                       ],
                     ),
@@ -435,6 +470,15 @@ class _LRDetailsFormState extends ConsumerState<LRDetailsForm> {
                           hintText: "₹",
                           keyboardType: TextInputType.number,
                           borderRadius: 10,
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return "Amount is required";
+                            }
+                            if (double.tryParse(value) == null) {
+                              return "Enter valid amount";
+                            }
+                            return null;
+                          },
                         ),
                       ],
                     ),
@@ -576,6 +620,7 @@ class _LRDetailsFormState extends ConsumerState<LRDetailsForm> {
        buildBottomBar(),
     ]
     ),
+        ),
     );
   }
 
@@ -675,10 +720,21 @@ class _LRDetailsFormState extends ConsumerState<LRDetailsForm> {
             Expanded(
               child: CustomButton(
                 onPressed: () {
+                  if (!_formKey.currentState!.validate()) {
+                    return; // ❌ stop if validation fails
+                  }
+
+                  if (selectedFromCity == null || selectedToCity == null) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text("Please select cities")),
+                    );
+                    return;
+                  }
+
                   final notifier = ref.read(lorryReceiptProvider.notifier);
 
                   updateFormData(ref, {
-                    "order_id": orderIdController.text.trim(), // ✅ Added
+                    "order_id": orderIdController.text.trim(),
                     "quotation_id": "QT-0001",
                     "survey_id": "SV-0001",
                     "lr_no": lrNoController.text.trim(),
@@ -702,13 +758,12 @@ class _LRDetailsFormState extends ConsumerState<LRDetailsForm> {
                     "eway_extend_date":
                     ewayBillExtendPeriodController.text.isEmpty
                         ? null
-                        : _formatDate(
-                        ewayBillExtendPeriodController.text),
+                        : _formatDate(ewayBillExtendPeriodController.text),
                     "total_amount":
                     double.tryParse(invoiceAmountController.text) ?? 0,
                   });
 
-                  widget.onNext();
+                  widget.onNext(); // ✅ only after validation success
                 },
                 text: "Save & Next  >>",
 

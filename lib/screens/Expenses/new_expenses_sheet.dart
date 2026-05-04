@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:dio/dio.dart';
 import '../../api_services/api_end_points.dart';
 import '../../database/shared_preferences/shared_storage.dart';
+import '../../utils/toast_message.dart';
 
 class NewExpensesSheet extends StatefulWidget {
   final String? uid;
@@ -66,26 +67,71 @@ class _NewExpensesSheetState extends State<NewExpensesSheet> {
   }
 
   Future<void> _saveExpense() async {
+    /// ✅ VALIDATION FIRST
+    final amount = double.tryParse(_amountController.text.trim()) ?? 0;
+
+    if (amount <= 0) {
+      ToastHelper.showError(
+        message: "Enter valid amount",
+      );
+      return;
+    }
+
+    if (_nameController.text.trim().isEmpty) {
+      ToastHelper.showError(
+        message: "Enter expense name",
+      );
+      return;
+    }
+
+    if (_selectedCategoryId == null) {
+      ToastHelper.showError(
+        message: "Select expense category",
+      );
+      return;
+    }
+
     setState(() => _isLoading = true);
+
     try {
       String? token = await _storage.getToken();
+
       final payload = {
         "expense_date": DateTime.now().toString().split(' ')[0],
-        "name": _nameController.text,
+        "name": _nameController.text.trim(),
         "category_id": _selectedCategoryId,
-        "amount": double.tryParse(_amountController.text) ?? 0,
-        "remarks": _remarksController.text,
+        "amount": amount,
+        "remarks": _remarksController.text.trim(),
       };
 
       if (widget.uid == null) {
-        await _dio.post('${ApiEndPoints.baseurl}office-expense/create',
-            data: payload, options: Options(headers: {'Authorization': 'Bearer $token'}));
+        await _dio.post(
+          '${ApiEndPoints.baseurl}office-expense/create',
+          data: payload,
+          options: Options(headers: {'Authorization': 'Bearer $token'}),
+        );
       } else {
-        await _dio.put('${ApiEndPoints.baseurl}office-expense/update/${widget.uid}',
-            data: payload, options: Options(headers: {'Authorization': 'Bearer $token'}));
+        await _dio.put(
+          '${ApiEndPoints.baseurl}office-expense/update/${widget.uid}',
+          data: payload,
+          options: Options(headers: {'Authorization': 'Bearer $token'}),
+        );
       }
+
+      /// ✅ SUCCESS TOAST
+      ToastHelper.showSuccess(
+        message: widget.uid == null
+            ? "Expense added successfully"
+            : "Expense updated successfully",
+      );
+
       Navigator.pop(context);
     } catch (e) {
+      /// ❌ ERROR TOAST (API error)
+      ToastHelper.showError(
+        message: "Failed to save expense",
+      );
+
       debugPrint("Save Error: $e");
     } finally {
       setState(() => _isLoading = false);

@@ -12,6 +12,7 @@ class HeaderSection extends StatefulWidget {
 
   @override
   State<HeaderSection> createState() => _HeaderSectionState();
+
 }
 
 class _HeaderSectionState extends State<HeaderSection> {
@@ -28,6 +29,22 @@ class _HeaderSectionState extends State<HeaderSection> {
 
   OverlayEntry? _overlayEntry;
   final LayerLink _layerLink = LayerLink();
+  @override
+  void initState() {
+    super.initState();
+    _loadCompany();
+  }
+  Future<void> _loadCompany() async {
+    final name = await _storage.getCompanyName();
+    final fullName = await _storage.getCompanyFullName();
+    final logo = await _storage.getCompanyLogo();
+
+    setState(() {
+      selectedCompanyName = "Default Business";
+      selectedCompanyFullName = fullName ?? "Acme Corporation pvt.Ltd";
+      selectedLogo = logo;
+    });
+  }
 
   /// ================= FETCH COMPANIES =================
   Future<void> _fetchCompanies() async {
@@ -60,16 +77,20 @@ class _HeaderSectionState extends State<HeaderSection> {
       );
 
       if (response.data["success"] == true) {
+        final user = response.data["user"];
+
         /// ✅ Save token + company_id
         await _storage.saveToken(response.data["token"]);
-        await _storage.saveCompanyId(
-            company["id"].toString());
+        await _storage.saveCompanyId(company["id"].toString());
 
+        /// ✅ SAVE STATUS FROM RESPONSE (🔥 IMPORTANT)
+        await _storage.saveCompanyStatus(user["company_status"] ?? "");
+        await _storage.saveSubscriptionStatus(user["subscription_status"] ?? "");
+
+        /// ✅ UI update
         setState(() {
-          selectedCompanyName =
-              company["label_name"] ?? "Business";
-          selectedCompanyFullName =
-              company["company_name"] ?? "";
+          selectedCompanyName = company["label_name"] ?? "Business";
+          selectedCompanyFullName = company["company_name"] ?? "";
           selectedLogo = company["logo"];
         });
 
@@ -268,10 +289,14 @@ class _HeaderSectionState extends State<HeaderSection> {
           const SizedBox(width: 12),
 
           /// PROFILE
-          const CircleAvatar(
-            radius: 18,
-            backgroundImage:
-            AssetImage("assets/images/profile.png"),
+          GestureDetector(
+            onTap: () {
+              Navigator.pushNamed(context, profileRoute);
+            },
+            child: const CircleAvatar(
+              radius: 18,
+              backgroundImage: AssetImage("assets/images/profile.png"),
+            ),
           ),
         ],
       ),

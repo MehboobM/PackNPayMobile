@@ -5,6 +5,7 @@ import '../database/hive_database/hive_notification_tracker.dart';
 import '../database/shared_preferences/shared_storage.dart';
 import '../models/ActionList_model.dart';
 import '../models/dashboard_model.dart';
+import '../models/profile_modal.dart';
 import '../models/subscription_modal.dart';
 import '../models/upcomming_ordermodel.dart';
 import '../notification/local_notification_service.dart';
@@ -247,5 +248,18 @@ class DashboardService {
     } else {
       throw Exception("Failed to load subscription");
     }
+  }
+  Future<ProfileModel?> getProfile() async {
+    try {
+      final res = await NetworkHandler().get("profile");
+
+      if (res.data["success"] == true) {
+        return ProfileModel.fromJson(res.data["data"]);
+      }
+    } catch (e) {
+      print("Profile Repo Error: $e");
+    }
+
+    return null;
   }
 }

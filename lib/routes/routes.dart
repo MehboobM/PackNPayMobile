@@ -22,6 +22,7 @@ import '../screens/business_details/company_lists.dart';
 import '../screens/business_details/my_business_page.dart';
 import '../screens/chnage_langauge/change_laguage_screen.dart';
 import '../screens/dashboard/dashboard_screen.dart';
+import '../screens/dashboard/profie_screen.dart';
 import '../screens/login/login_screen.dart';
 import '../screens/new_survey/survey_link_screen.dart';
 import '../screens/orders/order_details.dart';
@@ -207,6 +208,10 @@ class NavigationRouter {
       case PlansRoute:
         return MaterialPageRoute(
           builder: (_) => const PlansPage(),
+        );
+      case profileRoute:
+        return MaterialPageRoute(
+          builder: (_) => const ProfileScreen(),
         );
 
 

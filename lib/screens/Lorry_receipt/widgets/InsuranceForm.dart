@@ -50,6 +50,7 @@ class _InsuranceFormState extends ConsumerState<InsuranceForm> {
 
   bool materialInsuranceExpanded = true;
   bool demurrageExpanded = true;
+  final _formKey = GlobalKey<FormState>();
   @override
   void initState() {
     super.initState();
@@ -110,8 +111,10 @@ class _InsuranceFormState extends ConsumerState<InsuranceForm> {
       child: Column(
         children: [
           /// ================= FORM CONTENT =================
-          Expanded(
-            child: SingleChildScrollView(
+      Expanded(
+      child: Form(
+      key: _formKey,
+        child: SingleChildScrollView(
               child: Padding(
                 padding: const EdgeInsets.all(16),
                 child: Column(
@@ -152,6 +155,7 @@ class _InsuranceFormState extends ConsumerState<InsuranceForm> {
                         controller: insuranceCompanyController,
                         hintText: "Enter",
                         borderRadius: 12,
+
                       ),
 
                       const SizedBox(height: 12),
@@ -162,6 +166,7 @@ class _InsuranceFormState extends ConsumerState<InsuranceForm> {
                         controller: policyNoController,
                         hintText: "Enter",
                         borderRadius: 12,
+
                       ),
 
                       const SizedBox(height: 12),
@@ -182,6 +187,7 @@ class _InsuranceFormState extends ConsumerState<InsuranceForm> {
                                   keyboardType:
                                   TextInputType.number,
                                   borderRadius: 12,
+
                                 ),
                               ],
                             ),
@@ -203,6 +209,7 @@ class _InsuranceFormState extends ConsumerState<InsuranceForm> {
                                   borderRadius: 12,
                                   onTap: () => _pickDate(
                                       insuranceDateController),
+
                                 ),
                               ],
                             ),
@@ -218,6 +225,7 @@ class _InsuranceFormState extends ConsumerState<InsuranceForm> {
                         controller: insuranceRiskController,
                         hintText: "Enter desc.",
                         borderRadius: 12,
+
                       ),
                     ],
 
@@ -244,7 +252,7 @@ class _InsuranceFormState extends ConsumerState<InsuranceForm> {
                               CrossAxisAlignment.start,
                               children: [
                                 amountWithDropdownField(
-                                  label:  "lr.fields.demurrageCharge".tr(),
+                                  label: "lr.fields.demurrageCharge".tr(),
                                   controller: demurrageChargeController,
                                   items: demurrageTypeItems,
                                   selectedValue: demurrageTypeLabel,
@@ -252,7 +260,7 @@ class _InsuranceFormState extends ConsumerState<InsuranceForm> {
                                     setState(() {
                                       selectedDemurrageType =
                                           dropdown.getValueByLabel(
-                                            "lr.fields.demurrageCharge".tr(),
+                                            "demurrage_charge_type", // ✅ FIXED
                                             val ?? "",
                                           );
                                     });
@@ -294,6 +302,8 @@ class _InsuranceFormState extends ConsumerState<InsuranceForm> {
               ),
             ),
           ),
+      ),
+
 
           /// ================= BOTTOM BUTTONS =================
           _buildBottomBar(),
@@ -500,72 +510,88 @@ class _InsuranceFormState extends ConsumerState<InsuranceForm> {
                 builder: (context, ref, _) {
                   return CustomButton(
                     onPressed: () async {
-                      final notifier =
-                      ref.read(lorryReceiptProvider.notifier);
-                      /// 🔹 Get Route Arguments
+                      /// ✅ STEP 1: Validate Form
+                      if (!_formKey.currentState!.validate()) {
+                        return; // ⛔ Stop execution if invalid
+                      }
+
+                      /// ✅ STEP 2: Validate dropdowns manually
+                      if (selectedInsuranceType == null || selectedInsuranceType!.isEmpty) {
+                        ToastHelper.showError(
+                          title: "Error",
+                          message: "Please select insurance type",
+                        );
+                        return;
+                      }
+
+                      if (selectedDemurrageType == null || selectedDemurrageType!.isEmpty) {
+                        ToastHelper.showError(
+                          title: "Error",
+                          message: "Please select demurrage type",
+                        );
+                        return;
+                      }
+
+                      /// 👇 YOUR EXISTING CODE CONTINUES
+                      final notifier = ref.read(lorryReceiptProvider.notifier);
+
                       final args = ModalRoute.of(context)
                           ?.settings
                           .arguments as Map<String, dynamic>?;
+
                       final String? uidFromArgs = args?['uid'];
                       final bool isEdit = args?['isEdit'] ?? false;
-                      /// ✅ Save Insurance & Demurrage Data
+
                       updateFormData(ref, {
                         "insurance": {
                           "insurance_type": selectedInsuranceType ?? "",
-                          "company_name":
-                          insuranceCompanyController.text.trim(),
+                          "company_name": insuranceCompanyController.text.trim(),
                           "policy_no": policyNoController.text.trim(),
-                          "insured_amount": double.tryParse(
-                              insuredAmountController.text.trim()) ??
-                              0,
-                          "insurance_date":
-                          insuranceDateController.text.trim(),
-                          "insurance_risk":
-                          insuranceRiskController.text.trim(),
+                          "insured_amount":
+                          double.tryParse(insuredAmountController.text.trim()) ?? 0,
+                          "insurance_date": insuranceDateController.text.trim(),
+                          "insurance_risk": insuranceRiskController.text.trim(),
                         },
                         "demurrage": {
-                          "charge": double.tryParse(
-                              demurrageChargeController.text.trim()) ??
-                              0,
+                          "charge":
+                          double.tryParse(demurrageChargeController.text.trim()) ?? 0,
                           "charge_type": selectedDemurrageType ?? "",
-                          "applicable_rule":
-                          selectedDemurrageApplicable ?? "",
+                          "applicable_rule": selectedDemurrageApplicable ?? "",
                         },
                       });
-                      /// ✅ Get Complete Form Data
+
                       final formData = ref.read(lrFormDataProvider);
+
                       try {
-                        /// Convert JSON to Request Model
                         final request =
                         CreateLorryReceiptRequest.fromJson(formData);
+
                         bool success;
-                        /// ✏️ UPDATE EXISTING LR
+
                         if (isEdit && uidFromArgs != null) {
                           success = await notifier.updateLorryReceipt(
                             uidFromArgs,
                             request,
                           );
+                        } else {
+                          success = await notifier.createLorryReceipt(request);
                         }
-                        /// ➕ CREATE NEW LR
-                        else {
-                          success =
-                          await notifier.createLorryReceipt(request);
-                        }
+
                         if (!context.mounted) return;
+
                         if (success) {
-                          /// 🎉 Success Toast
                           ToastHelper.showSuccess(
                             title: "Success",
                             message: isEdit
                                 ? "Lorry Receipt Updated Successfully"
                                 : "Lorry Receipt Created Successfully",
                           );
-                          /// 🧹 Reset Form State
+
                           ref.read(lrFormDataProvider.notifier).state = {};
                           notifier.resetCreateState();
-                          /// 🔄 Refresh List
+
                           await notifier.fetchLorryReceipts();
-                          /// 🚀 Navigate to List Screen
+
                           Navigator.pop(context);
                         } else {
                           final error =

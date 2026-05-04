@@ -127,10 +127,18 @@ class _MenuScreenState extends ConsumerState<MenuScreen> {
                     child: ListView(
                       children: [
                         const MenuSectionHeader(title: "Main"),
-                        const MenuDropdown(
+                         MenuDropdown(
                           title: "Home",
                           icon: "assets/images/home_icon.svg",
-                          children: [],
+                          children: [
+                            MenuItem(
+                              title: "Home",
+                              icon: "assets/icons/home_icon.svg",
+                              onTap: () {
+                                Navigator.pushNamed(context, homeScreenRoute);
+                              },
+                            ),
+                          ],
                         ),
 
                        if(canViewSurvey)
@@ -155,7 +163,7 @@ class _MenuScreenState extends ConsumerState<MenuScreen> {
 
                             ),
                             MenuItem(
-                                title: "Share survey link",
+                                title: "Generic survey link",
                                 icon: "assets/icons/file.svg",
                               onTap: () async {
                                 if (surveyShareUrl == null) {
@@ -166,9 +174,7 @@ class _MenuScreenState extends ConsumerState<MenuScreen> {
                                 await Share.share(surveyShareUrl!);
                               },
                             ),
-                            MenuItem(
-                                title: "Generic survey link",
-                                icon: "assets/icons/generic.svg"),
+
                           ],
                         ),
 

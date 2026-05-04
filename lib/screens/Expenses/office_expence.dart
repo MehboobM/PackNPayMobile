@@ -308,8 +308,7 @@ class _OfficeExpensePageState extends State<OfficeExpensePage> {
               ),
               const SizedBox(height: 8),
               Row(children: [
-                const Icon(Icons.visibility_outlined, size: 18, color: Colors.grey),
-                const SizedBox(width: 8),
+
                 PopupMenuButton<String>(
                   onSelected: (value) {
                     if (value == 'edit') {

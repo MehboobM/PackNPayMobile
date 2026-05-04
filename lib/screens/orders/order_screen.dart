@@ -9,6 +9,7 @@ import '../../database/hive_database/hive_permission.dart';
 import '../../global_widget/confirmation_dialog.dart';
 import '../../global_widget/custom_textfield.dart';
 import '../../global_widget/menu_widget.dart';
+import '../../global_widget/view_download_service.dart';
 import '../../notifier/order_detail_notifier.dart';
 import '../../routes/route_names_const.dart';
 import '../../utils/toast_message.dart';
@@ -65,6 +66,34 @@ class _OrdersScreenState extends ConsumerState<OrdersScreen> {
     _scrollController.dispose();
     searchController.dispose();
     super.dispose();
+  }
+  void _exportOrders() {
+    final state = ref.read(orderDataProvider);
+
+    /// ❌ Prevent empty export
+    if (state.filteredList == null || state.filteredList!.isEmpty) {
+      ToastHelper.showError(message: "No data to export");
+      return;
+    }
+
+    ViewDownloadService.exportPdf(
+      context: context,
+      module: "ORDER", // ✅ as per API doc
+      filters: {
+        /// ✅ Date filter
+        if (fromDate != null) "from_date": formatDate(fromDate!),
+        if (toDate != null) "to_date": formatDate(toDate!),
+
+        /// ✅ Search
+        if (searchController.text.isNotEmpty)
+          "search": searchController.text,
+
+        /// ✅ Status mapping (IMPORTANT)
+        if (selectedIndex == 1) "order_status": "ORDER_CONFIRMED",
+        if (selectedIndex == 2) "order_status": "SETTLED",
+        if (selectedIndex == 3) "status": "DELETED",
+      },
+    );
   }
 
 
@@ -144,32 +173,28 @@ class _OrdersScreenState extends ConsumerState<OrdersScreen> {
         ),
 
         actions: [
-
-          /// PDF ICON
-          SvgPicture.asset(
-            "assets/icons/pdf.svg",
-            width: 22,
-            height: 22,
-            color: AppColors.primary,
-          ),
-
-          const SizedBox(width: 12),
-
-          /// EXPORT TEXT
           InkWell(
-            onTap: (){
-           //  Navigator.pushNamed(context, orderDetailsScreenRoute);
-            },
+            onTap: _exportOrders, // ✅ single action
+            borderRadius: BorderRadius.circular(8),
             child: Padding(
               padding: const EdgeInsets.only(right: 16),
-              child: Center(
-                child: Text(
-                  "Export",
-                  style: TextStyles.f12w400mWhite.copyWith(
+              child: Row(
+                children: [
+                  SvgPicture.asset(
+                    "assets/icons/pdf.svg",
+                    width: 22,
+                    height: 22,
                     color: AppColors.primary,
-                    fontWeight: FontWeight.w600,
                   ),
-                ),
+                  const SizedBox(width: 6),
+                  Text(
+                    "Export",
+                    style: TextStyles.f12w400mWhite.copyWith(
+                      color: AppColors.primary,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ],
               ),
             ),
           ),

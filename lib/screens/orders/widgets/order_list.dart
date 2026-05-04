@@ -149,10 +149,6 @@ class OrderListItem extends StatelessWidget {
               /// ACTION ICONS
               Row(
                 children: [
-                  const Icon(Icons.visibility_outlined, size: 18),
-                  const SizedBox(width: 8),
-                  const Icon(Icons.download_outlined, size: 18),
-                   const SizedBox(width: 8),
                   GestureDetector(
                       onTapDown: (details) {
                         onTapMenu?.call(details);

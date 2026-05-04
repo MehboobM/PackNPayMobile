@@ -125,11 +125,35 @@ class _SurveyListScreenState extends ConsumerState<SurveyListScreen> {
         ),
 
         actions: [
-          SvgPicture.asset(
-            "assets/icons/pdf.svg",
-            width: 22,
-            height: 22,
-            color: AppColors.primary,
+          InkWell(
+            onTap: () async {
+              final state = ref.read(surveyDataProvider);
+
+              /// 🔥 BUILD FILTERS FROM CURRENT SCREEN
+              final filters = {
+                if (fromDate != null) "from_date": formatDate(fromDate!),
+                if (toDate != null) "to_date": formatDate(toDate!),
+                if (state.sortOrder != null) "sort": state.sortOrder,
+                if (searchController.text.isNotEmpty) "search": searchController.text,
+
+                /// ✅ STATUS BASED ON SELECTED TAB
+                if (selectedIndex == 1) "status": "PENDING",
+                if (selectedIndex == 2) "status": "SETTLED",
+              };
+
+              /// 🚀 CALL EXPORT
+              await ViewDownloadService.exportPdf(
+                context: context,
+                module: "SURVEY",
+                filters: filters,
+              );
+            },
+            child: SvgPicture.asset(
+              "assets/icons/pdf.svg",
+              width: 22,
+              height: 22,
+              color: AppColors.primary,
+            ),
           ),
 
           const SizedBox(width: 16),
@@ -369,9 +393,10 @@ class _SurveyListScreenState extends ConsumerState<SurveyListScreen> {
             SurveyListHeader(),
 
             // LIST (DYNAMIC)
-             Expanded(
-              child: (state.isPageLoading) && list.isEmpty
+            Expanded(
+              child: state.isInitialLoading
                   ? const Center(child: CircularProgressIndicator())
+
                   : state.error != null
                   ? Center(
                 child: Text(
@@ -380,56 +405,69 @@ class _SurveyListScreenState extends ConsumerState<SurveyListScreen> {
                   textAlign: TextAlign.center,
                 ),
               )
+
                   : list.isEmpty
                   ? Center(
                 child: Text(
                   searchController.text.isNotEmpty
-                      ? "No data available for search"
+                      ? "No data found"
                       : (fromDate != null || toDate != null)
-                      ? "No data available for selected filter"
-                      : state.isInitialLoading ? "":"No data available",
+                      ? "No data for selected date range"
+                      : "No data available",
                   style: TextStyles.f12w400Gray5,
-                  textAlign: TextAlign.center,
                 ),
               )
-                          : ListView.builder(
-                              controller: _scrollController,
-                              itemCount: list.length,
-                              itemBuilder: (context, index) {
-                                final item = list[index];
-                                return SurveyListItem(
-                                  status: item.status ?? "",
-                                  orderNo: item.id ?? "",
-                                  date: item.date ?? "",
-                                  name: item.customer ?? "",
-                                  phone: item.phone ?? "",
-                                  from: item.location ?? "",
-                                  to: "",
-                                  itemNo: item.items.toString(),
-                                  actionText: item.flag ?? "",
-                                  onTapView: () {
-                                    ViewDownloadService.handlePdf(
-                                      context: context,
-                                      type: "survey",
-                                      uid: item.uid ?? "",
-                                      isDownload: false,
-                                    );
-                                  },
-                                  onTapDownload: () {
-                                    ViewDownloadService.handlePdf(
-                                      context: context,
-                                      type: "survey",
-                                      uid: item.uid ?? "",
-                                      isDownload: true,
-                                    );
-                                  },
-                                  onTapMenu: (detail) {
-                                    String link = "http://packnpay.in/";
-                                    _onTapMenu(context, detail.globalPosition,item.uid ?? "",link,item);
-                                  },
-                                );
-                              },
-                            ),
+
+                  : ListView.builder(
+                controller: _scrollController,
+                itemCount: list.length + (state.isPageLoading ? 1 : 0),
+                itemBuilder: (context, index) {
+                  /// 🔥 Loader at bottom for pagination
+                  if (index == list.length) {
+                    return const Padding(
+                      padding: EdgeInsets.all(12),
+                      child: Center(
+                        child: CircularProgressIndicator(),
+                      ),
+                    );
+                  }
+
+                  final item = list[index];
+
+                  return SurveyListItem(
+                    status: item.status ?? "",
+                    orderNo: item.id ?? "",
+                    date: item.date ?? "",
+                    name: item.customer ?? "",
+                    phone: item.phone ?? "",
+                    from: item.location ?? "",
+                    to: "",
+                    itemNo: item.items.toString(),
+                    actionText: item.flag ?? "",
+                    onTapView: () {
+                      ViewDownloadService.handlePdf(
+                        context: context,
+                        type: "survey",
+                        uid: item.uid ?? "",
+                        isDownload: false,
+                      );
+                    },
+                    onTapDownload: () {
+                      ViewDownloadService.handlePdf(
+                        context: context,
+                        type: "survey",
+                        uid: item.uid ?? "",
+                        isDownload: true,
+                      );
+                    },
+                    onTapMenu: (detail) {
+                      String link = "http://packnpay.in/";
+                      _onTapMenu(context, detail.globalPosition,
+                          item.uid ?? "", link, item);
+                    },
+                  );
+                },
+              ),
             )
 
 

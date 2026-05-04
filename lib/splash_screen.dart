@@ -36,22 +36,57 @@ class SplashState extends State<SplashScreen> with WidgetsBindingObserver {
     final token = await storage.getToken();
     final isLoginClick = await storage.getIsLoginClick();
 
+    // 🔍 Debug once
+    debugPrint("TOKEN: $token");
+    debugPrint("LOGIN CLICK: $isLoginClick");
+
     if (!mounted) return;
 
-    /// -------- NOT LOGGED IN --------
-    if(isLoginClick!="click"){
-      Navigator.pushNamedAndRemoveUntil(context, onboardRoute, (_) => false,);
-      return;
-    }
-    else if (token == null || token.isEmpty) {
-      Navigator.pushNamedAndRemoveUntil(context, onboardRoute, (_) => false,);
-      return;
-    }
-    else{
-      Navigator.pushNamedAndRemoveUntil(context, homeScreenRoute, (_) => false,);
+    /// 🚨 STEP 1: Token check FIRST (most important)
+    if (token == null || token.isEmpty) {
+      await storage.clearAll(); // clean stale data
+      Navigator.pushNamedAndRemoveUntil(
+        context,
+        onboardRoute,
+            (_) => false,
+      );
       return;
     }
 
+    /// 🚨 STEP 2: Login flag check
+    if (isLoginClick != "click") {
+      await storage.clearAll(); // clean inconsistent state
+      Navigator.pushNamedAndRemoveUntil(
+        context,
+        onboardRoute,
+            (_) => false,
+      );
+      return;
+    }
+
+    /// 🚨 STEP 3 (BEST PRACTICE): Validate token with API
+    // Uncomment when you have API
+    /*
+  final isValid = await validateToken(token);
+  if (!isValid) {
+    await storage.clearAll();
+    Navigator.pushNamedAndRemoveUntil(
+      context,
+      onboardRoute,
+      (_) => false,
+    );
+    return;
+  }
+  */
+
+    /// ✅ STEP 4: Go to home
+    Navigator.pushNamedAndRemoveUntil(
+      context,
+      homeScreenRoute,
+          (_) => false,
+    );
+
+    /// ⚠️ IMPORTANT: this was unreachable before — move ABOVE return if needed
     final container = ProviderScope.containerOf(context);
 
     container.read(paymentVisibilityProvider.notifier).state =
@@ -62,14 +97,7 @@ class SplashState extends State<SplashScreen> with WidgetsBindingObserver {
       isUnpackingVisible: true,
       isLoadingVisible: true,
     );
-
-
   }
-
-
-
-
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
