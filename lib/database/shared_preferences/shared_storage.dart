@@ -16,6 +16,9 @@ class StorageService {
   static const String _companyId = "company_id";
   static const String _companyStatus = "company_status";
   static const String _subscriptionStatus = "subscription_status";
+  static const String _companyName = "company_name";
+  static const String _companyFullName = "company_full_name";
+  static const String _companyLogo = "company_logo";
 
 
   Future<void> writeData(String key, String? value) async {
@@ -109,6 +112,29 @@ class StorageService {
 
   Future<String?> getSubscriptionStatus() async {
     return await readData(_subscriptionStatus);
+  }
+  Future<void> saveCompanyName(String name) async {
+    await writeData(_companyName, name);
+  }
+
+  Future<String?> getCompanyName() async {
+    return await readData(_companyName);
+  }
+
+  Future<void> saveCompanyFullName(String name) async {
+    await writeData(_companyFullName, name);
+  }
+
+  Future<String?> getCompanyFullName() async {
+    return await readData(_companyFullName);
+  }
+
+  Future<void> saveCompanyLogo(String logo) async {
+    await writeData(_companyLogo, logo);
+  }
+
+  Future<String?> getCompanyLogo() async {
+    return await readData(_companyLogo);
   }
 
 

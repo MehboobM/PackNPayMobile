@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:pack_n_pay/utils/app_colors.dart';
 import 'package:pack_n_pay/utils/m_font_styles.dart';
+import 'package:collection/collection.dart';
 
 import '../../../global_widget/custom_button.dart';
 import '../../../global_widget/custom_textfield.dart';
@@ -85,6 +86,7 @@ class _ConsignorFormState extends ConsumerState<ConsignorForm> {
     consignorGstinFromController.text = from["gst_no"] ?? "";
     pincodeFromController.text = from["pincode"] ?? "";
     addressFromController.text = from["address"] ?? "";
+
     selectedFromState = from["state"]?.toString();
     selectedFromCity = from["city"]?.toString();
 
@@ -93,10 +95,26 @@ class _ConsignorFormState extends ConsumerState<ConsignorForm> {
     consignorGstinToController.text = to["gst_no"] ?? "";
     pincodeToController.text = to["pincode"] ?? "";
     addressToController.text = to["address"] ?? "";
-    selectedFromState = from["state"]?.toString();
-    selectedFromCity = from["city"]?.toString();
 
+    selectedToState = to["state"]?.toString();
+    selectedToCity = to["city"]?.toString();
 
+    /// ✅ FIX: SET IDS FROM PROVIDER
+    final states = ref.read(stateProvider).value ?? [];
+
+    if (selectedFromState != null) {
+      final stateObj = states.firstWhereOrNull(
+            (s) => s.name == selectedFromState,
+      );
+      selectedFromStateId = stateObj?.id;
+    }
+
+    if (selectedToState != null) {
+      final stateObj = states.firstWhereOrNull(
+            (s) => s.name == selectedToState,
+      );
+      selectedToStateId = stateObj?.id;
+    }
   }
   @override
   Widget build(BuildContext context) {
@@ -110,15 +128,7 @@ class _ConsignorFormState extends ConsumerState<ConsignorForm> {
 
     final cityItems =
     dropdown.getLabels("city").toSet().toList();
-    if (selectedFromState != null &&
-        !stateItems.contains(selectedFromState)) {
-      selectedFromState = null;
-    }
 
-    if (selectedFromCity != null &&
-        !cityItems.contains(selectedFromCity)) {
-      selectedFromCity = null;
-    }
 
     return Form(
         key: _formKey,

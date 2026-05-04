@@ -33,8 +33,8 @@ class _SetupPopupState extends State<SetupPopup> {
     final subscriptionStatus = await storage.getSubscriptionStatus();
 
     setState(() {
-      isBusinessCompleted = companyStatus == "COMPLETE";
-      isSubscriptionCompleted = subscriptionStatus == "ACTIVE";
+      isBusinessCompleted = companyStatus == "complete";
+      isSubscriptionCompleted = subscriptionStatus == "complete";
     });
 
     /// Auto close if both done

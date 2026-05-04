@@ -32,6 +32,8 @@ class OtpScreen extends ConsumerStatefulWidget {
 
 class _OtpScreenState extends ConsumerState<OtpScreen> {
   final TextEditingController _otpController = TextEditingController();
+  int _resendTimer = 30;
+  bool _canResend = false;
 
   @override
   void dispose() {
@@ -42,6 +44,26 @@ class _OtpScreenState extends ConsumerState<OtpScreen> {
   @override
   void initState() {
     super.initState();
+    _startResendTimer();
+  }
+
+  void _startResendTimer() {
+    _canResend = false;
+    _resendTimer = 30;
+
+    Future.doWhile(() async {
+      await Future.delayed(Duration(seconds: 1));
+      if (_resendTimer == 0) {
+        setState(() {
+          _canResend = true;
+        });
+        return false;
+      }
+      setState(() {
+        _resendTimer--;
+      });
+      return true;
+    });
   }
 
   @override
@@ -182,14 +204,31 @@ class _OtpScreenState extends ConsumerState<OtpScreen> {
                   children: [
                     TextSpan(text: "Didn't receive the code? "),
                     TextSpan(
-                      text: "Resend OTP",
-                      style: TextStyles.f10w600PrimarySecond,
+                      text: _canResend ? "Resend OTP" : "Resend in $_resendTimer s",
+                      style: TextStyles.f10w600PrimarySecond.copyWith(
+                        color: _canResend ? AppColors.primary : Colors.grey,
+                      ),
                       recognizer: TapGestureRecognizer()
-                        ..onTap = () {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(content: Text('OTP resent successfully')),
-                          );
-                        },
+                        ..onTap = _canResend
+                            ? () async {
+                          final response = await ref
+                              .read(authProvider.notifier)
+                              .generateOtp(widget.mobile);
+
+                          if (response != null && response['success']) {
+                            ToastHelper.showSuccess(
+                              message:
+                              response['message'] ?? "OTP resent successfully",
+                            );
+                            _startResendTimer(); // restart timer
+                          } else {
+                            ToastHelper.showError(
+                              message: ref.read(authProvider).error ??
+                                  "Failed to resend OTP",
+                            );
+                          }
+                        }
+                            : null,
                     ),
                   ],
                 ),

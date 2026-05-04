@@ -156,7 +156,7 @@ class _MenuScreenState extends ConsumerState<MenuScreen> {
 
                             ),
                             MenuItem(
-                                title: "Share survey link",
+                                title: "Generic survey link",
                                 icon: "assets/icons/file.svg",
                               onTap: () async {
                                 if (surveyShareUrl == null) {
@@ -166,9 +166,7 @@ class _MenuScreenState extends ConsumerState<MenuScreen> {
                                 await Share.share(surveyShareUrl!);
                               },
                             ),
-                            MenuItem(
-                                title: "Generic survey link",
-                                icon: "assets/icons/generic.svg"),
+
                           ],
                         ),
 

@@ -155,12 +155,7 @@ class _InsuranceFormState extends ConsumerState<InsuranceForm> {
                         controller: insuranceCompanyController,
                         hintText: "Enter",
                         borderRadius: 12,
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return "Enter insurance company";
-                          }
-                          return null;
-                        },
+
                       ),
 
                       const SizedBox(height: 12),
@@ -171,12 +166,7 @@ class _InsuranceFormState extends ConsumerState<InsuranceForm> {
                         controller: policyNoController,
                         hintText: "Enter",
                         borderRadius: 12,
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return "Enter policy number";
-                          }
-                          return null;
-                        },
+
                       ),
 
                       const SizedBox(height: 12),
@@ -197,15 +187,7 @@ class _InsuranceFormState extends ConsumerState<InsuranceForm> {
                                   keyboardType:
                                   TextInputType.number,
                                   borderRadius: 12,
-                                  validator: (value) {
-                                    if (value == null || value.isEmpty) {
-                                      return "Enter amount";
-                                    }
-                                    if (double.tryParse(value) == null) {
-                                      return "Invalid amount";
-                                    }
-                                    return null;
-                                  },
+
                                 ),
                               ],
                             ),
@@ -227,12 +209,7 @@ class _InsuranceFormState extends ConsumerState<InsuranceForm> {
                                   borderRadius: 12,
                                   onTap: () => _pickDate(
                                       insuranceDateController),
-                                  validator: (value) {
-                                    if (value == null || value.isEmpty) {
-                                      return "Select date";
-                                    }
-                                    return null;
-                                  },
+
                                 ),
                               ],
                             ),
@@ -248,12 +225,7 @@ class _InsuranceFormState extends ConsumerState<InsuranceForm> {
                         controller: insuranceRiskController,
                         hintText: "Enter desc.",
                         borderRadius: 12,
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return "Enter risk details";
-                          }
-                          return null;
-                        },
+
                       ),
                     ],
 
@@ -280,7 +252,7 @@ class _InsuranceFormState extends ConsumerState<InsuranceForm> {
                               CrossAxisAlignment.start,
                               children: [
                                 amountWithDropdownField(
-                                  label:  "lr.fields.demurrageCharge".tr(),
+                                  label: "lr.fields.demurrageCharge".tr(),
                                   controller: demurrageChargeController,
                                   items: demurrageTypeItems,
                                   selectedValue: demurrageTypeLabel,
@@ -288,7 +260,7 @@ class _InsuranceFormState extends ConsumerState<InsuranceForm> {
                                     setState(() {
                                       selectedDemurrageType =
                                           dropdown.getValueByLabel(
-                                            "lr.fields.demurrageCharge".tr(),
+                                            "demurrage_charge_type", // ✅ FIXED
                                             val ?? "",
                                           );
                                     });

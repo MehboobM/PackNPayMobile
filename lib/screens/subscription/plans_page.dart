@@ -44,12 +44,34 @@ class _PlansPageState extends ConsumerState<PlansPage> {
     try {
       final selectedPlan = apiPlans[selectedIndex];
 
-      // ✅ Handle FREE plan
+      /// ✅ FREE PLAN FLOW
       if (selectedPlan["amount"] == "0.00") {
-        print("Free plan selected → skip Razorpay");
-        return;
+        final response = await _networkHandler.post(
+          "subscription/activate-free",
+          {
+            "plan_uid": selectedPlan["uid"],
+          },
+        );
+
+        if (response.data["success"] == true) {
+          final storage = StorageService();
+          await storage.saveSubscriptionStatus("complete");
+
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text("Free Plan Activated ✅")),
+          );
+
+          Navigator.pop(context, true);
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(response.data["message"] ?? "Failed")),
+          );
+        }
+
+        return; // ⛔ stop here
       }
 
+      /// 💳 PAID PLAN FLOW (Razorpay)
       final response = await _networkHandler.post(
         "subscription/create-order",
         {
@@ -60,13 +82,11 @@ class _PlansPageState extends ConsumerState<PlansPage> {
       final data = response.data;
 
       if (data["success"] == true) {
-        // ✅ CORRECT parsing based on your response
         final order = data["order"]["order"];
 
         String orderId = order["id"];
         int amount = order["amount"];
-
-        String key = data["key"]; // dynamic key from backend
+        String key = data["key"];
 
         _openRazorpay(orderId, amount, key);
       } else {
