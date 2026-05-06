@@ -134,16 +134,18 @@ class _ChangeStatusDialogState extends ConsumerState<ChangeStatusDialog> {
             /// DROPDOWN + APPLY
             Row(
               children: [
-                buildCommonDropdown(
-                  title: "Change order status",
-                  value: selectedStatus,
-                  items: statusList,
-                  onChanged: (val) {
-                    setState(() {
-                      selectedStatus = val ?? selectedStatus;
-                      _otpController.clear();
-                    });
-                  },
+                Expanded(   // ✅ FIX
+                  child: buildCommonDropdown(
+                    title: "Change order status",
+                    value: selectedStatus,
+                    items: statusList,
+                    onChanged: (val) {
+                      setState(() {
+                        selectedStatus = val ?? selectedStatus;
+                        _otpController.clear();
+                      });
+                    },
+                  ),
                 ),
 
                 const SizedBox(width: 10),
@@ -159,7 +161,7 @@ class _ChangeStatusDialogState extends ConsumerState<ChangeStatusDialog> {
                           side: BorderSide(color: AppColors.primary, width: 1.5),
                           backgroundColor: AppColors.primary.withValues(alpha: 0.1),
                           shape: RoundedRectangleBorder(
-                            
+
                             borderRadius: BorderRadius.circular(12),
                           ),
                         ),

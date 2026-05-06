@@ -704,9 +704,7 @@ class _QuotationScreenState extends ConsumerState<QuotationScreen> {
   }
 
   Future<void> _handleEdit(BuildContext context, String? quotationNo) async {
-    await ref
-        .read(quotationProvider.notifier)
-        .fetchQuotationAndFillForm(quotationNo ?? "", ref);
+    await ref.read(quotationProvider.notifier).fetchQuotationAndFillForm(quotationNo ?? "", ref);
 
     final result = await Navigator.pushNamed(
       context,

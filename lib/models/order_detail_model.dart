@@ -784,39 +784,74 @@ class Expenses {
     return data;
   }
 }
-
 class PaymentSummary {
-  int? baseFare;
-  int? taxesAndSurcharges;
-  int? advancePayment;
-  int? expenses;
-  int? totalAmountToPay;
+  double? baseFare;
+  double? taxesAndSurcharges;
+  double? advancePayment;
+  double? expenses;
+  double? totalAmountToPay;
 
-  PaymentSummary(
-      {this.baseFare,
-        this.taxesAndSurcharges,
-        this.advancePayment,
-        this.expenses,
-        this.totalAmountToPay});
+  PaymentSummary({
+    this.baseFare,
+    this.taxesAndSurcharges,
+    this.advancePayment,
+    this.expenses,
+    this.totalAmountToPay,
+  });
 
   PaymentSummary.fromJson(Map<String, dynamic> json) {
-    baseFare = json['base_fare'];
-    taxesAndSurcharges = json['taxes_and_surcharges'];
-    advancePayment = json['advance_payment'];
-    expenses = json['expenses'];
-    totalAmountToPay = json['total_amount_to_pay'];
+    baseFare = (json['base_fare'] as num?)?.toDouble();
+    taxesAndSurcharges =
+        (json['taxes_and_surcharges'] as num?)?.toDouble();
+    advancePayment = (json['advance_payment'] as num?)?.toDouble();
+    expenses = (json['expenses'] as num?)?.toDouble();
+    totalAmountToPay =
+        (json['total_amount_to_pay'] as num?)?.toDouble();
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['base_fare'] = this.baseFare;
-    data['taxes_and_surcharges'] = this.taxesAndSurcharges;
-    data['advance_payment'] = this.advancePayment;
-    data['expenses'] = this.expenses;
-    data['total_amount_to_pay'] = this.totalAmountToPay;
-    return data;
+    return {
+      'base_fare': baseFare,
+      'taxes_and_surcharges': taxesAndSurcharges,
+      'advance_payment': advancePayment,
+      'expenses': expenses,
+      'total_amount_to_pay': totalAmountToPay,
+    };
   }
 }
+
+// class PaymentSummary {
+//   int? baseFare;
+//   int? taxesAndSurcharges;
+//   int? advancePayment;
+//   int? expenses;
+//   int? totalAmountToPay;
+//
+//   PaymentSummary(
+//       {this.baseFare,
+//         this.taxesAndSurcharges,
+//         this.advancePayment,
+//         this.expenses,
+//         this.totalAmountToPay});
+//
+//   PaymentSummary.fromJson(Map<String, dynamic> json) {
+//     baseFare = json['base_fare'];
+//     taxesAndSurcharges = json['taxes_and_surcharges'];
+//     advancePayment = json['advance_payment'];
+//     expenses = json['expenses'];
+//     totalAmountToPay = json['total_amount_to_pay'];
+//   }
+//
+//   Map<String, dynamic> toJson() {
+//     final Map<String, dynamic> data = new Map<String, dynamic>();
+//     data['base_fare'] = this.baseFare;
+//     data['taxes_and_surcharges'] = this.taxesAndSurcharges;
+//     data['advance_payment'] = this.advancePayment;
+//     data['expenses'] = this.expenses;
+//     data['total_amount_to_pay'] = this.totalAmountToPay;
+//     return data;
+//   }
+// }
 
 
 class StatusTimeline {

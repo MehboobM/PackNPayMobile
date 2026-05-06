@@ -73,45 +73,7 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
 
 
 
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      orderCreate(); // ✅ safe call after build
-    });
-  }
 
-  orderCreate() async {
-    var state = ref.read(orderDetailProvider);
-    var data = state.orderData?.data;
-
-    /// CREATE ORDER
-
-
-    /// SHOW DIALOG
-    if (!_dialogShown && data?.existingOrderNo != null && data!.existingOrderNo!.isNotEmpty) {
-
-      _dialogShown = true; // ✅ set BEFORE dialog to avoid multiple calls
-
-     final isBack = await showOrderExistsDialog(context, data.existingOrderNo!,);
-
-      if( isBack ?? false){
-        if (data?.id == null) {
-          final message = await ref.read(orderDetailProvider.notifier).createOrderAndRefresh(data?.quotationId ?? "");
-          if (message == "Order created successfully") {
-            ToastHelper.showSuccess(message: message!);
-          } else {
-            ToastHelper.showError(message: message ?? "Error occurred");
-          }
-
-          /// 🔥 IMPORTANT: re-fetch updated state
-          // state = ref.read(orderDetailProvider);
-          // data = state.orderData?.data;
-        }
-      }
-    }
-  }
 
   Future<bool?> showOrderExistsDialog(BuildContext context, String existingId) {
     return showDialog<bool>(
@@ -219,9 +181,7 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
                         onPressed: () async {
                           final navigator = Navigator.of(context);
 
-                          final isSuccess = await ref
-                              .read(orderDetailProvider.notifier)
-                              .fetchOrderByUid(existingId);
+                          final isSuccess = await ref.read(orderDetailProvider.notifier).fetchOrderByUid(existingId);
 
                           if (!mounted) return;
 
@@ -413,7 +373,56 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
   // }
 
 
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      orderCreate(); // ✅ safe call after build
+    });
+  }
 
+  orderCreate() async {
+    var state = ref.read(orderDetailProvider);
+    var data = state.orderData?.data;
+
+    /// CREATE ORDER
+    print("quotationId>>>>>>>>>>>>>>>>>>>>${data!.quotationId}");
+
+      final existingOrderNo = data?.existingOrderNo;
+      final quotationId = data?.quotationId;
+
+    /// SHOW DIALOG
+    if (!_dialogShown && existingOrderNo != null && existingOrderNo!.isNotEmpty) {
+
+      _dialogShown = true; // ✅ set BEFORE dialog to avoid multiple calls
+
+      final isBack = await showOrderExistsDialog(context, data.existingOrderNo!,);
+
+      if( isBack ?? false){
+        if (data?.id == null) {
+          final message = await ref.read(orderDetailProvider.notifier).createOrderAndRefresh(data?.quotationId ?? "");
+          if (message == "Order created successfully") {
+            ToastHelper.showSuccess(message: message!);
+          } else {
+            ToastHelper.showError(message: message ?? "Error occurred");
+          }
+
+          /// 🔥 IMPORTANT: re-fetch updated state
+          // state = ref.read(orderDetailProvider);
+          // data = state.orderData?.data;
+        }
+      }
+    }else if((existingOrderNo == null || existingOrderNo.isEmpty) && data?.id == null){
+      final message = await ref.read(orderDetailProvider.notifier).createOrderAndRefresh(data?.quotationId ?? "");
+      if (message == "Order created successfully") {
+        ToastHelper.showSuccess(message: message!);
+      } else {
+        ToastHelper.showError(message: message ?? "Error occurred");
+      }
+    }
+
+  }
 
   bool _dialogShown = false;
   @override
@@ -423,7 +432,7 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
     final data = state.orderData?.data;
 
     print("existingOrderNo>>>>> ${data?.existingOrderNo}");
-
+    print("quotationId>>>>>>>>>>>>> 2 >>>>>>>>>>>>>>>>>>>>${data!.quotationId}");
 
     final pickup = data?.quotationAddresses?.pickup;
     final delivery = data?.quotationAddresses?.delivery;
@@ -442,15 +451,15 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
 
     String imageBaseUrl = "https://packnpay.in/uploads/";
 
-    final int baseFare = paymentSummary?.baseFare ?? 0;
-    final int gstAmount = paymentSummary?.taxesAndSurcharges ?? 0;
+    final double baseFare = paymentSummary?.baseFare ?? 0;
+    final double gstAmount = paymentSummary?.taxesAndSurcharges ?? 0;
 
-    final int totalAmount = baseFare + gstAmount;
+    final double totalAmount = baseFare + gstAmount;
 
-    final int expense = paymentSummary?.expenses ?? 0;
-    final int advance = paymentSummary?.advancePayment ?? 0;
+    final double expense = paymentSummary?.expenses ?? 0;
+    final double advance = paymentSummary?.advancePayment ?? 0;
 
-    final int totalPayable = totalAmount + expense - advance;
+    final double totalPayable = totalAmount + expense - advance;
     double totalExpense = 0;
 
     for (var e in expenses) {

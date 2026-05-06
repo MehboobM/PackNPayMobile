@@ -34,6 +34,7 @@ class OrderDetailNotifier extends StateNotifier<OrderDetailState> {
 
       return true; // ✅ success
     } catch (e) {
+      print("order error is >>>>>>>>>>>>$e");
       state = state.copyWith(isPageLoading: false);
       return false; // ❌ fail
     }

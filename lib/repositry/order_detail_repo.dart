@@ -253,6 +253,7 @@ class OrderDetailRepository {
         throw Exception("Fetch order failed");
       }
     } catch (e) {
+      print("order error is2 >>>>>>>>>>>>$e");
       rethrow;
     }
   }
