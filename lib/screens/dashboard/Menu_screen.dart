@@ -3,11 +3,13 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:pack_n_pay/screens/dashboard/widget/Drop_down_items.dart';
+import 'package:pack_n_pay/screens/dashboard/widget/set_up_popup.dart';
 import 'package:share_plus/share_plus.dart';
 
 import '../../database/hive_database/hive_permission.dart';
 import '../../database/hive_database/hive_quation_form.dart';
 import '../../database/shared_preferences/shared_storage.dart';
+import '../../global_widget/confirmation_dialog.dart';
 import '../../notifier/quatation_notifier.dart';
 import '../../notifier/quotation_form_notifier.dart';
 import '../../notifier/survey_notifier.dart';
@@ -39,6 +41,32 @@ class _MenuScreenState extends ConsumerState<MenuScreen> {
   void initState() {
     updateGenericLInk();
     super.initState();
+  }
+  Future<bool> _checkAccess() async {
+    final storage = StorageService();
+
+    final companyStatus = await storage.getCompanyStatus();
+    final subscriptionStatus = await storage.getSubscriptionStatus();
+
+    final isComplete =
+        companyStatus == "complete" &&
+            subscriptionStatus == "complete";
+
+    if (!isComplete) {
+      showDialog(
+        context: context,
+        barrierDismissible: true,
+        builder: (_) {
+          return SetupPopup(
+            onClose: () {
+              Navigator.pop(context);
+            },
+          );
+        },
+      );
+    }
+
+    return isComplete;
   }
 
 
@@ -156,7 +184,10 @@ class _MenuScreenState extends ConsumerState<MenuScreen> {
                               title: "Survey list",
                               icon: "assets/icons/bar.svg",
 
-                              onTap: () {
+                              onTap: () async {
+                                final allowed = await _checkAccess();
+                                if (!allowed) return;
+
                                 Navigator.pushNamed(context, surveyScreenRoute);
                               },
                             ),
@@ -164,9 +195,12 @@ class _MenuScreenState extends ConsumerState<MenuScreen> {
                               MenuItem(
                               title: "Add new survey",
                               icon: "assets/icons/Plus.svg",
-                              onTap: () {
-                                Navigator.pushNamed(context, surveyLinkRoute);
-                              },
+                                onTap: () async {
+                                  final allowed = await _checkAccess();
+                                  if (!allowed) return;
+
+                                  Navigator.pushNamed(context, surveyLinkRoute);
+                                },
 
                             ),
                             MenuItem(
@@ -198,7 +232,10 @@ class _MenuScreenState extends ConsumerState<MenuScreen> {
                             MenuItem(
                               title: "Quotation List",
                               icon: "assets/icons/bar.svg",
-                              onTap: () {
+                              onTap: () async {
+                                final allowed = await _checkAccess();
+                                if (!allowed) return;
+
                                 Navigator.pushNamed(context, quotationScreenRoute);
                               },
                             ),
@@ -207,6 +244,8 @@ class _MenuScreenState extends ConsumerState<MenuScreen> {
                               title: "Add new quotation",
                               icon: "assets/icons/Plus.svg",
                               onTap:  () async {
+                                final allowed = await _checkAccess();
+                                if (!allowed) return;
                                 final oldData = HiveService.get();
 
                                 if (oldData != null) {
@@ -267,7 +306,9 @@ class _MenuScreenState extends ConsumerState<MenuScreen> {
                             MenuItem(
                               title: "Orders List",
                               icon: "assets/icons/bar.svg",
-                              onTap: () {
+                              onTap: () async {
+                                final allowed = await _checkAccess();
+                                if (!allowed) return;
                                 Navigator.pushNamed(context, ordersScreenRoute);
                               },
                             ),
@@ -287,8 +328,10 @@ class _MenuScreenState extends ConsumerState<MenuScreen> {
                           children: [
                             MenuItem(
                               title: "Lorry Receipts",
-                              icon: "assets/icons/bar.svg", 
-                              onTap: () {
+                              icon: "assets/icons/bar.svg",
+                              onTap: () async {
+                                final allowed = await _checkAccess();
+                                if (!allowed) return;
                                 Navigator.pushNamed(context, lorryReceiptListScreenRoute);
                               },
                             ),
@@ -308,7 +351,9 @@ class _MenuScreenState extends ConsumerState<MenuScreen> {
                             MenuItem(
                               title: "Money List",
                               icon: "assets/icons/bar.svg",
-                              onTap: () {
+                              onTap: () async {
+                                final allowed = await _checkAccess();
+                                if (!allowed) return;
                                 Navigator.pushNamed(context, moneyListScreenRoute);
                               },
                             ),
@@ -328,7 +373,9 @@ class _MenuScreenState extends ConsumerState<MenuScreen> {
                             MenuItem(
                               title: "Staff",
                               icon: "assets/icons/users.svg",
-                              onTap: () {
+                              onTap: () async {
+                                final allowed = await _checkAccess();
+                                if (!allowed) return;
                                 Navigator.pushNamed(context, staffScreenRoute);
                               },
                             ),
@@ -348,14 +395,18 @@ class _MenuScreenState extends ConsumerState<MenuScreen> {
                             MenuItem(
                               title: "Expense Category",
                               icon: "assets/icons/users.svg",
-                              onTap: () {
+                              onTap: () async {
+                                final allowed = await _checkAccess();
+                                if (!allowed) return;
                                 Navigator.pushNamed(context, expenseCategoriesRoute);
                               },
                             ),
                             MenuItem(
                               title: "Office Expense",
                               icon: "assets/icons/Plus.svg",
-                              onTap: () {
+                              onTap: () async {
+                                final allowed = await _checkAccess();
+                                if (!allowed) return;
                                 Navigator.pushNamed(context, OfficeExpensePageRoute);
                               },
                             ),
@@ -378,7 +429,9 @@ class _MenuScreenState extends ConsumerState<MenuScreen> {
                             MenuItem(
                               title: "Letter Head",
                               icon: "assets/icons/Letterhead.svg",
-                              onTap: () {
+                              onTap: () async {
+                                final allowed = await _checkAccess();
+                                if (!allowed) return;
                                 Navigator.pushNamed(context, LetterheadRoute);
                               },
                             ),
@@ -399,7 +452,9 @@ class _MenuScreenState extends ConsumerState<MenuScreen> {
                             MenuItem(
                               title: "subscription",
                               icon: "assets/icons/subs.svg",
-                              onTap: () {
+                              onTap: () async {
+                                final allowed = await _checkAccess();
+                                if (!allowed) return;
                                 Navigator.pushNamed(context, SubscriptionRoute);
                               },
                             ),
@@ -420,14 +475,18 @@ class _MenuScreenState extends ConsumerState<MenuScreen> {
                             MenuItem(
                               title: "Business List",
                               icon: "assets/icons/bar.svg",
-                              onTap: () {
+                              onTap: () async {
+                                final allowed = await _checkAccess();
+                                if (!allowed) return;
                                 Navigator.pushNamed(context, companyListRoute);
                               },
                             ),
                             MenuItem(
                               title: "New Business",
                               icon: "assets/icons/Plus.svg",
-                              onTap: () {
+                              onTap: () async {
+                                final allowed = await _checkAccess();
+                                if (!allowed) return;
                                 Navigator.pushNamed(
                                   context,
                                   myBusinessRoute,
@@ -451,7 +510,9 @@ class _MenuScreenState extends ConsumerState<MenuScreen> {
                             MenuItem(
                               title: "Select Language",
                               icon: "assets/icons/bar.svg",
-                              onTap: () {
+                              onTap: () async {
+                                final allowed = await _checkAccess();
+                                if (!allowed) return;
                                 Navigator.pushNamed(context, languageRoute);
                               },
                             ),
@@ -472,14 +533,32 @@ class _MenuScreenState extends ConsumerState<MenuScreen> {
                               ),
                             ),
                             onTap: () async {
-                               await StorageService().clearAll();
-                               if (context.mounted) {
-                                 Navigator.pushNamedAndRemoveUntil(
-                                   context,
-                                   loginScreenRoute,
-                                   (route) => false,
-                                 );
-                               }
+                              final confirm = await showDialog<bool>(
+                                context: context,
+                                barrierDismissible: false,
+                                builder: (_) {
+                                  return CommonConfirmDialog(
+                                    iconData: Icons.logout,
+                                    title: "Logout",
+                                    description: "Are you sure you want to logout?",
+                                    yesText: "Logout",
+                                    onNo: () => Navigator.pop(context, false),
+                                    onYes: () => Navigator.pop(context, true),
+                                  );
+                                },
+                              );
+
+                              if (confirm == true) {
+                                await StorageService().clearAll();
+
+                                if (context.mounted) {
+                                  Navigator.pushNamedAndRemoveUntil(
+                                    context,
+                                    loginScreenRoute,
+                                        (route) => false,
+                                  );
+                                }
+                              }
                             },
                           ),
                         ),

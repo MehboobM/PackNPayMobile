@@ -373,15 +373,11 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         bottomNavigationBar: SafeArea(
           child: CustomBottomNav(
             selectedIndex: selectedIndex,
-            onTap: (index) async {
-              final allowed = await _ensureSetupCompleted();
-          
-              if (!allowed) return; // ❌ block navigation
-          
-              setState(() {
-                selectedIndex = index;
-              });
-            },
+              onTap: (index) {
+                setState(() {
+                  selectedIndex = index;
+                });
+              }
           ),
         ),
       ),

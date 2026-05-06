@@ -5,8 +5,10 @@ import '../../api_services/api_end_points.dart';
 import '../../database/shared_preferences/shared_storage.dart';
 import 'new_expenses_sheet.dart';
 
+
 class OfficeExpensePage extends StatefulWidget {
   const OfficeExpensePage({super.key});
+
 
   @override
   State<OfficeExpensePage> createState() => _OfficeExpensePageState();
@@ -21,11 +23,13 @@ class _OfficeExpensePageState extends State<OfficeExpensePage> {
   bool _isLoading = true;
   String _totalAmount = "0";
 
+
   // Search Controller
   final TextEditingController _searchController = TextEditingController();
 
   // Filters
   DateTimeRange? _selectedDateRange;
+
 
   @override
   void initState() {
@@ -290,11 +294,23 @@ class _OfficeExpensePageState extends State<OfficeExpensePage> {
             ]),
           ),
           Expanded(
-            flex: 5,
-            child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              Text(title, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 12)),
-              Text(category, style: const TextStyle(color: Colors.grey, fontSize: 11)),
-            ]),
+            flex: 7,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center, // 👈 CENTER horizontally
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  title,
+                  textAlign: TextAlign.center, // 👈 IMPORTANT
+                  style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
+                ),
+                Text(
+                  category,
+                  textAlign: TextAlign.center, // 👈 IMPORTANT
+                  style: const TextStyle(color: Colors.grey, fontSize: 11),
+                ),
+              ],
+            ),
           ),
           Column(
             crossAxisAlignment: CrossAxisAlignment.end,

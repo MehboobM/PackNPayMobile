@@ -125,11 +125,31 @@ class _SurveyListScreenState extends ConsumerState<SurveyListScreen> {
         ),
 
         actions: [
-          SvgPicture.asset(
-            "assets/icons/pdf.svg",
-            width: 22,
-            height: 22,
-            color: AppColors.primary,
+          InkWell(
+            onTap: () {
+              ViewDownloadService.exportPdf(
+                context: context,
+                module: "SURVEY", // ✅ important
+                filters: {
+                  "from_date": fromDate != null ? formatDate(fromDate!) : null,
+                  "to_date": toDate != null ? formatDate(toDate!) : null,
+                  "status": selectedIndex == 1
+                      ? "PENDING"
+                      : selectedIndex == 2
+                      ? "COMPLETED"
+                      : null,
+                  "search": searchController.text.isNotEmpty
+                      ? searchController.text
+                      : null,
+                },
+              );
+            },
+            child: SvgPicture.asset(
+              "assets/icons/pdf.svg",
+              width: 22,
+              height: 22,
+              color: AppColors.primary,
+            ),
           ),
 
           const SizedBox(width: 16),

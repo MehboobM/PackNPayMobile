@@ -5,11 +5,13 @@ import 'package:image_picker/image_picker.dart';
 
 import '../../api_services/api_end_points.dart';
 import '../../api_services/network_handler.dart';
+import '../../global_widget/custom_button.dart';
 import '../../repositry/Dashboard_repository.dart';
 import '../../models/profile_modal.dart';
 import '../../models/location_modal.dart';
 import '../../repositry/lr_city_state.dart';
 import '../../repositry/profile_repo.dart';
+import '../../utils/app_colors.dart';
 import '../../utils/toast_message.dart';
 
 class ProfileScreen extends StatefulWidget {
@@ -48,6 +50,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   StateModel? selectedState;
   CityModel? selectedCity;
+
 
   @override
   void initState() {
@@ -201,17 +204,43 @@ class _ProfileScreenState extends State<ProfileScreen> {
       backgroundColor: Colors.grey[100],
 
       /// SAVE BUTTON
-      floatingActionButton: ElevatedButton.icon(
-        onPressed: isSaving ? null : updateProfile,
-        icon: isSaving
-            ? const SizedBox(
-          height: 16,
-          width: 16,
-          child: CircularProgressIndicator(
-              strokeWidth: 2, color: Colors.white),
-        )
-            : const Icon(Icons.save),
-        label: const Text("Save Changes"),
+      bottomNavigationBar: Container(
+        padding: const EdgeInsets.all(16),
+        decoration: const BoxDecoration(
+          color: Colors.white,
+          boxShadow: [
+            BoxShadow(color: Colors.black12, blurRadius: 5),
+          ],
+        ),
+        child: Row(
+          children: [
+            /// BACK BUTTON
+            Expanded(
+              child: CustomButton(
+                text: "Back",
+                onPressed: isSaving
+                    ? null
+                    : () => Navigator.pop(context, true),
+                backgroundColor: Colors.white,
+                foregroundColor: Colors.black,
+                borderColor: AppColors.primary,
+                borderRadius: 10,
+              ),
+            ),
+
+            const SizedBox(width: 12),
+
+            /// SAVE BUTTON
+            Expanded(
+              child: CustomButton(
+                text: isSaving ? "Saving..." : "Save",
+                onPressed: isSaving ? null : updateProfile,
+                backgroundColor: AppColors.primary,
+                borderRadius: 10,
+              ),
+            ),
+          ],
+        ),
       ),
 
       body: SingleChildScrollView(
@@ -237,14 +266,22 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     onTap: pickImage,
                     child: CircleAvatar(
                       radius: 40,
+                      backgroundColor: Colors.grey.shade200,
                       backgroundImage: selectedImage != null
                           ? FileImage(selectedImage!)
-                          : (profile!.profileImage != null
-                          ? NetworkImage(
-                          profile!.profileImage!)
-                          : const AssetImage(
-                          "assets/images/profile.png"))
-                      as ImageProvider,
+                          : (profile!.profileImage != null &&
+                          profile!.profileImage!.isNotEmpty
+                          ? NetworkImage(profile!.profileImage!)
+                          : null),
+                      child: (selectedImage == null &&
+                          (profile!.profileImage == null ||
+                              profile!.profileImage!.isEmpty))
+                          ? const Icon(
+                        Icons.person,
+                        size: 40,
+                        color: Colors.grey,
+                      )
+                          : null,
                     ),
                   ),
                   const SizedBox(height: 10),

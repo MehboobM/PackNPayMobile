@@ -3,6 +3,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:pack_n_pay/utils/app_colors.dart';
 import 'package:pack_n_pay/utils/m_font_styles.dart';
 
+import '../../../repositry/profile_repo.dart';
 import '../../../routes/route_names_const.dart';
 import '../../../api_services/network_handler.dart';
 import '../../../database/shared_preferences/shared_storage.dart';
@@ -18,7 +19,8 @@ class HeaderSection extends StatefulWidget {
 class _HeaderSectionState extends State<HeaderSection> {
   final NetworkHandler _networkHandler = NetworkHandler();
   final StorageService _storage = StorageService();
-
+  String? profileImage;
+  bool isProfileLoading = false;
   List companies = [];
 
   String selectedCompanyName = "Default Business";
@@ -33,6 +35,7 @@ class _HeaderSectionState extends State<HeaderSection> {
   void initState() {
     super.initState();
     _loadCompany();
+    _loadProfile();
   }
   Future<void> _loadCompany() async {
     final name = await _storage.getCompanyName();
@@ -45,6 +48,23 @@ class _HeaderSectionState extends State<HeaderSection> {
           fullName ?? " ";       // ✅ FIXED
       selectedLogo = logo;
     });
+  }
+  Future<void> _loadProfile() async {
+    try {
+      setState(() => isProfileLoading = true);
+
+      final profile = await ProfileRepository().getProfile();
+
+      if (profile != null) {
+        setState(() {
+          profileImage = profile.profileImage; // 👈 make sure field name matches your model
+        });
+      }
+    } catch (e) {
+      print("Profile Load Error: $e");
+    } finally {
+      setState(() => isProfileLoading = false);
+    }
   }
 
   /// ================= FETCH COMPANIES =================
@@ -293,9 +313,15 @@ class _HeaderSectionState extends State<HeaderSection> {
             onTap: () {
               Navigator.pushNamed(context, profileRoute);
             },
-            child: const CircleAvatar(
+            child: CircleAvatar(
               radius: 18,
-              backgroundImage: AssetImage("assets/images/profile.png"),
+              backgroundColor: Colors.grey.shade200,
+              backgroundImage: profileImage != null && profileImage!.isNotEmpty
+                  ? NetworkImage(profileImage!)
+                  : null,
+              child: (profileImage == null || profileImage!.isEmpty)
+                  ? const Icon(Icons.person, size: 18, color: Colors.grey)
+                  : null,
             ),
           ),
         ],
