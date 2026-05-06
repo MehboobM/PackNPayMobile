@@ -40,9 +40,9 @@ class _HeaderSectionState extends State<HeaderSection> {
     final logo = await _storage.getCompanyLogo();
 
     setState(() {
-      selectedCompanyName = name ?? "Default Business"; // ✅ FIXED
+      selectedCompanyName = name ?? " "; // ✅ FIXED
       selectedCompanyFullName =
-          fullName ?? "Acme Corporation pvt.Ltd";       // ✅ FIXED
+          fullName ?? " ";       // ✅ FIXED
       selectedLogo = logo;
     });
   }
@@ -217,16 +217,12 @@ class _HeaderSectionState extends State<HeaderSection> {
       child: Row(
         children: [
           /// LOGO
-          selectedLogo != null
+          selectedLogo != null && selectedLogo!.isNotEmpty
               ? CircleAvatar(
             radius: 20,
             backgroundImage: NetworkImage(selectedLogo!),
           )
-              : Image.asset(
-            "assets/images/logo.png",
-            width: 40,
-            height: 40,
-          ),
+              : const SizedBox(width: 40, height: 40,), // 👈 keeps layout stable
 
           const SizedBox(width: 6),
 

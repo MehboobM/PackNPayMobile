@@ -261,7 +261,7 @@ class _PlansPageState extends ConsumerState<PlansPage> {
           _buildFeaturesCard(),
           const SizedBox(height: 40),
           _buildBottomButton(),
-          _buildLegalText(),
+          /*_buildLegalText(),*/
           const SizedBox(height: 24),
         ],
       ),

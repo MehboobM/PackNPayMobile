@@ -5,24 +5,22 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:pack_n_pay/utils/app_colors.dart';
 import 'package:pack_n_pay/utils/m_font_styles.dart';
 
-class MenuDropdown extends StatefulWidget {
+class MenuDropdown extends StatelessWidget {
   final String title;
   final String icon;
   final List<MenuItem> children;
+
+  final bool isExpanded;        // 👈 controlled from parent
+  final VoidCallback onTap;     // 👈 toggle from parent
 
   const MenuDropdown({
     super.key,
     required this.title,
     required this.icon,
     required this.children,
+    required this.isExpanded,
+    required this.onTap,
   });
-
-  @override
-  State<MenuDropdown> createState() => _MenuDropdownState();
-}
-
-class _MenuDropdownState extends State<MenuDropdown> {
-  bool expanded = false;
 
   @override
   Widget build(BuildContext context) {
@@ -32,34 +30,34 @@ class _MenuDropdownState extends State<MenuDropdown> {
         /// HEADER
         ListTile(
           leading: SvgPicture.asset(
-            widget.icon,
+            icon,
             width: 22,
             height: 22,
           ),
           title: Text(
-            widget.title,
-            style: TextStyles.f14w500mGray7
+            title,
+            style: TextStyles.f14w500mGray7,
           ),
           trailing: Icon(
-            expanded
+            isExpanded
                 ? Icons.keyboard_arrow_up
                 : Icons.keyboard_arrow_down,
           ),
-          onTap: () {
-            setState(() {
-              expanded = !expanded;
-            });
-          },
+          onTap: onTap, // 👈 parent controls this
         ),
 
         /// EXPANDED ITEMS
-        if (expanded && widget.children.isNotEmpty)
-          Container(
+        AnimatedCrossFade(
+          firstChild: const SizedBox(),
+          secondChild: Container(
             color: const Color(0xffF5FAFF),
-            child: Column(
-              children: widget.children,
-            ),
+            child: Column(children: children),
           ),
+          crossFadeState: isExpanded
+              ? CrossFadeState.showSecond
+              : CrossFadeState.showFirst,
+          duration: const Duration(milliseconds: 200),
+        ),
       ],
     );
   }

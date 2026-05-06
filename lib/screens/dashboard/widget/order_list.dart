@@ -39,12 +39,12 @@ class OrdersListSection extends StatelessWidget {
                   color: AppColors.mGray9,
                 )
               ),
-               Text(
+               /*Text(
                 "See all",
                    style: TextStyles.f11w400Gray6.copyWith(
                      color: AppColors.primary,
                    )
-              ),
+              ),*/
             ],
           ),
 

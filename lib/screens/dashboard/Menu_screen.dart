@@ -33,6 +33,7 @@ class _MenuScreenState extends ConsumerState<MenuScreen> {
     surveyShareUrl = results as String?;
     setState(() {});
   }
+  int? expandedIndex;
 
   @override
   void initState() {
@@ -123,6 +124,12 @@ class _MenuScreenState extends ConsumerState<MenuScreen> {
                          MenuDropdown(
                           title: "Home",
                           icon: "assets/images/home_icon.svg",
+                           isExpanded: expandedIndex == 0,
+                           onTap: () {
+                             setState(() {
+                               expandedIndex = expandedIndex == 0 ? null : 0;
+                             });
+                           },
                           children: [
                             MenuItem(
                               title: "Home",
@@ -138,10 +145,17 @@ class _MenuScreenState extends ConsumerState<MenuScreen> {
                         MenuDropdown(
                           title: "Survey",
                           icon: "assets/icons/Survey.svg",
+                          isExpanded: expandedIndex == 1,
+                          onTap: () {
+                            setState(() {
+                              expandedIndex = expandedIndex == 1 ? null : 1;
+                            });
+                          },
                           children: [
                             MenuItem(
                               title: "Survey list",
                               icon: "assets/icons/bar.svg",
+
                               onTap: () {
                                 Navigator.pushNamed(context, surveyScreenRoute);
                               },
@@ -174,6 +188,12 @@ class _MenuScreenState extends ConsumerState<MenuScreen> {
                          MenuDropdown(
                           title: "Quotation",
                           icon: "assets/icons/generic.svg",
+                           isExpanded: expandedIndex == 2,
+                           onTap: () {
+                             setState(() {
+                               expandedIndex = expandedIndex == 2 ? null : 2;
+                             });
+                           },
                           children: [
                             MenuItem(
                               title: "Quotation List",
@@ -237,6 +257,12 @@ class _MenuScreenState extends ConsumerState<MenuScreen> {
                         MenuDropdown(
                           title: "Orders",
                           icon: "assets/icons/Box.svg",
+                          isExpanded: expandedIndex == 3,
+                          onTap: () {
+                            setState(() {
+                              expandedIndex = expandedIndex == 3 ? null : 3;
+                            });
+                          },
                           children: [
                             MenuItem(
                               title: "Orders List",
@@ -252,6 +278,12 @@ class _MenuScreenState extends ConsumerState<MenuScreen> {
                         MenuDropdown(
                           title: "LR Bilty",
                           icon: "assets/icons/Bilty.svg",
+                          isExpanded: expandedIndex == 4,
+                          onTap: () {
+                            setState(() {
+                              expandedIndex = expandedIndex == 4 ? null : 4;
+                            });
+                          },
                           children: [
                             MenuItem(
                               title: "Lorry Receipts",
@@ -266,6 +298,12 @@ class _MenuScreenState extends ConsumerState<MenuScreen> {
                         MenuDropdown(
                           title: "Money Receipt",
                           icon: "assets/icons/Receipt.svg",
+                          isExpanded: expandedIndex == 5,
+                          onTap: () {
+                            setState(() {
+                              expandedIndex = expandedIndex == 5 ? null : 5;
+                            });
+                          },
                           children: [
                             MenuItem(
                               title: "Money List",
@@ -280,6 +318,12 @@ class _MenuScreenState extends ConsumerState<MenuScreen> {
                         MenuDropdown(
                           title: "Staffs",
                           icon: "assets/icons/users.svg",
+                          isExpanded: expandedIndex == 6,
+                          onTap: () {
+                            setState(() {
+                              expandedIndex = expandedIndex == 6 ? null : 6;
+                            });
+                          },
                           children: [
                             MenuItem(
                               title: "Staff",
@@ -294,6 +338,12 @@ class _MenuScreenState extends ConsumerState<MenuScreen> {
                         MenuDropdown(
                           title: "Expanse Management",
                           icon: "assets/icons/expense.svg",
+                          isExpanded: expandedIndex == 7,
+                          onTap: () {
+                            setState(() {
+                              expandedIndex = expandedIndex == 7 ? null : 7;
+                            });
+                          },
                           children: [
                             MenuItem(
                               title: "Expense Category",
@@ -318,6 +368,12 @@ class _MenuScreenState extends ConsumerState<MenuScreen> {
                         MenuDropdown(
                           title: "Letter Head",
                           icon: "assets/icons/Letterhead.svg",
+                          isExpanded: expandedIndex == 8,
+                          onTap: () {
+                            setState(() {
+                              expandedIndex = expandedIndex == 8 ? null : 8;
+                            });
+                          },
                           children: [
                             MenuItem(
                               title: "Letter Head",
@@ -333,6 +389,12 @@ class _MenuScreenState extends ConsumerState<MenuScreen> {
                         MenuDropdown(
                           title: "Subscription",
                           icon: "assets/icons/subs.svg",
+                          isExpanded: expandedIndex == 9,
+                          onTap: () {
+                            setState(() {
+                              expandedIndex = expandedIndex == 9 ? null : 9;
+                            });
+                          },
                           children: [
                             MenuItem(
                               title: "subscription",
@@ -348,6 +410,12 @@ class _MenuScreenState extends ConsumerState<MenuScreen> {
                           MenuDropdown(
                           title: "Business Details",
                           icon: "assets/icons/buisness.svg",
+                            isExpanded: expandedIndex == 10,
+                            onTap: () {
+                              setState(() {
+                                expandedIndex = expandedIndex == 10 ? null : 10;
+                              });
+                            },
                           children: [
                             MenuItem(
                               title: "Business List",
@@ -373,6 +441,12 @@ class _MenuScreenState extends ConsumerState<MenuScreen> {
                         MenuDropdown(
                           title: "Language",
                           icon: "assets/images/language.svg",
+                          isExpanded: expandedIndex == 11,
+                          onTap: () {
+                            setState(() {
+                              expandedIndex = expandedIndex == 11 ? null : 11;
+                            });
+                          },
                           children: [
                             MenuItem(
                               title: "Select Language",
