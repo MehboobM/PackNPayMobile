@@ -75,6 +75,8 @@ class ApiEndPoints {
   static const String setFollowUp = "dashboard/create-action";
   static const String getLocationByPincode = "get-location-by-pincode";
   static const String updateProfile = "profile/update";
+  static const String getProfile = "profile";
+
 
 
 
