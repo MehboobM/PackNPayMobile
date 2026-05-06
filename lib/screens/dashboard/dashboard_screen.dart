@@ -177,13 +177,13 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                         color: Colors.green),
                     StatItem(
                       "Expenses",
-                      "-₹${dashboard.profitLoss.expenses}",
+                      "₹${dashboard.profitLoss.expenses}",
                       color: Colors.red,
                     ),
                   ],
                 ),
 
-                const StaffProfitSection(),
+              /*  const StaffProfitSection(),*/
                 const SizedBox(height: 16),
 
                 /// UPCOMING ORDERS (unchanged)
@@ -370,17 +370,19 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       child: Scaffold(
         backgroundColor: const Color(0xffF7F7F7),
         body: _getScreen(state), // ✅ FIXED
-        bottomNavigationBar: CustomBottomNav(
-          selectedIndex: selectedIndex,
-          onTap: (index) async {
-            final allowed = await _ensureSetupCompleted();
-
-            if (!allowed) return; // ❌ block navigation
-
-            setState(() {
-              selectedIndex = index;
-            });
-          },
+        bottomNavigationBar: SafeArea(
+          child: CustomBottomNav(
+            selectedIndex: selectedIndex,
+            onTap: (index) async {
+              final allowed = await _ensureSetupCompleted();
+          
+              if (!allowed) return; // ❌ block navigation
+          
+              setState(() {
+                selectedIndex = index;
+              });
+            },
+          ),
         ),
       ),
     );

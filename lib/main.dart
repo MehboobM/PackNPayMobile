@@ -13,8 +13,8 @@ import 'package:toastification/toastification.dart';
 import 'database/shared_preferences/shared_storage.dart';
 import 'notification/local_notification_service.dart';
 
-final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
-
+// final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
+final GlobalKey<NavigatorState> navigatorKey = LocalNotificationService.navigatorKey;
 
 Future<void> requestNotificationPermission() async {
   final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
