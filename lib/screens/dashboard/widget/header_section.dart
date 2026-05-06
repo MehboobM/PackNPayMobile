@@ -40,8 +40,9 @@ class _HeaderSectionState extends State<HeaderSection> {
     final logo = await _storage.getCompanyLogo();
 
     setState(() {
-      selectedCompanyName = "Default Business";
-      selectedCompanyFullName = fullName ?? "Acme Corporation pvt.Ltd";
+      selectedCompanyName = name ?? "Default Business"; // ✅ FIXED
+      selectedCompanyFullName =
+          fullName ?? "Acme Corporation pvt.Ltd";       // ✅ FIXED
       selectedLogo = logo;
     });
   }
@@ -79,15 +80,18 @@ class _HeaderSectionState extends State<HeaderSection> {
       if (response.data["success"] == true) {
         final user = response.data["user"];
 
-        /// ✅ Save token + company_id
+        /// ✅ SAVE EVERYTHING
         await _storage.saveToken(response.data["token"]);
         await _storage.saveCompanyId(company["id"].toString());
 
-        /// ✅ SAVE STATUS FROM RESPONSE (🔥 IMPORTANT)
+        await _storage.saveCompanyName(company["label_name"] ?? "Business"); // ✅ ADD
+        await _storage.saveCompanyFullName(company["company_name"] ?? "");   // ✅ ADD
+        await _storage.saveCompanyLogo(company["logo"]);                     // ✅ ADD
+
         await _storage.saveCompanyStatus(user["company_status"] ?? "");
         await _storage.saveSubscriptionStatus(user["subscription_status"] ?? "");
 
-        /// ✅ UI update
+        /// ✅ UPDATE UI
         setState(() {
           selectedCompanyName = company["label_name"] ?? "Business";
           selectedCompanyFullName = company["company_name"] ?? "";

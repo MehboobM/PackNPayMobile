@@ -73,6 +73,8 @@ class ApiEndPoints {
   static const String subscriptionHistory = "subscription/history";
   static const String subscriptionPlans = "subscription/plans";
   static const String setFollowUp = "dashboard/create-action";
+  static const String getLocationByPincode = "get-location-by-pincode";
+  static const String updateProfile = "profile/update";
 
 
 

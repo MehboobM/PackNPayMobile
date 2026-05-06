@@ -9,6 +9,7 @@ import '../../api_services/api_end_points.dart';
 import '../../api_services/network_handler.dart';
 import '../../database/shared_preferences/shared_storage.dart';
 import '../../notifier/dashboard_notifier.dart';
+import '../../utils/toast_message.dart';
 class PlansPage extends ConsumerStatefulWidget {
   const PlansPage({super.key});
 
@@ -44,34 +45,42 @@ class _PlansPageState extends ConsumerState<PlansPage> {
     try {
       final selectedPlan = apiPlans[selectedIndex];
 
-      /// ✅ FREE PLAN FLOW
+      /// ✅ FREE PLAN FLOW (FIXED API)
       if (selectedPlan["amount"] == "0.00") {
-        final response = await _networkHandler.post(
-          "subscription/activate-free",
-          {
-            "plan_uid": selectedPlan["uid"],
-          },
-        );
-
-        if (response.data["success"] == true) {
-          final storage = StorageService();
-          await storage.saveSubscriptionStatus("complete");
-
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text("Free Plan Activated ✅")),
+        try {
+          final response = await _networkHandler.post(
+            "public/payment/free-trial", // ✅ CORRECT API
+            {
+              "plan_uid": selectedPlan["uid"],
+            },
           );
 
-          Navigator.pop(context, true);
-        } else {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(response.data["message"] ?? "Failed")),
+          if (response.data["success"] == true) {
+            final storage = StorageService();
+            await storage.saveSubscriptionStatus("complete");
+
+            ToastHelper.showSuccess(
+              message: response.data["message"] ??
+                  "Free Trial Activated Successfully!",
+            );
+
+            Navigator.pop(context, true);
+          } else {
+            ToastHelper.showError(
+              message: response.data["message"] ?? "Activation failed",
+            );
+          }
+        } catch (e) {
+          ToastHelper.showError(
+            message: "Free plan activation failed",
           );
+          print("FREE PLAN ERROR: $e");
         }
 
-        return; // ⛔ stop here
+        return; // ⛔ STOP here
       }
 
-      /// 💳 PAID PLAN FLOW (Razorpay)
+      /// 💳 PAID PLAN FLOW (UNCHANGED)
       final response = await _networkHandler.post(
         "subscription/create-order",
         {
@@ -90,10 +99,16 @@ class _PlansPageState extends ConsumerState<PlansPage> {
 
         _openRazorpay(orderId, amount, key);
       } else {
-        print("API Error: ${data["message"]}");
+        ToastHelper.showError(
+          message: data["message"] ?? "Something went wrong",
+        );
       }
     } catch (e) {
       print("Create Order Error: $e");
+
+      ToastHelper.showError(
+        message: "Payment initialization failed",
+      );
     }
   }
   void _handlePaymentError(PaymentFailureResponse response) {
