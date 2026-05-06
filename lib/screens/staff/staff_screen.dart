@@ -344,15 +344,7 @@ class _StaffScreenState extends State<StaffScreen> {
         ],
       ),
       actions: [
-        Padding(
-          padding: const EdgeInsets.only(right: 8),
-          child: SvgPicture.asset(
-            "assets/icons/pdf.svg",
-            width: 20,
-            height: 20,
-            color: AppColors.primary,
-          ),
-        ),
+
 
      if(canAddStaff)
         Padding(

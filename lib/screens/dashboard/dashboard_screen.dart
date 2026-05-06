@@ -104,9 +104,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           child: SingleChildScrollView(
             child: Column(
               children: [
-                const SizedBox(height: 10),
-                const AutoScrollBanner(),
-                const SizedBox(height: 16),
 
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 16),
