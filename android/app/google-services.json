@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1072183456572",
+    "project_id": "packnpay-eb0e9",
+    "storage_bucket": "packnpay-eb0e9.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1072183456572:android:7c13e2885fdee6bfb3e439",
+        "android_client_info": {
+          "package_name": "com.app.packnpay"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAfJWi87hdp1BemyYkbo3JFyEgXFjQYoXQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
