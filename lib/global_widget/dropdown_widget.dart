@@ -110,3 +110,101 @@ class CustomDropdownField<T> extends StatelessWidget {
     );
   }
 }
+
+class CustomDropdownField2<T> extends StatelessWidget {
+  final String? hintText;
+  final TextStyle? hintStyle;
+
+  /// ✅ CHANGE → accept DropdownMenuItem
+  final List<DropdownMenuItem<T>> items;
+
+  final T? value;
+  final ValueChanged<T?>? onChanged;
+  final String? Function(T?)? validator;
+  final TextStyle? textStyle;
+
+  const CustomDropdownField2({
+    Key? key,
+    this.hintText,
+    required this.items,
+    required this.value,
+    required this.onChanged,
+    this.validator,
+    this.hintStyle,
+    this.textStyle,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return DropdownButtonFormField2<T>(
+      value: value,
+      onChanged: onChanged,
+      validator: validator,
+      isDense: true,
+      isExpanded: true,
+
+      /// ✅ SHOW SELECTED TEXT
+      selectedItemBuilder: (context) {
+        return items.map((item) {
+          return Align(
+            alignment: Alignment.centerLeft,
+            child: Text(
+              item.value.toString(),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: textStyle ??
+                  GoogleFonts.inter(
+                    fontSize: 12,
+                    color: AppColors.mBlack9,
+                  ),
+            ),
+          );
+        }).toList();
+      },
+
+      hint: Align(
+        alignment: Alignment.centerLeft,
+        child: Text(
+          hintText ?? "Select",
+          style: hintStyle ??
+              GoogleFonts.inter(
+                fontSize: 12,
+                color: AppColors.mGray4,
+              ),
+        ),
+      ),
+
+      decoration: const InputDecoration(
+        border: InputBorder.none,
+        isDense: true,
+        contentPadding: EdgeInsets.zero,
+      ),
+
+      items: items,
+      style: textStyle,
+
+      iconStyleData: const IconStyleData(
+        icon: Icon(Icons.keyboard_arrow_down, size: 18, color: AppColors.mGray4),
+      ),
+
+      buttonStyleData: const ButtonStyleData(
+        height: 48,
+        padding: EdgeInsets.only(left: 7, right: 0),
+      ),
+
+      menuItemStyleData: const MenuItemStyleData(
+        height: 36,
+        padding: EdgeInsets.symmetric(horizontal: 10),
+      ),
+
+      dropdownStyleData: DropdownStyleData(
+        maxHeight: 220,
+        offset: const Offset(0, 8),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(12),
+          color: AppColors.mWhite,
+        ),
+      ),
+    );
+  }
+}

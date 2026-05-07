@@ -576,11 +576,14 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
                         Text("order.orderStatus".tr(), style: TextStyles.f12w600Gray9),
                         InkWell(
                           onTap: () async {
+                            print("object existingOrderUid>>>>>>>>>>>>>${data?.shipmenStatus}");
                             showDialog(
                               context: context,
                               builder: (_) => ChangeStatusDialog(
                                 uid: data?.existingOrderUid ?? "",
                                 logs: statusLogs,
+                                shipmenStatus: data.shipmenStatus,
+
                               ),
                             );
                           },

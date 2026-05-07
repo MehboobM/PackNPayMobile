@@ -23,6 +23,7 @@ class ApiEndPoints {
   static const  createOrder = "order/create";
   static const  getOrderByUid = "order";
   static const  updateOrder = "order/update";
+  static const  shipmentOtp = "order/shipment-otp/";
   static const  uploadMedia = "order/media";
   static const  updateOrderStatus = "order/status";
   static const  generateEncoded = "survey/generate-encoded";

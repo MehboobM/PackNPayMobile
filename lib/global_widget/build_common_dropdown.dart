@@ -47,3 +47,45 @@ Widget buildCommonDropdown({
     ],
   );
 }
+
+
+Widget buildStyledDropdown({
+  required String title,
+  required String? value,
+  required List<DropdownMenuItem<String>> items,
+  required Function(String?) onChanged,
+  bool isRequired = false,
+}) {
+  return Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+
+      /// 🔹 TOP TITLE (FIXED)
+      formLabel(title, isRequired: isRequired),
+      const SizedBox(height: 6),
+      Container(
+        height: 48,
+        padding: const EdgeInsets.symmetric(horizontal: 8),
+        decoration: BoxDecoration(
+          border: Border.all(color: AppColors.mGray3), // ✅ all side border
+          borderRadius: BorderRadius.circular(12),
+          color: AppColors.mWhite,
+        ),
+        child: CustomDropdownField2<String>(
+          hintText: "Select",
+          value: value,
+          items: items,
+          onChanged: onChanged,
+          textStyle: GoogleFonts.inter(
+            fontSize: 12,
+            color: AppColors.mBlack9,
+          ),
+          hintStyle: GoogleFonts.inter(
+            fontSize: 12,
+            color: AppColors.mGray4,
+          ),
+        ),
+      ),
+    ],
+  );
+}

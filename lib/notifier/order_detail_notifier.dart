@@ -18,6 +18,19 @@ class OrderDetailNotifier extends StateNotifier<OrderDetailState> {
   OrderDetailNotifier(this.repository) : super(OrderDetailState());
 
 
+  /// 📦 SEND SHIPMENT OTP
+  Future<String?> sendShipmentOtp(String orderNo) async {
+    try {
+      final message = await repository.sendShipmentOtp(
+        orderNo: orderNo,
+      );
+
+      return message;
+    } catch (e) {
+      return null;
+    }
+  }
+
   void clearState() {
     state = OrderDetailState();
     //If you only want to clear data but keep loading state untouched:

@@ -7,6 +7,7 @@ import '../../../repositry/profile_repo.dart';
 import '../../../routes/route_names_const.dart';
 import '../../../api_services/network_handler.dart';
 import '../../../database/shared_preferences/shared_storage.dart';
+import '../../../utils/toast_message.dart';
 
 class HeaderSection extends StatefulWidget {
   const HeaderSection({super.key});
@@ -98,33 +99,57 @@ class _HeaderSectionState extends State<HeaderSection> {
       );
 
       if (response.data["success"] == true) {
-        final user = response.data["user"];
 
-        /// ✅ SAVE EVERYTHING
-        await _storage.saveToken(response.data["token"]);
-        await _storage.saveCompanyId(company["id"].toString());
-
-        await _storage.saveCompanyName(company["label_name"] ?? "Business"); // ✅ ADD
-        await _storage.saveCompanyFullName(company["company_name"] ?? "");   // ✅ ADD
-        await _storage.saveCompanyLogo(company["logo"]);                     // ✅ ADD
-
-        await _storage.saveCompanyStatus(user["company_status"] ?? "");
-        await _storage.saveSubscriptionStatus(user["subscription_status"] ?? "");
-
-        /// ✅ UPDATE UI
-        setState(() {
-          selectedCompanyName = company["label_name"] ?? "Business";
-          selectedCompanyFullName = company["company_name"] ?? "";
-          selectedLogo = company["logo"];
-        });
-
+        /// ✅ CLOSE DROPDOWN
         _removeDropdown();
 
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text("Company Switched")),
+        final user = response.data["user"];
+
+        /// ✅ SAFE VALUES
+        final token = response.data["token"]?.toString() ?? "";
+        final companyId = company["id"]?.toString() ?? "";
+        final labelName = company["label_name"]?.toString() ?? "Business";
+        final companyName = company["company_name"]?.toString() ?? "";
+        final logo = company["logo"]?.toString() ?? "";
+
+        final companyStatus =
+            user["company_status"]?.toString() ?? "";
+
+        final subscriptionStatus =
+            user["subscription_status"]?.toString() ?? "";
+
+        /// ✅ SAVE
+        await _storage.saveToken(token);
+        await _storage.saveCompanyId(companyId);
+        await _storage.saveCompanyName(labelName);
+        await _storage.saveCompanyFullName(companyName);
+        await _storage.saveCompanyLogo(logo);
+        await _storage.saveCompanyStatus(companyStatus);
+        await _storage.saveSubscriptionStatus(subscriptionStatus);
+
+        /// ✅ UPDATE UI
+        if (mounted) {
+          setState(() {
+            selectedCompanyName = labelName;
+            selectedCompanyFullName = companyName;
+            selectedLogo = logo;
+          });
+        }
+
+        /// ✅ SUCCESS TOAST
+        ToastHelper.showSuccess(
+          title: "Success",
+          message: "Company switched successfully",
         );
       }
     } catch (e) {
+
+      /// ❌ ERROR TOAST
+      ToastHelper.showError(
+        title: "Switch Failed",
+        message: e.toString(),
+      );
+
       print("Switch Company Error: $e");
     }
   }
@@ -142,6 +167,8 @@ class _HeaderSectionState extends State<HeaderSection> {
   void _removeDropdown() {
     _overlayEntry?.remove();
     _overlayEntry = null;
+
+    FocusScope.of(context).unfocus();
   }
 
   OverlayEntry _createOverlay() {
@@ -160,69 +187,69 @@ class _HeaderSectionState extends State<HeaderSection> {
           /// 👇 DROPDOWN
           Positioned(
             child: CompositedTransformFollower(
-              link: _layerLink,
-              offset: const Offset(0, 38), // 🔥 closer to widget
-              child: Material(
-                elevation: 4,
-                borderRadius: BorderRadius.circular(8),
-                child: Container(
-                  width: 200,
-                  padding: const EdgeInsets.symmetric(vertical: 4),
-                  decoration: BoxDecoration(
-                    color: Colors.white, // ✅ keep white container
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  child: ConstrainedBox(
-                    constraints: const BoxConstraints(
-                      maxHeight: 200, // ✅ scroll only if needed
+                link: _layerLink,
+                offset: const Offset(0, 38), // 🔥 closer to widget
+                child: Material(
+                  elevation: 4,
+                  borderRadius: BorderRadius.circular(8),
+                  child: Container(
+                    width: 200,
+                    padding: const EdgeInsets.symmetric(vertical: 4),
+                    decoration: BoxDecoration(
+                      color: Colors.white, // ✅ keep white container
+                      borderRadius: BorderRadius.circular(8),
                     ),
-                    child: ListView.builder(
-                      shrinkWrap: true,
-                      padding: EdgeInsets.zero, // ✅ remove top gap
-                      itemCount: companies.length,
-                      itemBuilder: (context, index) {
-                        final company = companies[index];
+                    child: ConstrainedBox(
+                      constraints: const BoxConstraints(
+                        maxHeight: 200, // ✅ scroll only if needed
+                      ),
+                      child: ListView.builder(
+                        shrinkWrap: true,
+                        padding: EdgeInsets.zero, // ✅ remove top gap
+                        itemCount: companies.length,
+                        itemBuilder: (context, index) {
+                          final company = companies[index];
 
-                        return InkWell(
-                          onTap: () => _switchCompany(company),
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 10,
-                              vertical: 8,
-                            ),
-                            child: Row(
-                              children: [
-                                company["logo"] != null
-                                    ? CircleAvatar(
-                                  radius: 12,
-                                  backgroundImage:
-                                  NetworkImage(company["logo"]),
-                                )
-                                    : const CircleAvatar(
-                                  radius: 12,
-                                  child: Icon(Icons.business, size: 14),
-                                ),
-                                const SizedBox(width: 8),
-                                const SizedBox(height: 2),
-                                Expanded(
-                                  child: Text(
-                                    company["company_name"] ?? "",
-                                    style: const TextStyle(
-                                      fontSize: 12,
-                                      fontWeight: FontWeight.w600,
+                          return InkWell(
+                            onTap: () => _switchCompany(company),
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 10,
+                                vertical: 8,
+                              ),
+                              child: Row(
+                                children: [
+                                  company["logo"] != null
+                                      ? CircleAvatar(
+                                    radius: 12,
+                                    backgroundImage:
+                                    NetworkImage(company["logo"]),
+                                  )
+                                      : const CircleAvatar(
+                                    radius: 12,
+                                    child: Icon(Icons.business, size: 14),
+                                  ),
+                                  const SizedBox(width: 8),
+                                  const SizedBox(height: 2),
+                                  Expanded(
+                                    child: Text(
+                                      company["company_name"] ?? "",
+                                      style: const TextStyle(
+                                        fontSize: 12,
+                                        fontWeight: FontWeight.w600,
+                                      ),
                                     ),
                                   ),
-                                ),
-                              ],
+                                ],
+                              ),
                             ),
-                          ),
-                        );
-                      },
+                          );
+                        },
+                      ),
                     ),
                   ),
-                ),
-              )
-          ),
+                )
+            ),
           ),
         ],
       ),
@@ -238,11 +265,24 @@ class _HeaderSectionState extends State<HeaderSection> {
         children: [
           /// LOGO
           selectedLogo != null && selectedLogo!.isNotEmpty
-              ? CircleAvatar(
-            radius: 20,
-            backgroundImage: NetworkImage(selectedLogo!),
+              ? ClipRRect(
+            borderRadius: BorderRadius.circular(8),
+            child: Image.network(
+              selectedLogo!,
+              width: 40,
+              height: 40,
+              fit: BoxFit.cover,
+            ),
           )
-              : const SizedBox(width: 40, height: 40,), // 👈 keeps layout stable
+              : ClipRRect(
+            borderRadius: BorderRadius.circular(8),
+            child: Image.asset(
+              'assets/images/AppLogo.png',
+              width: 40,
+              height: 40,
+              fit: BoxFit.cover,
+            ),
+          ),// 👈 keeps layout stable
 
           const SizedBox(width: 6),
 

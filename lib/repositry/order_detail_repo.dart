@@ -13,6 +13,27 @@ class OrderDetailRepository {
   OrderDetailRepository(this.network);
 
 
+  /// 📦 SEND SHIPMENT OTP
+  Future<String?> sendShipmentOtp({
+    required String orderNo,
+  }) async {
+    try {
+      final response = await network.post(
+        "${ApiEndPoints.shipmentOtp}$orderNo",{}
+      );
+
+      if (response.statusCode == 200 &&
+          response.data["success"] == true) {
+        return response.data["message"];
+      } else {
+        return response.data["message"] ?? "Failed to send OTP";
+      }
+    } catch (e) {
+      return e.toString();
+    }
+  }
+
+
   /// 🔍 STAFF SEARCH
   Future<List<dynamic>> searchStaff({
     required String search,

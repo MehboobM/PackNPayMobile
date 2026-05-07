@@ -9,6 +9,7 @@ import 'package:pinput/pinput.dart';
 
 import '../../../global_widget/build_common_dropdown.dart';
 import '../../../global_widget/custom_button.dart';
+import '../../../global_widget/dropdown_widget.dart';
 import '../../../notifier/order_detail_notifier.dart';
 import '../../../utils/app_colors.dart';
 import '../../../utils/m_font_styles.dart';
@@ -17,34 +18,50 @@ import '../../../utils/toast_message.dart';
 class ChangeStatusDialog extends ConsumerStatefulWidget {
   final String uid;
   final List logs;
+  final String? shipmenStatus;
 
   const ChangeStatusDialog({
     super.key,
     required this.uid,
     required this.logs,
+    this.shipmenStatus,
   });
 
   @override
-  ConsumerState<ChangeStatusDialog> createState() => _ChangeStatusDialogState();
+  ConsumerState<ChangeStatusDialog> createState() =>
+      _ChangeStatusDialogState();
 }
 
 class _ChangeStatusDialogState extends ConsumerState<ChangeStatusDialog> {
 
-  final List<String> statusList = [
+  final List<String> statusFlow = [
     "Shifting Started",
     "Pickup Completed",
     "Shifting Completed",
     "Settled",
   ];
 
-
-
   final TextEditingController _otpController = TextEditingController();
 
-  bool get isOtpRequired => selectedStatus == "Shifting Started";
+  /// 🔴 API STATE (DO NOT CHANGE)
+  late String currentStatus;
 
-  late String selectedStatus;
+  /// 🔴 USER SELECT
+  String? selectedNextStatus;
 
+  @override
+  void initState() {
+    super.initState();
+
+    if (widget.shipmenStatus != null &&
+        widget.shipmenStatus!.isNotEmpty) {
+      currentStatus = mapApiToUiStatus(widget.shipmenStatus);
+    } else {
+      currentStatus = "";
+    }
+  }
+
+  /// ---------------- MAP ----------------
   String mapApiToUiStatus(String? apiStatus) {
     switch (apiStatus) {
       case "SHIFTING_STARTED":
@@ -56,26 +73,8 @@ class _ChangeStatusDialogState extends ConsumerState<ChangeStatusDialog> {
       case "SETTLED":
         return "Settled";
       default:
-        return "Shifting Started";
+        return "";
     }
-  }
-
-  @override
-  void initState() {
-    super.initState();
-
-    /// 👉 Get latest SHIPMENT status
-    final shipmentLogs = widget.logs
-        .where((e) => e.statusType == "SHIPMENT")
-        .toList();
-
-    shipmentLogs.sort(
-            (a, b) => b.changedAt.compareTo(a.changedAt));
-
-    final latestStatus =
-    shipmentLogs.isNotEmpty ? shipmentLogs.first.status : null;
-
-    selectedStatus = mapApiToUiStatus(latestStatus);
   }
 
   String mapUiToApiStatus(String uiStatus) {
@@ -93,21 +92,79 @@ class _ChangeStatusDialogState extends ConsumerState<ChangeStatusDialog> {
     }
   }
 
+  /// ---------------- HELPERS ----------------
+  int getCurrentIndex() {
+    if (currentStatus.isEmpty) return -1;
+    return statusFlow.indexOf(currentStatus);
+  }
 
+  bool get isFinalStage => currentStatus == "Settled";
 
+  bool get isOtpRequired =>
+      (selectedNextStatus ?? getDropdownValue()) == "Shifting Started";
+
+  /// ✅ DEFAULT VALUE (AUTO NEXT)
+  String? getDropdownValue() {
+    int index = getCurrentIndex();
+
+    if (index == -1) return "Shifting Started";
+    if (index == statusFlow.length - 1) return null;
+
+    return statusFlow[index + 1];
+  }
+
+  /// ✅ CORE LOGIC (WEB SAME)
+  List<DropdownMenuItem<String>> buildDropdownItems() {
+    int currentIndex = getCurrentIndex();
+
+    return statusFlow.map((status) {
+      int index = statusFlow.indexOf(status);
+
+      bool isEnabled;
+
+      /// NULL → only first clickable
+      if (currentIndex == -1) {
+        isEnabled = index == 0;
+      }
+      /// NORMAL → only NEXT clickable
+      else {
+        isEnabled = index == currentIndex + 1;
+      }
+
+      /// FINAL → none clickable
+      if (currentIndex == statusFlow.length - 1) {
+        isEnabled = false;
+      }
+
+      return DropdownMenuItem<String>(
+        value: status,
+        enabled: isEnabled,
+        child: Text(
+          status,
+          style: TextStyle(
+            color: isEnabled ? Colors.black : Colors.grey,
+            fontSize: 13,
+          ),
+        ),
+      );
+    }).toList();
+  }
+
+  /// ---------------- UI ----------------
   @override
   Widget build(BuildContext context) {
+
+    final dropdownValue = selectedNextStatus ?? getDropdownValue();
+
     return Dialog(
       backgroundColor: AppColors.mWhite,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(16),
       ),
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16,vertical: 8),
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
         child: Column(
           mainAxisSize: MainAxisSize.min,
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
 
             /// HEADER
@@ -115,190 +172,125 @@ class _ChangeStatusDialogState extends ConsumerState<ChangeStatusDialog> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text("Order Status", style: TextStyles.f18w600Black8),
-                Padding(
-                  padding: const EdgeInsets.only(bottom: 8.0),
-                  child: Align(
-                    alignment: AlignmentGeometry.topRight,
-                    child: IconButton(
-                      onPressed: () => Navigator.pop(context),
-                      icon: const Icon(Icons.close),
-                    ),
-                  ),
-                )
+                IconButton(
+                  onPressed: () => Navigator.pop(context),
+                  icon: const Icon(Icons.close),
+                ),
               ],
             ),
 
             const SizedBox(height: 10),
 
+            /// DROPDOWN
+            if (!isFinalStage)
+              Row(
+                children: [
+                  Expanded(
+                    child: buildStyledDropdown(
+                      title: "Change order status",
+                      value: dropdownValue,
+                      items: buildDropdownItems(),
+                      onChanged: (val) {
+                        if (val == null) return;
 
-            /// DROPDOWN + APPLY
-            Row(
-              children: [
-                Expanded(   // ✅ FIX
-                  child: buildCommonDropdown(
-                    title: "Change order status",
-                    value: selectedStatus,
-                    items: statusList,
-                    onChanged: (val) {
-                      setState(() {
-                        selectedStatus = val ?? selectedStatus;
-                        _otpController.clear();
-                      });
-                    },
-                  ),
-                ),
-
-                const SizedBox(width: 10),
-
-                Column(
-                  children: [
-                    Text(""),
-                    SizedBox(
-                      height: 48,
-                      child: OutlinedButton(
-                        onPressed: () {},
-                        style: OutlinedButton.styleFrom(
-                          side: BorderSide(color: AppColors.primary, width: 1.5),
-                          backgroundColor: AppColors.primary.withValues(alpha: 0.1),
-                          shape: RoundedRectangleBorder(
-
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                        ),
-                        child: Text("Apply",
-                            style: TextStyles.f14w600Primary),
-                      ),
+                        setState(() {
+                          selectedNextStatus = val;
+                          _otpController.clear();
+                        });
+                      },
                     ),
-                  ],
-                )
-              ],
-            ),
+                  ),
 
+                  const SizedBox(width: 10),
 
+                  Column(
+                    children: [
+                      Text(""),
+                      SizedBox(
+                        height: 48,
+                        child: OutlinedButton(
+                          onPressed: () async {
+                            print(">>>>>>>>>>>>>>uid is ${widget.uid}");
+                            final notifier = ref.read(orderDetailProvider.notifier);
+                            final message = await notifier.sendShipmentOtp(widget.uid);
+                            if (message != null) {
+                              ToastHelper.showSuccess(message: message);
+                            } else {
+                              ToastHelper.showError(
+                                message: "Failed to send shipment OTP",
+                              );
+                            }
+                          },
+                          style: OutlinedButton.styleFrom(
+                            side: BorderSide(color: AppColors.primary, width: 1.5),
+                            backgroundColor: AppColors.primary.withValues(alpha: 0.1),
+                            shape: RoundedRectangleBorder(
 
-            /// OTP INFO TEXT
-            if (isOtpRequired)...[
-              const SizedBox(height: 12),
-              Text(
-                "Enter OTP",
-                style: TextStyles.f12w500Gray7,
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                          ),
+                          child: Text("Apply", style: TextStyles.f14w600Primary),
+                        ),
+                      ),
+                    ],
+                  )
+                ],
               ),
+
+            /// OTP
+            if (isOtpRequired) ...[
+              const SizedBox(height: 12),
+              Text("Enter OTP", style: TextStyles.f12w500Gray7),
               const SizedBox(height: 6),
               Pinput(
                 controller: _otpController,
                 length: 4,
-                preFilledWidget: Text(
-                  "0",
-                  style: GoogleFonts.interTight(
-                    fontSize: 24,
-                    fontWeight: FontWeight.w600,
-                    color: Colors.grey[400],
-                  ),
-                ),
-                showCursor: true,
                 keyboardType: TextInputType.number,
-                inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-
-                defaultPinTheme: PinTheme(
-                  width: 54,
-                  height: 42,
-                  textStyle: GoogleFonts.interTight(
-                    fontSize: 24,
-                    fontWeight: FontWeight.w600,
-                    color: Colors.grey[400]!,
-                  ),
-                  decoration: BoxDecoration(
-                    color: AppColors.mWhite,
-                    borderRadius: BorderRadius.circular(4),
-                    border: Border.all(color: Colors.grey[300]!, width: 2),
-                  ),
-                ),
-
-                focusedPinTheme: PinTheme(
-                  width: 54,
-                  height: 54,
-                  textStyle: GoogleFonts.interTight(
-                    fontSize: 24,
-                    fontWeight: FontWeight.w600,
-                    color: AppColors.primary,
-                  ),
-                  decoration: BoxDecoration(
-                    color: Colors.grey[50],
-                    borderRadius: BorderRadius.circular(4),
-                    border: Border.all(color: AppColors.primary, width: 2),
-                  ),
-                ),
-
-                submittedPinTheme: PinTheme(
-                  width: 54,
-                  height: 54,
-                  textStyle: GoogleFonts.interTight(
-                    fontSize: 24,
-                    fontWeight: FontWeight.w600,
-                    color: AppColors.mBlack9,
-                  ),
-                  decoration: BoxDecoration(
-                    color: Colors.grey[50],
-                    borderRadius: BorderRadius.circular(4),
-                    border: Border.all(color: AppColors.primary, width: 2),
-                  ),
-                ),
               ),
             ],
-
-
 
             const SizedBox(height: 16),
 
             /// BUTTON
-            Padding(
-              padding: const EdgeInsets.only(top: 12.0,bottom: 10),
-              child: CustomButton(
-                onPressed: () async {
+            CustomButton(
+              onPressed: () async {
 
-                  /// ✅ VALIDATION
-                  // if (isOtpRequired && _otpController.text.length != 4) {
-                  //   ToastHelper.showError(message: "Enter valid OTP");
-                  //   return;
-                  // }
-                  //
-                  // /// 👉 API CALL HERE
-                  // print("Status: $selectedStatus");
-                  // print("OTP: ${_otpController.text}");
+                if (isFinalStage) return;
 
-                  final notifier = ref.read(orderDetailProvider.notifier);
+                final notifier = ref.read(orderDetailProvider.notifier);
 
-                  /// ✅ VALIDATION
-                  if (isOtpRequired && _otpController.text.length != 4) {
-                    ToastHelper.showError(message: "Enter valid OTP");
-                    return;
-                  }
+                final finalStatus =
+                    selectedNextStatus ?? getDropdownValue();
 
-                  final result = await notifier.updateOrderStatus(
-                    uid: widget.uid,
-                    status: mapUiToApiStatus(selectedStatus),
-                    otp: isOtpRequired ? _otpController.text : null,
-                  );
+                if (finalStatus == null) return;
 
-                  if (result != null) {
-                    ToastHelper.showSuccess(message: result);
-                    Navigator.pop(context);
-                  } else {
-                    ToastHelper.showError(message: "Failed to update status");
-                  }
+                if (isOtpRequired && _otpController.text.length != 4) {
+                  ToastHelper.showError(message: "Enter valid OTP");
+                  return;
+                }
 
+                final result = await notifier.updateOrderStatus(
+                  uid: widget.uid,
+                  status: mapUiToApiStatus(finalStatus),
+                  otp: isOtpRequired ? _otpController.text : null,
+                );
 
-                },
-                borderRadius: 6,
-                backgroundColor: AppColors.primary,
-                text: "Change status",
-                textStyle: TextStyles.f12w400mWhite,
-              ),
+                if (result != null) {
+                  ToastHelper.showSuccess(message: result);
+                  Navigator.pop(context);
+                } else {
+                  ToastHelper.showError(message: "Failed to update status");
+                }
+              },
+              borderRadius: 6,
+              backgroundColor: AppColors.primary,
+              text: isFinalStage ? "Completed" : "Change status",
+              textStyle: TextStyles.f12w400mWhite,
             ),
-
           ],
         ),
       ),
     );
   }
 }
+
