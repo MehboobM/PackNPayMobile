@@ -414,15 +414,26 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
         }
       }
     }else if((existingOrderNo == null || existingOrderNo.isEmpty) && data?.id == null){
-      final message = await ref.read(orderDetailProvider.notifier).createOrderAndRefresh(data?.quotationId ?? "");
-      if (message == "Order created successfully") {
-        ToastHelper.showSuccess(message: message!);
-      } else {
-        ToastHelper.showError(message: message ?? "Error occurred");
-      }
+
+      // here open the dialog and when click the confirm order then call ,untill not click confor dialog should not close
+      // final message = await ref.read(orderDetailProvider.notifier).createOrderAndRefresh(data?.quotationId ?? "");
+      // if (message == "Order created successfully") {
+      //   ToastHelper.showSuccess(message: message!);
+      // } else {
+      //   ToastHelper.showError(message: message ?? "Error occurred");
+      // }
+      await showConfirmOrderDialog(
+        context,
+        ref,
+        data?.quotationId ?? "",
+      );
+
+
     }
 
   }
+
+
 
   bool _dialogShown = false;
   @override
@@ -1879,3 +1890,98 @@ class _ItemRow extends StatelessWidget {
   }
 }
 
+
+
+Future<void> showConfirmOrderDialog(
+    BuildContext context,
+    WidgetRef ref,
+    String quotationId,
+    ) async {
+  return showDialog(
+    context: context,
+    barrierDismissible: false, // ❗ prevents closing on outside tap
+    builder: (context) {
+      return Dialog(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(20),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              // Icon
+              Container(
+                padding: const EdgeInsets.all(14),
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: AppColors.cyanBlue,
+                ),
+                child: Icon(
+                  Icons.info_outline,
+                  color: AppColors.primary,
+                  size: 28,
+                ),
+              ),
+
+              const SizedBox(height: 16),
+
+              // Title
+              Text(
+                "Confirm Order",
+                style: TextStyles.f18w600Black8,
+              ),
+
+              const SizedBox(height: 10),
+
+              // Message
+              Text(
+                "This order is not confirmed yet. Do you want to confirm it now?",
+                textAlign: TextAlign.center,
+                style: TextStyles.f14w500mGray7,
+              ),
+
+              const SizedBox(height: 20),
+
+              Divider(color: AppColors.mGray3),
+
+              const SizedBox(height: 10),
+
+              // Button
+              SizedBox(
+                width: double.infinity,
+                height: 48,
+                child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: AppColors.primary,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                  ),
+                  onPressed: () async {
+                    // 👉 CALL API ONLY HERE
+                    final message = await ref
+                        .read(orderDetailProvider.notifier)
+                        .createOrderAndRefresh(quotationId);
+
+                    if (message == "Order created successfully") {
+                      ToastHelper.showSuccess(message: message!);
+                      Navigator.pop(context); // ✅ close only on success
+                    } else {
+                      ToastHelper.showError(
+                          message: message ?? "Error occurred");
+                    }
+                  },
+                  child: Text(
+                    "Confirm Order",
+                    style: TextStyles.f14w500White,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      );
+    },
+  );
+}

@@ -18,33 +18,31 @@ import 'firebase_options.dart';
 import 'notification/local_notification_service.dart';
 
 /// ======================================
-/// GLOBAL NAVIGATOR KEY
-/// ======================================
-final GlobalKey<NavigatorState> navigatorKey =
-    LocalNotificationService.navigatorKey;
+final GlobalKey<NavigatorState> navigatorKey = LocalNotificationService.navigatorKey;
 
-/// ======================================
+Future<void> requestIOSLocalPermission() async {
+  final iosImplementation = FlutterLocalNotificationsPlugin().resolvePlatformSpecificImplementation<
+      IOSFlutterLocalNotificationsPlugin>();
+
+  await iosImplementation?.requestPermissions(
+    alert: true,
+    badge: true,
+    sound: true,
+  );
+}
 /// REQUEST NOTIFICATION PERMISSION
-/// ======================================
 Future<void> requestNotificationPermission() async {
   /// ANDROID 13+
   if (Platform.isAndroid) {
-    final FlutterLocalNotificationsPlugin
-    flutterLocalNotificationsPlugin =
-    FlutterLocalNotificationsPlugin();
+    final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
 
-    final androidImplementation =
-    flutterLocalNotificationsPlugin
-        .resolvePlatformSpecificImplementation<
-        AndroidFlutterLocalNotificationsPlugin>();
+    final androidImplementation = flutterLocalNotificationsPlugin.resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>();
 
-    await androidImplementation
-        ?.requestNotificationsPermission();
+    await androidImplementation?.requestNotificationsPermission();
   }
 
   /// FIREBASE PERMISSION
-  NotificationSettings settings =
-  await FirebaseMessaging.instance.requestPermission(
+  NotificationSettings settings = await FirebaseMessaging.instance.requestPermission(
     alert: true,
     badge: true,
     sound: true,
@@ -56,9 +54,7 @@ Future<void> requestNotificationPermission() async {
   );
 }
 
-/// ======================================
 /// BACKGROUND HANDLER
-/// ======================================
 @pragma('vm:entry-point')
 Future<void> firebaseMessagingBackgroundHandler(
     RemoteMessage message) async {
@@ -76,28 +72,44 @@ Future<void> firebaseMessagingBackgroundHandler(
 /// ======================================
 Future<String?> getFcmToken() async {
   try {
-    await Future.delayed(
-      const Duration(seconds: 1),
-    );
+    /// wait little for iOS
+    await Future.delayed(const Duration(seconds: 2));
 
-    String? token =
-    await FirebaseMessaging.instance.getToken();
+    /// ✅ STEP 1: GET APNS TOKEN
+    String? apnsToken = await FirebaseMessaging.instance.getAPNSToken();
+    debugPrint("🍎 APNS TOKEN => $apnsToken");
+
+    if (apnsToken == null) {
+      debugPrint("❌ APNS token not available yet");
+      return null;
+    }
+
+    /// ✅ STEP 2: GET FCM TOKEN
+    String? fcmToken = await FirebaseMessaging.instance.getToken();
 
     debugPrint("================================");
-    debugPrint("🔥 FCM TOKEN => $token");
+    debugPrint("🔥 FCM TOKEN => $fcmToken");
     debugPrint("================================");
 
-    return token;
+    return fcmToken;
   } catch (e) {
     debugPrint("❌ FCM TOKEN ERROR => $e");
     return null;
   }
 }
-
 /// ======================================
 /// FIREBASE LISTENERS
 /// ======================================
 Future<void> setupFirebaseListeners() async {
+
+  await FirebaseMessaging.instance
+      .setForegroundNotificationPresentationOptions(
+    alert: true,
+    badge: true,
+    sound: true,
+  );
+
+
   /// FOREGROUND MESSAGE
   FirebaseMessaging.onMessage.listen(
         (RemoteMessage message) async {
@@ -178,6 +190,8 @@ void main() async {
 
   /// REQUEST PERMISSION
   await requestNotificationPermission();
+
+  await requestIOSLocalPermission();
 
   /// FIREBASE LISTENERS
   await setupFirebaseListeners();

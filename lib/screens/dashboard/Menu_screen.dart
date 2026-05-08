@@ -6,6 +6,7 @@ import 'package:pack_n_pay/screens/dashboard/widget/Drop_down_items.dart';
 import 'package:pack_n_pay/screens/dashboard/widget/set_up_popup.dart';
 import 'package:share_plus/share_plus.dart';
 
+import '../../database/hive_database/hive_clear.dart';
 import '../../database/hive_database/hive_permission.dart';
 import '../../database/hive_database/hive_quation_form.dart';
 import '../../database/shared_preferences/shared_storage.dart';
@@ -549,6 +550,7 @@ class _MenuScreenState extends ConsumerState<MenuScreen> {
                               );
 
                               if (confirm == true) {
+                                await HiveManager.clearAll();
                                 await StorageService().clearAll();
 
                                 if (context.mounted) {

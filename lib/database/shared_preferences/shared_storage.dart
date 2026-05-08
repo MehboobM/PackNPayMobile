@@ -76,8 +76,8 @@ class StorageService {
   }
 
 
-  Future<void> saveCompanyId(String name) async {
-    await writeData(_companyId, name);
+  Future<void> saveCompanyId(String id) async {
+    await writeData(_companyId, id);
   }
 
   Future<String?> getCompanyId() async {

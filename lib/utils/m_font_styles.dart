@@ -65,6 +65,13 @@ class TextStyles {
     color: AppColors.mWhite,
     letterSpacing: 0.0,
   );
+ static final TextStyle f14w500White = GoogleFonts.interTight(
+    fontSize: 14,
+    fontWeight: FontWeight.w500,
+
+    color: AppColors.mWhite,
+
+  );
 
   static final TextStyle f18w600Black8 = GoogleFonts.inter(
     fontSize: 18,

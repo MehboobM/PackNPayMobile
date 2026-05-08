@@ -33,6 +33,9 @@ class LocalNotificationService {
       requestAlertPermission: true,
       requestBadgePermission: true,
       requestSoundPermission: true,
+      defaultPresentAlert: true,
+      defaultPresentBadge: true,
+      defaultPresentSound: true,
     );
 
     /// COMBINED SETTINGS
@@ -94,7 +97,7 @@ class LocalNotificationService {
       android: androidDetails,
       iOS: iosDetails,
     );
-
+    print("🔥 iOS Local Notification Called");
     await _notifications.show(
       id,
       title,

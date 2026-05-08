@@ -33,6 +33,265 @@ class BasicDetailScreen extends ConsumerStatefulWidget {
 }
 
 class _BasicDetailScreenState extends ConsumerState<BasicDetailScreen> {
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+
+  final TextEditingController nameController = TextEditingController();
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController companyController = TextEditingController();
+  final TextEditingController gstController = TextEditingController();
+
+  final FocusNode companyFocus = FocusNode();
+  final FocusNode gstFocus = FocusNode();
+  final FocusNode nameFocus = FocusNode();
+  final FocusNode emailFocus = FocusNode();
+
+  bool _isSubmitted = false; // ✅ ADDED
+
+  @override
+  void dispose() {
+    nameController.dispose();
+    emailController.dispose();
+    companyController.dispose();
+    gstController.dispose();
+    companyFocus.dispose();
+    gstFocus.dispose();
+    nameFocus.dispose();
+    emailFocus.dispose();
+    super.dispose();
+  }
+
+  String? validateGST(String? value) {
+    if (value == null || value.trim().isEmpty) {
+      return "GST number is required";
+    }
+
+    final gstRegex = RegExp(
+      r'^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$',
+    );
+
+    if (!gstRegex.hasMatch(value.trim())) {
+      return "Enter a valid GST number (e.g. 27ABCDE1234F1Z5)";
+    }
+
+    return null;
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    print("otp is >>>>>>>>>>>>${widget.otp}");
+    print(widget.mobile);
+  }
+
+  void _reValidate() {
+    if (_isSubmitted) {
+      _formKey.currentState?.validate();
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final authState = ref.watch(authProvider);
+
+    SystemChrome.setSystemUIOverlayStyle(
+      const SystemUiOverlayStyle(
+        statusBarColor: AppColors.mWhite,
+        statusBarIconBrightness: Brightness.dark,
+      ),
+    );
+
+    return Scaffold(
+      backgroundColor: AppColors.mWhite,
+      body: SafeArea(
+        child: Padding(
+          padding: EdgeInsets.symmetric(horizontal: context.width(0.07)),
+          child: Form(
+            key: _formKey,
+            autovalidateMode:
+            _isSubmitted ? AutovalidateMode.onUserInteraction : AutovalidateMode.disabled, // ✅ FIX
+            child: SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+
+                  SizedBox(height: 40),
+
+                  Image.asset(
+                    "assets/images/logomark_three.png",
+                    width: context.width(0.4),
+                    fit: BoxFit.contain,
+                  ),
+
+                  SizedBox(height: 16),
+
+                  Text(
+                    "Basic Details",
+                    style: TextStyles.f18w600Black8,
+                  ),
+
+                  SizedBox(height: 16),
+
+                  Text(
+                    "Enter your basic details",
+                    style: TextStyles.f12w400Gray6H,
+                    textAlign: TextAlign.center,
+                  ),
+
+                  SizedBox(height: 10),
+
+                  /// NAME
+                  CustomTextField(
+                    controller: nameController,
+                    prefixIcon: "assets/images/person_icon.svg",
+                    hintText: "Enter name",
+                    focusNode: nameFocus,
+                    textInputAction: TextInputAction.next,
+                    onFieldSubmitted: (_) => emailFocus.requestFocus(),
+                    onChanged: (_) => _reValidate(), // ✅ ADDED
+                    validator: (value) {
+                      if (value == null || value.trim().length <= 3) {
+                        return "Name is required";
+                      }
+                      return null;
+                    },
+                  ),
+
+                  SizedBox(height: 16),
+
+                  /// EMAIL
+                  CustomTextField(
+                    controller: emailController,
+                    prefixIcon: "assets/images/email_icon.svg",
+                    keyboardType: TextInputType.emailAddress,
+                    hintText: "Enter email",
+                    focusNode: emailFocus,
+                    textInputAction: TextInputAction.done,
+                    onFieldSubmitted: (_) => _formKey.currentState?.validate(),
+                    onChanged: (_) => _reValidate(), // ✅ ADDED
+                    validator: (value) {
+                      if (value == null || value.trim().isEmpty) {
+                        return "Email is required";
+                      }
+                      if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$')
+                          .hasMatch(value.trim())) {
+                        return "Please enter valid email";
+                      }
+                      return null;
+                    },
+                  ),
+
+                  SizedBox(height: 16),
+
+                  /// COMPANY
+                  CustomTextField(
+                    controller: companyController,
+                    prefixIcon: "assets/images/company_icon.svg",
+                    hintText: "Enter company name",
+                    focusNode: companyFocus,
+                    textInputAction: TextInputAction.next,
+                    onFieldSubmitted: (_) => gstFocus.requestFocus(),
+                    onChanged: (_) => _reValidate(), // ✅ ADDED
+                    validator: (value) {
+                      if (value == null || value.trim().isEmpty) {
+                        return "Company name is required";
+                      }
+                      return null;
+                    },
+                  ),
+
+                  SizedBox(height: 16),
+
+                  /// GST
+                  CustomTextField(
+                    controller: gstController,
+                    prefixIcon: "assets/images/gst_icon.svg",
+                    hintText: "Enter GST number",
+                    focusNode: gstFocus,
+                    textInputAction: TextInputAction.done,
+                    onChanged: (_) => _reValidate(), // ✅ ADDED
+                    validator: validateGST,
+                  ),
+
+                  SizedBox(height: context.height(0.04)),
+
+                  /// BUTTON
+                  CustomButton2(
+                    onPressed: () async {
+                      setState(() {
+                        _isSubmitted = true; // ✅ ENABLE validation
+                      });
+
+                      if (_formKey.currentState!.validate()) {
+                        final response = await ref
+                            .read(authProvider.notifier)
+                            .register(
+                          mobile: widget.mobile,
+                          otp: widget.otp,
+                          name: nameController.text.trim(),
+                          email: emailController.text.trim(),
+                          companyName: companyController.text.trim(),
+                          gstNumber:
+                          gstController.text.trim().toUpperCase(),
+                        );
+
+                        if (response != null && response['success']) {
+                          ToastHelper.showSuccess(
+                              message: response['message']);
+
+                          await StorageService()
+                              .saveToken(response['token']);
+                          await AuthHiveService.saveResponse(response);
+
+                          final user = response['user'];
+
+                          if (user != null) {
+                            await StorageService().saveCompanyStatus(
+                                user['company_status'] ?? '');
+                            await StorageService()
+                                .saveSubscriptionStatus(
+                                user['subscription_status'] ?? '');
+                          }
+
+                          if (user['company_id'] != null) {
+                            await StorageService().saveCompanyId(
+                                "${user['company_id']}");
+                          }
+
+                          Navigator.pushNamedAndRemoveUntil(
+                            context,
+                            homeScreenRoute,
+                                (_) => false,
+                          );
+                        } else {
+                          ToastHelper.showError(
+                              message: authState.error ??
+                                  "Something went wrong");
+                        }
+                      }
+                    },
+                    borderRadius: 6,
+                    backgroundColor: AppColors.primary,
+                    textWidget: authState.isLoading
+                        ? CupertinoActivityIndicator(radius: 14)
+                        : Text(
+                      "Continue",
+                      style: TextStyles.f14w600Primary
+                          .copyWith(color: AppColors.mWhite),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+/*
+class _BasicDetailScreenState extends ConsumerState<BasicDetailScreen> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>(); // ✅ FormKey
   final TextEditingController nameController = TextEditingController();
   final TextEditingController emailController = TextEditingController();
@@ -219,6 +478,9 @@ class _BasicDetailScreenState extends ConsumerState<BasicDetailScreen> {
                             await StorageService().saveCompanyStatus(user['company_status'] ?? '');
                             await StorageService().saveSubscriptionStatus(user['subscription_status'] ?? '');
                           }
+                          if (user['company_id'] != null) {
+                            await StorageService().saveCompanyId("${user['company_id']}");
+                          }
                           Navigator.pushNamedAndRemoveUntil(context, homeScreenRoute, (_) => false,);
                         }else{
                           ToastHelper.showError(message: authState.error ?? "Something went wrong");
@@ -247,4 +509,5 @@ class _BasicDetailScreenState extends ConsumerState<BasicDetailScreen> {
     );
   }
 }
+*/
 

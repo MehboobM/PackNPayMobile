@@ -532,7 +532,7 @@ class _SurveyListScreenState extends ConsumerState<SurveyListScreen> {
           title: 'Generate Quotation',
           icon: "assets/images/quotation.svg",
         ),
-        if (!isCompleted && canEdit)
+        if (isCompleted && canEdit)
          PopupMenuModel(
           value: 'setFollow',
           title: 'Set Follow Up',
@@ -557,6 +557,17 @@ class _SurveyListScreenState extends ConsumerState<SurveyListScreen> {
             break;
 
           case 'quotation':
+            // if(isCompleted){
+            //   ToastHelper.showSuccess(
+            //     message: "Quotation exist",
+            //   );
+            // }else{
+            //   await handleSurveyNavigation(
+            //     context: context,
+            //     ref: ref,
+            //     quotationNo: quotationNo,
+            //   );
+            // }
             await handleSurveyNavigation(
               context: context,
               ref: ref,
