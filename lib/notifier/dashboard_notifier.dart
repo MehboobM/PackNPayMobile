@@ -10,11 +10,7 @@ import '../repositry/Dashboard_repository.dart';
 class DashboardNotifier extends StateNotifier<DashboardState> {
   final DashboardService repository;
 
-  DashboardNotifier(this.repository)
-      : super(const DashboardState()) {
-    fetchAll();
-  }
-
+  DashboardNotifier(this.repository) : super(DashboardState());
   /// 🔹 Load Dashboard + Actions + Orders + Subscription
   Future<void> fetchAll() async {
     state = state.copyWith(

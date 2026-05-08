@@ -10,6 +10,7 @@ import '../../api_services/network_handler.dart';
 import '../../database/shared_preferences/shared_storage.dart';
 import '../../models/location_modal.dart';
 import '../../notifier/location_notifier.dart';
+import '../../repositry/profile_repo.dart';
 import '../../utils/toast_message.dart';
 import 'add_signature.dart';
 import 'dart:io';
@@ -21,8 +22,8 @@ class MyBusinessPage extends ConsumerStatefulWidget {
   ConsumerState<MyBusinessPage> createState() => _MyBusinessPageState();
 }
 class _MyBusinessPageState extends ConsumerState<MyBusinessPage> {
-  StateModel? _selectedState;
-  CityModel? _selectedCity;
+  int? _selectedStateId;
+  int? _selectedCityId;
   final Dio _dio = Dio();
   Uint8List? _signatureBytes;
   List<Uint8List> _upiQrList = [];
@@ -58,6 +59,7 @@ class _MyBusinessPageState extends ConsumerState<MyBusinessPage> {
   final TextEditingController _upiId2Controller = TextEditingController();
   final TextEditingController _phonepeController = TextEditingController();
   final TextEditingController _gpayController = TextEditingController();
+  final TextEditingController _pincodeController = TextEditingController();
 
   @override
   void initState() {
@@ -67,11 +69,61 @@ class _MyBusinessPageState extends ConsumerState<MyBusinessPage> {
       _fetchBusinessData();
     }
   }
+  Future<void> _fetchLocationFromPincode(String pincode) async {
+    try {
+      if (pincode.length != 6) return;
+
+      final repository = ProfileRepository();
+
+      final data = await repository.getLocationByPincode(pincode);
+
+      if (data == null) {
+        ToastHelper.showError(message: "Invalid pincode");
+        return;
+      }
+
+      final stateName = data["state"]?.toString();
+      final cityName = data["city"]?.toString();
+
+      if (stateName == null || cityName == null) return;
+
+      /// FETCH STATES
+      final states = await repository.getStates();
+
+      StateModel? matchedState;
+
+      try {
+        matchedState = states.firstWhere(
+              (e) => e.name.toLowerCase() == stateName.toLowerCase(),
+        );
+      } catch (_) {}
+
+      if (matchedState == null) return;
+
+      /// FETCH CITIES
+      final cities = await repository.getCities(matchedState.id);
+
+      CityModel? matchedCity;
+
+      try {
+        matchedCity = cities.firstWhere(
+              (e) => e.name.toLowerCase() == cityName.toLowerCase(),
+        );
+      } catch (_) {}
+
+      setState(() {
+        _selectedStateId = matchedState?.id;
+        _selectedCityId = matchedCity?.id;
+      });
+    } catch (e) {
+      debugPrint("Pincode fetch error: $e");
+    }
+  }
   Future<void> _submitBusiness() async {
     try {
       if (!_formKey.currentState!.validate()) return;
 
-      if (_selectedState == null || _selectedCity == null) {
+      if (_selectedStateId == null || _selectedCityId == null){
         ToastHelper.showError(message: "Please select state & city");
         return;
       }
@@ -96,8 +148,9 @@ class _MyBusinessPageState extends ConsumerState<MyBusinessPage> {
         "pan_no": _panController.text.trim(),
         "jurisdiction": _jurisdiction1Controller.text.trim(),
         "address": _addressController.text.trim(),
-        "state": _selectedState!.id.toString(),
-        "city": _selectedCity!.id.toString(),
+        "pincode": _pincodeController.text.trim(),
+        "state": _selectedStateId.toString(),
+        "city": _selectedCityId.toString(),
 
         "beneficiary_name": _beneficiaryController.text.trim(),
         "bank_name": _bankNameController.text.trim(),
@@ -200,6 +253,7 @@ class _MyBusinessPageState extends ConsumerState<MyBusinessPage> {
         _altContactController.text = (data['alternate_phone'] ?? "").toString();
         _tollFreeController.text = (data['toll_free'] ?? "").toString();
         _emailController.text = (data['email'] ?? "").toString();
+        _pincodeController.text = (data['pincode'] ?? "").toString();
         _websiteController.text = (data['website'] ?? "").toString();
         _gstController.text = (data['gst_no'] ?? "").toString();
         _panController.text = (data['pan_no'] ?? "").toString();
@@ -320,49 +374,139 @@ class _MyBusinessPageState extends ConsumerState<MyBusinessPage> {
         _buildLabel("PAN no."),
         _buildTextField(hint: "XXXX XXXX XXX", controller: _panController),
         /// STATE DROPDOWN
+        _buildLabel("PIN Code"),
+        _buildTextField(
+          hint: "Enter PIN code",
+          controller: _pincodeController,
+          isPhone: true,
+          onChanged: (value) {
+            if (value.length == 6) {
+              _fetchLocationFromPincode(value);
+            }
+          },
+        ),
         _buildLabel("State"),
+
         ref.watch(stateProvider).when(
-          data: (states) => _commonDropdown<StateModel>(
-            hint: "Select State",
-            items: states,
-            selectedValue: _selectedState,
-            label: (s) => s.name,
-            onChanged: (value) {
-              setState(() {
-                _selectedState = value;
-                _selectedCity = null; // reset city
-              });
-            },
-          ),
-          loading: () => const Padding(
-            padding: EdgeInsets.all(8.0),
-            child: CircularProgressIndicator(),
-          ),
+          data: (states) {
+            return DropdownButtonHideUnderline(
+              child: DropdownButton2<int>(
+                isExpanded: true,
+                hint: const Text(
+                  "Select State",
+                  style: TextStyle(fontSize: 14, color: Colors.grey),
+                ),
+
+                value: states.any((e) => e.id == _selectedStateId)
+                    ? _selectedStateId
+                    : null,
+
+                items: states.map((state) {
+                  return DropdownMenuItem<int>(
+                    value: state.id,
+                    child: Text(
+                      state.name,
+                      style: const TextStyle(
+                        fontSize: 14,
+                        color: Color(0xFF1A1C1E),
+                      ),
+                    ),
+                  );
+                }).toList(),
+
+                onChanged: (value) {
+                  setState(() {
+                    _selectedStateId = value;
+                    _selectedCityId = null;
+                  });
+                },
+
+                buttonStyleData: ButtonStyleData(
+                  height: 48,
+                  padding: const EdgeInsets.symmetric(horizontal: 12),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(8),
+                    border: Border.all(color: const Color(0xFFE5E7EB)),
+                    color: Colors.white,
+                  ),
+                ),
+
+                dropdownStyleData: DropdownStyleData(
+                  maxHeight: 250,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(8),
+                    color: Colors.white,
+                  ),
+                ),
+              ),
+            );
+          },
+          loading: () => const CircularProgressIndicator(),
           error: (e, _) => Text("Error: $e"),
         ),
 
 
         /// CITY DROPDOWN
         _buildLabel("City"),
-        if (_selectedState == null)
+
+        if (_selectedStateId == null)
           const Text("Select state first")
         else
-          ref.watch(cityProvider(_selectedState!.id)).when(
-            data: (cities) => _commonDropdown<CityModel>(
-              hint: "Select City",
-              items: cities,
-              selectedValue: _selectedCity,
-              label: (c) => c.name,
-              onChanged: (value) {
-                setState(() {
-                  _selectedCity = value;
-                });
-              },
-            ),
-            loading: () => const Padding(
-              padding: EdgeInsets.all(8.0),
-              child: CircularProgressIndicator(),
-            ),
+          ref.watch(cityProvider(_selectedStateId!)).when(
+            data: (cities) {
+              return DropdownButtonHideUnderline(
+                child: DropdownButton2<int>(
+                  isExpanded: true,
+
+                  hint: const Text(
+                    "Select City",
+                    style: TextStyle(fontSize: 14, color: Colors.grey),
+                  ),
+
+                  value: cities.any((e) => e.id == _selectedCityId)
+                      ? _selectedCityId
+                      : null,
+
+                  items: cities.map((city) {
+                    return DropdownMenuItem<int>(
+                      value: city.id,
+                      child: Text(
+                        city.name,
+                        style: const TextStyle(
+                          fontSize: 14,
+                          color: Color(0xFF1A1C1E),
+                        ),
+                      ),
+                    );
+                  }).toList(),
+
+                  onChanged: (value) {
+                    setState(() {
+                      _selectedCityId = value;
+                    });
+                  },
+
+                  buttonStyleData: ButtonStyleData(
+                    height: 48,
+                    padding: const EdgeInsets.symmetric(horizontal: 12),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(8),
+                      border: Border.all(color: const Color(0xFFE5E7EB)),
+                      color: Colors.white,
+                    ),
+                  ),
+
+                  dropdownStyleData: DropdownStyleData(
+                    maxHeight: 250,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(8),
+                      color: Colors.white,
+                    ),
+                  ),
+                ),
+              );
+            },
+            loading: () => const CircularProgressIndicator(),
             error: (e, _) => Text("Error: $e"),
           ),
         _buildLabel("Jurisdiction"),
@@ -475,13 +619,32 @@ class _MyBusinessPageState extends ConsumerState<MyBusinessPage> {
     );
   }
 
-  Widget _buildTextField({required String hint, TextEditingController? controller, IconData? icon, int maxLines = 1, bool isPhone = false}) {
+  Widget _buildTextField({
+    required String hint,
+    TextEditingController? controller,
+    IconData? icon,
+    int maxLines = 1,
+    bool isPhone = false,
+    Function(String)? onChanged,
+  }) {
     return TextFormField(
       controller: controller,
       maxLines: maxLines,
-      onChanged: (val) => setState(() {}), // Update Hero Header preview
+      onChanged: (val) {
+        setState(() {});
+        if (onChanged != null) {
+          onChanged(val);
+        }
+      }, // Update Hero Header preview
       keyboardType: isPhone ? TextInputType.phone : TextInputType.text,
-      inputFormatters: isPhone ? [FilteringTextInputFormatter.digitsOnly, LengthLimitingTextInputFormatter(10)] : [],
+      inputFormatters: isPhone
+          ? [
+        FilteringTextInputFormatter.digitsOnly,
+        LengthLimitingTextInputFormatter(
+          controller == _pincodeController ? 6 : 10,
+        )
+      ]
+          : [],
       decoration: InputDecoration(
         hintText: hint,
         hintStyle: TextStyle(color: Colors.grey[400], fontSize: 14),
@@ -665,19 +828,6 @@ class _MyBusinessPageState extends ConsumerState<MyBusinessPage> {
     return Padding(padding: const EdgeInsets.only(bottom: 8.0, top: 16.0), child: Text(text, style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w500, color: Color(0xFF4B5563))));
   }
 
-  Widget _buildDropdownField({required String hint}) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-      decoration: BoxDecoration(borderRadius: BorderRadius.circular(8), border: Border.all(color: const Color(0xFFE5E7EB))),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Text(hint, style: TextStyle(color: Colors.grey[400], fontSize: 14)),
-          const Icon(Icons.keyboard_arrow_down, color: Color(0xFF9CA3AF)),
-        ],
-      ),
-    );
-  }
 
   Widget _buildBottomActionButtons() {
     return Container(
