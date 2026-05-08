@@ -46,7 +46,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
     final companyStatus = await storage.getCompanyStatus();
     final subscriptionStatus = await storage.getSubscriptionStatus();
-
+    await ref.read(dashboardProvider.notifier).fetchAll();
     print("companyStatus: $companyStatus");
     print("subscriptionStatus: $subscriptionStatus");
 
@@ -55,17 +55,31 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             subscriptionStatus == "complete";
 
     if (!isComplete) {
-      showDialog(
+
+      await showDialog(
         context: context,
         barrierDismissible: true,
         builder: (_) {
           return SetupPopup(
-            onClose: () {
+            onClose: () async {
+
               Navigator.pop(context);
+
+              /// ✅ REFRESH COMPLETE DASHBOARD
+              await ref
+                  .read(dashboardProvider.notifier)
+                  .fetchAll();
+
+              if (mounted) {
+                setState(() {});
+              }
             },
           );
         },
       );
+
+      /// ✅ ALSO REFRESH AFTER DIALOG CLOSES
+      await ref.read(dashboardProvider.notifier).fetchAll();
     }
 
     return isComplete;
@@ -373,10 +387,14 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         bottomNavigationBar: SafeArea(
           child: CustomBottomNav(
             selectedIndex: selectedIndex,
-              onTap: (index) {
+              onTap: (index) async {
                 setState(() {
                   selectedIndex = index;
                 });
+                print("index is >>>>>>>>>>. $index");
+                if (index == 0) {
+                  await ref.read(dashboardProvider.notifier).fetchAll();
+                }
               }
           ),
         ),
