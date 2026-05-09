@@ -1,6 +1,8 @@
 import 'dart:async';
 import 'dart:io';
+import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
 
 import '../../api_services/api_end_points.dart';
@@ -117,12 +119,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
         queryParams: {"pincode": pincode},
       );
 
-      if (response.statusCode == 200 &&
-          response.data["success"] == true) {
-        final data = response.data["data"];
+      final data = response.data;
 
-        int stateId = data["state_id"];
-        int cityId = data["city_id"];
+      /// ✅ SUCCESS
+      if (response.statusCode == 200 && data["success"] == true) {
+        final resData = data["data"];
+
+        int stateId = resData["state_id"];
+        int cityId = resData["city_id"];
 
         final stateMatch =
         states.where((e) => e.id == stateId);
@@ -141,12 +145,71 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
         setState(() {});
       }
+
+      /// ❌ INVALID PINCODE
+      else {
+        ToastHelper.showError(
+          message: data["message"] ?? "Invalid pincode",
+        );
+
+        /// OPTIONAL: clear selection
+        setState(() {
+          selectedState = null;
+          selectedCity = null;
+          cities = [];
+        });
+      }
     } catch (e) {
       debugPrint("Pincode API Error: $e");
+
+      /// ❌ NETWORK / SERVER ERROR
+      ToastHelper.showError(
+        message: "Invalid pincode",
+      );
     }
 
     setState(() => isPincodeLoading = false);
   }
+  // Future<void> fetchLocationFromPincode(String pincode) async {
+  //   if (pincode.length != 6) return;
+  //
+  //   try {
+  //     setState(() => isPincodeLoading = true);
+  //
+  //     final response = await NetworkHandler().get(
+  //       ApiEndPoints.getLocationByPincode,
+  //       queryParams: {"pincode": pincode},
+  //     );
+  //
+  //     if (response.statusCode == 200 && response.data["success"] == true) {
+  //       final data = response.data["data"];
+  //
+  //       int stateId = data["state_id"];
+  //       int cityId = data["city_id"];
+  //
+  //       final stateMatch =
+  //       states.where((e) => e.id == stateId);
+  //       if (stateMatch.isNotEmpty) {
+  //         selectedState = stateMatch.first;
+  //       }
+  //
+  //       cities =
+  //       await _locationRepo.getCitiesByState(stateId);
+  //
+  //       final cityMatch =
+  //       cities.where((e) => e.id == cityId);
+  //       if (cityMatch.isNotEmpty) {
+  //         selectedCity = cityMatch.first;
+  //       }
+  //
+  //       setState(() {});
+  //     }
+  //   } catch (e) {
+  //     debugPrint("Pincode API Error: $e");
+  //   }
+  //
+  //   setState(() => isPincodeLoading = false);
+  // }
 
   /// UPDATE PROFILE
   Future<void> updateProfile() async {
@@ -311,6 +374,34 @@ class _ProfileScreenState extends State<ProfileScreen> {
               Column(
                 children: [
 
+                  buildTextField(
+                    "Pincode",
+                    pincodeCtrl,
+                    inputFormatters: [
+                      LengthLimitingTextInputFormatter(6),
+                      FilteringTextInputFormatter.digitsOnly,
+                    ],
+                    onChanged: (value) {
+                      if (_debounce?.isActive ?? false) {
+                        _debounce!.cancel();
+                      }
+
+                      _debounce = Timer(const Duration(milliseconds: 600),
+                            () => fetchLocationFromPincode(value),
+                      );
+                    },
+
+                    suffix: isPincodeLoading
+                        ? const SizedBox(
+                      height: 16,
+                      width: 16,
+                      child:
+                      CircularProgressIndicator(
+                          strokeWidth: 2),
+                    )
+                        : null,
+                  ),
+
                   buildDropdown<StateModel>(
                     "Select State",
                     selectedState,
@@ -335,30 +426,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         selectedCity = val;
                       });
                     },
-                  ),
-
-                  buildTextField(
-                    "Pincode",
-                    pincodeCtrl,
-                    onChanged: (value) {
-                      if (_debounce?.isActive ?? false) {
-                        _debounce!.cancel();
-                      }
-
-                      _debounce = Timer(
-                        const Duration(milliseconds: 600),
-                            () => fetchLocationFromPincode(value),
-                      );
-                    },
-                    suffix: isPincodeLoading
-                        ? const SizedBox(
-                      height: 16,
-                      width: 16,
-                      child:
-                      CircularProgressIndicator(
-                          strokeWidth: 2),
-                    )
-                        : null,
                   ),
 
                   buildTextField("Address", addressCtrl),
@@ -402,15 +469,20 @@ class _ProfileScreenState extends State<ProfileScreen> {
   /// TEXTFIELD
   Widget buildTextField(
       String hint,
-      TextEditingController controller, {
+
+      TextEditingController controller,
+      {
         Function(String)? onChanged,
         Widget? suffix,
-      }) {
+        List<TextInputFormatter>? inputFormatters,
+      }
+      ) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 12),
       child: TextField(
         controller: controller,
         onChanged: onChanged,
+        inputFormatters: inputFormatters,
         decoration: InputDecoration(
           hintText: hint,
           filled: true,
@@ -423,7 +495,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
-  /// DROPDOWN
+
   Widget buildDropdown<T>(
       String hint,
       T? value,
@@ -432,23 +504,73 @@ class _ProfileScreenState extends State<ProfileScreen> {
       ) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 12),
-      child: DropdownButtonFormField<T>(
-        value: value,
-        hint: Text(hint),
-        items: items.map((e) {
-          return DropdownMenuItem<T>(
-            value: e,
-            child: Text((e as dynamic).name),
-          );
-        }).toList(),
-        onChanged: onChanged,
-        decoration: InputDecoration(
-          filled: true,
-          fillColor: Colors.grey[100],
-          border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(10)),
+      child: DropdownSearch<T>(
+        items: items,
+        selectedItem: value,
+
+        /// 🔹 SHOW TEXT
+        itemAsString: (item) => (item as dynamic).name ?? "",
+
+        /// 🔹 SEARCH UI
+        popupProps: PopupProps.menu(
+          menuProps: const MenuProps(
+            backgroundColor: Colors.white,
+          ),
+          showSearchBox: true,
+          searchFieldProps: const TextFieldProps(
+            decoration: InputDecoration(
+              hintText: "Search...",
+              border: OutlineInputBorder(),
+            ),
+          ),
         ),
+
+        /// 🔹 SAME UI LOOK (no change)
+        dropdownDecoratorProps: DropDownDecoratorProps(
+          dropdownSearchDecoration: InputDecoration(
+            hintText: hint,
+            filled: true,
+            fillColor: Colors.grey[100],
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(10),
+            ),
+            contentPadding: const EdgeInsets.symmetric(
+              horizontal: 12,
+              vertical: 12,
+            ),
+          ),
+        ),
+
+        onChanged: onChanged,
       ),
     );
   }
+  /// DROPDOWN
+  // Widget buildDropdown<T>(
+  //     String hint,
+  //     T? value,
+  //     List<T> items,
+  //     Function(T?) onChanged,
+  //     ) {
+  //   return Padding(
+  //     padding: const EdgeInsets.only(bottom: 12),
+  //     child: DropdownButtonFormField<T>(
+  //       value: value,
+  //       hint: Text(hint),
+  //       items: items.map((e) {
+  //         return DropdownMenuItem<T>(
+  //           value: e,
+  //           child: Text((e as dynamic).name),
+  //         );
+  //       }).toList(),
+  //       onChanged: onChanged,
+  //       decoration: InputDecoration(
+  //         filled: true,
+  //         fillColor: Colors.grey[100],
+  //         border: OutlineInputBorder(
+  //             borderRadius: BorderRadius.circular(10)),
+  //       ),
+  //     ),
+  //   );
+  // }
 }

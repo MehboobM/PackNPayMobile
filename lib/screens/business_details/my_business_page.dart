@@ -1,4 +1,5 @@
 import 'package:dropdown_button2/dropdown_button2.dart';
+import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -117,6 +118,9 @@ class _MyBusinessPageState extends ConsumerState<MyBusinessPage> {
       });
     } catch (e) {
       debugPrint("Pincode fetch error: $e");
+      ToastHelper.showError(
+        message: "Invalid pincode",
+      );
     }
   }
   Future<void> _submitBusiness() async {
@@ -375,6 +379,66 @@ class _MyBusinessPageState extends ConsumerState<MyBusinessPage> {
         _buildTextField(hint: "XXXX XXXX XXX", controller: _panController),
         /// STATE DROPDOWN
         _buildLabel("PIN Code"),
+
+        // _buildLabel("State"),
+        // ref.watch(stateProvider).when(
+        //   data: (states) {
+        //     return DropdownButtonHideUnderline(
+        //       child: DropdownButton2<int>(
+        //         isExpanded: true,
+        //         hint: const Text(
+        //           "Select State",
+        //           style: TextStyle(fontSize: 14, color: Colors.grey),
+        //         ),
+        //
+        //         value: states.any((e) => e.id == _selectedStateId)
+        //             ? _selectedStateId
+        //             : null,
+        //
+        //         items: states.map((state) {
+        //           return DropdownMenuItem<int>(
+        //             value: state.id,
+        //             child: Text(
+        //               state.name,
+        //               style: const TextStyle(
+        //                 fontSize: 14,
+        //                 color: Color(0xFF1A1C1E),
+        //               ),
+        //             ),
+        //           );
+        //         }).toList(),
+        //
+        //         onChanged: (value) {
+        //           setState(() {
+        //             _selectedStateId = value;
+        //             _selectedCityId = null;
+        //           });
+        //         },
+        //
+        //         buttonStyleData: ButtonStyleData(
+        //           height: 48,
+        //           padding: const EdgeInsets.symmetric(horizontal: 12),
+        //           decoration: BoxDecoration(
+        //             borderRadius: BorderRadius.circular(8),
+        //             border: Border.all(color: const Color(0xFFE5E7EB)),
+        //             color: Colors.white,
+        //           ),
+        //         ),
+        //
+        //         dropdownStyleData: DropdownStyleData(
+        //           maxHeight: 250,
+        //           decoration: BoxDecoration(
+        //             borderRadius: BorderRadius.circular(8),
+        //             color: Colors.white,
+        //           ),
+        //         ),
+        //       ),
+        //     );
+        //   },
+        //   loading: () => const CircularProgressIndicator(),
+        //   error: (e, _) => Text("Error: $e"),
+        // ),
+
         _buildTextField(
           hint: "Enter PIN code",
           controller: _pincodeController,
@@ -389,64 +453,57 @@ class _MyBusinessPageState extends ConsumerState<MyBusinessPage> {
 
         ref.watch(stateProvider).when(
           data: (states) {
-            return DropdownButtonHideUnderline(
-              child: DropdownButton2<int>(
-                isExpanded: true,
-                hint: const Text(
-                  "Select State",
-                  style: TextStyle(fontSize: 14, color: Colors.grey),
+            return DropdownSearch<int>(
+              items: states.map((e) => e.id!).toList(),
+
+              selectedItem: _selectedStateId,
+
+              itemAsString: (id) {
+                final state = states.firstWhere((e) => e.id == id);
+                return state.name ?? "";
+              },
+
+              popupProps: PopupProps.menu(
+                showSearchBox: true,
+                menuProps: const MenuProps(
+                  backgroundColor: Colors.white,
                 ),
 
-                value: states.any((e) => e.id == _selectedStateId)
-                    ? _selectedStateId
-                    : null,
-
-                items: states.map((state) {
-                  return DropdownMenuItem<int>(
-                    value: state.id,
-                    child: Text(
-                      state.name,
-                      style: const TextStyle(
-                        fontSize: 14,
-                        color: Color(0xFF1A1C1E),
-                      ),
-                    ),
-                  );
-                }).toList(),
-
-                onChanged: (value) {
-                  setState(() {
-                    _selectedStateId = value;
-                    _selectedCityId = null;
-                  });
-                },
-
-                buttonStyleData: ButtonStyleData(
-                  height: 48,
-                  padding: const EdgeInsets.symmetric(horizontal: 12),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(8),
-                    border: Border.all(color: const Color(0xFFE5E7EB)),
-                    color: Colors.white,
-                  ),
-                ),
-
-                dropdownStyleData: DropdownStyleData(
-                  maxHeight: 250,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(8),
-                    color: Colors.white,
+                searchFieldProps: const TextFieldProps(
+                  decoration: InputDecoration(
+                    hintText: "Search State",
+                    border: OutlineInputBorder(),
+                    fillColor: Colors.white
                   ),
                 ),
               ),
+
+              dropdownDecoratorProps: DropDownDecoratorProps(
+                dropdownSearchDecoration: InputDecoration(
+                  hintText: "Select State",
+                  contentPadding: const EdgeInsets.symmetric(
+                    horizontal: 12,
+                    vertical: 14,
+                  ),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                ),
+              ),
+
+              onChanged: (value) {
+                setState(() {
+                  _selectedStateId = value;
+                  _selectedCityId = null;
+                });
+              },
             );
           },
+
           loading: () => const CircularProgressIndicator(),
+
           error: (e, _) => Text("Error: $e"),
         ),
-
-
-        /// CITY DROPDOWN
         _buildLabel("City"),
 
         if (_selectedStateId == null)
@@ -454,61 +511,118 @@ class _MyBusinessPageState extends ConsumerState<MyBusinessPage> {
         else
           ref.watch(cityProvider(_selectedStateId!)).when(
             data: (cities) {
-              return DropdownButtonHideUnderline(
-                child: DropdownButton2<int>(
-                  isExpanded: true,
+              return DropdownSearch<int>(
+                items: cities.map((e) => e.id!).toList(),
 
-                  hint: const Text(
-                    "Select City",
-                    style: TextStyle(fontSize: 14, color: Colors.grey),
+                selectedItem: _selectedCityId,
+
+                itemAsString: (id) {
+                  final city = cities.firstWhere((e) => e.id == id);
+                  return city.name ?? "";
+                },
+
+                popupProps: PopupProps.menu(
+                  menuProps: const MenuProps(
+                    backgroundColor: Colors.white,
                   ),
-
-                  value: cities.any((e) => e.id == _selectedCityId)
-                      ? _selectedCityId
-                      : null,
-
-                  items: cities.map((city) {
-                    return DropdownMenuItem<int>(
-                      value: city.id,
-                      child: Text(
-                        city.name,
-                        style: const TextStyle(
-                          fontSize: 14,
-                          color: Color(0xFF1A1C1E),
-                        ),
-                      ),
-                    );
-                  }).toList(),
-
-                  onChanged: (value) {
-                    setState(() {
-                      _selectedCityId = value;
-                    });
-                  },
-
-                  buttonStyleData: ButtonStyleData(
-                    height: 48,
-                    padding: const EdgeInsets.symmetric(horizontal: 12),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(8),
-                      border: Border.all(color: const Color(0xFFE5E7EB)),
-                      color: Colors.white,
-                    ),
-                  ),
-
-                  dropdownStyleData: DropdownStyleData(
-                    maxHeight: 250,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(8),
-                      color: Colors.white,
+                  showSearchBox: true,
+                  searchFieldProps: const TextFieldProps(
+                    decoration: InputDecoration(
+                      hintText: "Search City",
+                      border: OutlineInputBorder(),
                     ),
                   ),
                 ),
+
+                dropdownDecoratorProps: DropDownDecoratorProps(
+                  dropdownSearchDecoration: InputDecoration(
+                    hintText: "Select City",
+                    contentPadding: const EdgeInsets.symmetric(
+                      horizontal: 12,
+                      vertical: 14,
+                    ),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                  ),
+                ),
+
+                onChanged: (value) {
+                  setState(() {
+                    _selectedCityId = value;
+                  });
+                },
               );
             },
+
             loading: () => const CircularProgressIndicator(),
+
             error: (e, _) => Text("Error: $e"),
           ),
+        /// CITY DROPDOWN
+        // _buildLabel("City"),
+        // if (_selectedStateId == null)
+        //   const Text("Select state first")
+        // else
+        //   ref.watch(cityProvider(_selectedStateId!)).when(
+        //     data: (cities) {
+        //       return DropdownButtonHideUnderline(
+        //         child: DropdownButton2<int>(
+        //           isExpanded: true,
+        //
+        //           hint: const Text(
+        //             "Select City",
+        //             style: TextStyle(fontSize: 14, color: Colors.grey),
+        //           ),
+        //
+        //           value: cities.any((e) => e.id == _selectedCityId)
+        //               ? _selectedCityId
+        //               : null,
+        //
+        //           items: cities.map((city) {
+        //             return DropdownMenuItem<int>(
+        //               value: city.id,
+        //               child: Text(
+        //                 city.name,
+        //                 style: const TextStyle(
+        //                   fontSize: 14,
+        //                   color: Color(0xFF1A1C1E),
+        //                 ),
+        //               ),
+        //             );
+        //           }).toList(),
+        //
+        //           onChanged: (value) {
+        //             setState(() {
+        //               _selectedCityId = value;
+        //             });
+        //           },
+        //
+        //           buttonStyleData: ButtonStyleData(
+        //             height: 48,
+        //             padding: const EdgeInsets.symmetric(horizontal: 12),
+        //             decoration: BoxDecoration(
+        //               borderRadius: BorderRadius.circular(8),
+        //               border: Border.all(color: const Color(0xFFE5E7EB)),
+        //               color: Colors.white,
+        //             ),
+        //           ),
+        //
+        //           dropdownStyleData: DropdownStyleData(
+        //             maxHeight: 250,
+        //             decoration: BoxDecoration(
+        //               borderRadius: BorderRadius.circular(8),
+        //               color: Colors.white,
+        //             ),
+        //           ),
+        //         ),
+        //       );
+        //     },
+        //     loading: () => const CircularProgressIndicator(),
+        //     error: (e, _) => Text("Error: $e"),
+        //   ),
+
+
         _buildLabel("Jurisdiction"),
         _buildTextField(hint: "Enter", controller: _jurisdiction1Controller),
         _buildLabel("Jurisdiction"),

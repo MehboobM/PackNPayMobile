@@ -60,6 +60,7 @@ class LorryReceiptRepository {
       rethrow;
     }
   }
+
   Future<List<CityModel>> getCities() async {
     try {
       Response response =
@@ -78,6 +79,7 @@ class LorryReceiptRepository {
       rethrow;
     }
   }
+
   Future<bool> createLorryReceipt(
       CreateLorryReceiptRequest request) async {
     try {

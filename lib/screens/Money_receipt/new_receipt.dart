@@ -2,10 +2,14 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
+import '../../global_widget/common_state_city_dropdown.dart';
 import '../../global_widget/custom_button.dart';
 import '../../global_widget/custom_textfield.dart';
 import '../../global_widget/dropdown_with textfield.dart';
+import '../../models/city_modal.dart';
+import '../../models/dropdown_item.dart';
 import '../../notifier/money_recepitform.dart';
+import '../../notifier/survey_moving_city_notifier.dart';
 import '../../utils/app_colors.dart';
 import '../../utils/m_font_styles.dart';
 import '../../utils/toast_message.dart';
@@ -45,6 +49,16 @@ class _NewReceiptScreenState extends ConsumerState<NewReceiptScreen> {
 
   bool isLoading = false;
 
+@override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      ref.read(cityProviders.notifier).loadCities();
+    });
+  }
+
 
   @override
   void didChangeDependencies() {
@@ -76,8 +90,7 @@ class _NewReceiptScreenState extends ConsumerState<NewReceiptScreen> {
     nameController.text = data["name"] ?? "";
     phoneController.text = data["phone"] ?? "";
     quotationNoController.text = data["receipt_against_id"] ?? "";
-    billDateController.text =
-        _formatDisplayDate(data["bill_quotation_date"]);
+    billDateController.text = _formatDisplayDate(data["bill_quotation_date"]);
     fromController.text = data["move_from"] ?? "";
     toController.text = data["move_to"] ?? "";
 
@@ -170,9 +183,128 @@ class _NewReceiptScreenState extends ConsumerState<NewReceiptScreen> {
     super.dispose();
   }
 
+  CityModel? selectedMovingFormCity;
+  CityModel? selectedMovingToCity;
+
+  void showPincodeDialog({
+    required BuildContext context,
+    required Function(CityModel city) onSelected,
+  }) {
+    final pinCtrl = TextEditingController();
+    bool isLoading = false;
+
+    showDialog(
+      context: context,
+      builder: (context) {
+        return StatefulBuilder(
+          builder: (context, setStateDialog) {
+            return Dialog(
+              backgroundColor: Colors.white,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(16),
+              ),
+              child: Padding(
+                padding: const EdgeInsets.all(16),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    /// TITLE
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        const Text(
+                          "Find Pickup City",
+                          style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold),
+                        ),
+                        IconButton(
+                          icon: const Icon(Icons.close),
+                          onPressed: () => Navigator.pop(context),
+                        )
+                      ],
+                    ),
+
+                    const SizedBox(height: 10),
+
+                    const Text(
+                      "Enter 6-digit pincode to locate city & state",
+                    ),
+
+                    const SizedBox(height: 12),
+
+                    TextField(
+                      controller: pinCtrl,
+                      keyboardType: TextInputType.number,
+                      maxLength: 6,
+                      decoration: InputDecoration(
+                        hintText: "e.g. 560068",
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        counterText: "",
+                      ),
+                    ),
+
+                    const SizedBox(height: 12),
+
+                    CustomButton(
+                        onPressed: isLoading
+                            ? null
+                            : () async {
+                          if (pinCtrl.text.length != 6) {
+                            ToastHelper.showError(
+                                message: "Enter valid pincode");
+                            return;
+                          }
+
+                          setStateDialog(() {
+                            isLoading = true;
+                          });
+
+                          try {
+                            final city = await ref.read(cityProviders.notifier).getCityByPincode(pinCtrl.text);
+
+                            Navigator.pop(context);
+
+                            if (city != null) {
+                              onSelected(city);
+                            }
+                          } catch (e) {
+                            ToastHelper.showError(
+                                message: "Invalid pincode");
+                          }
+
+                          setStateDialog(() {
+                            isLoading = false;
+                          });
+                        },
+                        backgroundColor: AppColors.primary,
+                        text: "Find City")
+
+                  ],
+                ),
+              ),
+            );
+          },
+        );
+      },
+    );
+  }
+
+
   @override
   Widget build(BuildContext context) {
     final formState = ref.watch(moneyReceiptFormProvider);
+    final cityState = ref.watch(cityProviders);
+
+    final cityItems = cityState.cities.map((e) {
+      return DropdownItem(
+        value: e.id.toString(),
+        label: e.displayName, // "Bangalore, Karnataka"
+      );
+    }).toList();
+
     return Scaffold(
       backgroundColor: const Color(0xffF5F5F7),
 
@@ -295,15 +427,130 @@ class _NewReceiptScreenState extends ConsumerState<NewReceiptScreen> {
 
                     Row(
                       children: [
+                        /// Moving From Dropdown
                         Expanded(
-                          child: buildField("receipt.moveFrom".tr(), fromController, "Enter"),
+                          child: commonStateCityDropdowns(
+                            title: "lr.fields.movingFrom".tr(),
+                            addButton: InkWell(
+                              onTap: () {
+                                showPincodeDialog(
+                                  context: context,
+                                  onSelected: (city) {
+                                    setState(() {
+                                      selectedMovingFormCity = city;
+                                    });
+                                  },
+                                );
+                              },
+                              child: Icon(Icons.add_circle_outline,color: AppColors.primary,size: 18,),
+                            ),
+                            isRequired: false,
+                            value: selectedMovingFormCity?.id.toString(),
+                            items: cityItems,
+                            onChanged: (item) {
+                              if (item != null) {
+                                final selected = cityState.cities.firstWhere(
+                                      (e) => e.id.toString() == item.value,
+                                );
+
+                                setState(() {
+                                  selectedMovingFormCity = selected;
+                                  fromController.text = selected.name;
+
+                                });
+                              }
+                            },
+                          ),
                         ),
-                        const SizedBox(width: 12),
+                        const SizedBox(width: 10),
                         Expanded(
-                          child: buildField("receipt.moveTo".tr(), toController, "Enter"),
+                          child: commonStateCityDropdowns(
+                            title: "lr.fields.movingTo".tr(),
+                            addButton: InkWell(
+                              onTap: () {
+                                showPincodeDialog(
+                                  context: context,
+                                  onSelected: (city) {
+                                    setState(() {
+                                      selectedMovingToCity = city;
+                                    });
+                                  },
+                                );
+                              },
+                              child: Icon(Icons.add_circle_outline,color: AppColors.primary,size: 18,),
+                            ),
+                            isRequired: false,
+                            value: selectedMovingToCity?.id.toString(),
+                            items: cityItems,
+                            onChanged: (item) {
+                              if (item != null) {
+                                final selected = cityState.cities.firstWhere(
+                                      (e) => e.id.toString() == item.value,
+                                );
+
+                                setState(() {
+                                  selectedMovingToCity = selected;
+                                  toController.text = selected.name;
+
+                                });
+                              }
+                            },
+                          ),
                         ),
+                        // Expanded(
+                        //   child: buildCommonDropdown(
+                        //     title: "lr.fields.movingFrom".tr(),
+                        //     value: selectedFromCity, // Keep null to show hint
+                        //     items: cityNames,
+                        //     onChanged: (value) {
+                        //       if (value == null) return;
+                        //
+                        //       final selectedCity =
+                        //       cities.firstWhere((c) => c.name == value);
+                        //
+                        //       setState(() {
+                        //         selectedFromCity = value;
+                        //         selectedFromCityId = selectedCity.id;
+                        //       });
+                        //     },
+                        //   ),
+                        // ),
+                        //
+                        // const SizedBox(width: 10),
+                        //
+                        // /// Moving To Dropdown
+                        // Expanded(
+                        //   child: buildCommonDropdown(
+                        //     title: "lr.fields.movingTo".tr(),
+                        //     value: selectedToCity, // Keep null to show hint
+                        //     items: cityNames,
+                        //     onChanged: (value) {
+                        //       if (value == null) return;
+                        //
+                        //       final selectedCity =
+                        //       cities.firstWhere((c) => c.name == value);
+                        //
+                        //       setState(() {
+                        //         selectedToCity = value;
+                        //         selectedToCityId = selectedCity.id;
+                        //       });
+                        //     },
+                        //   ),
+                        // ),
                       ],
                     ),
+
+                    // Row(
+                    //   children: [
+                    //     Expanded(
+                    //       child: buildField("receipt.moveFrom".tr(), fromController, "Enter"),
+                    //     ),
+                    //     const SizedBox(width: 12),
+                    //     Expanded(
+                    //       child: buildField("receipt.moveTo".tr(), toController, "Enter"),
+                    //     ),
+                    //   ],
+                    // ),
 
                     /// 🔹 PAYMENT TYPE + AMOUNT
                     Row(

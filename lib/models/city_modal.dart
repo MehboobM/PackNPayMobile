@@ -19,3 +19,4 @@ class CityModel {
 
   String get displayName => "$name, $stateName";
 }
+

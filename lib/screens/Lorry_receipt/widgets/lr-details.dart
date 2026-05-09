@@ -6,14 +6,19 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:pack_n_pay/utils/app_colors.dart';
 
 import '../../../global_widget/build_common_dropdown.dart';
+import '../../../global_widget/common_state_city_dropdown.dart';
 import '../../../global_widget/custom_button.dart';
 import '../../../global_widget/custom_textfield.dart';
 import '../../../global_widget/form_label_widget.dart';
+import '../../../models/city_modal.dart';
+import '../../../models/dropdown_item.dart';
 import '../../../notifier/city_notifier.dart';
 import '../../../notifier/dropdown_notifier.dart';
 import '../../../notifier/lorry_receiptnotifier.dart';
 import '../../../notifier/lr_provider.dart';
+import '../../../notifier/survey_moving_city_notifier.dart';
 import '../../../utils/m_font_styles.dart';
+import '../../../utils/toast_message.dart';
 import '../../Quotation/widget/insurance_and_other_form.dart';
 
 class LRDetailsForm extends ConsumerStatefulWidget {
@@ -30,8 +35,7 @@ class LRDetailsForm extends ConsumerStatefulWidget {
 }
 
 class _LRDetailsFormState extends ConsumerState<LRDetailsForm> {
-  String? selectedFromCity;
-  String? selectedToCity;
+
   int? selectedFromCityId;
   int? selectedToCityId;
   final _formKey = GlobalKey<FormState>();
@@ -107,6 +111,7 @@ class _LRDetailsFormState extends ConsumerState<LRDetailsForm> {
     // Populate data when editing existing LR
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final data = ref.read(lrFormDataProvider);
+      ref.read(cityProviders.notifier).loadCities();
       if (data.isNotEmpty) {
         _populateFields(data);
         setState(() {});
@@ -154,12 +159,135 @@ class _LRDetailsFormState extends ConsumerState<LRDetailsForm> {
     if (parts.length != 3) return date;
     return "${parts[2]}/${parts[1]}/${parts[0]}";
   }
+  String? selectedFromCity;
+  String? selectedToCity;
+
+
+  CityModel? selectedMovingFormCity;
+  CityModel? selectedMovingToCity;
+
+  void showPincodeDialog({
+    required BuildContext context,
+    required Function(CityModel city) onSelected,
+  }) {
+    final pinCtrl = TextEditingController();
+    bool isLoading = false;
+
+    showDialog(
+      context: context,
+      builder: (context) {
+        return StatefulBuilder(
+          builder: (context, setStateDialog) {
+            return Dialog(
+              backgroundColor: Colors.white,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(16),
+              ),
+              child: Padding(
+                padding: const EdgeInsets.all(16),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    /// TITLE
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        const Text(
+                          "Find Pickup City",
+                          style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold),
+                        ),
+                        IconButton(
+                          icon: const Icon(Icons.close),
+                          onPressed: () => Navigator.pop(context),
+                        )
+                      ],
+                    ),
+
+                    const SizedBox(height: 10),
+
+                    const Text(
+                      "Enter 6-digit pincode to locate city & state",
+                    ),
+
+                    const SizedBox(height: 12),
+
+                    TextField(
+                      controller: pinCtrl,
+                      keyboardType: TextInputType.number,
+                      maxLength: 6,
+                      decoration: InputDecoration(
+                        hintText: "e.g. 560068",
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        counterText: "",
+                      ),
+                    ),
+
+                    const SizedBox(height: 12),
+
+                    CustomButton(
+                        onPressed: isLoading
+                            ? null
+                            : () async {
+                          if (pinCtrl.text.length != 6) {
+                            ToastHelper.showError(
+                                message: "Enter valid pincode");
+                            return;
+                          }
+
+                          setStateDialog(() {
+                            isLoading = true;
+                          });
+
+                          try {
+                            final city = await ref.read(cityProviders.notifier).getCityByPincode(pinCtrl.text);
+
+                            Navigator.pop(context);
+
+                            if (city != null) {
+                              onSelected(city);
+                            }
+                          } catch (e) {
+                            ToastHelper.showError(
+                                message: "Invalid pincode");
+                          }
+
+                          setStateDialog(() {
+                            isLoading = false;
+                          });
+                        },
+                        backgroundColor: AppColors.primary,
+                        text: "Find City")
+
+                  ],
+                ),
+              ),
+            );
+          },
+        );
+      },
+    );
+  }
+
+
   @override
   Widget build(BuildContext context) {
+
+    final cityState = ref.watch(cityProviders);
+
+    final cityItems = cityState.cities.map((e) {
+      return DropdownItem(
+        value: e.id.toString(),
+        label: e.displayName, // "Bangalore, Karnataka"
+      );
+    }).toList();
+
     final dropdown = ref.read(dropdownProvider.notifier);
     final citiesAsync = ref.watch(cityProvider);
-    final riskTypeItems =
-    dropdown.getLabels("risk_type").toSet().toList();
+    final riskTypeItems = dropdown.getLabels("risk_type").toSet().toList();
     // ✅ Fix invalid selected value
     if (selectedRiskType != null &&
         !riskTypeItems.contains(selectedRiskType)) {
@@ -287,86 +415,268 @@ class _LRDetailsFormState extends ConsumerState<LRDetailsForm> {
 
               const SizedBox(height: 12),
 
+              Row(
+                children: [
+                  /// Moving From Dropdown
+                  Expanded(
+                    child: commonStateCityDropdowns(
+                      title: "lr.fields.movingFrom".tr(),
+                      addButton: InkWell(
+                        onTap: () {
+                          showPincodeDialog(
+                            context: context,
+                            onSelected: (city) {
+                              setState(() {
+                                selectedMovingFormCity = city;
+                              });
+                            },
+                          );
+                        },
+                        child: Icon(Icons.add_circle_outline,color: AppColors.primary,size: 18,),
+                      ),
+                      isRequired: false,
+                      value: selectedMovingFormCity?.id.toString(),
+                      items: cityItems,
+                      onChanged: (item) {
+                        if (item != null) {
+                          final selected = cityState.cities.firstWhere(
+                                (e) => e.id.toString() == item.value,
+                          );
 
-
-              citiesAsync.when(loading: () => const Padding(
-                padding: EdgeInsets.symmetric(vertical: 12),
-                child: Center(
-                  child: SizedBox(
-                    height: 24,
-                    width: 24,
-                    child: CircularProgressIndicator(strokeWidth: 2),
+                          setState(() {
+                            selectedMovingFormCity = selected;
+                            selectedFromCity = selected.name;
+                            selectedFromCityId = selected.id;
+                          });
+                        }
+                      },
+                    ),
                   ),
-                ),
+                  const SizedBox(width: 10),
+                  Expanded(
+                    child: commonStateCityDropdowns(
+                      title: "lr.fields.movingTo".tr(),
+                      addButton: InkWell(
+                        onTap: () {
+                          showPincodeDialog(
+                            context: context,
+                            onSelected: (city) {
+                              setState(() {
+                                selectedMovingToCity = city;
+                              });
+                            },
+                          );
+                        },
+                        child: Icon(Icons.add_circle_outline,color: AppColors.primary,size: 18,),
+                      ),
+                      isRequired: false,
+                      value: selectedMovingToCity?.id.toString(),
+                      items: cityItems,
+                      onChanged: (item) {
+                        if (item != null) {
+                          final selected = cityState.cities.firstWhere(
+                                (e) => e.id.toString() == item.value,
+                          );
+
+                          setState(() {
+                            selectedMovingToCity = selected;
+                            selectedToCity = selected.name;
+                            selectedToCityId =  selected.id;
+                          });
+                        }
+                      },
+                    ),
+                  ),
+                  // Expanded(
+                  //   child: buildCommonDropdown(
+                  //     title: "lr.fields.movingFrom".tr(),
+                  //     value: selectedFromCity, // Keep null to show hint
+                  //     items: cityNames,
+                  //     onChanged: (value) {
+                  //       if (value == null) return;
+                  //
+                  //       final selectedCity =
+                  //       cities.firstWhere((c) => c.name == value);
+                  //
+                  //       setState(() {
+                  //         selectedFromCity = value;
+                  //         selectedFromCityId = selectedCity.id;
+                  //       });
+                  //     },
+                  //   ),
+                  // ),
+                  //
+                  // const SizedBox(width: 10),
+                  //
+                  // /// Moving To Dropdown
+                  // Expanded(
+                  //   child: buildCommonDropdown(
+                  //     title: "lr.fields.movingTo".tr(),
+                  //     value: selectedToCity, // Keep null to show hint
+                  //     items: cityNames,
+                  //     onChanged: (value) {
+                  //       if (value == null) return;
+                  //
+                  //       final selectedCity =
+                  //       cities.firstWhere((c) => c.name == value);
+                  //
+                  //       setState(() {
+                  //         selectedToCity = value;
+                  //         selectedToCityId = selectedCity.id;
+                  //       });
+                  //     },
+                  //   ),
+                  // ),
+                ],
               ),
 
-                error: (error, stack) => Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 12),
-                  child: Column(
-                    children: [
-                      const Text(
-                        "Failed to load cities",
-                        style: TextStyle(color: Colors.red),
-                      ),
-                      TextButton(
-                        onPressed: () => ref.refresh(cityProvider),
-                        child: const Text("Retry"),
-                      ),
-                    ],
-                  ),
-                ),
-
-                data: (cities) {
-                  // Prepare dropdown items
-                  final cityNames = cities.map((city) => city.name).toList();
-
-                  return Row(
-                    children: [
-                      /// Moving From Dropdown
-                      Expanded(
-                        child: buildCommonDropdown(
-                          title: "lr.fields.movingFrom".tr(),
-                          value: selectedFromCity, // Keep null to show hint
-                          items: cityNames,
-                          onChanged: (value) {
-                            if (value == null) return;
-
-                            final selectedCity =
-                            cities.firstWhere((c) => c.name == value);
-
-                            setState(() {
-                              selectedFromCity = value;
-                              selectedFromCityId = selectedCity.id;
-                            });
-                          },
-                        ),
-                      ),
-
-                      const SizedBox(width: 10),
-
-                      /// Moving To Dropdown
-                      Expanded(
-                        child: buildCommonDropdown(
-                          title: "lr.fields.movingTo".tr(),
-                          value: selectedToCity, // Keep null to show hint
-                          items: cityNames,
-                          onChanged: (value) {
-                            if (value == null) return;
-
-                            final selectedCity =
-                            cities.firstWhere((c) => c.name == value);
-
-                            setState(() {
-                              selectedToCity = value;
-                              selectedToCityId = selectedCity.id;
-                            });
-                          },
-                        ),
-                      ),
-                    ],
-                  );
-                },
-              ),
+              // citiesAsync.when(loading: () => const Padding(
+              //   padding: EdgeInsets.symmetric(vertical: 12),
+              //   child: Center(
+              //     child: SizedBox(
+              //       height: 24,
+              //       width: 24,
+              //       child: CircularProgressIndicator(strokeWidth: 2),
+              //     ),
+              //   ),
+              // ),
+              //
+              //   error: (error, stack) => Padding(
+              //     padding: const EdgeInsets.symmetric(vertical: 12),
+              //     child: Column(
+              //       children: [
+              //         const Text(
+              //           "Failed to load cities",
+              //           style: TextStyle(color: Colors.red),
+              //         ),
+              //         TextButton(
+              //           onPressed: () => ref.refresh(cityProvider),
+              //           child: const Text("Retry"),
+              //         ),
+              //       ],
+              //     ),
+              //   ),
+              //
+              //   data: (cities) {
+              //     // Prepare dropdown items
+              //     final cityNames = cities.map((city) => city.name).toList();
+              //
+              //     return Row(
+              //       children: [
+              //         /// Moving From Dropdown
+              //         Expanded(
+              //           child: commonStateCityDropdowns(
+              //             title: "lr.fields.movingFrom".tr(),
+              //             addButton: InkWell(
+              //               onTap: () {
+              //                 showPincodeDialog(
+              //                   context: context,
+              //                   onSelected: (city) {
+              //                     setState(() {
+              //                       selectedMovingFormCity = city;
+              //                     });
+              //                   },
+              //                 );
+              //               },
+              //               child: Icon(Icons.add_circle_outline,color: AppColors.primary,size: 18,),
+              //             ),
+              //             isRequired: false,
+              //             value: selectedMovingFormCity?.id.toString(),
+              //             items: cityItems,
+              //             onChanged: (item) {
+              //               if (item != null) {
+              //                 final selected = cityState.cities.firstWhere(
+              //                       (e) => e.id.toString() == item.value,
+              //                 );
+              //
+              //                 setState(() {
+              //                   selectedMovingFormCity = selected;
+              //                           selectedFromCity = selected.name;
+              //                           selectedFromCityId = selected.id;
+              //                 });
+              //               }
+              //             },
+              //           ),
+              //         ),
+              //         const SizedBox(width: 10),
+              //         Expanded(
+              //           child: commonStateCityDropdowns(
+              //             title: "lr.fields.movingTo".tr(),
+              //             addButton: InkWell(
+              //               onTap: () {
+              //                 showPincodeDialog(
+              //                   context: context,
+              //                   onSelected: (city) {
+              //                     setState(() {
+              //                       selectedMovingToCity = city;
+              //                     });
+              //                   },
+              //                 );
+              //               },
+              //               child: Icon(Icons.add_circle_outline,color: AppColors.primary,size: 18,),
+              //             ),
+              //             isRequired: false,
+              //             value: selectedMovingToCity?.id.toString(),
+              //             items: cityItems,
+              //             onChanged: (item) {
+              //               if (item != null) {
+              //                 final selected = cityState.cities.firstWhere(
+              //                       (e) => e.id.toString() == item.value,
+              //                 );
+              //
+              //                 setState(() {
+              //                         selectedMovingToCity = selected;
+              //                           selectedToCity = selected.name;
+              //                           selectedToCityId =  selected.id;
+              //                 });
+              //               }
+              //             },
+              //           ),
+              //         ),
+              //         // Expanded(
+              //         //   child: buildCommonDropdown(
+              //         //     title: "lr.fields.movingFrom".tr(),
+              //         //     value: selectedFromCity, // Keep null to show hint
+              //         //     items: cityNames,
+              //         //     onChanged: (value) {
+              //         //       if (value == null) return;
+              //         //
+              //         //       final selectedCity =
+              //         //       cities.firstWhere((c) => c.name == value);
+              //         //
+              //         //       setState(() {
+              //         //         selectedFromCity = value;
+              //         //         selectedFromCityId = selectedCity.id;
+              //         //       });
+              //         //     },
+              //         //   ),
+              //         // ),
+              //         //
+              //         // const SizedBox(width: 10),
+              //         //
+              //         // /// Moving To Dropdown
+              //         // Expanded(
+              //         //   child: buildCommonDropdown(
+              //         //     title: "lr.fields.movingTo".tr(),
+              //         //     value: selectedToCity, // Keep null to show hint
+              //         //     items: cityNames,
+              //         //     onChanged: (value) {
+              //         //       if (value == null) return;
+              //         //
+              //         //       final selectedCity =
+              //         //       cities.firstWhere((c) => c.name == value);
+              //         //
+              //         //       setState(() {
+              //         //         selectedToCity = value;
+              //         //         selectedToCityId = selectedCity.id;
+              //         //       });
+              //         //     },
+              //         //   ),
+              //         // ),
+              //       ],
+              //     );
+              //   },
+              // ),
 
               const SizedBox(height:20),
 

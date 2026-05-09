@@ -4,6 +4,7 @@
 
 import '../api_services/api_end_points.dart';
 import '../api_services/network_handler.dart';
+import '../main.dart';
 
 class AuthRepository {
   final NetworkHandler network;
@@ -26,11 +27,13 @@ class AuthRepository {
     required String mobile,
     required String otp,
   }) async {
+    String? fcmToken = await getFcmToken();
     final response = await network.post(
       ApiEndPoints.verifyOtp,
       {
         "mobile": mobile,
-        "otp": otp
+        "otp": otp,
+        "fcm_token": fcmToken,
       },
     );
 
@@ -50,6 +53,7 @@ class AuthRepository {
     required String companyName,
     required String gstNumber,
   }) async {
+    String? fcmToken = await getFcmToken();
     final response = await network.post(
       ApiEndPoints.register,
         {
@@ -58,7 +62,8 @@ class AuthRepository {
           "company_name": companyName,
           "gst_number": gstNumber,
           "email": email,
-          "otp" : otp
+          "otp" : otp,
+          "fcm_token": fcmToken
         },
     );
 

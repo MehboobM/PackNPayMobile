@@ -40,4 +40,51 @@ class LocationRepository {
       throw Exception("Error fetching cities: $e");
     }
   }
+
+  Future<Map<String, dynamic>> getLocationByPincode(String pincode) async {
+    try {
+      Response response = await _networkHandler.get(
+        ApiEndPoints.getLocationByPincode,
+        queryParams: {"pincode": pincode},
+      );
+
+      /// ✅ ALWAYS RETURN RESPONSE (even if success = false)
+      return response.data;
+
+    } on DioException catch (e) {
+      /// 🔥 IMPORTANT: HANDLE API ERROR RESPONSE
+      if (e.response != null && e.response?.data != null) {
+        return e.response!.data; // ✅ returns {"success":false,"message":"Invalid pincode"}
+      }
+
+      return {
+        "success": false,
+        "message": "Network error"
+      };
+    } catch (e) {
+      return {
+        "success": false,
+        "message": "Something went wrong"
+      };
+    }
+  }
+
+  Future<Map<String, dynamic>?> getLocationByPincodes(String pincode) async {
+    try {
+      Response response = await _networkHandler.get(
+        ApiEndPoints.getLocationByPincode, // 🔥 ADD THIS ENDPOINT
+        queryParams: {"pincode": pincode},
+      );
+
+      if (response.statusCode == 200 &&
+          response.data['success'] == true) {
+        return response.data['data'];
+      } else {
+        return null;
+      }
+    } catch (e) {
+      print("Pincode API Error: $e");
+      return null;
+    }
+  }
 }

@@ -7,8 +7,7 @@ final cityRepositoryProvider = Provider<LorryReceiptRepository>((ref) {
   return LorryReceiptRepository(NetworkHandler());
 });
 
-final cityProvider =
-FutureProvider<List<CityModel>>((ref) async {
+final cityProvider = FutureProvider<List<CityModel>>((ref) async {
   final repository = ref.read(cityRepositoryProvider);
   return repository.getCities();
 });

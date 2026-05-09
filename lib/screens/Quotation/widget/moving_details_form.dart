@@ -1,15 +1,21 @@
+import 'package:dropdown_search/dropdown_search.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:google_fonts/google_fonts.dart';
 import '../../../global_widget/common_state_city_dropdown.dart';
 import '../../../global_widget/custom_textfield.dart';
 import '../../../global_widget/form_label_widget.dart';
+import '../../../main.dart';
 import '../../../models/city_data.dart';
 import '../../../models/dropdown_item.dart';
 import '../../../models/state_data.dart';
 import '../../../notifier/dropdown_notifier.dart';
+import '../../../notifier/location_notifier.dart';
 import '../../../notifier/quatation_notifier.dart';
 import '../../../notifier/quotation_form_notifier.dart';
+import '../../../utils/app_colors.dart';
 import '../../../utils/m_font_styles.dart';
 import 'gradient_title_widget.dart';
 import 'insurance_and_other_form.dart';
@@ -69,6 +75,175 @@ class _MovingDetailsFormState extends ConsumerState<MovingDetailsForm> {
       return null;
     }
   }
+
+  initializePickupStateCity() async {
+    /// =========================
+    /// ✅ PICKUP INITIALIZATION (FINAL)
+    /// =========================
+    final data = ref.read(quotationFormProvider);
+    final notifier = ref.read(quotationProvider.notifier);
+    /// 🔥 PRIORITY 1: PINCODE EXISTS
+    if (data.pickupPincode != null && data.pickupPincode!.length == 6) {
+
+      await ref.read(pincodeProvider.notifier).fetch(data.pickupPincode!);
+
+      final pinData = ref.read(pincodeProvider);
+
+      if (pinData.stateId != null) {
+
+        final states = await ref.read(stateProvider.future);
+
+        final stateObj = states.firstWhere(
+              (e) => e.id.toString() == pinData.stateId,
+          orElse: () => states.first,
+        );
+
+        /// ✅ SET STATE (ALL 4 SYNC)
+        _selectedPickupStateId = stateObj.id;
+
+        selectedPickupState = States(
+          id: stateObj.id,
+          name: stateObj.name,
+          code: null,
+        );
+
+        /// LOAD CITY
+        final cities = await ref.read(cityProvider(stateObj.id!).future,);
+
+        final cityObj = cities.firstWhere((e) => e.id.toString() == pinData.cityId,
+          orElse: () => cities.first,
+        );
+
+        /// ✅ SET CITY (ALL 4 SYNC)
+        __selectedPickupCityId = cityObj.id;
+
+        selectedPickupCity = Cities(
+          id: cityObj.id,
+          name: cityObj.name,
+        );
+
+        /// ✅ SAVE (safety sync)
+        final form = ref.read(quotationFormProvider.notifier).state;
+        form.pickupStateId = pinData.stateId;
+        form.pickupCityId = pinData.cityId;
+        form.pickupCityName = pinData.cityName;
+      }
+    }
+
+    /// 🔥 PRIORITY 2: NO PINCODE → USE SAVED STATE/CITY
+    else {
+      final states = ref.read(quotationProvider).states;
+      selectedPickupState = findState(
+        states,
+        data.pickupStateId,
+        data.pickupStateCode,
+      );
+
+      if (selectedPickupState != null) {
+
+        /// ✅ SET STATE ID
+        _selectedPickupStateId = selectedPickupState!.id;
+
+        await notifier.onStateSelected(selectedPickupState!);
+
+        final cities = ref.read(quotationProvider).cities;
+
+        selectedPickupCity = findCity(
+          cities,
+          data.pickupCityId,
+          data.pickupCityName,
+        );
+
+        /// ✅ SET CITY ID
+        __selectedPickupCityId = selectedPickupCity?.id;
+      }
+    }
+  }
+
+  initializeDeliveryStateCity() async {
+    final data = ref.read(quotationFormProvider);
+    final notifier = ref.read(quotationProvider.notifier);
+
+    /// 🔥 PRIORITY 1: PINCODE EXISTS
+    if (data.deliveryPincode != null && data.deliveryPincode!.length == 6) {
+
+      await ref.read(pincodeProvider.notifier).fetch(data.deliveryPincode!);
+
+      final pinData = ref.read(pincodeProvider);
+
+      if (pinData.stateId != null) {
+
+        final states = await ref.read(stateProvider.future);
+
+        final stateObj = states.firstWhere(
+              (e) => e.id.toString() == pinData.stateId,
+          orElse: () => states.first,
+        );
+
+        setState(() {
+          selectedDeliveryState = States(
+            id: stateObj.id,
+            name: stateObj.name,
+            code: null,
+          );
+          selectedDeliveryCity = null;
+        });
+
+        final cities = await ref.read(
+          cityProvider(stateObj.id!).future,
+        );
+
+        final cityObj = cities.firstWhere(
+              (e) => e.id.toString() == pinData.cityId,
+          orElse: () => cities.first,
+        );
+
+        setState(() {
+          selectedDeliveryCity = Cities(
+            id: cityObj.id,
+            name: cityObj.name,
+          );
+        });
+
+        final form = ref.read(quotationFormProvider.notifier).state;
+
+        form.deliveryStateId = pinData.stateId;
+        form.deliveryCityId = pinData.cityId;
+        form.deliveryCityName = pinData.cityName;
+      }
+    }
+
+    /// 🔥 PRIORITY 2: SAVED STATE/CITY
+    else {
+      final states = ref.read(quotationProvider).states;
+
+      selectedDeliveryState = findState(
+        states,
+        data.deliveryStateId,
+        data.deliveryStateCode,
+      );
+
+      if (selectedDeliveryState != null) {
+        //final cities = await ref.read(cityProvider(selectedDeliveryState!.id!).future,);
+
+
+        /// ✅ SET STATE ID
+        _selectedPickupStateId = selectedDeliveryState!.id;
+
+        await notifier.onStateSelected(selectedPickupState!);
+
+        final cities = ref.read(quotationProvider).cities;
+
+
+        selectedDeliveryCity = findCity(
+          cities,
+          data.deliveryCityId,
+          data.deliveryCityName,
+        );
+      }
+    }
+  }
+
   @override
   void initState() {
     super.initState();
@@ -104,43 +279,44 @@ class _MovingDetailsFormState extends ConsumerState<MovingDetailsForm> {
       /// =========================
 
       /// 2️⃣ Pickup State
-
-      print("2:>>>>>>>>>>>>${data.pickupStateId}");
-      print("3:>>>>>>>>>>>>${data.pickupCityId}");
-      print("4:>>>>>>>>>>>>${data.pickupStateCode}");
-
-      selectedPickupState = findState(stateData.states, data.pickupStateId,data.pickupStateCode);
-
-
-      if (selectedPickupState != null) {
-        /// 3️⃣ Load pickup cities properly
-        await notifier.onStateSelected(selectedPickupState!);
-
-        /// 4️⃣ NOW cities available → set city
-        final cities = ref.read(quotationProvider).cities;
-
-        selectedPickupCity = findCity(cities, data.pickupCityId,data.pickupCityName);
-
-        ref.read(quotationFormProvider.notifier).state.pickupCityName = selectedPickupCity?.name;
-      }
+      initializePickupStateCity();
+      initializeDeliveryStateCity();
+      // print("2:>>>>>>>>>>>>${data.pickupStateId}");
+      // print("3:>>>>>>>>>>>>${data.pickupCityId}");
+      // print("4:>>>>>>>>>>>>${data.pickupStateCode}");
+      //
+      // selectedPickupState = findState(stateData.states, data.pickupStateId,data.pickupStateCode);
+      //
+      //
+      // if (selectedPickupState != null) {
+      //   /// 3️⃣ Load pickup cities properly
+      //   await notifier.onStateSelected(selectedPickupState!);
+      //
+      //   /// 4️⃣ NOW cities available → set city
+      //   final cities = ref.read(quotationProvider).cities;
+      //
+      //   selectedPickupCity = findCity(cities, data.pickupCityId,data.pickupCityName);
+      //
+      //   ref.read(quotationFormProvider.notifier).state.pickupCityName = selectedPickupCity?.name;
+      // }
 
       /// =========================
       /// ✅ DELIVERY SECTION
       /// =========================
 
       /// 5️⃣ Delivery State
-      selectedDeliveryState = findState(stateData.states, data.deliveryStateId,data.deliveryStateCode);
-
-      if (selectedDeliveryState != null) {
-        /// 6️⃣ Load delivery cities
-        final res = await notifier.repository.fetchCities(selectedDeliveryState!.id!);
-
-        deliveryCities = res.data ?? [];
-
-        /// 7️⃣ NOW set delivery city
-        selectedDeliveryCity = findCity(deliveryCities, data.deliveryCityId,data.deliveryCityName);
-        ref.read(quotationFormProvider.notifier).state.deliveryCityName = selectedDeliveryCity?.name;
-      }
+      // selectedDeliveryState = findState(stateData.states, data.deliveryStateId,data.deliveryStateCode);
+      //
+      // if (selectedDeliveryState != null) {
+      //   /// 6️⃣ Load delivery cities
+      //   final res = await notifier.repository.fetchCities(selectedDeliveryState!.id!);
+      //
+      //   deliveryCities = res.data ?? [];
+      //
+      //   /// 7️⃣ NOW set delivery city
+      //   selectedDeliveryCity = findCity(deliveryCities, data.deliveryCityId,data.deliveryCityName);
+      //   ref.read(quotationFormProvider.notifier).state.deliveryCityName = selectedDeliveryCity?.name;
+      // }
 
       /// FINAL UI UPDATE
       setState(() {});
@@ -156,7 +332,8 @@ class _MovingDetailsFormState extends ConsumerState<MovingDetailsForm> {
   States? selectedDeliveryState;
   Cities? selectedDeliveryCity;
   List<Cities> deliveryCities = [];
-
+  int? _selectedPickupStateId;
+  int? __selectedPickupCityId;
   @override
   Widget build(BuildContext context) {
 
@@ -277,73 +454,6 @@ class _MovingDetailsFormState extends ConsumerState<MovingDetailsForm> {
 
 
             const SizedBox(height: 16),
-
-            ///Moving Details State + City
-            Row(
-              children: [
-                /// STATE
-                Expanded(
-                  child: commonStateCityDropdowns(
-                    title: "movingDetails.state".tr(),
-                    isRequired: true,
-                    value: selectedPickupState?.id.toString(),
-                    items: stateItems,
-                      onChanged: (item) {
-                        if (item != null) {
-                          final selected = stateData.states?.firstWhere((e) => e.id.toString() == item.value);
-
-                          if (selected != null) {
-                            setState(() {
-                              selectedPickupState = selected;
-                              selectedPickupCity = null;
-                            });
-
-                            ref.read(quotationProvider.notifier).onStateSelected(selected);
-
-                            /// ✅ SAVE
-                            ref.read(quotationFormProvider.notifier).state.pickupStateId = item.value;
-                            ref.read(quotationFormProvider.notifier).state.pickupCityId = null;
-                          }
-                        }
-                      }
-
-                  ),
-                ),
-
-                const SizedBox(width: 12),
-
-                /// CITY
-                Expanded(
-                  child: commonStateCityDropdowns(
-                      title: "movingDetails.city".tr(),
-                      isRequired: true,
-                    value: selectedPickupCity?.id.toString(),
-                    items: pickupCityItems,
-                      onChanged: (item) {
-                        if (item != null) {
-                          final selected = stateData.cities?.firstWhere(
-                                  (e) => e.id.toString() == item.value);
-
-                          if (selected != null) {
-                            setState(() {
-                              selectedPickupCity = selected;
-                            });
-
-                            /// ✅ SAVE
-                            ref.read(quotationFormProvider.notifier).state.pickupCityId = item.value;
-                            ref.read(quotationFormProvider.notifier).state.pickupCityName = selected.name;
-                          }
-                        }
-                      }
-
-                  ),
-                ),
-              ],
-            ),
-
-            const SizedBox(height: 16),
-
-            /// Pincode + Lift
             Row(
               children: [
                 Expanded(
@@ -357,9 +467,13 @@ class _MovingDetailsFormState extends ConsumerState<MovingDetailsForm> {
                         hintText: "Enter pincode",
                         keyboardType: TextInputType.phone,
                         borderRadius: 12,
+                        inputFormatters: [
+                          LengthLimitingTextInputFormatter(6),
+                          FilteringTextInputFormatter.digitsOnly,
+                        ],
                         hintStyle: TextStyles.f12w400Gray5,
-                        onChanged: (val) {
-                          ref.read(quotationFormProvider.notifier).state.pickupPincode = val;
+                        onChanged: (value) async {
+                          handlePincodeChange(value: value, isPickup: true);
                         },
                       ),
                     ],
@@ -368,10 +482,10 @@ class _MovingDetailsFormState extends ConsumerState<MovingDetailsForm> {
                 const SizedBox(width: 12),
                 Expanded(
                   child: reusableDropdown(
-                    title: "movingDetails.lift".tr(),
-                    isRequired: true,
-                    value: liftAvailableLabel,
-                    items: liftAvailableItem,
+                      title: "movingDetails.lift".tr(),
+                      isRequired: true,
+                      value: liftAvailableLabel,
+                      items: liftAvailableItem,
                       onChanged: (value) {
                         final val = dropdown.getValueByLabel("lift_available", value ?? "");
 
@@ -387,6 +501,371 @@ class _MovingDetailsFormState extends ConsumerState<MovingDetailsForm> {
                 ),
               ],
             ),
+            ///Pickup Details State + City
+            const SizedBox(height: 16),
+            Row(
+              children: [
+                /// ================= STATE =================
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      formLabel("State", isRequired: true),
+                      const SizedBox(height: 6),
+
+                      Container(
+                        height: 48,
+                        decoration: BoxDecoration(
+                          border: Border.all(color: AppColors.mGray3),
+                          borderRadius: BorderRadius.circular(12),
+                          color: AppColors.mWhite,
+                        ),
+
+                        child: ref.watch(stateProvider).when(
+                          data: (states) {
+                            return DropdownSearch<int>(
+                              items: states.map((e) => e.id!).toList(),
+
+                              selectedItem: selectedPickupState?.id,
+
+                              itemAsString: (id) {
+                                final state =
+                                states.firstWhere((e) => e.id == id);
+                                return state.name ?? "";
+                              },
+
+                              popupProps: PopupProps.menu(
+                                menuProps: const MenuProps(
+                                  backgroundColor: Colors.white,
+                                ),
+                                showSearchBox: true,
+                                searchFieldProps: TextFieldProps(
+                                  decoration: InputDecoration(
+                                    hintText: "Search State",
+                                    hintStyle: GoogleFonts.inter(
+                                      fontSize: 12,
+                                      color: AppColors.mGray4, // 👈 grey hint
+                                    ),
+                                    border: const OutlineInputBorder(),
+                                  ),
+                                ),
+                              ),
+
+                              dropdownDecoratorProps: DropDownDecoratorProps(
+                                dropdownSearchDecoration: InputDecoration(
+                                  hintText: "Select State",
+                                  hintStyle: GoogleFonts.inter(
+                                    fontSize: 12,
+                                    color: AppColors.mGray4, // 👈 grey hint
+                                  ),
+                                  border: InputBorder.none,
+                                  isDense: true,
+                                  contentPadding:
+                                  const EdgeInsets.symmetric(
+                                    horizontal: 12,
+                                    vertical: 12, // ✅ center alignment
+                                  ),
+                                ),
+                              ),
+
+                              onChanged: (value) async {
+                                setState(() {
+                                  selectedPickupCity = null;
+                                });
+
+                                ref
+                                    .read(quotationFormProvider.notifier)
+                                    .state
+                                    .pickupPincode = null;
+
+                                if (value != null) {
+                                  final selected = states
+                                      .firstWhere((e) => e.id == value);
+
+                                  setState(() {
+                                    selectedPickupState = States(
+                                      id: selected.id,
+                                      name: selected.name,
+                                      code: null,
+                                    );
+                                  });
+
+                                  final form = ref
+                                      .read(quotationFormProvider.notifier)
+                                      .state;
+
+                                  form.pickupStateId = value.toString();
+                                  form.pickupCityId = null;
+                                  form.pickupCityName = null;
+                                }
+                              },
+                            );
+                          },
+                          loading: () => const Center(
+                            child: SizedBox(
+                              height: 20,
+                              width: 20,
+                              child:
+                              CircularProgressIndicator(strokeWidth: 2),
+                            ),
+                          ),
+                          error: (e, _) => const Text("Error"),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+
+                const SizedBox(width: 12),
+
+                /// ================= CITY =================
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      formLabel("City", isRequired: true),
+                      const SizedBox(height: 6),
+
+                      Container(
+                        height: 48,
+                        decoration: BoxDecoration(
+                          border: Border.all(color: AppColors.mGray3),
+                          borderRadius: BorderRadius.circular(12),
+                          color: AppColors.mWhite,
+                        ),
+
+                        child: selectedPickupState == null
+                            ? Center(
+                          child: Text(
+                            "Select state first",
+                            style: GoogleFonts.inter(
+                              fontSize: 12,
+                              color: AppColors.mGray4, // 👈 grey hint
+                            ),
+                          ),
+                        )
+                            : ref
+                            .watch(cityProvider(
+                            selectedPickupState!.id!))
+                            .when(
+                          data: (cities) {
+                            return DropdownSearch<int>(
+                              items:
+                              cities.map((e) => e.id!).toList(),
+
+                              selectedItem:
+                              selectedPickupCity?.id,
+
+                              itemAsString: (id) {
+                                final city = cities.firstWhere(
+                                        (e) => e.id == id);
+                                return city.name ?? "";
+                              },
+
+                              popupProps: PopupProps.menu(
+                                menuProps: const MenuProps(
+                                  backgroundColor:
+                                  Colors.white,
+                                ),
+                                showSearchBox: true,
+                                searchFieldProps:
+                                TextFieldProps(
+                                  decoration: InputDecoration(
+                                    hintText: "Search City",
+                                    hintStyle:  GoogleFonts.inter(
+                                      fontSize: 12,
+                                      color: AppColors.mGray4, // 👈 grey hint
+                                    ),
+                                    border:
+                                    const OutlineInputBorder(),
+                                  ),
+                                ),
+                              ),
+
+                              dropdownDecoratorProps:
+                              DropDownDecoratorProps(
+                                dropdownSearchDecoration:
+                                InputDecoration(
+                                  hintText: "Select City",
+                                  hintStyle: GoogleFonts.inter(
+                                    fontSize: 12,
+                                    color: AppColors.mGray4, // 👈 grey hint
+                                  ),
+                                  border: InputBorder.none,
+                                  isDense: true,
+                                  contentPadding:
+                                  const EdgeInsets
+                                      .symmetric(
+                                    horizontal: 12,
+                                    vertical:
+                                    12, // ✅ center alignment
+                                  ),
+                                ),
+                              ),
+
+                              onChanged: (value) {
+                                ref
+                                    .read(
+                                    quotationFormProvider
+                                        .notifier)
+                                    .state
+                                    .pickupPincode = null;
+
+                                if (value != null) {
+                                  final selected =
+                                  cities.firstWhere(
+                                          (e) =>
+                                      e.id == value);
+
+                                  setState(() {
+                                    selectedPickupCity =
+                                        Cities(
+                                          id: selected.id,
+                                          name: selected.name,
+                                        );
+                                  });
+
+                                  final form = ref.read(
+                                      quotationFormProvider
+                                          .notifier)
+                                      .state;
+
+                                  form.pickupCityId =
+                                      value.toString();
+                                  form.pickupCityName =
+                                      selected.name;
+                                }
+                              },
+                            );
+                          },
+                          loading: () => const Center(
+                            child: SizedBox(
+                              height: 20,
+                              width: 20,
+                              child:
+                              CircularProgressIndicator(
+                                  strokeWidth: 2),
+                            ),
+                          ),
+                          error: (e, _) =>
+                          const Text("Error"),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+
+            // ///Moving Details State + City
+            // Row(
+            //   children: [
+            //     /// STATE
+            //     Expanded(
+            //       child: commonStateCityDropdowns(
+            //         title: "movingDetails.state".tr(),
+            //         isRequired: true,
+            //         value: selectedPickupState?.id.toString(),
+            //         items: stateItems,
+            //           onChanged: (item) {
+            //             if (item != null) {
+            //               final selected = stateData.states?.firstWhere((e) => e.id.toString() == item.value);
+            //
+            //               if (selected != null) {
+            //                 setState(() {
+            //                   selectedPickupState = selected;
+            //                   selectedPickupCity = null;
+            //                 });
+            //
+            //                 ref.read(quotationProvider.notifier).onStateSelected(selected);
+            //
+            //                 /// ✅ SAVE
+            //                 ref.read(quotationFormProvider.notifier).state.pickupStateId = item.value;
+            //                 ref.read(quotationFormProvider.notifier).state.pickupCityId = null;
+            //               }
+            //             }
+            //           }
+            //
+            //       ),
+            //     ),
+            //
+            //     const SizedBox(width: 12),
+            //
+            //     /// CITY
+            //     Expanded(
+            //       child: commonStateCityDropdowns(
+            //           title: "movingDetails.city".tr(),
+            //           isRequired: true,
+            //         value: selectedPickupCity?.id.toString(),
+            //         items: pickupCityItems,
+            //           onChanged: (item) {
+            //             if (item != null) {
+            //               final selected = stateData.cities?.firstWhere(
+            //                       (e) => e.id.toString() == item.value);
+            //
+            //               if (selected != null) {
+            //                 setState(() {
+            //                   selectedPickupCity = selected;
+            //                 });
+            //
+            //                 /// ✅ SAVE
+            //                 ref.read(quotationFormProvider.notifier).state.pickupCityId = item.value;
+            //                 ref.read(quotationFormProvider.notifier).state.pickupCityName = selected.name;
+            //               }
+            //             }
+            //           }
+            //
+            //       ),
+            //     ),
+            //   ],
+            // ),
+            //
+            // const SizedBox(height: 16),
+            //
+            // /// Pincode + Lift
+            // Row(
+            //   children: [
+            //     Expanded(
+            //       child: Column(
+            //         crossAxisAlignment: CrossAxisAlignment.start,
+            //         children: [
+            //           formLabel("movingDetails.pincode".tr(), isRequired: true),
+            //           const SizedBox(height: 6),
+            //           CustomTextField(
+            //             controller: _pickupPincodeController,
+            //             hintText: "Enter pincode",
+            //             keyboardType: TextInputType.phone,
+            //             borderRadius: 12,
+            //             hintStyle: TextStyles.f12w400Gray5,
+            //             onChanged: (val) {
+            //               ref.read(quotationFormProvider.notifier).state.pickupPincode = val;
+            //             },
+            //           ),
+            //         ],
+            //       ),
+            //     ),
+            //     const SizedBox(width: 12),
+            //     Expanded(
+            //       child: reusableDropdown(
+            //         title: "movingDetails.lift".tr(),
+            //         isRequired: true,
+            //         value: liftAvailableLabel,
+            //         items: liftAvailableItem,
+            //           onChanged: (value) {
+            //             final val = dropdown.getValueByLabel("lift_available", value ?? "");
+            //
+            //             setState(() {
+            //               selectedMovingDetail = val;
+            //             });
+            //
+            //             /// ✅ SAVE
+            //             ref.read(quotationFormProvider.notifier).state.pickupLiftAvailable = val;
+            //           }
+            //
+            //       ),
+            //     ),
+            //   ],
+            // ),
 
             const SizedBox(height: 16),
 
@@ -451,82 +930,11 @@ class _MovingDetailsFormState extends ConsumerState<MovingDetailsForm> {
               ],
             ),
 
-
             const SizedBox(height: 16),
 
-            ///deliverydetail State + City
-            Row(
-              children: [
-                /// STATE
-                Expanded(
-                  child: commonStateCityDropdowns(
-                    title: "movingDetails.state".tr(),
-                    isRequired: true,
-                    value: selectedDeliveryState?.id.toString(),
-                    items: stateItems,
-                      onChanged: (item) async {
-                        if (item != null) {
-                          final selected = stateData.states
-                              ?.firstWhere((e) => e.id.toString() == item.value);
 
-                          if (selected != null) {
-                            setState(() {
-                              selectedDeliveryState = selected;
-                              selectedDeliveryCity = null;
-                              deliveryCities = [];
-                            });
-
-                            final res = await ref
-                                .read(quotationProvider.notifier)
-                                .repository
-                                .fetchCities(selected.id!);
-
-                            setState(() {
-                              deliveryCities = res.data ?? [];
-                            });
-
-                            /// ✅ SAVE
-                            ref.read(quotationFormProvider.notifier).state.deliveryStateId = item.value;
-                            ref.read(quotationFormProvider.notifier).state.deliveryCityId = null;
-                          }
-                        }
-                      }
-
-                  ),
-                ),
-
-                const SizedBox(width: 12),
-
-                /// CITY
-                Expanded(
-                  child: commonStateCityDropdowns(
-                    title: "movingDetails.city".tr(),
-                    isRequired: true,
-                    value: selectedDeliveryCity?.id.toString(),
-                    items: deliveryCityItems,
-                      onChanged: (item) {
-                        if (item != null) {
-                          final selected = deliveryCities.firstWhere(
-                                  (e) => e.id.toString() == item.value);
-
-                          setState(() {
-                            selectedDeliveryCity = selected;
-                          });
-
-                          /// ✅ SAVE
-                          ref.read(quotationFormProvider.notifier).state.deliveryCityId = item.value;
-                          ref.read(quotationFormProvider.notifier).state.deliveryCityName = selected.name;
-                        }
-                      }
-
-                  ),
-                ),
-              ],
-            ),
-
-            const SizedBox(height: 16),
-
-            /// Pincode + Lift
+            ///Delivery detail
+            // Pincode + Lift
             Row(
               children: [
                 Expanded(
@@ -541,10 +949,18 @@ class _MovingDetailsFormState extends ConsumerState<MovingDetailsForm> {
                         hintText: "Enter pincode",
                         keyboardType: TextInputType.phone,
                         borderRadius: 12,
+                        inputFormatters: [
+                          LengthLimitingTextInputFormatter(6),
+                          FilteringTextInputFormatter.digitsOnly,
+                        ],
                         hintStyle: TextStyles.f12w400Gray5,
-                        onChanged: (val) {
-                          ref.read(quotationFormProvider.notifier).state.deliveryPincode = val;
+                        onChanged: (value) async {
+                          handlePincodeChange(value: value, isPickup: false);
+
                         },
+                        // onChanged: (val) {
+                        //   ref.read(quotationFormProvider.notifier).state.deliveryPincode = val;
+                        // },
                       ),
                     ],
                   ),
@@ -552,10 +968,10 @@ class _MovingDetailsFormState extends ConsumerState<MovingDetailsForm> {
                 const SizedBox(width: 12),
                 Expanded(
                   child: reusableDropdown(
-                    title: "movingDetails.lift".tr(),
-                    isRequired: true,
-                    value: liftDeliveryLabel,
-                    items: liftDeliveryItem,
+                      title: "movingDetails.lift".tr(),
+                      isRequired: true,
+                      value: liftDeliveryLabel,
+                      items: liftDeliveryItem,
                       onChanged: (value) {
                         final val = dropdown.getValueByLabel("lift_available", value ?? "");
 
@@ -572,6 +988,350 @@ class _MovingDetailsFormState extends ConsumerState<MovingDetailsForm> {
 
               ],
             ),
+            const SizedBox(height: 16),
+            ///deliverydetail State + City
+            Row(
+              children: [
+                /// ================= STATE =================
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      formLabel("State", isRequired: true),
+                      const SizedBox(height: 6),
+
+                      Container(
+                        height: 48,
+                        decoration: BoxDecoration(
+                          border: Border.all(color: AppColors.mGray3),
+                          borderRadius: BorderRadius.circular(12),
+                          color: AppColors.mWhite,
+                        ),
+
+                        child: ref.watch(stateProvider).when(
+                          data: (states) {
+                            return DropdownSearch<int>(
+                              items: states.map((e) => e.id!).toList(),
+
+                              selectedItem: selectedDeliveryState?.id,
+
+                              itemAsString: (id) {
+                                final state =
+                                states.firstWhere((e) => e.id == id);
+                                return state.name ?? "";
+                              },
+
+                              popupProps: PopupProps.menu(
+                                menuProps: const MenuProps(
+                                  backgroundColor: Colors.white,
+                                ),
+                                showSearchBox: true,
+                                searchFieldProps: TextFieldProps(
+                                  decoration: InputDecoration(
+                                    hintText: "Search State",
+                                    hintStyle: GoogleFonts.inter(
+                                      fontSize: 12,
+                                      color: AppColors.mGray4,
+                                    ),
+                                    border: const OutlineInputBorder(),
+                                  ),
+                                ),
+                              ),
+
+                              dropdownDecoratorProps:
+                              DropDownDecoratorProps(
+                                dropdownSearchDecoration:
+                                InputDecoration(
+                                  hintText: "Select State",
+                                  hintStyle: GoogleFonts.inter(
+                                    fontSize: 12,
+                                    color: AppColors.mGray4,
+                                  ),
+                                  border: InputBorder.none,
+                                  isDense: true,
+                                  contentPadding:
+                                  const EdgeInsets.symmetric(
+                                    horizontal: 12,
+                                    vertical: 12,
+                                  ),
+                                ),
+                              ),
+
+                              onChanged: (value) async {
+                                setState(() {
+                                  selectedDeliveryCity = null;
+                                });
+
+                                ref
+                                    .read(
+                                    quotationFormProvider.notifier)
+                                    .state
+                                    .deliveryPincode = null;
+
+                                if (value != null) {
+                                  final selected = states
+                                      .firstWhere(
+                                          (e) => e.id == value);
+
+                                  setState(() {
+                                    selectedDeliveryState = States(
+                                      id: selected.id,
+                                      name: selected.name,
+                                      code: null,
+                                    );
+                                  });
+
+                                  final form = ref.read(
+                                      quotationFormProvider
+                                          .notifier)
+                                      .state;
+
+                                  form.deliveryStateId =
+                                      value.toString();
+                                  form.deliveryCityId = null;
+                                  form.deliveryCityName = null;
+                                }
+                              },
+                            );
+                          },
+                          loading: () => const Center(
+                            child: SizedBox(
+                              height: 20,
+                              width: 20,
+                              child:
+                              CircularProgressIndicator(
+                                  strokeWidth: 2),
+                            ),
+                          ),
+                          error: (e, _) =>
+                          const Text("Error"),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+
+                const SizedBox(width: 12),
+
+                /// ================= CITY =================
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      formLabel("City", isRequired: true),
+                      const SizedBox(height: 6),
+
+                      Container(
+                        height: 48,
+                        decoration: BoxDecoration(
+                          border: Border.all(color: AppColors.mGray3),
+                          borderRadius: BorderRadius.circular(12),
+                          color: AppColors.mWhite,
+                        ),
+
+                        child: selectedDeliveryState == null
+                            ? Center(
+                          child: Text(
+                            "Select state first",
+                            style: GoogleFonts.inter(
+                              fontSize: 12,
+                              color: AppColors.mGray4,
+                            ),
+                          ),
+                        )
+                            : ref
+                            .watch(cityProvider(
+                            selectedDeliveryState!.id!))
+                            .when(
+                          data: (cities) {
+                            return DropdownSearch<int>(
+                              items: cities
+                                  .map((e) => e.id!)
+                                  .toList(),
+
+                              selectedItem:
+                              selectedDeliveryCity?.id,
+
+                              itemAsString: (id) {
+                                final city = cities.firstWhere(
+                                        (e) => e.id == id);
+                                return city.name ?? "";
+                              },
+
+                              popupProps: PopupProps.menu(
+                                menuProps: const MenuProps(
+                                  backgroundColor:
+                                  Colors.white,
+                                ),
+                                showSearchBox: true,
+                                searchFieldProps:
+                                TextFieldProps(
+                                  decoration:
+                                  InputDecoration(
+                                    hintText:
+                                    "Search City",
+                                    hintStyle:
+                                    GoogleFonts.inter(
+                                      fontSize: 12,
+                                      color:
+                                      AppColors.mGray4,
+                                    ),
+                                    border:
+                                    const OutlineInputBorder(),
+                                  ),
+                                ),
+                              ),
+
+                              dropdownDecoratorProps:
+                              DropDownDecoratorProps(
+                                dropdownSearchDecoration:
+                                InputDecoration(
+                                  hintText: "Select City",
+                                  hintStyle:
+                                  GoogleFonts.inter(
+                                    fontSize: 12,
+                                    color:
+                                    AppColors.mGray4,
+                                  ),
+                                  border: InputBorder.none,
+                                  isDense: true,
+                                  contentPadding:
+                                  const EdgeInsets
+                                      .symmetric(
+                                    horizontal: 12,
+                                    vertical: 12,
+                                  ),
+                                ),
+                              ),
+
+                              onChanged: (value) {
+                                ref
+                                    .read(
+                                    quotationFormProvider
+                                        .notifier)
+                                    .state
+                                    .deliveryPincode = null;
+
+                                if (value != null) {
+                                  final selected =
+                                  cities.firstWhere(
+                                          (e) =>
+                                      e.id ==
+                                          value);
+
+                                  setState(() {
+                                    selectedDeliveryCity =
+                                        Cities(
+                                          id: selected.id,
+                                          name: selected.name,
+                                        );
+                                  });
+
+                                  final form = ref.read(
+                                      quotationFormProvider
+                                          .notifier)
+                                      .state;
+
+                                  form.deliveryCityId =
+                                      value.toString();
+                                  form.deliveryCityName =
+                                      selected.name;
+                                }
+                              },
+                            );
+                          },
+                          loading: () => const Center(
+                            child: SizedBox(
+                              height: 20,
+                              width: 20,
+                              child:
+                              CircularProgressIndicator(
+                                  strokeWidth: 2),
+                            ),
+                          ),
+                          error: (e, _) =>
+                          const Text("Error"),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+
+            // ///deliverydetail State + City
+            // Row(
+            //   children: [
+            //     /// STATE
+            //     Expanded(
+            //       child: commonStateCityDropdowns(
+            //         title: "movingDetails.state".tr(),
+            //         isRequired: true,
+            //         value: selectedDeliveryState?.id.toString(),
+            //         items: stateItems,
+            //           onChanged: (item) async {
+            //             if (item != null) {
+            //               final selected = stateData.states
+            //                   ?.firstWhere((e) => e.id.toString() == item.value);
+            //
+            //               if (selected != null) {
+            //                 setState(() {
+            //                   selectedDeliveryState = selected;
+            //                   selectedDeliveryCity = null;
+            //                   deliveryCities = [];
+            //                 });
+            //
+            //                 final res = await ref
+            //                     .read(quotationProvider.notifier)
+            //                     .repository
+            //                     .fetchCities(selected.id!);
+            //
+            //                 setState(() {
+            //                   deliveryCities = res.data ?? [];
+            //                 });
+            //
+            //                 /// ✅ SAVE
+            //                 ref.read(quotationFormProvider.notifier).state.deliveryStateId = item.value;
+            //                 ref.read(quotationFormProvider.notifier).state.deliveryCityId = null;
+            //               }
+            //             }
+            //           }
+            //
+            //       ),
+            //     ),
+            //
+            //     const SizedBox(width: 12),
+            //
+            //     /// CITY
+            //     Expanded(
+            //       child: commonStateCityDropdowns(
+            //         title: "movingDetails.city".tr(),
+            //         isRequired: true,
+            //         value: selectedDeliveryCity?.id.toString(),
+            //         items: deliveryCityItems,
+            //           onChanged: (item) {
+            //             if (item != null) {
+            //               final selected = deliveryCities.firstWhere(
+            //                       (e) => e.id.toString() == item.value);
+            //
+            //               setState(() {
+            //                 selectedDeliveryCity = selected;
+            //               });
+            //
+            //               /// ✅ SAVE
+            //               ref.read(quotationFormProvider.notifier).state.deliveryCityId = item.value;
+            //               ref.read(quotationFormProvider.notifier).state.deliveryCityName = selected.name;
+            //             }
+            //           }
+            //
+            //       ),
+            //     ),
+            //   ],
+            // ),
+
+            const SizedBox(height: 16),
+
+
 
 
           ],
@@ -600,6 +1360,81 @@ class _MovingDetailsFormState extends ConsumerState<MovingDetailsForm> {
 
       /// ✅ SAVE TO PROVIDER
       ref.read(quotationFormProvider.notifier).state.shiftingDate = formattedDate;
+    }
+  }
+
+  Future<void> handlePincodeChange({
+    required String value,
+    required bool isPickup,
+  }) async {
+    if (value.length != 6) return;
+
+    final form = ref.read(quotationFormProvider.notifier).state;
+
+    bool isSuccess = await ref.read(pincodeProvider.notifier).fetch(value);
+     if(isSuccess==false){
+       return;
+     }
+
+    final pinData = ref.read(pincodeProvider);
+
+    if (pinData.stateId == null) return;
+
+    final states = await ref.read(stateProvider.future);
+
+    final stateObj = states.firstWhere(
+          (e) => e.id.toString() == pinData.stateId,
+      orElse: () => states.first,
+    );
+
+    final cities = await ref.read(
+      cityProvider(stateObj.id!).future,
+    );
+
+    final cityObj = cities.firstWhere(
+          (e) => e.id.toString() == pinData.cityId,
+      orElse: () => cities.first,
+    );
+
+    setState(() {
+      if (isPickup) {
+        selectedPickupState = States(
+          id: stateObj.id,
+          name: stateObj.name,
+          code: null,
+        );
+        selectedPickupCity = Cities(
+          id: cityObj.id,
+          name: cityObj.name,
+        );
+
+        _selectedPickupStateId = stateObj.id;
+        __selectedPickupCityId = cityObj.id;
+      } else {
+        selectedDeliveryState = States(
+          id: stateObj.id,
+          name: stateObj.name,
+          code: null,
+        );
+        selectedDeliveryCity = Cities(
+          id: cityObj.id,
+          name: cityObj.name,
+        );
+      }
+    });
+
+
+    /// SAVE
+    if (isPickup) {
+      form.pickupPincode = value;
+      form.pickupStateId = pinData.stateId;
+      form.pickupCityId = pinData.cityId;
+      form.pickupCityName = pinData.cityName;
+    } else {
+      form.deliveryPincode = value;
+      form.deliveryStateId = pinData.stateId;
+      form.deliveryCityId = pinData.cityId;
+      form.deliveryCityName = pinData.cityName;
     }
   }
 }
