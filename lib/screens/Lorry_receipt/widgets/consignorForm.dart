@@ -1,5 +1,6 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:pack_n_pay/utils/app_colors.dart';
 import 'package:pack_n_pay/utils/m_font_styles.dart';
@@ -9,7 +10,7 @@ import '../../../global_widget/custom_button.dart';
 import '../../../global_widget/custom_textfield.dart';
 import '../../../global_widget/form_label_widget.dart';
 import '../../../notifier/dropdown_notifier.dart';
-import '../../../notifier/location_notifier.dart' show cityProvider, stateProvider;
+import '../../../notifier/location_notifier.dart' show cityProvider, stateProvider, pincodeProvider;
 import '../../../notifier/lorry_receiptnotifier.dart';
 import '../../../notifier/lr_provider.dart';
 import '../../Quotation/widget/insurance_and_other_form.dart';
@@ -115,6 +116,58 @@ class _ConsignorFormState extends ConsumerState<ConsignorForm> {
       );
       selectedToStateId = stateObj?.id;
     }
+  }
+  Future<void> handlePincodeChange({
+    required String value,
+    required bool isFrom,
+  }) async {
+
+    if (value.length != 6) return;
+
+    bool isSuccess =
+    await ref.read(pincodeProvider.notifier).fetch(value);
+
+    if (!isSuccess) return;
+
+    final pinData = ref.read(pincodeProvider);
+
+    if (pinData.stateId == null) return;
+
+    final states = await ref.read(stateProvider.future);
+
+    final stateObj = states.firstWhere(
+          (e) => e.id.toString() == pinData.stateId,
+      orElse: () => states.first,
+    );
+
+    final cities = await ref.read(
+      cityProvider(stateObj.id!).future,
+    );
+
+    final cityObj = cities.firstWhere(
+          (e) => e.id.toString() == pinData.cityId,
+      orElse: () => cities.first,
+    );
+
+    setState(() {
+
+      if (isFrom) {
+
+        selectedFromState = stateObj.name;
+        selectedFromCity = cityObj.name;
+
+        selectedFromStateId = stateObj.id;
+        selectedFromCityId = cityObj.id;
+
+      } else {
+
+        selectedToState = stateObj.name;
+        selectedToCity = cityObj.name;
+
+        selectedToStateId = stateObj.id;
+        selectedToCityId = cityObj.id;
+      }
+    });
   }
   @override
   Widget build(BuildContext context) {
@@ -455,13 +508,29 @@ class _ConsignorFormState extends ConsumerState<ConsignorForm> {
                     hintText: "Enter",
                     keyboardType: TextInputType.number,
                     borderRadius: 10,
+
+                    inputFormatters: [
+                      LengthLimitingTextInputFormatter(6),
+                      FilteringTextInputFormatter.digitsOnly,
+                    ],
+
+                    onChanged: (value) async {
+
+                      await handlePincodeChange(
+                        value: value,
+                        isFrom: isFromSection,
+                      );
+                    },
+
                     validator: (value) {
                       if (value == null || value.isEmpty) {
                         return "Pincode required";
                       }
+
                       if (value.length != 6) {
                         return "Enter valid pincode";
                       }
+
                       return null;
                     },
                   ),

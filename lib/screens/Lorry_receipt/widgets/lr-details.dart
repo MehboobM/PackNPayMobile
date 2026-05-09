@@ -98,7 +98,6 @@ class _LRDetailsFormState extends ConsumerState<LRDetailsForm> {
   void initState() {
     super.initState();
 
-    // Listen for focus change on Order ID field
     orderIdFocusNode.addListener(() {
       if (!orderIdFocusNode.hasFocus) {
         final orderNo = orderIdController.text.trim();
@@ -108,13 +107,19 @@ class _LRDetailsFormState extends ConsumerState<LRDetailsForm> {
       }
     });
 
-    // Populate data when editing existing LR
-    WidgetsBinding.instance.addPostFrameCallback((_) {
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+
+      /// LOAD CITIES FIRST
+      await ref.read(cityProviders.notifier).loadCities();
+
       final data = ref.read(lrFormDataProvider);
-      ref.read(cityProviders.notifier).loadCities();
+
       if (data.isNotEmpty) {
         _populateFields(data);
-        setState(() {});
+
+        if (mounted) {
+          setState(() {});
+        }
       }
     });
   }
@@ -149,8 +154,32 @@ class _LRDetailsFormState extends ConsumerState<LRDetailsForm> {
         _formatDisplayDate(data["eway_extend_date"]);
 
     selectedRiskType = data["risk_type"]?.toString().trim();
+
     selectedFromCity = data["moving_from"];
     selectedToCity = data["moving_to"];
+
+    /// RESTORE DROPDOWN SELECTED CITY
+    final cityState = ref.read(cityProviders);
+
+    try {
+      if (selectedFromCity != null) {
+        selectedMovingFormCity = cityState.cities.firstWhere(
+              (e) => e.name == selectedFromCity,
+        );
+
+        selectedFromCityId = selectedMovingFormCity?.id;
+      }
+
+      if (selectedToCity != null) {
+        selectedMovingToCity = cityState.cities.firstWhere(
+              (e) => e.name == selectedToCity,
+        );
+
+        selectedToCityId = selectedMovingToCity?.id;
+      }
+    } catch (e) {
+      debugPrint("City restore error: $e");
+    }
   }
 
   String _formatDisplayDate(String? date) {
