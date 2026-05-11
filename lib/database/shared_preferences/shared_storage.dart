@@ -20,6 +20,7 @@ class StorageService {
   static const String _companyFullName = "company_full_name";
   static const String _companyLogo = "company_logo";
   static const String _fcmTokenKey = "FCMtoken";
+  static const String _companyUid = "company_uid";
 
   Future<void> writeData(String key, String? value) async {
     final prefs = await SharedPreferences.getInstance();
@@ -169,6 +170,17 @@ class StorageService {
     final token = await readData(_fcmTokenKey);
     print("Reading FCM Token from Shared Preferences: $token");
     return token;
+  }
+  Future<void> saveCompanyUid(String uid) async {
+    await writeData(_companyUid, uid);
+  }
+
+  Future<String?> getCompanyUid() async {
+    return await readData(_companyUid);
+  }
+  Future<void> clearCompanyUid() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.remove("company_uid");
   }
 }
 

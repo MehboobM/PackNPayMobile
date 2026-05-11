@@ -488,6 +488,10 @@ class _MenuScreenState extends ConsumerState<MenuScreen> {
                               onTap: () async {
                                 final allowed = await _checkAccess();
                                 if (!allowed) return;
+
+                                /// REMOVE COMPANY UID
+                                await StorageService().clearCompanyUid();
+
                                 Navigator.pushNamed(
                                   context,
                                   myBusinessRoute,

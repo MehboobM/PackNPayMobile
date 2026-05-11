@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:dio/dio.dart';
 import '../../api_services/network_handler.dart';
+import '../../database/shared_preferences/shared_storage.dart';
 import 'my_business_page.dart';
 
 class CompanyListsPage extends StatefulWidget {
@@ -50,21 +51,90 @@ class _CompanyListsPageState extends State<CompanyListsPage> {
   }
 
   // ✅ SET DEFAULT COMPANY
-  Future<void> _setDefaultCompany(String uid) async {
+  // ✅ SET DEFAULT COMPANY + SWITCH COMPANY
+  Future<void> _setDefaultCompany(dynamic company) async {
     try {
+
+      /// STEP 1 → SET DEFAULT
       final response = await _networkHandler.patch(
-        'company-config/set-default/$uid',
+        'company-config/set-default/${company['uid']}',
         {},
       );
 
       if (response.statusCode == 200) {
-        _showSuccess("Company set as default successfully");
-        _fetchCompanyData();
-      }
 
+        /// STEP 2 → SWITCH COMPANY
+        final switchResponse = await _networkHandler.post(
+          "switch-company",
+          {
+            "company_id": company["id"],
+          },
+        );
+
+        if (switchResponse.statusCode == 200 &&
+            switchResponse.data["success"] == true) {
+
+          final user = switchResponse.data["user"];
+
+          /// ✅ SAFE VALUES
+          final token =
+              switchResponse.data["token"]?.toString() ?? "";
+
+          final companyId =
+              company["id"]?.toString() ?? "";
+
+          final labelName =
+              company["display_name"]?.toString() ??
+                  company["label_name"]?.toString() ??
+                  "Business";
+
+          final companyName =
+              company["name"]?.toString() ??
+                  company["company_name"]?.toString() ??
+                  "";
+
+          final logo =
+              company["logo"]?.toString() ?? "";
+
+          final companyStatus =
+              user["company_status"]?.toString() ?? "";
+
+          final subscriptionStatus =
+              user["subscription_status"]?.toString() ?? "";
+
+          /// ✅ SAVE EVERYTHING
+          await StorageService().saveToken(token);
+          await StorageService().saveCompanyId(companyId);
+          await StorageService().saveCompanyName(labelName);
+          await StorageService().saveCompanyFullName(companyName);
+          await StorageService().saveCompanyLogo(logo);
+          await StorageService()
+              .saveCompanyStatus(companyStatus);
+
+          await StorageService()
+              .saveSubscriptionStatus(subscriptionStatus);
+
+          /// OPTIONAL → SAVE UID ALSO
+          await StorageService()
+              .saveCompanyUid(company["uid"]?.toString() ?? "");
+
+          _showSuccess(
+            "Company set as default & switched successfully",
+          );
+
+          /// REFRESH LIST
+          _fetchCompanyData();
+
+          /// GO BACK (OPTIONAL)
+          // Navigator.pop(context, true);
+        }
+      }
     } catch (e) {
       debugPrint("Error setting default: $e");
-      _handleError("Error updating default company");
+
+      _handleError(
+        "Error updating default company",
+      );
     }
   }
 
@@ -110,10 +180,19 @@ class _CompanyListsPageState extends State<CompanyListsPage> {
           Padding(
             padding: const EdgeInsets.only(right: 16.0, top: 10, bottom: 10),
             child: ElevatedButton.icon(
-              onPressed: () {
+              onPressed: () async {
+
+                /// CLEAR OLD COMPANY UID
+                await StorageService().saveCompanyUid("");
+
+                // OR if you have remove method:
+                // await StorageService().removeCompanyUid();
+
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => const MyBusinessPage()),
+                  MaterialPageRoute(
+                    builder: (context) => const MyBusinessPage(),
+                  ),
                 ).then((_) => _fetchCompanyData());
               },
               icon: const Icon(Icons.add, color: Colors.white, size: 16),
@@ -147,6 +226,7 @@ class _CompanyListsPageState extends State<CompanyListsPage> {
                 padding: const EdgeInsets.only(bottom: 12.0),
                 child: _buildCompanyCard(
                   context,
+                  company: company,
                   uid: company['uid'] ?? "",
                   isDefault: company['is_default'] ?? false,
                   companyName: company['display_name'] ?? company['name'] ?? "No Name",
@@ -167,6 +247,7 @@ class _CompanyListsPageState extends State<CompanyListsPage> {
 
   Widget _buildCompanyCard(
       BuildContext context, {
+        required dynamic company,
         required String uid,
         required bool isDefault,
         required String companyName,
@@ -239,7 +320,7 @@ class _CompanyListsPageState extends State<CompanyListsPage> {
                           style: TextStyle(fontSize: 9, fontWeight: FontWeight.w800, color: Color(0xFF2E4094)),
                         ),
                       ),
-                    _buildPopupMenu(context, uid),
+                    _buildPopupMenu(context, company),
                   ],
                 ),
                 const SizedBox(height: 8),
@@ -261,7 +342,10 @@ class _CompanyListsPageState extends State<CompanyListsPage> {
     );
   }
 
-  Widget _buildPopupMenu(BuildContext context, String uid) {
+  Widget _buildPopupMenu(
+      BuildContext context,
+      dynamic company,
+      ) {
     return PopupMenuButton<int>(
       padding: EdgeInsets.zero,
       constraints: const BoxConstraints(minWidth: 160),
@@ -270,13 +354,18 @@ class _CompanyListsPageState extends State<CompanyListsPage> {
       offset: const Offset(0, 30),
       onSelected: (value) {
         if (value == 1) {
-          // EDIT logic: Pass the UID to the MyBusinessPage
+
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => MyBusinessPage(uid: uid)),
+            MaterialPageRoute(
+              builder: (context) =>
+                  MyBusinessPage(uid: company['uid']),
+            ),
           ).then((_) => _fetchCompanyData());
+
         } else if (value == 2) {
-          _setDefaultCompany(uid);
+
+          _setDefaultCompany(company);
         }
       },
       itemBuilder: (context) => [

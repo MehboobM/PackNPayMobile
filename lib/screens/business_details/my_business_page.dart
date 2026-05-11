@@ -8,6 +8,7 @@ import 'dart:typed_data';
 import 'package:image_picker/image_picker.dart';
 import 'package:dio/dio.dart';
 import '../../api_services/network_handler.dart';
+import '../../database/hive_database/hive_permission.dart';
 import '../../database/shared_preferences/shared_storage.dart';
 import '../../models/location_modal.dart';
 import '../../notifier/location_notifier.dart';
@@ -23,6 +24,7 @@ class MyBusinessPage extends ConsumerStatefulWidget {
   ConsumerState<MyBusinessPage> createState() => _MyBusinessPageState();
 }
 class _MyBusinessPageState extends ConsumerState<MyBusinessPage> {
+  String? _companyUid;
   int? _selectedStateId;
   int? _selectedCityId;
   final Dio _dio = Dio();
@@ -65,9 +67,27 @@ class _MyBusinessPageState extends ConsumerState<MyBusinessPage> {
   @override
   void initState() {
     super.initState();
+
     _dio.options.headers['Authorization'] = 'Bearer $_token';
-    if (widget.uid != null) {
-      _fetchBusinessData();
+
+    _initializeBusiness();
+  }
+  Future<void> _initializeBusiness() async {
+
+    _companyUid = await StorageService().getCompanyUid();
+
+    debugPrint("COMPANY UID => $_companyUid");
+
+    final bool isUpdate =
+        (widget.uid != null && widget.uid!.isNotEmpty) ||
+            (_companyUid != null && _companyUid!.isNotEmpty);
+
+    /// ONLY PREFILL + FETCH IN UPDATE
+    if (isUpdate) {
+
+      await _prefillUserData();
+
+      await _fetchBusinessData();
     }
   }
   Future<void> _fetchLocationFromPincode(String pincode) async {
@@ -123,18 +143,52 @@ class _MyBusinessPageState extends ConsumerState<MyBusinessPage> {
       );
     }
   }
+  Future<void> _prefillUserData() async {
+    try {
+      final response = await AuthHiveService.getResponse();
+
+      if (response == null) return;
+
+      final user = response['user'];
+
+      if (user == null) return;
+
+      final companyName =
+      await StorageService().getCompanyName();
+
+      setState(() {
+        _nameController.text =
+            companyName ?? "";
+
+        _gstController.text =
+            (user['gst_number'] ?? "").toString();
+
+        _emailController.text =
+            (user['email'] ?? "").toString();
+
+        _contact1Controller.text =
+            (user['mobile'] ?? "").toString();
+      });
+    } catch (e) {
+      debugPrint("Prefill error: $e");
+    }
+  }
   Future<void> _submitBusiness() async {
     try {
       if (!_formKey.currentState!.validate()) return;
 
-      if (_selectedStateId == null || _selectedCityId == null){
-        ToastHelper.showError(message: "Please select state & city");
+      if (_selectedStateId == null || _selectedCityId == null) {
+        ToastHelper.showError(
+          message: "Please select state & city",
+        );
         return;
       }
 
-      final isUpdate = widget.uid != null;
+      final bool isUpdate =
+          (widget.uid != null && widget.uid!.isNotEmpty) ||
+              (_companyUid != null && _companyUid!.isNotEmpty);
 
-      /// 🔹 BODY DATA
+      /// BODY
       final Map<String, dynamic> body = {
         "company_name": _nameController.text.trim(),
         "tagline": _taglineController.text.trim(),
@@ -168,12 +222,12 @@ class _MyBusinessPageState extends ConsumerState<MyBusinessPage> {
         "gpay_no": _gpayController.text.trim(),
       };
 
-      /// ✅ ADD UID ONLY FOR UPDATE
+      /// ✅ ADD UID ONLY IN UPDATE
       if (isUpdate) {
-        body["uid"] = widget.uid;
+        body["uid"] = widget.uid ?? _companyUid;
       }
 
-      /// 🔹 FILES
+      /// FILES
       final Map<String, File> files = {};
 
       if (_businessLogo != null) {
@@ -190,41 +244,44 @@ class _MyBusinessPageState extends ConsumerState<MyBusinessPage> {
         await _createTempFile(_upiQrList[i], "upi_$i.png");
       }
 
-      /// 🔥 API CALL
+      /// API CALL
       final response = await NetworkHandler().postMultipart(
-        isUpdate ? "update-company-config" : "create-company",
+        isUpdate
+            ? "update-company-config"
+            : "create-company",
         body: body,
         files: files.isEmpty ? null : files,
       );
 
-      debugPrint("SUCCESS: ${response.data}");
+      debugPrint("SUCCESS RESPONSE: ${response.data}");
 
-      /// ✅ SUCCESS TOAST
+      /// SUCCESS
       ToastHelper.showSuccess(
         message: isUpdate
             ? "Business updated successfully"
             : "Business created successfully",
       );
 
-// ✅ SAVE STATUS
-      final storage = StorageService();
-      await storage.saveCompanyStatus("complete");
+      /// SAVE STATUS
+      await StorageService().saveCompanyStatus("complete");
 
-// ✅ REDIRECT
       if (mounted) {
         Navigator.pop(context, true);
       }
-
     } on DioException catch (e) {
-      final errorMsg =
-          e.response?.data["message"] ?? "Something went wrong";
+      debugPrint("DIO ERROR: ${e.response?.data}");
 
-      ToastHelper.showError(message: errorMsg.toString());
-
-      debugPrint("API ERROR: ${e.response?.data}");
+      ToastHelper.showError(
+        message:
+        e.response?.data["message"] ??
+            "Something went wrong",
+      );
     } catch (e) {
-      ToastHelper.showError(message: "Unexpected error occurred");
       debugPrint("ERROR: $e");
+
+      ToastHelper.showError(
+        message: "Unexpected error occurred",
+      );
     }
   }
   Future<File> _createTempFile(Uint8List bytes, String filename) async {
@@ -236,9 +293,17 @@ class _MyBusinessPageState extends ConsumerState<MyBusinessPage> {
 
   Future<void> _fetchBusinessData() async {
     try {
+
+      final uid = widget.uid ?? _companyUid;
+
+      if (uid == null || uid.isEmpty) {
+        debugPrint("No company uid found");
+        return;
+      }
+
       final response = await NetworkHandler().get(
         "company-config",
-        queryParams: {'uid': widget.uid},
+        queryParams: {'uid': uid},
       );
 
       final data = response.data;
@@ -246,39 +311,93 @@ class _MyBusinessPageState extends ConsumerState<MyBusinessPage> {
       debugPrint("API Response: $data");
 
       setState(() {
-        _nameController.text = (data['company_name'] ?? "").toString();
-        _taglineController.text = (data['tagline'] ?? "").toString();
-        _contact1Controller.text = (data['mobile'] ?? "").toString();
-        _landlineController.text = (data['landline'] ?? "").toString();
-        _contact2Controller.text = (data['contact2'] ?? "").toString();
-        _contact3Controller.text = (data['contact3'] ?? "").toString();
-        _contact4Controller.text = (data['contact4'] ?? "").toString();
-        _contact5Controller.text = (data['contact5'] ?? "").toString();
-        _altContactController.text = (data['alternate_phone'] ?? "").toString();
-        _tollFreeController.text = (data['toll_free'] ?? "").toString();
-        _emailController.text = (data['email'] ?? "").toString();
-        _pincodeController.text = (data['pincode'] ?? "").toString();
-        _websiteController.text = (data['website'] ?? "").toString();
-        _gstController.text = (data['gst_no'] ?? "").toString();
-        _panController.text = (data['pan_no'] ?? "").toString();
-        _addressController.text = (data['address'] ?? "").toString();
-        _jurisdiction1Controller.text = (data['jurisdiction'] ?? "").toString();
-        _beneficiaryController.text = (data['beneficiary_name'] ?? "").toString();
-        _bankNameController.text = (data['bank_name'] ?? "").toString();
-        _accountNoController.text = (data['account_no'] ?? "").toString();
-        _ifscController.text = (data['ifsc_no'] ?? "").toString();
-        _branchController.text = (data['branch_name'] ?? "").toString();
-        _upiId1Controller.text = (data['upi_id'] ?? "").toString();
-        _upiId2Controller.text = (data['upi_id2'] ?? "").toString();
-        _phonepeController.text = (data['phonepe_no'] ?? "").toString();
-        _gpayController.text = (data['gpay_no'] ?? "").toString();
+
+        _nameController.text =
+            (data['company_name'] ?? "").toString();
+
+        _taglineController.text =
+            (data['tagline'] ?? "").toString();
+
+        _contact1Controller.text =
+            (data['mobile'] ?? "").toString();
+
+        _landlineController.text =
+            (data['landline'] ?? "").toString();
+
+        _contact2Controller.text =
+            (data['contact2'] ?? "").toString();
+
+        _contact3Controller.text =
+            (data['contact3'] ?? "").toString();
+
+        _contact4Controller.text =
+            (data['contact4'] ?? "").toString();
+
+        _contact5Controller.text =
+            (data['contact5'] ?? "").toString();
+
+        _altContactController.text =
+            (data['alternate_phone'] ?? "").toString();
+
+        _tollFreeController.text =
+            (data['toll_free'] ?? "").toString();
+
+        _emailController.text =
+            (data['email'] ?? "").toString();
+
+        _pincodeController.text =
+            (data['pincode'] ?? "").toString();
+
+        _websiteController.text =
+            (data['website'] ?? "").toString();
+
+        _gstController.text =
+            (data['gst_no'] ?? "").toString();
+
+        _panController.text =
+            (data['pan_no'] ?? "").toString();
+
+        _addressController.text =
+            (data['address'] ?? "").toString();
+
+        _jurisdiction1Controller.text =
+            (data['jurisdiction'] ?? "").toString();
+
+        _beneficiaryController.text =
+            (data['beneficiary_name'] ?? "").toString();
+
+        _bankNameController.text =
+            (data['bank_name'] ?? "").toString();
+
+        _accountNoController.text =
+            (data['account_no'] ?? "").toString();
+
+        _ifscController.text =
+            (data['ifsc_no'] ?? "").toString();
+
+        _branchController.text =
+            (data['branch_name'] ?? "").toString();
+
+        _upiId1Controller.text =
+            (data['upi_id'] ?? "").toString();
+
+        _upiId2Controller.text =
+            (data['upi_id2'] ?? "").toString();
+
+        _phonepeController.text =
+            (data['phonepe_no'] ?? "").toString();
+
+        _gpayController.text =
+            (data['gpay_no'] ?? "").toString();
+
+        _selectedStateId = data['state'];
+        _selectedCityId = data['city'];
 
         if (data['logo'] != null) {
           _networkLogoUrl = data['logo'].toString();
         }
       });
-    } on DioException catch (e) {
-      debugPrint("GET ERROR: ${e.response?.data}");
+
     } catch (e) {
       debugPrint("Error fetching business details: $e");
     }
