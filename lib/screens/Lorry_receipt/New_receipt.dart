@@ -31,6 +31,26 @@ class _NewLorryReceiptScreenState
 
   late final List<Widget> steps;
 
+  Future<void> _fetchPrefillByOrderNo(String orderNo) async {
+    if (orderNo.isEmpty) return;
+
+    try {
+      final data = await ref.read(lorryReceiptProvider.notifier).prefillByOrderNo(orderNo);
+
+      if (data.isNotEmpty) {
+        ref.read(lrFormDataProvider.notifier).state = data;
+        // Populate fields in the form
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text("No data found for this Order ID"),
+          backgroundColor: Colors.red,
+        ),
+      );
+    }
+  }
+
   @override
   void initState() {
     super.initState();
@@ -38,21 +58,24 @@ class _NewLorryReceiptScreenState
     Future.microtask(() async {
       if (widget.isEdit && widget.uid != null) {
         try {
-          final data = await ref
-              .read(lorryReceiptProvider.notifier)
-              .getLorryReceiptByUid(widget.uid!);
+          final data = await ref.read(lorryReceiptProvider.notifier).getLorryReceiptByUid(widget.uid!);
 
           ref.read(lrFormDataProvider.notifier).state = data;
         } catch (e) {
           debugPrint("Prefill failed: $e");
         }
-      } else {
+      }
+      else if( widget.uid != null){
+        print("object>>>>>>>>>>>>>${widget.uid}");
+      //  _fetchPrefillByOrderNo(widget.uid ?? "");
+      }
+      else {
         ref.read(lrFormDataProvider.notifier).state = {};
       }
     });
 
     steps = [
-      LRDetailsForm(onNext: goToNextStep),
+      LRDetailsForm(onNext: goToNextStep,uid:widget.uid),
       ConsignorForm(onNext: goToNextStep, onBack: goToPreviousStep),
       PackagePaymentForm(
           onNext: goToNextStep, onBack: goToPreviousStep),

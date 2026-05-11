@@ -562,6 +562,12 @@ class _OrdersScreenState extends ConsumerState<OrdersScreen> {
         ),
 
         PopupMenuModel(
+          value: 'generate_lr',
+          title: 'Generate LR',
+          icon: "assets/images/quotation.svg",
+        ),
+
+        PopupMenuModel(
           value: 'setFollow',
           title: 'Set Follow Up',
           icon: "assets/images/follow_up.svg",
@@ -611,6 +617,16 @@ class _OrdersScreenState extends ConsumerState<OrdersScreen> {
               ref: ref,
               sourceType: "Order",
               sourceId: quotationNo ?? "",
+            );
+            break;
+          case 'generate_lr':
+            Navigator.pushNamed(
+              context,
+              newLorryReceiptScreenRoute,
+              arguments: {
+                "uid": quotationNo,
+                "isEdit": false,
+              },
             );
             break;
         }

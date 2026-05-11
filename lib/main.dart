@@ -76,13 +76,13 @@ Future<String?> getFcmToken() async {
     await Future.delayed(const Duration(seconds: 2));
 
     /// ✅ STEP 1: GET APNS TOKEN
-    String? apnsToken = await FirebaseMessaging.instance.getAPNSToken();
-    debugPrint("🍎 APNS TOKEN => $apnsToken");
-
-    if (apnsToken == null) {
-      debugPrint("❌ APNS token not available yet");
-      return null;
-    }
+    // String? apnsToken = await FirebaseMessaging.instance.getAPNSToken();
+    // debugPrint("🍎 APNS TOKEN => $apnsToken");
+    //
+    // if (apnsToken == null) {
+    //   debugPrint("❌ APNS token not available yet");
+    //   return null;
+    // }
 
     /// ✅ STEP 2: GET FCM TOKEN
     String? fcmToken = await FirebaseMessaging.instance.getToken();

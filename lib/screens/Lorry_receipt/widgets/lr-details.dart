@@ -23,9 +23,11 @@ import '../../Quotation/widget/insurance_and_other_form.dart';
 
 class LRDetailsForm extends ConsumerStatefulWidget {
   final VoidCallback onNext;
+  final String? uid;
 
   const LRDetailsForm({
     super.key,
+    this.uid,
     required this.onNext,
   });
 
@@ -67,6 +69,7 @@ class _LRDetailsFormState extends ConsumerState<LRDetailsForm> {
   String? selectedRiskType;
   final FocusNode orderIdFocusNode = FocusNode();
   Timer? _debounce;
+
   Future<void> _fetchPrefillByOrderNo(String orderNo) async {
     if (orderNo.isEmpty) return;
 
@@ -108,6 +111,10 @@ class _LRDetailsFormState extends ConsumerState<LRDetailsForm> {
     });
 
     WidgetsBinding.instance.addPostFrameCallback((_) async {
+
+      if(widget.uid !=null){
+        _fetchPrefillByOrderNo(widget.uid ?? '');
+      }
 
       /// LOAD CITIES FIRST
       await ref.read(cityProviders.notifier).loadCities();
