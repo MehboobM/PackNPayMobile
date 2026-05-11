@@ -236,6 +236,8 @@ class _BasicDetailScreenState extends ConsumerState<BasicDetailScreen> {
                         );
 
                         if (response != null && response['success']) {
+                          await StorageService()
+                              .saveCompanyName(companyController.text.trim());
                           ToastHelper.showSuccess(
                               message: response['message']);
 
@@ -246,11 +248,17 @@ class _BasicDetailScreenState extends ConsumerState<BasicDetailScreen> {
                           final user = response['user'];
 
                           if (user != null) {
+
                             await StorageService().saveCompanyStatus(
                                 user['company_status'] ?? '');
-                            await StorageService()
-                                .saveSubscriptionStatus(
+
+                            await StorageService().saveSubscriptionStatus(
                                 user['subscription_status'] ?? '');
+
+                            /// SAVE COMPANY UID
+                            await StorageService().saveCompanyUid(
+                                user['company_uid'] ?? '');
+
                           }
 
                           if (user['company_id'] != null) {
