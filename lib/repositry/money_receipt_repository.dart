@@ -67,6 +67,24 @@ class MoneyReceiptRepo {
     }
   }
 
+
+
+  Future<Map<String, dynamic>> prefillByOrderNo(String orderNo) async {
+    try {
+      final response = await _networkHandler.get(
+        "${ApiEndPoints.prefillMrByOrderNo}$orderNo",
+      );
+
+      if (response.statusCode == 200) {
+        return Map<String, dynamic>.from(response.data);
+      } else {
+        throw Exception("Failed to fetch prefill data");
+      }
+    } catch (e) {
+      rethrow;
+    }
+  }
+
   /// 🔹 OTHER METHODS (UNCHANGED)
   Future<void> createReceipt(Map<String, dynamic> body) async {
     await _networkHandler.post(

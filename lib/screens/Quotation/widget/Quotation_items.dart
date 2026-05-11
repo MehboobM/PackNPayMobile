@@ -95,31 +95,54 @@ class QuotationListItem extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center, // ✅ center horizontally
                 children: [
-
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center, // ✅ center the row
-                    children: [
-                      Text(
-                        from,
-                        style: TextStyles.f10w400Gray6,
-                      ),
-
-                      const SizedBox(width: 4),
-
-                      const Icon(
-                        Icons.arrow_forward,
-                        size: 14,
-                        color: Colors.orange,
-                      ),
-
-                      const SizedBox(width: 4),
-
-                      Text(
-                        to,
-                        style: TextStyles.f10w400Gray6,
-                      ),
-                    ],
+                  SizedBox(
+                    width: 140,
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start, // ✅ important
+                      children: [
+                        Expanded(
+                          child: Text(
+                            from,
+                            style: TextStyles.f10w400Gray6,
+                            softWrap: true,
+                          ),
+                        ),
+                        const Icon(Icons.arrow_forward, size: 14, color: Colors.orange),
+                        const SizedBox(width: 4),
+                        Expanded(
+                          child: Text(
+                            to,
+                            style: TextStyles.f10w400Gray6,
+                            softWrap: true,
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
+                  // Row(
+                  //   mainAxisAlignment: MainAxisAlignment.center, // ✅ center the row
+                  //   children: [
+                  //     Text(
+                  //       from,
+                  //       style: TextStyles.f10w400Gray6,
+                  //     ),
+                  //
+                  //     const SizedBox(width: 4),
+                  //
+                  //     const Icon(
+                  //       Icons.arrow_forward,
+                  //       size: 14,
+                  //       color: Colors.orange,
+                  //     ),
+                  //
+                  //     const SizedBox(width: 4),
+                  //
+                  //     Text(
+                  //       to,
+                  //       style: TextStyles.f10w400Gray6,
+                  //     ),
+                  //   ],
+                  // ),
 
                   const SizedBox(height: 10),
 

@@ -569,7 +569,7 @@ class _QuotationScreenState extends ConsumerState<QuotationScreen> {
                                     );
                                   },
                                   onTapMenu: (detail) {
-                                    _onTapMenu(context, detail.globalPosition,item.uid);
+                                    _onTapMenu(context, detail.globalPosition,item.uid,item.orderNo);
 
                                   },
                                 );
@@ -582,7 +582,7 @@ class _QuotationScreenState extends ConsumerState<QuotationScreen> {
       ),
     );
   }
-  void _onTapMenu(BuildContext context, Offset position,String? quotationNo) {
+  void _onTapMenu(BuildContext context, Offset position,String? quotationNo,String? orderNo) {
 
     final canEditQuotation = PermissionHelper.canEdit(ModuleCode.quotation);
     final canDeleteQuotation = PermissionHelper.canDelete(ModuleCode.quotation);
@@ -613,7 +613,7 @@ class _QuotationScreenState extends ConsumerState<QuotationScreen> {
           icon: "assets/images/signature.svg",
         ),
 
-        if(canViewOrder && canAddOrder)
+        if(canViewOrder && canAddOrder && (orderNo==null))
         PopupMenuModel(
           value: 'order_generate',
           title: 'Order Generate',

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -9,6 +11,7 @@ import '../../global_widget/dropdown_with textfield.dart';
 import '../../models/city_modal.dart';
 import '../../models/dropdown_item.dart';
 import '../../notifier/money_recepitform.dart';
+import '../../notifier/moneyreceipt_notifier.dart';
 import '../../notifier/survey_moving_city_notifier.dart';
 import '../../utils/app_colors.dart';
 import '../../utils/m_font_styles.dart';
@@ -19,8 +22,7 @@ class NewReceiptScreen extends ConsumerStatefulWidget {
   const NewReceiptScreen({super.key});
 
   @override
-  ConsumerState<NewReceiptScreen> createState() =>
-      _NewReceiptScreenState();
+  ConsumerState<NewReceiptScreen> createState() => _NewReceiptScreenState();
 }
 
 class _NewReceiptScreenState extends ConsumerState<NewReceiptScreen> {
@@ -30,7 +32,7 @@ class _NewReceiptScreenState extends ConsumerState<NewReceiptScreen> {
   final branchController = TextEditingController();
   final nameController = TextEditingController();
   final phoneController = TextEditingController();
-  final quotationNoController = TextEditingController();
+  final orderNoController = TextEditingController();
   final billDateController = TextEditingController();
   final fromController = TextEditingController();
   final toController = TextEditingController();
@@ -41,21 +43,110 @@ class _NewReceiptScreenState extends ConsumerState<NewReceiptScreen> {
   final remarksController = TextEditingController();
 
   /// ✅ DROPDOWN VALUES
-  String receiptAgainst = "Quotation";
-  String paymentType = "Part";
-  String paymentMode = "Cash";
+  String receiptAgainst = "Order";
+  String paymentTypeValue = "Part";
+  String paymentModeValue = "Cash";
   String? uid; // 👈 add this
+
+  final paymentTypeLabels = [
+    "Full Payment",
+    "Part Payment",
+    "Advance",
+  ];
+
+  final paymentTypeValues = [
+    "Full",
+    "Part",
+    "Advance",
+  ];
+
+  final paymentModeLabels = [
+    "Cash",
+    "Cheque",
+    "Online",
+    "UPI",
+    "NEFT",
+    "RTGS",
+  ];
+
+  final paymentModeValues = [
+    "Cash",
+    "Cheque",
+    "Online",
+    "UPI",
+    "NEFT",
+    "RTGS",
+  ];
+
+
 
 
   bool isLoading = false;
 
-@override
+  @override
   void initState() {
-    // TODO: implement initState
     super.initState();
 
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      ref.read(cityProviders.notifier).loadCities();
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+
+      /// LOAD CITIES FIRST
+      await ref.read(cityProviders.notifier).loadCities();
+
+      /// PREFILL FROM ORDER
+      final args = ModalRoute.of(context)?.settings.arguments;
+
+      // here if args has this key then call this order_no_from_order
+
+      /// CHECK ORDER NO FROM ORDER SCREEN
+      if (args != null && args is Map<String, dynamic> && args.containsKey("order_no_from_order")) {
+
+        final orderNo = args["order_no_from_order"];
+        if (orderNo == null || orderNo.toString().trim().isEmpty) {
+          return;
+        }
+
+        final response = await ref.read(moneyReceiptProvider).prefillByOrderNo(orderNo);
+
+        final data = response["data"] ?? {};
+
+        if (data.isNotEmpty) {
+
+          /// POPULATE TEXTFIELDS
+          _populateFields(data);
+
+          /// RESTORE DROPDOWN
+          final cityState = ref.read(cityProviders);
+
+          try {
+
+            final fromCityId = data["from_city_id"];
+            final toCityId = data["to_city_id"];
+
+            if (fromCityId != null) {
+              selectedMovingFormCity = cityState.cities.firstWhere(
+                    (e) => e.id == fromCityId,
+              );
+            }
+
+            if (toCityId != null) {
+              selectedMovingToCity = cityState.cities.firstWhere(
+                    (e) => e.id == toCityId,
+              );
+            }
+
+          } catch (e) {
+            debugPrint("City restore error: $e");
+          }
+
+          if (mounted) {
+            setState(() {});
+          }
+        }
+        else{
+          ToastHelper.showError(message: "Order not found for this id");
+          //orderNoController.text = "";
+        }
+      }
     });
   }
 
@@ -63,10 +154,10 @@ class _NewReceiptScreenState extends ConsumerState<NewReceiptScreen> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-
+    //this is initilaization from edit
     final args = ModalRoute.of(context)?.settings.arguments;
 
-    if (args != null && args is Map<String, dynamic>) {
+    if (args != null && args is Map<String, dynamic> && !args.containsKey("order_no_from_order")) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         _populateFields(args);
       });
@@ -83,28 +174,26 @@ class _NewReceiptScreenState extends ConsumerState<NewReceiptScreen> {
       return "";
     }
   }
+
   void _populateFields(Map<String, dynamic> data) {
     receiptNoController.text = data["receipt_no"] ?? "";
     dateController.text = _formatDisplayDate(data["receipt_date"]);
     branchController.text = data["branch"] ?? "";
     nameController.text = data["name"] ?? "";
     phoneController.text = data["phone"] ?? "";
-    quotationNoController.text = data["receipt_against_id"] ?? "";
+    orderNoController.text = data["receipt_against_id"] ?? "";
     billDateController.text = _formatDisplayDate(data["bill_quotation_date"]);
     fromController.text = data["move_from"] ?? "";
     toController.text = data["move_to"] ?? "";
 
-    amountController.text =
-        double.tryParse(data["receipt_amount"].toString())
-            ?.toStringAsFixed(0) ??
-            "";
+    amountController.text = double.tryParse(data["receipt_amount"].toString())?.toStringAsFixed(0) ?? "";
 
     transactionController.text = data["transaction_no"] ?? "";
     remarksController.text = data["remarks"] ?? "";
 
     receiptAgainst = data["receipt_against"] ?? "Quotation";
-    paymentType = data["payment_type"] ?? "Part";
-    paymentMode = data["payment_mode"] ?? "Cash";
+    paymentTypeValue = data["payment_type"] ?? "Part";
+    paymentModeValue = data["payment_mode"] ?? "Cash";
     uid = data["uid"];
   }
 
@@ -136,13 +225,13 @@ class _NewReceiptScreenState extends ConsumerState<NewReceiptScreen> {
       "name": nameController.text,
       "phone": phoneController.text,
       "receipt_against": receiptAgainst,
-      "receipt_against_id": quotationNoController.text,
+      "receipt_against_id": orderNoController.text,
       "bill_quotation_date": formatDate(billDateController.text),
       "move_from": fromController.text,
       "move_to": toController.text,
-      "payment_type": paymentType,
+      "payment_type": paymentTypeValue,
       "receipt_amount": double.parse(amountController.text),
-      "payment_mode": paymentMode,
+      "payment_mode": paymentModeValue,
       "transaction_no": transactionController.text.isEmpty
           ? null
           : transactionController.text,
@@ -173,7 +262,7 @@ class _NewReceiptScreenState extends ConsumerState<NewReceiptScreen> {
     branchController.dispose();
     nameController.dispose();
     phoneController.dispose();
-    quotationNoController.dispose();
+    orderNoController.dispose();
     billDateController.dispose();
     fromController.dispose();
     toController.dispose();
@@ -291,7 +380,7 @@ class _NewReceiptScreenState extends ConsumerState<NewReceiptScreen> {
       },
     );
   }
-
+  Timer? _debounce;
 
   @override
   Widget build(BuildContext context) {
@@ -403,23 +492,77 @@ class _NewReceiptScreenState extends ConsumerState<NewReceiptScreen> {
 
                     buildField("receipt.branch".tr(), branchController, "Enter Branch"),
                     buildField("receipt.name".tr(), nameController, "Enter name"),
-                    buildField("receipt.phoneNo".tr(), phoneController, "Enter phone no.",
-                        keyboard: TextInputType.phone),
-
-                    DropdownWithField(
-                      title: "receipt.receiptAgainst".tr(),
-                      value: receiptAgainst,
-                      items: ["Quotation", "Bill"],
-                      controller: quotationNoController,
-                      hintText: "Enter Qat. no.",
-                      onChanged: (val) {
-                        setState(() {
-                          receiptAgainst = val!;
-                        });
-                      },
+                    buildField(
+                        "receipt.phoneNo".tr(),
+                        phoneController,
+                        "Enter phone no.",
+                        keyboard: TextInputType.phone
                     ),
 
-                    const SizedBox(height: 16),
+                    buildField(
+                        "order.orderNo".tr(),
+                        orderNoController,
+                        "Enter Order no.",
+                        onChanged: (val) {
+
+                          if (_debounce?.isActive ?? false) {
+                            _debounce?.cancel();
+                          }
+
+                          _debounce = Timer(
+                            const Duration(milliseconds: 700),
+                                () async {
+
+                              if (val.trim().isEmpty) return;
+
+                              try {
+
+                                final response = await ref
+                                    .read(moneyReceiptProvider)
+                                    .prefillByOrderNo(val);
+
+                                final data = response["data"] ?? {};
+
+                                if (data.isNotEmpty) {
+
+                                  _populateFields(data);
+
+                                  final cityState = ref.read(cityProviders);
+
+                                  final fromCityId = data["from_city_id"];
+                                  final toCityId = data["to_city_id"];
+
+                                  if (fromCityId != null) {
+                                    selectedMovingFormCity = cityState.cities.firstWhere(
+                                          (e) => e.id == fromCityId,
+                                    );
+                                  }
+
+                                  if (toCityId != null) {
+                                    selectedMovingToCity = cityState.cities.firstWhere(
+                                          (e) => e.id == toCityId,
+                                    );
+                                  }
+
+                                  setState(() {});
+                                } else {
+
+                                  ToastHelper.showError(
+                                    message: "Order not found for this id",
+                                  );
+                                }
+
+                              } catch (e) {
+
+                                ToastHelper.showError(
+                                  message: "Order not found for this id",
+                                );
+                              }
+                            },
+                          );
+                        }
+                    ),
+
 
                     buildDateField("receipt.billAndQuotationDate".tr(), billDateController),
 
@@ -553,20 +696,32 @@ class _NewReceiptScreenState extends ConsumerState<NewReceiptScreen> {
                     // ),
 
                     /// 🔹 PAYMENT TYPE + AMOUNT
+                    const SizedBox(height: 16),
                     Row(
                       children: [
+                        // reusableDropdown(
+                        //   title: "receipt.paymentType".tr(),
+                        //   value: paymentTypeValue,
+                        //   items: ["Part", "Full"],
+                        //   onChanged: (val) {
+                        //     setState(() {
+                        //       paymentTypeValue = val!;////replace with paymentTypeItem
+                        //     });
+                        //   },
+                        //   flex: 1,
+                        // ),
+
                         reusableDropdown(
                           title: "receipt.paymentType".tr(),
-                          value: paymentType,
-                          items: ["Part", "Full"],
+                          value: paymentTypeValue,
+                          items: paymentTypeValues,
                           onChanged: (val) {
                             setState(() {
-                              paymentType = val!;
+                              paymentTypeValue = val!;
                             });
                           },
                           flex: 1,
                         ),
-
                         const SizedBox(width: 12),
 
                         Expanded(
@@ -592,16 +747,28 @@ class _NewReceiptScreenState extends ConsumerState<NewReceiptScreen> {
                     /// 🔹 PAYMENT MODE
                     DropdownWithField(
                       title: "receipt.paymentMode".tr(),
-                      value: paymentMode,
-                      items: ["Cash", "Online", "Cheque"],
+                      value: paymentModeValue,
+                      items: paymentModeValues,
                       controller: transactionController,
                       hintText: "Enter Transaction no.",
                       onChanged: (val) {
                         setState(() {
-                          paymentMode = val!;
+                          paymentModeValue = val!;
                         });
                       },
                     ),
+                    // DropdownWithField(
+                    //   title: "receipt.paymentMode".tr(),
+                    //   value: paymentModeValue,
+                    //   items: ["Cash", "Online", "Cheque"],//replace with paymentModeItem
+                    //   controller: transactionController,
+                    //   hintText: "Enter Transaction no.",
+                    //   onChanged: (val) {
+                    //     setState(() {
+                    //       paymentModeValue = val!;
+                    //     });
+                    //   },
+                    // ),
 
                     const SizedBox(height: 16),
 
@@ -681,7 +848,7 @@ class _NewReceiptScreenState extends ConsumerState<NewReceiptScreen> {
   /// 🔹 REUSABLE FIELD
   Widget buildField(String title, TextEditingController controller,
       String hint,
-      {TextInputType keyboard = TextInputType.text}) {
+      {TextInputType keyboard = TextInputType.text,Function(String)? onChanged}) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 16),
       child: Column(
@@ -695,6 +862,7 @@ class _NewReceiptScreenState extends ConsumerState<NewReceiptScreen> {
             keyboardType: keyboard,
             borderRadius: 12,
             hintStyle: TextStyles.f12w400Gray5,
+            onChanged: onChanged,
           ),
         ],
       ),
@@ -736,3 +904,17 @@ class _NewReceiptScreenState extends ConsumerState<NewReceiptScreen> {
     }
   }
 }
+
+
+// DropdownWithField(
+//   title: "receipt.receiptAgainst".tr(),
+//   value: receiptAgainst,
+//   items: ["Quotation", "Bill"],
+//   controller: orderNoController,
+//   hintText: "Enter Qat. no.",
+//   onChanged: (val) {
+//     setState(() {
+//       receiptAgainst = val!;
+//     });
+//   },
+// ),

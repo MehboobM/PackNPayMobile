@@ -247,7 +247,7 @@ class _MoneyReciptPageState extends State<MoneyReciptPage> {
               ),
             ),
           ),
-          _buildBottomButtons(),
+          SafeArea(child: _buildBottomButtons()),
         ],
       ),
     );

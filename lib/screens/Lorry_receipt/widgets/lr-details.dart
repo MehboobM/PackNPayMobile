@@ -23,11 +23,13 @@ import '../../Quotation/widget/insurance_and_other_form.dart';
 
 class LRDetailsForm extends ConsumerStatefulWidget {
   final VoidCallback onNext;
-  final String? uid;
+  final String? orderId;
+  final bool isEdit;
 
   const LRDetailsForm({
     super.key,
-    this.uid,
+    this.orderId,
+    this.isEdit = false,
     required this.onNext,
   });
 
@@ -47,13 +49,12 @@ class _LRDetailsFormState extends ConsumerState<LRDetailsForm> {
 
   final TextEditingController dateController = TextEditingController();
   final TextEditingController orderIdController =
-  TextEditingController(text: "ORD-0001");
+  TextEditingController(text: "");
   final TextEditingController vehicleController = TextEditingController();
   final TextEditingController driverNameController = TextEditingController();
   final TextEditingController mobileController = TextEditingController();
   final TextEditingController altMobileController = TextEditingController();
-  final TextEditingController invoiceAmountController =
-  TextEditingController();
+  final TextEditingController invoiceAmountController = TextEditingController();
   final TextEditingController invoiceDateController = TextEditingController();
   final TextEditingController invoiceNoController = TextEditingController();
   final TextEditingController ewayBillNoController = TextEditingController();
@@ -74,16 +75,16 @@ class _LRDetailsFormState extends ConsumerState<LRDetailsForm> {
     if (orderNo.isEmpty) return;
 
     try {
-      final data = await ref
-          .read(lorryReceiptProvider.notifier)
-          .prefillByOrderNo(orderNo);
-
+      final datas = await ref.read(lorryReceiptProvider.notifier).prefillByOrderNo(orderNo);
+      final data = datas["data"] ?? {};
+      print("object>>>>>>>>>>>>>>>>>>>>>${data["order_id"]}");
       if (data.isNotEmpty) {
         // Store data for reuse across steps
         ref.read(lrFormDataProvider.notifier).state = data;
 
+        print("object data >>>>>>>$data");
         // Populate fields in the form
-        _populateFields(data);
+        _populateFields2(data);
 
         setState(() {});
       }
@@ -111,12 +112,6 @@ class _LRDetailsFormState extends ConsumerState<LRDetailsForm> {
     });
 
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-
-      if(widget.uid !=null){
-        _fetchPrefillByOrderNo(widget.uid ?? '');
-      }
-
-      /// LOAD CITIES FIRST
       await ref.read(cityProviders.notifier).loadCities();
 
       final data = ref.read(lrFormDataProvider);
@@ -128,6 +123,15 @@ class _LRDetailsFormState extends ConsumerState<LRDetailsForm> {
           setState(() {});
         }
       }
+
+      if(widget.orderId !=null && widget.isEdit==false){
+        await _fetchPrefillByOrderNo(widget.orderId ?? '');
+      }
+
+      // /// LOAD CITIES FIRST
+
+      //
+
     });
   }
 
@@ -139,7 +143,10 @@ class _LRDetailsFormState extends ConsumerState<LRDetailsForm> {
     super.dispose();
   }
 
-  void _populateFields(Map<String, dynamic> data) {
+  void _populateFields2(Map<String, dynamic> data) {
+
+    print("object>>>>>>>>>>>>>>>>>>>>>${data["order_id"]}");
+
     lrNoController.text = data["lr_no"] ?? "";
     orderIdController.text = data["order_id"] ?? "";
     dateController.text = _formatDisplayDate(data["lr_date"]);
@@ -149,16 +156,74 @@ class _LRDetailsFormState extends ConsumerState<LRDetailsForm> {
     altMobileController.text = data["driver_license"] ?? "";
     invoiceAmountController.text =
         (data["goods_value"] ?? "").toString();
+
     invoiceDateController.text =
         _formatDisplayDate(data["invoice_date"]);
+
     invoiceNoController.text = data["invoice_no"] ?? "";
+
     ewayBillNoController.text = data["eway_bill_no"] ?? "";
+
     ewayBillGenDateController.text =
         _formatDisplayDate(data["eway_bill_date"]);
+
     ewayBillExpireDateController.text =
         _formatDisplayDate(data["eway_expiry_date"]);
+
     ewayBillExtendPeriodController.text =
         _formatDisplayDate(data["eway_extend_date"]);
+
+    selectedRiskType =
+        data["risk_type"]?.toString().trim();
+
+    /// ✅ API RETURNS IDS
+    selectedFromCityId = data["moving_from"];
+    selectedToCityId = data["moving_to"];
+
+    final cityState = ref.read(cityProviders);
+
+    try {
+
+      /// ✅ FIND CITY USING ID
+      if (selectedFromCityId != null) {
+
+        selectedMovingFormCity = cityState.cities.firstWhere((e) => e.id == selectedFromCityId,);
+
+        selectedFromCity = selectedMovingFormCity?.name;
+      }
+
+      /// ✅ FIND CITY USING ID
+      if (selectedToCityId != null) {
+
+        selectedMovingToCity = cityState.cities.firstWhere((e) => e.id == selectedToCityId,);
+
+        selectedToCity =
+            selectedMovingToCity?.name;
+      }
+
+      setState(() {});
+
+    } catch (e) {
+      debugPrint("City restore error: $e");
+    }
+  }
+
+  void _populateFields(Map<String, dynamic> data) {
+    print("object>>>>>>>>>>>>>>>>>>>>>${data["lr_no"]}");
+    lrNoController.text = data["lr_no"] ?? "";
+    orderIdController.text = data["order_id"] ?? "";
+    dateController.text = _formatDisplayDate(data["lr_date"]);
+    vehicleController.text = data["vehicle_no"] ?? "";
+    driverNameController.text = data["driver_name"] ?? "";
+    mobileController.text = data["driver_phone"] ?? "";
+    altMobileController.text = data["driver_license"] ?? "";
+    invoiceAmountController.text = (data["goods_value"] ?? "").toString();
+    invoiceDateController.text = _formatDisplayDate(data["invoice_date"]);
+    invoiceNoController.text = data["invoice_no"] ?? "";
+    ewayBillNoController.text = data["eway_bill_no"] ?? "";
+    ewayBillGenDateController.text = _formatDisplayDate(data["eway_bill_date"]);
+    ewayBillExpireDateController.text = _formatDisplayDate(data["eway_expiry_date"]);
+    ewayBillExtendPeriodController.text = _formatDisplayDate(data["eway_extend_date"]);
 
     selectedRiskType = data["risk_type"]?.toString().trim();
 
@@ -325,12 +390,10 @@ class _LRDetailsFormState extends ConsumerState<LRDetailsForm> {
     final citiesAsync = ref.watch(cityProvider);
     final riskTypeItems = dropdown.getLabels("risk_type").toSet().toList();
     // ✅ Fix invalid selected value
-    if (selectedRiskType != null &&
-        !riskTypeItems.contains(selectedRiskType)) {
+    if (selectedRiskType != null && !riskTypeItems.contains(selectedRiskType)) {
       selectedRiskType = null;
     }
-    selectedRiskType ??=
-    riskTypeItems.isNotEmpty ? riskTypeItems.first : null;
+    selectedRiskType ??= riskTypeItems.isNotEmpty ? riskTypeItems.first : null;
     print("Risk Items: $riskTypeItems");
     print("Selected Risk: $selectedRiskType");
     return Form(

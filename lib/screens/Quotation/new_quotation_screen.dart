@@ -143,63 +143,65 @@ class _NewQuotationScreenState extends ConsumerState<NewQuotationScreen> {
         ),
       ),
 
-      body: Column(
-        children: [
-
-          Container(height: 10,color: Color(0xFFDBDBDB)),
-
-          /// STEP CONTENT
-          Expanded(
-            child: Container(
-              color: Colors.white,
-              child: SingleChildScrollView(
-                child: buildStepBody(),
+      body: SafeArea(
+        child: Column(
+          children: [
+        
+            Container(height: 10,color: Color(0xFFDBDBDB)),
+        
+            /// STEP CONTENT
+            Expanded(
+              child: Container(
+                color: Colors.white,
+                child: SingleChildScrollView(
+                  child: buildStepBody(),
+                ),
               ),
             ),
-          ),
-
-          /// STICKY BUTTONS
-          Container(
-            padding: const EdgeInsets.all(16),
-            decoration: const BoxDecoration(
-              color: Colors.white,
-              border: Border(
-                top: BorderSide(color: Color(0xFFE5E5E5)),
+        
+            /// STICKY BUTTONS
+            Container(
+              padding: const EdgeInsets.all(16),
+              decoration: const BoxDecoration(
+                color: Colors.white,
+                border: Border(
+                  top: BorderSide(color: Color(0xFFE5E5E5)),
+                ),
+              ),
+              child: Row(
+                children: [
+        
+                  /// BACK
+                  Expanded(
+                    child: CustomButton(
+                      text: "Back",
+                      onPressed: previousStep,
+                      backgroundColor: Colors.white,
+                      foregroundColor: AppColors.primary,
+                      borderRadius: 12,
+                      elevation: 0,
+                      borderColor: AppColors.primary,
+                    ),
+                  ),
+        
+                  const SizedBox(width: 12),
+        
+                  /// NEXT
+                  Expanded(
+                    child: CustomButton(
+                      text: currentStep == 3 ?   "common.submit".tr() : "quotation.saveNext".tr(),
+                      icon: Icons.keyboard_double_arrow_right,
+                      iconRight: true,
+                      onPressed: handleSaveQuotation,
+                      backgroundColor: AppColors.primary,
+                      borderRadius: 12,
+                    ),
+                  ),
+                ],
               ),
             ),
-            child: Row(
-              children: [
-
-                /// BACK
-                Expanded(
-                  child: CustomButton(
-                    text: "Back",
-                    onPressed: previousStep,
-                    backgroundColor: Colors.white,
-                    foregroundColor: AppColors.primary,
-                    borderRadius: 12,
-                    elevation: 0,
-                    borderColor: AppColors.primary,
-                  ),
-                ),
-
-                const SizedBox(width: 12),
-
-                /// NEXT
-                Expanded(
-                  child: CustomButton(
-                    text: currentStep == 3 ?   "common.submit".tr() : "quotation.saveNext".tr(),
-                    icon: Icons.keyboard_double_arrow_right,
-                    iconRight: true,
-                    onPressed: handleSaveQuotation,
-                    backgroundColor: AppColors.primary,
-                    borderRadius: 12,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

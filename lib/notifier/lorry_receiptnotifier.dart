@@ -238,8 +238,7 @@ class LorryReceiptNotifier extends StateNotifier<LorryReceiptState> {
     try {
       state = state.copyWith(isLoading: true);
 
-      final data =
-      await repository.prefillByOrderNo(orderNo);
+      final data = await repository.prefillByOrderNo(orderNo);
 
       state = state.copyWith(isLoading: false);
       return data;

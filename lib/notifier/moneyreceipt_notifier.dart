@@ -52,6 +52,17 @@ class MoneyReceiptNotifier extends ChangeNotifier {
     }
   }
 
+
+
+  Future<Map<String, dynamic>> prefillByOrderNo(String orderNo) async {
+    try {
+      final data = await _repo.prefillByOrderNo(orderNo);
+      return data;
+    } catch (e) {
+      rethrow;
+    }
+  }
+
   /// 🔹 FETCH RECEIPTS WITH FILTERS
   Future<void> fetchReceipts() async {
     isLoading = true;

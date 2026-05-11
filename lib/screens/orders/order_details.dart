@@ -12,6 +12,7 @@ import 'package:pack_n_pay/utils/m_font_styles.dart';
 
 import '../../global_widget/custom_button.dart';
 import '../../notifier/order_detail_notifier.dart';
+import '../../routes/route_names_const.dart';
 import '../../utils/toast_message.dart';
 import '../Quotation/widget/gradient_title_widget.dart';
 import '../dummy/widgets/details_upload_dialog.dart';
@@ -43,17 +44,50 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
     }
   }
 
-
   String getStatus(String? status) {
     switch (status) {
       case "SHIFTING_STARTED":
-        return "SHIFTING STARTED";
+        return "Shifting Started";
+
+      case "PICKUP_COMPLETED":
+        return "Pickup Completed";
+
       case "SHIFTING_COMPLETED":
-        return "SHIFTING COMPLETED";
+        return "Shifting Completed";
+
+      case "SETTLED":
+        return "Settled";
+
+      case "PENDING":
+        return "Pending";
+
+      case "ASSIGNED":
+        return "Assigned";
+
+      case "IN_PROGRESS":
+        return "In Progress";
+
+      case "COMPLETED":
+        return "Completed";
+
+      case "CANCELLED":
+        return "Cancelled";
+
       default:
-        return status ?? "-";
+        return status?.replaceAll("_", " ") ?? "-";
     }
   }
+
+  // String getStatus(String? status) {
+  //   switch (status) {
+  //     case "SHIFTING_STARTED":
+  //       return "SHIFTING STARTED";
+  //     case "SHIFTING_COMPLETED":
+  //       return "SHIFTING COMPLETED";
+  //     default:
+  //       return status ?? "-";
+  //   }
+  // }
 
   List<Map<String, dynamic>> mapExpenses(List<dynamic> expenses) {
     return expenses.map((e) {
@@ -496,29 +530,54 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
           style: TextStyles.f16w600mGray9,
         ),
         actions: [
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 10),
-            child: SvgPicture.asset(
-              "assets/icons/pdf.svg",
-              width: 22,
-              color: AppColors.primary,
+          InkWell(
+            onTap: (){
+              Navigator.pushNamed(
+                context, newReceiptScreenRoute,arguments: {
+                  "order_no_from_order":data?.quotationNo
+               }
+              );
+            },
+            child: Row(
+              children: [
+                SvgPicture.asset("assets/images/quotation.svg",fit: BoxFit.contain,color: AppColors.primary,),
+                SizedBox(width: 6,),
+                Text(
+                  "Create Money Receipt",
+                  style: TextStyles.f12w400mWhite.copyWith(
+                    color: AppColors.primary,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+                SizedBox(width: 14,)
+              ],
             ),
           ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 10),
-            child: SvgPicture.asset(
-              "assets/icons/expense.svg",
-              width: 22,
-              color: AppColors.primary,
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.only(right: 12),
-            child: Icon(
-              Icons.more_vert,
-              color: AppColors.primary,
-            ),
-          ),
+
+
+          // Padding(
+          //   padding: const EdgeInsets.symmetric(horizontal: 10),
+          //   child: SvgPicture.asset(
+          //     "assets/icons/pdf.svg",
+          //     width: 22,
+          //     color: AppColors.primary,
+          //   ),
+          // ),
+          // Padding(
+          //   padding: const EdgeInsets.symmetric(horizontal: 10),
+          //   child: SvgPicture.asset(
+          //     "assets/icons/expense.svg",
+          //     width: 22,
+          //     color: AppColors.primary,
+          //   ),
+          // ),
+          // Padding(
+          //   padding: const EdgeInsets.only(right: 12),
+          //   child: Icon(
+          //     Icons.more_vert,
+          //     color: AppColors.primary,
+          //   ),
+          // ),
         ],
       ),
       body: Stack(

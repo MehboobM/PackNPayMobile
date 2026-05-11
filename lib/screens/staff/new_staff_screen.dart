@@ -10,6 +10,7 @@ import '../../repositry/userstaff_repository.dart';
 import '../../utils/app_colors.dart';
 import '../../utils/m_font_styles.dart';
 import '../../utils/toast_message.dart';
+import '../Quotation/widget/insurance_and_other_form.dart';
 
 class NewStaffScreen extends StatefulWidget {
   final UserModel? user;
@@ -156,6 +157,14 @@ class _NewStaffScreenState extends State<NewStaffScreen> {
         ToastHelper.showError(message: "Name is required");
         return;
       }
+      if (phoneController.text.trim().isEmpty) {
+        ToastHelper.showError(message: "Phone no. is required");
+        return;
+      }
+      if (selectedRole.isEmpty) {
+        ToastHelper.showError(message: "Roll is required");
+        return;
+      }
 
       final List<Map<String, dynamic>> defaultPermissions = [
         {"module_code": "SURVEY", "can_view": 0, "can_add": 0, "can_edit": 0, "can_delete": 0},
@@ -256,16 +265,30 @@ class _NewStaffScreenState extends State<NewStaffScreen> {
                     ],
                   ),
 
-                  // ✅ ROLE DROPDOWN (Positioned to open upwards)
-                  DropdownWithField(
-                    title: "staff.form.role".tr(),
-                    value: selectedRole,
-                    items: roleOptions.map((e) => e["label"].toString()).toList(),
-                    controller: roleController,
-                    hintText: "Select the role",
-                    onChanged: (val) {
-                      if (val != null) setState(() => selectedRole = val);
-                    },
+                //  ✅ ROLE DROPDOWN (Positioned to open upwards)
+                //   DropdownWithField(
+                //     title: "staff.form.role".tr(),
+                //     value: selectedRole,
+                //     items: roleOptions.map((e) => e["label"].toString()).toList(),
+                //     controller: roleController,
+                //     hintText: "Select the role",
+                //     onChanged: (val) {
+                //       if (val != null) setState(() => selectedRole = val);
+                //     },
+                //   ),
+                  Row(
+                    children: [
+                      reusableDropdown(
+                        title: "staff.form.role".tr(),
+                        value: selectedRole,
+                        items: roleOptions.map((e) => e["label"].toString()).toList(),
+                        onChanged: (val) {
+
+                            if (val != null) setState(() => selectedRole = val);
+                        },
+                        flex: 1,
+                      ),
+                    ],
                   ),
 
                   const SizedBox(height: 30),

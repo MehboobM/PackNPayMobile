@@ -2,7 +2,7 @@ class ApiEndPoints {
 
 
   ///Local
- // static const server = "http://192.168.0.247:5000/api/";
+  //static const server = "http://192.168.0.247:5000/api/";
   /*static const server = "http://192.168.0.246:5000/api/";*/
 
 
@@ -54,8 +54,8 @@ class ApiEndPoints {
 
   static String deleteLorryReceipt(String uid) =>
       "lr/$uid";
-  static const String prefillByOrderNo =
-      "lr/prefill-order/";
+  static const String prefillByOrderNo = "lr/prefill-order/";
+  static const String prefillMrByOrderNo = "money-receipt/prefill/order/";
   static const String getSettings = "settings";
   static const String updateWatermarkSettings = "settings/watermark";
   static const String updateLetterHeadSettings = "settings/letterhead";

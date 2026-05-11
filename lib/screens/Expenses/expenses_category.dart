@@ -146,7 +146,7 @@ class _ExpenseCategoriesPageState extends State<ExpenseCategoriesPage> {
           ),
         ],
       ),
-      bottomSheet: canAddExpense ? _buildAddButton(context) : null,
+      bottomSheet: canAddExpense ? SafeArea(child: _buildAddButton(context)) : null,
     );
   }
 

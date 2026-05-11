@@ -31,25 +31,6 @@ class _NewLorryReceiptScreenState
 
   late final List<Widget> steps;
 
-  Future<void> _fetchPrefillByOrderNo(String orderNo) async {
-    if (orderNo.isEmpty) return;
-
-    try {
-      final data = await ref.read(lorryReceiptProvider.notifier).prefillByOrderNo(orderNo);
-
-      if (data.isNotEmpty) {
-        ref.read(lrFormDataProvider.notifier).state = data;
-        // Populate fields in the form
-      }
-    } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text("No data found for this Order ID"),
-          backgroundColor: Colors.red,
-        ),
-      );
-    }
-  }
 
   @override
   void initState() {
@@ -65,17 +46,13 @@ class _NewLorryReceiptScreenState
           debugPrint("Prefill failed: $e");
         }
       }
-      else if( widget.uid != null){
-        print("object>>>>>>>>>>>>>${widget.uid}");
-      //  _fetchPrefillByOrderNo(widget.uid ?? "");
-      }
       else {
         ref.read(lrFormDataProvider.notifier).state = {};
       }
     });
 
     steps = [
-      LRDetailsForm(onNext: goToNextStep,uid:widget.uid),
+      LRDetailsForm(onNext: goToNextStep,orderId:widget.uid,isEdit:widget.isEdit),
       ConsignorForm(onNext: goToNextStep, onBack: goToPreviousStep),
       PackagePaymentForm(
           onNext: goToNextStep, onBack: goToPreviousStep),

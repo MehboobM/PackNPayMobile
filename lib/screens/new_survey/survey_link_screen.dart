@@ -687,234 +687,236 @@ class _SurveyLinkScreenState extends ConsumerState<SurveyLinkScreen> {
         ),
       ),
 
-      body: Column(
-        children: [
-          Container(height: 10,color: Color(0xFFDBDBDB)),
-          Expanded(child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const SizedBox(height: 12),
-                // Survey No (disabled)
-                FieldLabel("surveyForm.surveyNo".tr()),
-                const SizedBox(height: 6),
-                AbsorbPointer(
-                  child: CustomTextField(
-                    controller: surveyNoCtrl,
-                    hintText: '',
-                    textStyle: const TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w500,
-                      color: Color(0xff9E9EA7),
+      body: SafeArea(
+        child: Column(
+          children: [
+            Container(height: 10,color: Color(0xFFDBDBDB)),
+            Expanded(child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const SizedBox(height: 12),
+                  // Survey No (disabled)
+                  FieldLabel("surveyForm.surveyNo".tr()),
+                  const SizedBox(height: 6),
+                  AbsorbPointer(
+                    child: CustomTextField(
+                      controller: surveyNoCtrl,
+                      hintText: '',
+                      textStyle: const TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w500,
+                        color: Color(0xff9E9EA7),
+                      ),
                     ),
                   ),
-                ),
-                const SizedBox(height: 16),
-
-                FieldLabel("common.name".tr()),
-                const SizedBox(height: 6),
-                CustomTextField(
-                  controller: nameCtrl,
-                  hintText: 'Enter Name',
-                ),
-                const SizedBox(height: 16),
-
-                FieldLabel("common.phone".tr()),
-                const SizedBox(height: 6),
-                CustomTextField(
-                  controller: phoneCtrl,
-                  hintText: 'Enter phone no.',
-                  keyboardType: TextInputType.phone,
-                ),
-                const SizedBox(height: 16),
-
-
-                FieldLabel("common.date".tr()),
-                const SizedBox(height: 6),
-                Stack(
-                  alignment: Alignment.centerRight,
-                  children: [
-                    CustomTextField(
-                      controller: dateCtrl,
-                      hintText: '00/00/0000',
-                      onTap: () async {
-                        FocusScope.of(context).unfocus();
-                        final picked = await showDatePicker(
-                          context: context,
-                          firstDate: DateTime(2000),
-                          lastDate: DateTime(2100),
-                          initialDate: DateTime.now(),
-                        );
-                        if (picked != null) {
-                          dateCtrl.text =
-                          '${picked.day.toString().padLeft(2, '0')}/'
-                              '${picked.month.toString().padLeft(2, '0')}/'
-                              '${picked.year}';
+                  const SizedBox(height: 16),
+        
+                  FieldLabel("common.name".tr()),
+                  const SizedBox(height: 6),
+                  CustomTextField(
+                    controller: nameCtrl,
+                    hintText: 'Enter Name',
+                  ),
+                  const SizedBox(height: 16),
+        
+                  FieldLabel("common.phone".tr()),
+                  const SizedBox(height: 6),
+                  CustomTextField(
+                    controller: phoneCtrl,
+                    hintText: 'Enter phone no.',
+                    keyboardType: TextInputType.phone,
+                  ),
+                  const SizedBox(height: 16),
+        
+        
+                  FieldLabel("common.date".tr()),
+                  const SizedBox(height: 6),
+                  Stack(
+                    alignment: Alignment.centerRight,
+                    children: [
+                      CustomTextField(
+                        controller: dateCtrl,
+                        hintText: '00/00/0000',
+                        onTap: () async {
+                          FocusScope.of(context).unfocus();
+                          final picked = await showDatePicker(
+                            context: context,
+                            firstDate: DateTime(2000),
+                            lastDate: DateTime(2100),
+                            initialDate: DateTime.now(),
+                          );
+                          if (picked != null) {
+                            dateCtrl.text =
+                            '${picked.day.toString().padLeft(2, '0')}/'
+                                '${picked.month.toString().padLeft(2, '0')}/'
+                                '${picked.year}';
+                            setState(() {
+        
+                            });
+        
+                          }
+                        },
+                      ),
+                      const Padding(
+                        padding: EdgeInsets.only(right: 12),
+                        child: Icon(Icons.calendar_today_outlined,
+                            size: 20, color: Color(0xffA6A6AE)),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 16),
+        // FieldLabel(),
+        //                 Expanded(
+        //                   child: commonStateCityDropdowns(
+        //                       title: "lr.fields.movingFrom".tr(),
+        //                       addButton:InkWell(
+        //                         onTap: (){
+        //
+        //                           //moving city
+        //                           // optinal but if click open dialog there user enter pincode base on pincode select the city
+        //                         },
+        //                           child: Text("select city by pin code")
+        //                       ),
+        //                       isRequired: false,
+        //                       value: selectedMovingFormCity?.id.toString(),
+        //                       items: stateItems,
+        //                       onChanged: (item) {
+        //                         if (item != null) {
+        //                           final selected = stateData.states?.firstWhere((e) => e.id.toString() == item.value);
+        //
+        //                           if (selected != null) {
+        //                             setState(() {
+        //                               selectedMovingFormCity = selected;
+        //                             });
+        //                             print("MovingFormState >>>>>>>>>>>>>>>>>>${item.value}");
+        //                           }
+        //                         }
+        //                       }
+        //
+        //                   ),
+        //                 ),
+                  Expanded(
+                    child: commonStateCityDropdowns(
+                      title: "lr.fields.movingFrom".tr(),
+                      addButton: InkWell(
+                        onTap: () {
+                          showPincodeDialog(
+                            context: context,
+                            onSelected: (city) {
+                              setState(() {
+                                selectedMovingFormCity = city;
+                              });
+                            },
+                          );
+                        },
+                        child: Icon(Icons.add_circle_outline,color: AppColors.primary,size: 18,),
+                      ),
+                      isRequired: false,
+                      value: selectedMovingFormCity?.id.toString(),
+                      items: cityItems,
+                      onChanged: (item) {
+                        if (item != null) {
+                          final selected = cityState.cities.firstWhere(
+                                (e) => e.id.toString() == item.value,
+                          );
+        
                           setState(() {
-
+                            selectedMovingFormCity = selected;
                           });
-
                         }
                       },
                     ),
-                    const Padding(
-                      padding: EdgeInsets.only(right: 12),
-                      child: Icon(Icons.calendar_today_outlined,
-                          size: 20, color: Color(0xffA6A6AE)),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 16),
-// FieldLabel(),
-//                 Expanded(
-//                   child: commonStateCityDropdowns(
-//                       title: "lr.fields.movingFrom".tr(),
-//                       addButton:InkWell(
-//                         onTap: (){
-//
-//                           //moving city
-//                           // optinal but if click open dialog there user enter pincode base on pincode select the city
-//                         },
-//                           child: Text("select city by pin code")
-//                       ),
-//                       isRequired: false,
-//                       value: selectedMovingFormCity?.id.toString(),
-//                       items: stateItems,
-//                       onChanged: (item) {
-//                         if (item != null) {
-//                           final selected = stateData.states?.firstWhere((e) => e.id.toString() == item.value);
-//
-//                           if (selected != null) {
-//                             setState(() {
-//                               selectedMovingFormCity = selected;
-//                             });
-//                             print("MovingFormState >>>>>>>>>>>>>>>>>>${item.value}");
-//                           }
-//                         }
-//                       }
-//
-//                   ),
-//                 ),
-                Expanded(
-                  child: commonStateCityDropdowns(
-                    title: "lr.fields.movingFrom".tr(),
-                    addButton: InkWell(
-                      onTap: () {
-                        showPincodeDialog(
-                          context: context,
-                          onSelected: (city) {
-                            setState(() {
-                              selectedMovingFormCity = city;
-                            });
-                          },
-                        );
+                  ),
+                  Expanded(
+                    child: commonStateCityDropdowns(
+                      title: "lr.fields.movingTo".tr(),
+                      addButton: InkWell(
+                        onTap: () {
+                          showPincodeDialog(
+                            context: context,
+                            onSelected: (city) {
+                              setState(() {
+                                selectedMovingToCity = city;
+                              });
+                            },
+                          );
+                        },
+                        child: Icon(Icons.add_circle_outline,color: AppColors.primary,size: 18,),
+                      ),
+                      isRequired: false,
+                      value: selectedMovingToCity?.id.toString(),
+                      items: cityItems,
+                      onChanged: (item) {
+                        if (item != null) {
+                          final selected = cityState.cities.firstWhere(
+                                (e) => e.id.toString() == item.value,
+                          );
+        
+                          setState(() {
+                            selectedMovingToCity = selected;
+                          });
+                        }
                       },
-                      child: Icon(Icons.add_circle_outline,color: AppColors.primary,size: 18,),
                     ),
-                    isRequired: false,
-                    value: selectedMovingFormCity?.id.toString(),
-                    items: cityItems,
-                    onChanged: (item) {
-                      if (item != null) {
-                        final selected = cityState.cities.firstWhere(
-                              (e) => e.id.toString() == item.value,
-                        );
-
-                        setState(() {
-                          selectedMovingFormCity = selected;
-                        });
+                  ),
+                  // Expanded(
+                  //   child: commonStateCityDropdowns(
+                  //       title: "lr.fields.movingTo".tr(),
+                  //       addButton:InkWell(
+                  //           onTap: (){
+                  //             // optinal but if click open dialog there user enter pincode base on pincode select the city
+                  //           },
+                  //           child: Text("select city by pin code")
+                  //       ),
+                  //       isRequired: false,
+                  //       value: selectedMovingToCity?.id.toString(),
+                  //       items: stateItems,
+                  //       onChanged: (item) {
+                  //         if (item != null) {
+                  //           final selected = stateData.states?.firstWhere((e) => e.id.toString() == item.value);
+                  //
+                  //           if (selected != null) {
+                  //             setState(() {
+                  //               selectedMovingToCity = selected;
+                  //             });
+                  //             print("MovingToState>>>>>>>>>>>>>>>>>>${item.value}");
+                  //           }
+                  //         }
+                  //       }
+                  //
+                  //   ),
+                  // ),
+        
+                  Spacer(),
+                  CustomButton(
+                    onPressed: () {
+                      // if (validateForm()) {
+                      //   createSurvey();
+                      // }
+                      if (validateForm()) {
+                        if (widget.item != null) {
+                          // ✅ EDIT FLOW
+                          submitSurvey();
+                        } else {
+                          // ✅ CREATE FLOW
+                          createSurvey();
+                        }
                       }
                     },
+                    borderRadius: 6,
+                    backgroundColor: AppColors.primary,
+                    text: "common.submit".tr(),
+                    textStyle: TextStyles.f14w600Primary.copyWith(color: AppColors.mWhite),
                   ),
-                ),
-                Expanded(
-                  child: commonStateCityDropdowns(
-                    title: "lr.fields.movingTo".tr(),
-                    addButton: InkWell(
-                      onTap: () {
-                        showPincodeDialog(
-                          context: context,
-                          onSelected: (city) {
-                            setState(() {
-                              selectedMovingToCity = city;
-                            });
-                          },
-                        );
-                      },
-                      child: Icon(Icons.add_circle_outline,color: AppColors.primary,size: 18,),
-                    ),
-                    isRequired: false,
-                    value: selectedMovingToCity?.id.toString(),
-                    items: cityItems,
-                    onChanged: (item) {
-                      if (item != null) {
-                        final selected = cityState.cities.firstWhere(
-                              (e) => e.id.toString() == item.value,
-                        );
-
-                        setState(() {
-                          selectedMovingToCity = selected;
-                        });
-                      }
-                    },
-                  ),
-                ),
-                // Expanded(
-                //   child: commonStateCityDropdowns(
-                //       title: "lr.fields.movingTo".tr(),
-                //       addButton:InkWell(
-                //           onTap: (){
-                //             // optinal but if click open dialog there user enter pincode base on pincode select the city
-                //           },
-                //           child: Text("select city by pin code")
-                //       ),
-                //       isRequired: false,
-                //       value: selectedMovingToCity?.id.toString(),
-                //       items: stateItems,
-                //       onChanged: (item) {
-                //         if (item != null) {
-                //           final selected = stateData.states?.firstWhere((e) => e.id.toString() == item.value);
-                //
-                //           if (selected != null) {
-                //             setState(() {
-                //               selectedMovingToCity = selected;
-                //             });
-                //             print("MovingToState>>>>>>>>>>>>>>>>>>${item.value}");
-                //           }
-                //         }
-                //       }
-                //
-                //   ),
-                // ),
-
-                Spacer(),
-                CustomButton(
-                  onPressed: () {
-                    // if (validateForm()) {
-                    //   createSurvey();
-                    // }
-                    if (validateForm()) {
-                      if (widget.item != null) {
-                        // ✅ EDIT FLOW
-                        submitSurvey();
-                      } else {
-                        // ✅ CREATE FLOW
-                        createSurvey();
-                      }
-                    }
-                  },
-                  borderRadius: 6,
-                  backgroundColor: AppColors.primary,
-                  text: "common.submit".tr(),
-                  textStyle: TextStyles.f14w600Primary.copyWith(color: AppColors.mWhite),
-                ),
-
-                const SizedBox(height: 20),
-              ],
-            ),
-          )),
-        ],
+        
+                  const SizedBox(height: 20),
+                ],
+              ),
+            )),
+          ],
+        ),
       ),
     );
   }
