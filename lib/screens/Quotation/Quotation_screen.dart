@@ -695,7 +695,9 @@ class _QuotationScreenState extends ConsumerState<QuotationScreen> {
   Future<void> generateOrder(BuildContext context, String uid) async {
     final container = ProviderScope.containerOf(context, listen: false);
     await container.read(orderDetailProvider.notifier).getFormData(uid);
-    Navigator.pushNamed(context, orderDetailsScreenRoute);
+    Navigator.pushNamed(context, orderDetailsScreenRoute).then((value) {
+      ref.read(quotationProvider.notifier).fetchQuotationList();
+    },);
 
     // Navigator.pushNamed(context, orderDetailsScreenRoute);
     // Future.microtask(() {

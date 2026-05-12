@@ -118,35 +118,44 @@ class _ExpenseCategoriesPageState extends State<ExpenseCategoriesPage> {
           const SizedBox(width: 12),
         ],
       ),
-      body: _isLoading
-          ? const Center(child: CircularProgressIndicator())
-          : ListView(
-        padding: const EdgeInsets.all(16),
+      body: Column(
         children: [
-          Container(
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(12),
-              border: Border.all(color: const Color(0xFFEEEEEE)),
-            ),
-            child: Column(
-              children: List.generate(_categories.length, (index) {
-                final item = _categories[index];
-                return _buildCategoryRow(
-                  index,
-                  "${index + 1}.",
-                  item["name"],
-                  "₹${item["amount"]}",
-                  item["is_enabled"] == 1,
-                  item["uid"],
-                  isLast: index == _categories.length - 1,
-                );
-              }),
+          Expanded(
+            child: _isLoading
+                ? const Center(child: CircularProgressIndicator())
+                : ListView(
+                padding: const EdgeInsets.all(16),
+              children: [
+                Container(
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(color: const Color(0xFFEEEEEE)),
+                  ),
+                  child: Column(
+                    children: List.generate(_categories.length, (index) {
+                      final item = _categories[index];
+                      return _buildCategoryRow(
+                        index,
+                        "${index + 1}.",
+                        item["name"],
+                        "₹${item["amount"]}",
+                        item["is_enabled"] == 1,
+                        item["uid"],
+                        isLast: index == _categories.length - 1,
+                      );
+                    }),
+                  ),
+                ),
+              ],
             ),
           ),
+          if(canAddExpense)
+            SafeArea(top: false,child: _buildAddButton(context))
         ],
+
       ),
-      bottomSheet: canAddExpense ? SafeArea(child: _buildAddButton(context)) : null,
+   
     );
   }
 
@@ -257,29 +266,31 @@ class _ExpenseCategoriesPageState extends State<ExpenseCategoriesPage> {
   }
 
   Widget _buildAddButton(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(16),
-      color: const Color(0xFFF8F9FA),
-      child: ElevatedButton(
-        onPressed: () => showModalBottomSheet(
-          context: context,
-          isScrollControlled: true,
-          backgroundColor: Colors.transparent,
-          builder: (context) => const NewCategorySheet(),
-        ).then((_) => _fetchCategories()),
-        style: ElevatedButton.styleFrom(
-          backgroundColor: const Color(0xFF2E3B8E),
-          minimumSize: const Size(double.infinity, 50),
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-        ),
-        child: const Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(Icons.add, size: 20, color: Colors.white),
-            SizedBox(width: 8),
-            Text("Add new category",
-                style: TextStyle(fontSize: 15, color: Colors.white, fontWeight: FontWeight.w600)),
-          ],
+    return SafeArea(
+      child: Container(
+        padding: const EdgeInsets.all(16),
+        color: const Color(0xFFF8F9FA),
+        child: ElevatedButton(
+          onPressed: () => showModalBottomSheet(
+            context: context,
+            isScrollControlled: true,
+            backgroundColor: Colors.transparent,
+            builder: (context) => const NewCategorySheet(),
+          ).then((_) => _fetchCategories()),
+          style: ElevatedButton.styleFrom(
+            backgroundColor: const Color(0xFF2E3B8E),
+            minimumSize: const Size(double.infinity, 50),
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+          ),
+          child: const Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(Icons.add, size: 20, color: Colors.white),
+              SizedBox(width: 8),
+              Text("Add new category",
+                  style: TextStyle(fontSize: 15, color: Colors.white, fontWeight: FontWeight.w600)),
+            ],
+          ),
         ),
       ),
     );

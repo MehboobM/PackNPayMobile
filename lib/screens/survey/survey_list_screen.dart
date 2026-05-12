@@ -176,7 +176,9 @@ class _SurveyListScreenState extends ConsumerState<SurveyListScreen> {
           if(canAdd)
            CustomButton(
             onPressed: () {
-              Navigator.pushNamed(context, surveyLinkRoute);
+              Navigator.pushNamed(context, surveyLinkRoute).then((value) {
+                ref.read(surveyDataProvider.notifier).fetchSurveyList();
+              },);
             },
             width: 100,
             height: 36,
@@ -508,6 +510,7 @@ class _SurveyListScreenState extends ConsumerState<SurveyListScreen> {
 
   void _onTapMenu(BuildContext context, Offset position, String quotationNo,String link,SurveyList? item) async {
     final isCompleted = (item?.status ?? "").toLowerCase().trim() == "completed";
+    final flag = (item?.flag ?? "").toLowerCase().trim() == "generate";
     final canEdit = PermissionHelper.canEdit(ModuleCode.survey);
 
     print("can edit is >>>>>>>>>>>>>$canEdit");
@@ -527,6 +530,7 @@ class _SurveyListScreenState extends ConsumerState<SurveyListScreen> {
           title: 'Share survey link',
           icon: "assets/images/share_link.svg",
         ),
+       if(flag)
         PopupMenuModel(
           value: 'quotation',
           title: 'Generate Quotation',
@@ -619,7 +623,9 @@ class _SurveyListScreenState extends ConsumerState<SurveyListScreen> {
         context,
         newQuotationRoute,
         arguments: {"keyType": "edit_click_from_survey","uid": quotationNo},
-      );
+      ).then((value) {
+        ref.read(surveyDataProvider.notifier).fetchSurveyList();
+      },);
 
       if (result == true) {
         ref.read(surveyDataProvider.notifier).fetchSurveyList();

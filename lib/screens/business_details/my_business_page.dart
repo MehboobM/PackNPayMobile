@@ -411,6 +411,7 @@ class _MyBusinessPageState extends ConsumerState<MyBusinessPage> {
         surfaceTintColor: Colors.white,
         backgroundColor: Colors.white,
         elevation: 0,
+        centerTitle: false,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back, color: Color(0xFF1A1C1E)),
           onPressed: () => Navigator.pop(context),
@@ -423,7 +424,6 @@ class _MyBusinessPageState extends ConsumerState<MyBusinessPage> {
             fontWeight: FontWeight.w700,
           ),
         ),
-        centerTitle: false,
         titleSpacing: 0,
       ),
       body: Form(
@@ -447,7 +447,7 @@ class _MyBusinessPageState extends ConsumerState<MyBusinessPage> {
                 ),
               ),
             ),
-            _buildBottomActionButtons(),
+            SafeArea(child: _buildBottomActionButtons()),
           ],
         ),
       ),
@@ -1064,7 +1064,7 @@ class _MyBusinessPageState extends ConsumerState<MyBusinessPage> {
 
   Widget _buildBottomActionButtons() {
     return Container(
-      padding: const EdgeInsets.all(20),
+      padding: const EdgeInsets.all(10),
       decoration: BoxDecoration(color: Colors.white, boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 10, offset: const Offset(0, -5))]),
       child: Row(
         children: [

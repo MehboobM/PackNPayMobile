@@ -194,6 +194,7 @@ class _NewLorryReceiptScreenState
         elevation: 0,
         surfaceTintColor: Colors.white,
         titleSpacing: 0,
+        centerTitle: false,
         bottom: PreferredSize(
           preferredSize: const Size.fromHeight(48),
           child: Column(

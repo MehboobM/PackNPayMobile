@@ -97,9 +97,12 @@ class _NewReceiptScreenState extends ConsumerState<NewReceiptScreen> {
 
       // here if args has this key then call this order_no_from_order
 
+
       /// CHECK ORDER NO FROM ORDER SCREEN
       if (args != null && args is Map<String, dynamic> && args.containsKey("order_no_from_order")) {
-
+        print(
+          "object>>>>>>FDdsf.>>>>${args["order_no_from_order"] ?? ""}",
+        );
         final orderNo = args["order_no_from_order"];
         if (orderNo == null || orderNo.toString().trim().isEmpty) {
           return;

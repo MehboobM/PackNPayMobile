@@ -162,7 +162,7 @@ class _OfficeExpensePageState extends State<OfficeExpensePage> {
           ),
         ],
       ),
-      bottomSheet: SafeArea(child: _buildBottomAction(context)),
+      bottomNavigationBar: SafeArea(child: _buildBottomAction(context)),
     );
   }
 

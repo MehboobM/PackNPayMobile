@@ -55,7 +55,7 @@ class SplashState extends State<SplashScreen> with WidgetsBindingObserver {
 
     /// 🚨 STEP 2: Login flag check
     if (isLoginClick != "click") {
-      await storage.clearAll(); // clean inconsistent state
+     // await storage.clearAll(); // clean inconsistent state
       Navigator.pushNamedAndRemoveUntil(
         context,
         onboardRoute,

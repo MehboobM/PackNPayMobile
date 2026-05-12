@@ -267,42 +267,44 @@ class _ProfileScreenState extends State<ProfileScreen> {
       backgroundColor: Colors.grey[100],
 
       /// SAVE BUTTON
-      bottomNavigationBar: Container(
-        padding: const EdgeInsets.all(16),
-        decoration: const BoxDecoration(
-          color: Colors.white,
-          boxShadow: [
-            BoxShadow(color: Colors.black12, blurRadius: 5),
-          ],
-        ),
-        child: Row(
-          children: [
-            /// BACK BUTTON
-            Expanded(
-              child: CustomButton(
-                text: "Back",
-                onPressed: isSaving
-                    ? null
-                    : () => Navigator.pop(context, true),
-                backgroundColor: Colors.white,
-                foregroundColor: Colors.black,
-                borderColor: AppColors.primary,
-                borderRadius: 10,
+      bottomNavigationBar: SafeArea(
+        child: Container(
+          padding: const EdgeInsets.all(16),
+          decoration: const BoxDecoration(
+            color: Colors.white,
+            boxShadow: [
+              BoxShadow(color: Colors.black12, blurRadius: 5),
+            ],
+          ),
+          child: Row(
+            children: [
+              /// BACK BUTTON
+              Expanded(
+                child: CustomButton(
+                  text: "Back",
+                  onPressed: isSaving
+                      ? null
+                      : () => Navigator.pop(context, true),
+                  backgroundColor: Colors.white,
+                  foregroundColor: Colors.black,
+                  borderColor: AppColors.primary,
+                  borderRadius: 10,
+                ),
               ),
-            ),
-
-            const SizedBox(width: 12),
-
-            /// SAVE BUTTON
-            Expanded(
-              child: CustomButton(
-                text: isSaving ? "Saving..." : "Save",
-                onPressed: isSaving ? null : updateProfile,
-                backgroundColor: AppColors.primary,
-                borderRadius: 10,
+        
+              const SizedBox(width: 12),
+        
+              /// SAVE BUTTON
+              Expanded(
+                child: CustomButton(
+                  text: isSaving ? "Saving..." : "Save",
+                  onPressed: isSaving ? null : updateProfile,
+                  backgroundColor: AppColors.primary,
+                  borderRadius: 10,
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
 

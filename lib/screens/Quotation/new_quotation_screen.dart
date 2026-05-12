@@ -91,6 +91,7 @@ class _NewQuotationScreenState extends ConsumerState<NewQuotationScreen> {
         elevation: 2,
         titleSpacing: 0,
         automaticallyImplyLeading: true,
+        centerTitle: false,
         surfaceTintColor: Colors.white,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back, color: Colors.black),
@@ -118,7 +119,8 @@ class _NewQuotationScreenState extends ConsumerState<NewQuotationScreen> {
               icon: const Icon(Icons.calculate_outlined, size: 18, color: AppColors.mWhite),
               label: Text("Calculate", style: TextStyles.f12w400mWhite),
             ),
-          )
+          ),
+          SizedBox(),
         ],
 
         bottom: PreferredSize(

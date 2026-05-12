@@ -521,6 +521,7 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
         backgroundColor: Colors.white,
         elevation: 0,
         titleSpacing: 0,
+        centerTitle: false,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back, color: Colors.black),
           onPressed: () => Navigator.pop(context),
@@ -530,29 +531,30 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
           style: TextStyles.f16w600mGray9,
         ),
         actions: [
-          InkWell(
-            onTap: (){
-              Navigator.pushNamed(
-                context, newReceiptScreenRoute,arguments: {
-                  "order_no_from_order":data?.quotationNo
-               }
-              );
-            },
-            child: Row(
-              children: [
-                SvgPicture.asset("assets/images/quotation.svg",fit: BoxFit.contain,color: AppColors.primary,),
-                SizedBox(width: 6,),
-                Text(
-                  "Create Money Receipt",
-                  style: TextStyles.f12w400mWhite.copyWith(
-                    color: AppColors.primary,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-                SizedBox(width: 14,)
-              ],
-            ),
-          ),
+          // InkWell(
+          //   onTap: (){
+          //     print("object .quotationNo>>>>>>>${data?.orderNo}");
+          //     Navigator.pushNamed(
+          //       context, newReceiptScreenRoute,arguments: {
+          //         "order_no_from_order":data?.orderNo ?? data?.uid
+          //      }
+          //     );
+          //   },
+          //   child: Row(
+          //     children: [
+          //       SvgPicture.asset("assets/images/quotation.svg",fit: BoxFit.contain,color: AppColors.primary,),
+          //       SizedBox(width: 6,),
+          //       Text(
+          //         "Create Money Receipt",
+          //         style: TextStyles.f12w400mWhite.copyWith(
+          //           color: AppColors.primary,
+          //           fontWeight: FontWeight.w600,
+          //         ),
+          //       ),
+          //       SizedBox(width: 14,)
+          //     ],
+          //   ),
+          // ),
 
 
           // Padding(

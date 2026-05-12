@@ -168,6 +168,7 @@ class _CompanyListsPageState extends State<CompanyListsPage> {
           onPressed: () => Navigator.pop(context),
         ),
         titleSpacing: 0,
+        centerTitle: false,
         title: const Text(
           "Business Details",
           style: TextStyle(
